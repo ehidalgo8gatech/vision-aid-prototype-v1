@@ -117,14 +117,14 @@ export default function Example() {
       <div className="mx-auto max-w-2xl text-center">
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Vision Aid Partner Tracking System</h2>
         <p className="mt-2 text-lg leading-8 text-gray-600">
-          This form is for submitting a the patient's personal information
+          This form is for submitting the personal information of a patient
         </p>
       </div>
       <form action="#" method="POST" onSubmit={(e) => handleSubmit(e)} className="mx-auto mt-16 max-w-xl sm:mt-20">
         <div className="grid grid-cols-1 gap-y-6 gap-x-8 sm:grid-cols-2">
           <div>
             <label htmlFor="patients-name" className="block text-sm font-semibold leading-6 text-gray-900">
-              Patient's Name
+              Name of the Patient
             </label>
             <div className="mt-2.5">
               <input
@@ -262,7 +262,7 @@ export default function Example() {
             type="submit"
             className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Let's talk
+            Submit
           </button>
         </div>
       </form>
