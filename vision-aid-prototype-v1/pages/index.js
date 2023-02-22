@@ -266,7 +266,6 @@ export default function Example() {
           </button>
         </div>
       </form>
-      <div>{APIResponse?.map((patient) => (<li>key={patient.patientName}</li>))}</div>
     </div>
   )
 }
