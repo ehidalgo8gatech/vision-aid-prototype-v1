@@ -17,6 +17,7 @@ import { useEffect } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Switch } from '@headlessui/react'
 import Image from 'next/image';
+import { useSession, signIn, signOut } from "next-auth/react";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -92,8 +93,22 @@ export default function Example() {
     setEducation('');
   }
 
+  const { data: session } = useSession();
+
   return (
     <div className="isolate bg-white py-24 px-6 sm:py-32 lg:px-8">
+    {!session ? (
+            <>
+              <p>Not signed in</p>
+              <br />
+              <button onClick={() => signIn()}>Sign in</button>
+            </>
+          ) : (
+              <div>
+                <h4>Signed in as {session.user.email}</h4>
+                <button onClick={() => signOut()}>Sign out</button>
+              </div>
+          )}
       <Image
         src="/images/vision-aid-logo.jpg"
         height={144}
@@ -112,7 +127,7 @@ export default function Example() {
             <label htmlFor="patients-name" className="block text-sm font-semibold leading-6 text-gray-900">
               Name of the Patient
             </label>
-            <div class="mt-2.5">
+            <div className="mt-2.5">
               <input
                 onChange={(e) => setPatientName(e.target.value)}
                 type="text"
