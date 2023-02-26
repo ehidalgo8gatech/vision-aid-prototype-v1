@@ -17,7 +17,7 @@ import { useEffect } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Switch } from '@headlessui/react'
 import Image from 'next/image';
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn, signOut, getSession } from "next-auth/react";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -66,6 +66,16 @@ export default function Example() {
     e.preventDefault()
     const body = { patientName, age, gender, education }
     try {
+     const session = await getSession()
+     if (!session) {
+       alert("You need to be logged in to enter data")
+       return
+     }
+     const user = await insertUserIfRequired(session)
+     if (user.role.dataEntry != true) {
+       alert("You do not have the dataEntry permission turned to true")
+       return
+     }
       const response = await fetch('/api/patients', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -104,8 +114,8 @@ const { data: session } = useSession();
       });
       var json = await response.json()
       if (json != null) {
-        console.log("User found in db")
-        return;
+        console.log("User found in db " + JSON.stringify(json))
+        return json;
       }
       console.log("User not found adding to db")
       // @TODO allow the admin to change other users roles
@@ -123,10 +133,11 @@ const { data: session } = useSession();
        })
        json = await response.json()
        console.log("user id " + json.id + " use email " + json.email + " added")
+       return json
     }
   }
 
-  return insertUserIfRequired(session) && (
+  return insertUserIfRequired(session) &&  (
     <div className="isolate bg-white py-24 px-6 sm:py-32 lg:px-8">
     {!session ? (
             <div>
