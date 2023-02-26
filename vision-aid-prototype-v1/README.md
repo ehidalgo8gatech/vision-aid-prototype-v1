@@ -2,6 +2,16 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+Start the mysql server
+```
+docker-compose up -d --force-recreate
+```
+
+Migrate and seed the data
+```
+npx prisma migrate dev
+```
+
 First, run the development server:
 
 ```bash

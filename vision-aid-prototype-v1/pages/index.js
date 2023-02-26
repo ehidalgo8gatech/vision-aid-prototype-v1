@@ -93,16 +93,47 @@ export default function Example() {
     setEducation('');
   }
 
-  const { data: session } = useSession();
+const { data: session } = useSession();
 
-  return (
+  const insertUserIfRequired = async (session) => {
+    if (session) {
+      console.log("user session " + session.user.email)
+      var response = await fetch('/api/user?email='+session.user.email, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      var json = await response.json()
+      if (json != null) {
+        console.log("User found in db")
+        return;
+      }
+      console.log("User not found adding to db")
+      // @TODO allow the admin to change other users roles
+      // @TODO allow partner to insert patient information
+      // @TODO allow viewer to view patient information and reports
+      response = await fetch('/api/user', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: session.user.email,
+                dataEntry: false,
+                admin: false,
+                manager: false
+              })
+       })
+       json = await response.json()
+       console.log("user id " + json.id + " use email " + json.email + " added")
+    }
+  }
+
+  return insertUserIfRequired(session) && (
     <div className="isolate bg-white py-24 px-6 sm:py-32 lg:px-8">
     {!session ? (
-            <>
+            <div>
               <p>Not signed in</p>
               <br />
               <button onClick={() => signIn()}>Sign in</button>
-            </>
+            </div>
           ) : (
               <div>
                 <h4>Signed in as {session.user.email}</h4>
