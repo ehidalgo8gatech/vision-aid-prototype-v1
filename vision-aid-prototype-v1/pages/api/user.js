@@ -51,6 +51,6 @@ async function addData(req, res) {
     return res.status(200).json(newEntry, { success: true });
   } catch (error) {
     console.log('Request error ' + error);
-    res.status(500).json({ error: 'Error adding user', success: false });
+    res.status(500).json({ error: 'Error adding user' + error, success: false });
   }
 }
