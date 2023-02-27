@@ -118,7 +118,7 @@ const { data: session } = useSession();
         console.log("User found in db " + JSON.stringify(json))
         return json;
       }
-      console.log("User not found adding to db")
+      console.log("User not found adding to db " + json)
       // @TODO allow the admin to change other users roles
       // @TODO allow partner to insert patient information
       // @TODO allow viewer to view patient information and reports
