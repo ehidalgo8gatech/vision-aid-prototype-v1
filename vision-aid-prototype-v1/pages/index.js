@@ -71,11 +71,12 @@ export default function Example() {
        alert("You need to be logged in to enter data")
        return
      }
-     const user = await insertUserIfRequired(session)
-     if (user.role.dataEntry != true) {
-       alert("You do not have the dataEntry permission turned to true")
-       return
-     }
+     // @TODO uncomment when insert user fix is in
+     // const user = await insertUserIfRequired(session)
+     // if (user.role.dataEntry != true) {
+     //   alert("You do not have the dataEntry permission turned to true")
+     //   return
+     // }
       const response = await fetch('/api/patients', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

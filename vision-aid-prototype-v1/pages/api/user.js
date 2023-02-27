@@ -46,7 +46,7 @@ async function addData(req, res) {
             role: true
         }
     }
-    console.log("Request body " + JSON.stringify(body) + "create value " + JSON.stringify(create))
+    console.log("Request body " + JSON.stringify(body) + " create value " + JSON.stringify(create))
 
     try {
         const newEntry = await prisma.user.create(create)
