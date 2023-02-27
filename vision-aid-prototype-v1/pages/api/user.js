@@ -17,10 +17,7 @@ async function readData(req, res) {
         const user = await prisma.user.findUnique({
             where: {
                 email: req.query.email,
-            },
-            include: {
-                role: true,
-            },
+            }
         })
         return res.status(200).json(user, {success: true});
     } catch (error) {
