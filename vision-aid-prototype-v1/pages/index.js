@@ -29,19 +29,27 @@ function myFunction() {
 
 export default function Example() {
   const [agreed, setAgreed] = useState(false)
-  const [patientName, setPatientName] = useState("");
+  const [sessionNumber, setSessionNummber] = useState("");
+  const [mrn, setMRN] = useState("");
+  const [beneficiaryName, setBeneficiaryName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [education, setEducation] = useState("");
+  const [Occupation, setOccupation] = useState("");
+  const [Districts, setDistricts] = useState("");
+  const [State, setState] = useState("");
+  const [Diagnosis, setDiagnosis] = useState("");
   const [APIResponse, setAPIResponse] = useState(null);
 
-  useEffect(() => {
-    console.log("patientName", patientName);
-    console.log("age", age);
-    console.log("gender", gender);
-    console.log("education", education);
-    console.log("API response", APIResponse);
-  },[patientName, age, gender, education, APIResponse])
+  
+  //useEffect(() => {
+  //  console.log("patientName", patientName);
+  //  console.log("age", age);
+  //  console.log("gender", gender);
+  //  console.log("education", education);
+  //  console.log("API response", APIResponse);
+  //},[patientName, age, gender, education, APIResponse])
 
   const readDB = async() => {
     try {
@@ -64,7 +72,7 @@ export default function Example() {
   
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const body = { patientName, age, gender, education }
+    const body = { sessionNumber, mrn, beneficiaryName, age, gender, phoneNumber, education, Occupation, Districts, State, Diagnosis }
     try {
      const session = await getSession()
      if (!session) {
@@ -98,10 +106,17 @@ export default function Example() {
   }
   
   const resetForm = () => {
-    setPatientName('');
+    setSessionNummber('');
+    setMRN('');
+    setBeneficiaryName('');
     setAge('');
     setGender('');
+    setPhoneNumber('');
     setEducation('');
+    setOccupation('');
+    setDistricts('');
+    setState('');
+    setDiagnosis('');
   }
 
 const { data: session } = useSession();
@@ -167,12 +182,42 @@ const { data: session } = useSession();
       <form action="#" method="POST" onSubmit={(e) => handleSubmit(e)} className="mx-auto mt-16 max-w-xl sm:mt-20">
         <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
           <div>
+            <label htmlFor="session-number" className="block text-sm font-semibold leading-6 text-gray-900">
+              Number of Session
+            </label>
+            <div className="mt-2.5">
+              <input
+                onChange={(e) => setSessionNummber(e.target.value)}
+                type="int"
+                name="session-number"
+                id="session-number"
+                autoComplete="given-name"
+                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="mrn" className="block text-sm font-semibold leading-6 text-gray-900">
+              MRN
+            </label>
+            <div className="mt-2.5">
+              <input
+                onChange={(e) => setMRN(e.target.value)}
+                type="text"
+                name="mrn"
+                id="mrn"
+                autoComplete="given-name"
+                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+              />
+            </div>
+          </div>
+          <div>
             <label htmlFor="patients-name" className="block text-sm font-semibold leading-6 text-gray-900">
               Name of the Patient
             </label>
             <div className="mt-2.5">
               <input
-                onChange={(e) => setPatientName(e.target.value)}
+                onChange={(e) => setBeneficiaryName(e.target.value)}
                 type="text"
                 name="patients-name"
                 id="patients-name"
@@ -212,6 +257,21 @@ const { data: session } = useSession();
             </div>
           </div>
           <div className="sm:col-span-2">
+            <label htmlFor="phone-number" className="block text-sm font-semibold leading-6 text-gray-900">
+              Phone Number
+            </label>
+            <div className="mt-2.5">
+              <input
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                type="int"
+                name="phone-number"
+                id="phone-number"
+                autoComplete="organization"
+                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+              />
+            </div>
+          </div>
+          <div className="sm:col-span-2">
             <label htmlFor="education" className="block text-sm font-semibold leading-6 text-gray-900">
               Education
             </label>
@@ -227,16 +287,62 @@ const { data: session } = useSession();
             </div>
           </div>
           <div className="sm:col-span-2">
-            <label htmlFor="message" className="block text-sm font-semibold leading-6 text-gray-900">
-              Message
+            <label htmlFor="occupation" className="block text-sm font-semibold leading-6 text-gray-900">
+              Occupation
             </label>
             <div className="mt-2.5">
-              <textarea
-                name="message"
-                id="message"
-                rows={4}
+              <input
+                onChange={(e) => setOccupation(e.target.value)}
+                type="text"
+                name="occupation"
+                id="occupation"
+                autoComplete="education"
                 className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                defaultValue={''}
+              />
+            </div>
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor="districts" className="block text-sm font-semibold leading-6 text-gray-900">
+              Districts
+            </label>
+            <div className="mt-2.5">
+              <input
+                onChange={(e) => setDistricts(e.target.value)}
+                type="text"
+                name="districts"
+                id="districts"
+                autoComplete="education"
+                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+              />
+            </div>
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor="state" className="block text-sm font-semibold leading-6 text-gray-900">
+              State
+            </label>
+            <div className="mt-2.5">
+              <input
+                onChange={(e) => setState(e.target.value)}
+                type="text"
+                name="state"
+                id="state"
+                autoComplete="education"
+                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+              />
+            </div>
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor="diagnosis" className="block text-sm font-semibold leading-6 text-gray-900">
+              Diagnosis
+            </label>
+            <div className="mt-2.5">
+              <input
+                onChange={(e) => setDiagnosis(e.target.value)}
+                type="text"
+                name="diagnosis"
+                id="diagnosis"
+                autoComplete="education"
+                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
               />
             </div>
           </div>

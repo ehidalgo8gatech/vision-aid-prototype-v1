@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
 async function readData(req, res){
   try{
-    const patients = await prisma.patientInformation.findMany();
+    const patients = await prisma.Beneficiary.findMany();
     return res.status(200).json(patients, {success: true});
   } catch(error) {
     console.log(error)
@@ -26,12 +26,19 @@ async function readData(req, res){
 async function addData(req, res) {
   const body = req.body;
   try {
-    const newEntry = await prisma.patientInformation.create({
+    const newEntry = await prisma.Beneficiary.create({
       data: {
-        patientName: body.patientName,
+        sessionNumber: body.sessionNumber,
+        mrn: body.mrn,
+        beneficiaryName: body.beneficiaryName,
         age: body.age,
         gender: body.gender,
-        education: body.education
+        phoneNumber: body.phoneNumber,
+        education: body.education,
+        Occupation: body.Occupation,
+        Districts: body.Districts,
+        State: body.State,
+        Diagnosis: body.Diagnosis
       }
     })
     return res.status(200).json(newEntry, { success: true });

@@ -31,3 +31,42 @@ model Role {
   admin  Boolean    @unique @default(false)
   manager  Boolean    @unique @default(false)
 }
+
+model Beneficiary {
+  id Int @id @default(autoincrement())
+  date DateTime
+  sessionNumber Int
+  mrn String
+  beneficiaryName String
+  age Int
+  gender String
+  phoneNumber Int
+  Education String
+  Occupation String
+  Districts String
+  State String
+  Diagnosis String
+  hospitalId Int
+  beneficiary_subcategories Beneficiary_Subcategories[]
+}
+
+model Categories {
+  id Int @id @default(autoincrement())
+  categoryName String
+  subcategory Subcategories[]
+}
+
+model Subcategories {
+  id Int @id @default(autoincrement())
+  subcategoryName String
+  category Categories @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  beneficiary_subcategories Beneficiary_Subcategories[]
+}
+
+model Beneficiary_Subcategories {
+  beneficiary Beneficiary @relation(fields: [beneficiaryId], references: [id])
+  beneficiaryId Int @id
+  subcategory Subcategories @relation(fields: [subcategoryId], references: [id])
+  subcategoryId Int 
+}
