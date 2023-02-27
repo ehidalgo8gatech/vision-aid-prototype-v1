@@ -132,7 +132,7 @@ const { data: session } = useSession();
               })
        })
        json = await response.json()
-       console.log("user id " + json.id + " use email " + json.email + " added")
+       console.log("user " + JSON.stringify(json))
        return json
     }
   }
