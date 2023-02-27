@@ -113,7 +113,7 @@ const { data: session } = useSession();
         headers: { 'Content-Type': 'application/json' },
       });
       var json = await response.json()
-      if (json != null) {
+      if (json != null && json.error == null) {
         console.log("User found in db " + JSON.stringify(json))
         return json;
       }
