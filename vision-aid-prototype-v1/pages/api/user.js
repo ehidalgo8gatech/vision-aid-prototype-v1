@@ -42,11 +42,11 @@ async function addData(req, res) {
                   admin: body.admin,
                   manager: body.manager
                 }
-              },
+              }
             },
       include: {
-        role: true,
-      },
+        role: true
+      }
     })
     return res.status(200).json(newEntry, { success: true });
   } catch (error) {
