@@ -127,3 +127,8 @@ label {
   text-align: center;
 }
 
+.api-response {
+  display: inline-block;
+  vertical-align: top;
+}
+

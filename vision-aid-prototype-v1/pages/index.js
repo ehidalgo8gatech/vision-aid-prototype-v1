@@ -24,8 +24,19 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
+//function myFunction() {
+//  document.getElementById("demo").innerHTML = "Beneficiary's information submitted"
+//}
+
 function myFunction() {
-  document.getElementById("demo").innerHTML = "Patient's information submitted"
+  const inputs = document.querySelectorAll('input[type=text], input[type=tel], input[type=number], input[type=email], select');
+  for (let i = 0; i < inputs.length; i++) {
+    if (!inputs[i].value) {
+      alert("Please fill out all the fields.");
+      return;
+    }
+  }
+  document.getElementById("demo").innerHTML = "Beneficiary's information submitted"
 }
 
 export default function Example() {
@@ -75,6 +86,7 @@ export default function Example() {
   
   const handleSubmit = async (e) => {
     e.preventDefault()
+
     const body = { date, hospitalId, sessionNumber, mrn, beneficiaryName, age, gender, phoneNumber, Education, Occupation, Districts, State, Diagnosis }
     try {
      const session = await getSession()
@@ -99,6 +111,7 @@ export default function Example() {
       } else {
         resetForm();
         readDB();
+        myFunction();
         console.log('form submitted successfully !!!')
         //set a success banner here
       }
@@ -172,6 +185,7 @@ const { data: session } = useSession();
                 <button onClick={() => signOut()}>Sign out</button>
               </div>
           )}
+      <br />
       <Image
         src="/images/vision-aid-logo.jpg"
         height={144}
@@ -198,7 +212,7 @@ const { data: session } = useSession();
                 id="date"
                 autoComplete=""
                 className=""
-              />
+              required/>
             </div>
           </div>
           <div>
@@ -213,7 +227,7 @@ const { data: session } = useSession();
                 id="hospital-id"
                 autoComplete="hospital-id"
                 className=""
-              />
+              required/>
             </div>
           </div>
           <div>
@@ -228,7 +242,7 @@ const { data: session } = useSession();
                 id="session-number"
                 autoComplete="given-name"
                 className=""
-              />
+              required/>
             </div>
           </div>
           <div>
@@ -243,7 +257,7 @@ const { data: session } = useSession();
                 id="mrn"
                 autoComplete="given-name"
                 className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-              />
+              required/>
             </div>
           </div>
           <div>
@@ -258,7 +272,7 @@ const { data: session } = useSession();
                 id="patients-name"
                 autoComplete="given-name"
                 className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-              />
+              required/>
             </div>
           </div>
           <div>
@@ -273,7 +287,7 @@ const { data: session } = useSession();
                 id="age"
                 autoComplete="family-name"
                 className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-              />
+              required/>
             </div>
           </div>
           <div className="sm:col-span-2">
@@ -288,7 +302,7 @@ const { data: session } = useSession();
                 id="gender"
                 autoComplete="organization"
                 className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-              />
+              required/>
             </div>
           </div>
           <div className="sm:col-span-2">
@@ -303,7 +317,7 @@ const { data: session } = useSession();
                 id="phone-number"
                 autoComplete="organization"
                 className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-              />
+              required/>
             </div>
           </div>
           <div className="sm:col-span-2">
@@ -318,7 +332,7 @@ const { data: session } = useSession();
                 id="education"
                 autoComplete="education"
                 className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-              />
+              required/>
             </div>
           </div>
           <div className="sm:col-span-2">
@@ -333,7 +347,7 @@ const { data: session } = useSession();
                 id="occupation"
                 autoComplete="education"
                 className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-              />
+              required/>
             </div>
           </div>
           <div className="sm:col-span-2">
@@ -348,7 +362,7 @@ const { data: session } = useSession();
                 id="districts"
                 autoComplete="education"
                 className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-              />
+              required/>
             </div>
           </div>
           <div className="sm:col-span-2">
@@ -363,7 +377,7 @@ const { data: session } = useSession();
                 id="state"
                 autoComplete="education"
                 className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-              />
+              required/>
             </div>
           </div>
           <div className="sm:col-span-2">
@@ -378,12 +392,12 @@ const { data: session } = useSession();
                 id="diagnosis"
                 autoComplete="education"
                 className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-              />
+              required/>
             </div>
           </div>
         </div>
         <div className="mt-10">
-          
+          <p id="demo"></p>
           <button
             type="submit"
             className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -391,10 +405,10 @@ const { data: session } = useSession();
           >
             Submit
           </button>
-          <p id="demo"></p>
         </div>
       </form>
-      <div>{APIResponse?.map((beneficiary, index) => (<h4 key={index}>{beneficiary.beneficiaryName}</h4>))}</div>
+      <h4>List of Beneficiaries</h4>
+      <div class="api-response">{APIResponse?.map((beneficiary, index) => (<li key={index}>{beneficiary.beneficiaryName}</li>))}</div> 
     </div>
   )
 }
