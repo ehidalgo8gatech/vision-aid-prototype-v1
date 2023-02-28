@@ -28,13 +28,15 @@ async function addData(req, res) {
   try {
     const newEntry = await prisma.Beneficiary.create({
       data: {
+        date: body.date,
+        hospitalId: body.hospitalId,
         sessionNumber: body.sessionNumber,
         mrn: body.mrn,
         beneficiaryName: body.beneficiaryName,
         age: body.age,
         gender: body.gender,
         phoneNumber: body.phoneNumber,
-        education: body.education,
+        Education: body.Education,
         Occupation: body.Occupation,
         Districts: body.Districts,
         State: body.State,

@@ -119,9 +119,11 @@ h2 {
   text-align: center;
 }
 
+div,
 p,
 label {
   font-family: verdana;
   font-size: 15px;
+  text-align: center;
 }
 

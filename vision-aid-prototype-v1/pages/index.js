@@ -18,6 +18,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Switch } from '@headlessui/react'
 import Image from 'next/image';
 import { useSession, signIn, signOut, getSession } from "next-auth/react";
+import moment from 'moment';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -29,13 +30,15 @@ function myFunction() {
 
 export default function Example() {
   const [agreed, setAgreed] = useState(false)
-  const [sessionNumber, setSessionNummber] = useState("");
+  const [date, setDate] = useState();
+  const [hospitalId, setHospitalId] = useState();
+  const [sessionNumber, setSessionNummber] = useState();
   const [mrn, setMRN] = useState("");
   const [beneficiaryName, setBeneficiaryName] = useState("");
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState();
   const [gender, setGender] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [education, setEducation] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState();
+  const [Education, setEducation] = useState("");
   const [Occupation, setOccupation] = useState("");
   const [Districts, setDistricts] = useState("");
   const [State, setState] = useState("");
@@ -72,7 +75,7 @@ export default function Example() {
   
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const body = { sessionNumber, mrn, beneficiaryName, age, gender, phoneNumber, education, Occupation, Districts, State, Diagnosis }
+    const body = { date, hospitalId, sessionNumber, mrn, beneficiaryName, age, gender, phoneNumber, Education, Occupation, Districts, State, Diagnosis }
     try {
      const session = await getSession()
      if (!session) {
@@ -106,12 +109,14 @@ export default function Example() {
   }
   
   const resetForm = () => {
-    setSessionNummber('');
+    setDate();
+    setHospitalId();
+    setSessionNummber();
     setMRN('');
     setBeneficiaryName('');
-    setAge('');
+    setAge();
     setGender('');
-    setPhoneNumber('');
+    setPhoneNumber();
     setEducation('');
     setOccupation('');
     setDistricts('');
@@ -181,18 +186,48 @@ const { data: session } = useSession();
       </div>
       <form action="#" method="POST" onSubmit={(e) => handleSubmit(e)} className="mx-auto mt-16 max-w-xl sm:mt-20">
         <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
+        <div>
+            <label htmlFor="date" className="block text-sm font-semibold leading-6 text-gray-900">
+              Date
+            </label>
+            <div className="mt-2.5">
+              <input
+                onChange={(e) => setDate(moment(new Date(e.target.value)))}
+                type="date"
+                name="date"
+                id="date"
+                autoComplete=""
+                className=""
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="hospital-id" className="block text-sm font-semibold leading-6 text-gray-900">
+              Hospital ID
+            </label>
+            <div className="mt-2.5">
+              <input
+                onChange={(e) => setHospitalId(parseInt(e.target.value))}
+                type="number"
+                name="hospital-id"
+                id="hospital-id"
+                autoComplete="hospital-id"
+                className=""
+              />
+            </div>
+          </div>
           <div>
             <label htmlFor="session-number" className="block text-sm font-semibold leading-6 text-gray-900">
               Number of Session
             </label>
             <div className="mt-2.5">
               <input
-                onChange={(e) => setSessionNummber(e.target.value)}
-                type="int"
+                onChange={(e) => setSessionNummber(parseInt(e.target.value))}
+                type="number"
                 name="session-number"
                 id="session-number"
                 autoComplete="given-name"
-                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                className=""
               />
             </div>
           </div>
@@ -213,7 +248,7 @@ const { data: session } = useSession();
           </div>
           <div>
             <label htmlFor="patients-name" className="block text-sm font-semibold leading-6 text-gray-900">
-              Name of the Patient
+              Name of the Beneficiary
             </label>
             <div className="mt-2.5">
               <input
@@ -232,8 +267,8 @@ const { data: session } = useSession();
             </label>
             <div className="mt-2.5">
               <input
-                onChange={(e) => setAge(e.target.value)}
-                type="text"
+                onChange={(e) => setAge(parseInt(e.target.value))}
+                type="number"
                 name="age"
                 id="age"
                 autoComplete="family-name"
@@ -262,8 +297,8 @@ const { data: session } = useSession();
             </label>
             <div className="mt-2.5">
               <input
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                type="int"
+                onChange={(e) => setPhoneNumber(parseInt(e.target.value))}
+                type="number"
                 name="phone-number"
                 id="phone-number"
                 autoComplete="organization"
@@ -359,6 +394,7 @@ const { data: session } = useSession();
           <p id="demo"></p>
         </div>
       </form>
+      <div>{APIResponse?.map((beneficiary) => (<h4>{beneficiary.beneficiaryName}</h4>))}</div>
     </div>
   )
 }
