@@ -394,7 +394,7 @@ const { data: session } = useSession();
           <p id="demo"></p>
         </div>
       </form>
-      <div>{APIResponse?.map((beneficiary) => (<h4>{beneficiary.beneficiaryName}</h4>))}</div>
+      <div>{APIResponse?.map((beneficiary, index) => (<h4 key={index}>{beneficiary.beneficiaryName}</h4>))}</div>
     </div>
   )
 }
