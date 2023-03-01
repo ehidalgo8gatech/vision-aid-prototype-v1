@@ -36,7 +36,18 @@ function myFunction() {
       return;
     }
   }
-  document.getElementById("demo").innerHTML = "Beneficiary's information submitted"
+  document.getElementById("demo").innerHTML = "Beneficiary's information submitted. Click on List of Beneficiaries to see the updated list."
+}
+
+function runApi() {
+  fetch('/api/patients')
+    .then(response => response.json())
+    .then(data => {
+      const responseDiv = document.getElementById('api-response');
+      const beneficiaries = data.map((beneficiary, index) => `<li key=${index}>${beneficiary.beneficiaryName}</li>`);
+      responseDiv.innerHTML = `<ul>${beneficiaries.join('')}</ul>`;
+    })
+    .catch(error => console.error(error));
 }
 
 export default function Example() {
@@ -105,11 +116,12 @@ export default function Example() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       })
+      resetForm();
       if (response.status !== 200) {
         console.log('something went wrong')
         //set an error banner here
       } else {
-        resetForm();
+        //resetForm();
         readDB();
         myFunction();
         console.log('form submitted successfully !!!')
@@ -195,7 +207,7 @@ const { data: session } = useSession();
       <div className="mx-auto max-w-2xl text-center">
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Vision Aid Partner Tracking System</h2>
         <p className="mt-2 text-lg leading-8 text-gray-600">
-          This form is for submitting the personal information of a patient
+          This form is for submitting the personal information of a beneficiary
         </p>
       </div>
       <form action="#" method="POST" onSubmit={(e) => handleSubmit(e)} className="mx-auto mt-16 max-w-xl sm:mt-20">
@@ -352,7 +364,7 @@ const { data: session } = useSession();
           </div>
           <div className="sm:col-span-2">
             <label htmlFor="districts" className="block text-sm font-semibold leading-6 text-gray-900">
-              Districts
+              District
             </label>
             <div className="mt-2.5">
               <input
@@ -407,8 +419,13 @@ const { data: session } = useSession();
           </button>
         </div>
       </form>
-      <h4>List of Beneficiaries</h4>
-      <div class="api-response">{APIResponse?.map((beneficiary, index) => (<li key={index}>{beneficiary.beneficiaryName}</li>))}</div> 
+      <br />
+      <button onClick={() => runApi()} >List of Beneficiaries</button>
+      <br />
+      <div class="api-response" id="api-response"></div> 
     </div>
   )
 }
+
+//<button onClick={() => runApi()} >List of Beneficiaries</button>
+//<div class="api-response" id="api-response"></div>
