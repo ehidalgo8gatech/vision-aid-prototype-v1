@@ -132,3 +132,9 @@ label {
   vertical-align: top;
 }
 
+.api-entries {
+  display: inline-block;
+  vertical-align: top;
+  max-width: 50%;
+}
+

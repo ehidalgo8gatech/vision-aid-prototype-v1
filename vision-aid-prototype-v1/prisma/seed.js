@@ -5,19 +5,26 @@ async function main() {
   const seth = await prisma.user.create({
     data: {
       email: "sethlevine111@gmail.com",
-      role: {
+      admin: {
         create:{
-          dataEntry: true,
-          admin: true,
-          manager: true
+
         }
       },
     },
     include: {
-      role: true,
+      admin: true,
+      hospitalRole: true
     },
   })
-  console.log({ seth })
+  const sethHospital = await prisma.hospital.create({
+    data: {
+      name: "SethHospital",
+    },
+    include: {
+      hospitalRole: true,
+    },
+  })
+  console.log(seth + " " + sethHospital)
 }
 main()
   .then(async () => {

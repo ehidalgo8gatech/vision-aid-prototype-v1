@@ -1,72 +1,85 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-  provider = "mysql"
-  url = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
   referentialIntegrity = "prisma"
 }
 
 model PatientInformation {
-  id Int @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   patientName String
-  age String
-  gender String
-  education String
+  age         String
+  gender      String
+  education   String
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  email String @unique
-  role Role?
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  admin        Admin?
+  hospitalRole HospitalRole?
 }
 
-model Role {
+model Admin {
   id     Int  @id @default(autoincrement())
   user   User @relation(fields: [userId], references: [id])
   userId Int  @unique // relation scalar field (used in the `@relation` attribute above)
-  dataEntry  Boolean    @unique @default(false)
-  admin  Boolean    @unique @default(false)
-  manager  Boolean    @unique @default(false)
+}
+
+model Hospital {
+  id           Int            @id @default(autoincrement())
+  name         String         @unique
+  hospitalRole HospitalRole[]
+}
+
+model HospitalRole {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int      @unique // relation scalar field (used in the `@relation` attribute above)
+  hospital   Hospital @relation(fields: [hospitalId], references: [id])
+  hospitalId Int // relation scalar field (used in the `@relation` attribute above)
+  admin      Boolean
 }
 
 model Beneficiary {
-  id Int @id @default(autoincrement())
-  date DateTime
-  sessionNumber Int
-  mrn String
-  beneficiaryName String
-  age Int
-  gender String
-  phoneNumber Int
-  Education String
-  Occupation String
-  Districts String
-  State String
-  Diagnosis String
-  hospitalId Int
+  id                        Int                         @id @default(autoincrement())
+  date                      DateTime
+  sessionNumber             Int
+  mrn                       String
+  beneficiaryName           String
+  age                       Int
+  gender                    String
+  phoneNumber               Int
+  Education                 String
+  Occupation                String
+  Districts                 String
+  State                     String
+  Diagnosis                 String
+  hospitalId                Int
   beneficiary_subcategories Beneficiary_Subcategories[]
 }
 
 model Categories {
-  id Int @id @default(autoincrement())
+  id           Int             @id @default(autoincrement())
   categoryName String
-  subcategory Subcategories[]
+  subcategory  Subcategories[]
 }
 
 model Subcategories {
-  id Int @id @default(autoincrement())
-  subcategoryName String
-  category Categories @relation(fields: [categoryId], references: [id])
-  categoryId Int
+  id                        Int                         @id @default(autoincrement())
+  subcategoryName           String
+  category                  Categories                  @relation(fields: [categoryId], references: [id])
+  categoryId                Int
   beneficiary_subcategories Beneficiary_Subcategories[]
 }
 
 model Beneficiary_Subcategories {
-  beneficiary Beneficiary @relation(fields: [beneficiaryId], references: [id])
-  beneficiaryId Int @id
-  subcategory Subcategories @relation(fields: [subcategoryId], references: [id])
-  subcategoryId Int 
+  beneficiary   Beneficiary   @relation(fields: [beneficiaryId], references: [id])
+  beneficiaryId Int           @id
+  subcategory   Subcategories @relation(fields: [subcategoryId], references: [id])
+  subcategoryId Int
 }

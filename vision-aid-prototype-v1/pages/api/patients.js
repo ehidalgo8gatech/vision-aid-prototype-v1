@@ -15,6 +15,16 @@ export default async function handler(req, res) {
 
 async function readData(req, res){
   try{
+    if (req.query.hospitalId != null) {
+      const patients = await prisma.Beneficiary.findMany(
+          {
+            where: {
+              hospitalId: req.query.hospitalId,
+            },
+          }
+      );
+      return res.status(200).json(patients, {success: true});
+    }
     const patients = await prisma.Beneficiary.findMany();
     return res.status(200).json(patients, {success: true});
   } catch(error) {

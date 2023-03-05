@@ -14,13 +14,12 @@ export default async function handler(req, res) {
 
 async function readData(req, res) {
     try {
-        const user = await prisma.user.findUnique({
+        const user = await prisma.hospital.findUnique({
             where: {
-                email: req.query.email,
+                name: req.query.name,
             },
             include: {
                 hospitalRole: true,
-                admin: true
             },
         })
         return res.status(200).json(user, {success: true});
@@ -34,7 +33,7 @@ async function addData(req, res) {
     const body = req.body;
     const create = {
         data: {
-            email: body.email,
+            name: body.name,
         },
         include: {
             hospitalRole: true,

@@ -19,6 +19,7 @@ import { Switch } from '@headlessui/react'
 import Image from 'next/image';
 import { useSession, signIn, signOut, getSession } from "next-auth/react";
 import moment from 'moment';
+import Router from 'next/router'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -36,24 +37,12 @@ function myFunction() {
       return;
     }
   }
-  document.getElementById("demo").innerHTML = "Beneficiary's information submitted. Click on List of Beneficiaries to see the updated list."
-}
-
-function runApi() {
-  fetch('/api/patients')
-    .then(response => response.json())
-    .then(data => {
-      const responseDiv = document.getElementById('api-response');
-      const beneficiaries = data.map((beneficiary, index) => `<li key=${index}>${beneficiary.beneficiaryName}</li>`);
-      responseDiv.innerHTML = `<ul>${beneficiaries.join('')}</ul>`;
-    })
-    .catch(error => console.error(error));
 }
 
 export default function Example() {
   const [agreed, setAgreed] = useState(false)
   const [date, setDate] = useState();
-  const [hospitalId, setHospitalId] = useState();
+  const [hospitalName, setHospitalName] = useState();
   const [sessionNumber, setSessionNummber] = useState();
   const [mrn, setMRN] = useState("");
   const [beneficiaryName, setBeneficiaryName] = useState("");
@@ -98,34 +87,53 @@ export default function Example() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const body = { date, hospitalId, sessionNumber, mrn, beneficiaryName, age, gender, phoneNumber, Education, Occupation, Districts, State, Diagnosis }
+    const body = { date, hospitalName, sessionNumber, mrn, beneficiaryName, age, gender, phoneNumber, Education, Occupation, Districts, State, Diagnosis }
     try {
      const session = await getSession()
      if (!session) {
        alert("You need to be logged in to enter data")
        return
      }
-     // @TODO uncomment when insert user fix is in
-     // const user = await insertUserIfRequired(session)
-     // if (user.role.dataEntry != true) {
-     //   alert("You do not have the dataEntry permission turned to true")
-     //   return
-     // }
+     const user = await insertUserIfRequired(session)
+      if (user == null) {
+        alert("User not found in db")
+        return
+      }
+      if (user.admin == null && user.hospitalRole == null) {
+        alert("User is not admin not connected to a hospital")
+        return
+      }
+      if (user.admin == null && hospitalName != user.hospitalRole.hospital.hospitalName) {
+        alert("User does not have permission for hospital " + hospitalName)
+        return
+      }
+      const hospital = await fetch('/api/hospital?name='+hospitalName, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const hospitalJson = await hospital.json()
+      if (hospitalJson == null || hospitalJson.error != null) {
+        alert("Can't find hospital name in db " + hospitalName)
+        return
+      }
+      body.hospitalId = hospitalJson.id
       const response = await fetch('/api/patients', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       })
-      resetForm();
       if (response.status !== 200) {
+        alert("Something went wrong")
         console.log('something went wrong')
         //set an error banner here
       } else {
-        //resetForm();
+        resetForm();
         readDB();
-        myFunction();
+        document.getElementById("demo").innerHTML = "Beneficiary's information submitted. Click on List of Beneficiaries to see the updated list.";
         console.log('form submitted successfully !!!')
         //set a success banner here
+        alert("Form submitted success")
+        Router.reload(window.location.pathname)
       }
       //check response, if success is false, dont take them to success page
     } catch (error) {
@@ -135,7 +143,7 @@ export default function Example() {
   
   const resetForm = () => {
     setDate();
-    setHospitalId();
+    setHospitalName();
     setSessionNummber();
     setMRN('');
     setBeneficiaryName('');
@@ -164,9 +172,6 @@ const { data: session } = useSession();
         return json;
       }
       console.log("User not found adding to db " + json)
-      // @TODO allow the admin to change other users roles
-      // @TODO allow partner to insert patient information
-      // @TODO allow viewer to view patient information and reports
       response = await fetch('/api/user', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -182,6 +187,80 @@ const { data: session } = useSession();
        return json
     }
   }
+
+    const entriesApi = async () => {
+        const session = await getSession()
+        if (!session) {
+            alert("Must be logged on to view entries")
+            return
+        }
+        const user = await insertUserIfRequired(session)
+        if (user.admin != null) {
+            fetch('/api/patients')
+                .then(response => response.json())
+                .then(data => {
+                    const responseDiv = document.getElementById('api-entries');
+                    const beneficiaries = data.map((beneficiary, index) => `<li key=${index}>${
+                        JSON.stringify(beneficiary, null, 2)
+                            .replaceAll("{", "")
+                            .replaceAll("}", "")
+                            .replaceAll(",", "")
+                    }</li>`);
+                    responseDiv.innerHTML = `<ul>${beneficiaries}</ul>`;
+                })
+                .catch(error => console.error(error));
+        } else if (user.hospitalRole != null && user.hospitalRole.admin == true) {
+            fetch('/api/patients?hospitalId='+user.hospitalRole.hospitalId)
+                .then(response => response.json())
+                .then(data => {
+                    const responseDiv = document.getElementById('api-entries');
+                    const beneficiaries = data.map((beneficiary, index) => `<li key=${index}>${
+                        JSON.stringify(beneficiary, null, 2)
+                            .replaceAll("{", "")
+                            .replaceAll("}", "")
+                            .replaceAll(",", "")
+                    }</li>`);
+                    responseDiv.innerHTML = `<ul>${beneficiaries}</ul>`;
+                })
+                .catch(error => console.error(error));
+        } else if (user.hospitalRole != null) {
+            alert("User is not a hospital admin")
+        } else {
+            alert("User is not part of a hospital or admin")
+        }
+    }
+
+    const runApi = async () => {
+        const session = await getSession()
+        if (!session) {
+            alert("Must be logged on to view entries")
+            return
+        }
+        const user = await insertUserIfRequired(session)
+        if (user.admin != null) {
+            fetch('/api/patients')
+                .then(response => response.json())
+                .then(data => {
+                    const responseDiv = document.getElementById('api-response');
+                    const beneficiaries = data.map((beneficiary, index) => `<li key=${index}>${beneficiary.beneficiaryName}</li>`);
+                    responseDiv.innerHTML = `<ul>${beneficiaries.join('')}</ul>`;
+                })
+                .catch(error => console.error(error));
+        } else if (user.hospitalRole != null && user.hospitalRole.admin == true) {
+            fetch('/api/patients?hospitalId='+user.hospitalRole.hospitalId)
+                .then(response => response.json())
+                .then(data => {
+                    const responseDiv = document.getElementById('api-response');
+                    const beneficiaries = data.map((beneficiary, index) => `<li key=${index}>${beneficiary.beneficiaryName}</li>`);
+                    responseDiv.innerHTML = `<ul>${beneficiaries.join('')}</ul>`;
+                })
+                .catch(error => console.error(error));
+        } else if (user.hospitalRole != null) {
+            alert("User is not a hospital admin")
+        } else {
+            alert("User is not part of a hospital or admin")
+        }
+    }
 
   return insertUserIfRequired(session) &&  (
     <div className="isolate bg-white py-24 px-6 sm:py-32 lg:px-8">
@@ -228,16 +307,16 @@ const { data: session } = useSession();
             </div>
           </div>
           <div>
-            <label htmlFor="hospital-id" className="block text-sm font-semibold leading-6 text-gray-900">
-              Hospital ID
+            <label htmlFor="hospital-name" className="block text-sm font-semibold leading-6 text-gray-900">
+              Hospital Name
             </label>
             <div className="mt-2.5">
               <input
-                onChange={(e) => setHospitalId(parseInt(e.target.value))}
-                type="number"
-                name="hospital-id"
-                id="hospital-id"
-                autoComplete="hospital-id"
+                onChange={(e) => setHospitalName(e.target.value)}
+                type="text"
+                name="hospital-name"
+                id="hospital-name"
+                autoComplete="hospital-name"
                 className=""
               required/>
             </div>
@@ -422,7 +501,11 @@ const { data: session } = useSession();
       <br />
       <button onClick={() => runApi()} >List of Beneficiaries</button>
       <br />
-      <div class="api-response" id="api-response"></div> 
+      <div className="api-response" id="api-response"></div>
+      <br />
+      <button onClick={() => entriesApi()} >List Of Entries</button>
+      <br />
+      <div className="api-entries" id="api-entries"></div>
     </div>
   )
 }
