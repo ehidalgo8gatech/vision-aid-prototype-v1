@@ -119,7 +119,7 @@ export default function Example() {
                 return
             }
             if (user.admin == null && user.hospitalRole == null) {
-                alert("User is not admin not connected to a hospital")
+                alert("User is not admin or not connected to a hospital")
                 return
             }
             if (user.admin == null && body.hospitalName != user.hospitalRole.hospital.hospitalName) {
@@ -215,27 +215,31 @@ export default function Example() {
     const insertUserIfRequired = async (session) => {
         if (session) {
             console.log("user session " + session.user.email)
-            var response = await fetch('/api/user?email=' + session.user.email, {
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'},
-            });
-            var json = await response.json()
-            if (json != null && json.error == null) {
-                console.log("User found in db " + JSON.stringify(json))
-                return json;
-            }
-            console.log("User not found adding to db " + json)
-            response = await fetch('/api/user', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    email: session.user.email,
-                })
-            })
-            json = await response.json()
-            console.log("user " + JSON.stringify(json))
-            return json
+            return await insertUserIfRequiredByEmail(session.user.email)
         }
+    }
+
+    const insertUserIfRequiredByEmail = async (email) => {
+        var response = await fetch('/api/user?email=' + email, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        });
+        var json = await response.json()
+        if (json != null && json.error == null) {
+            console.log("User found in db " + JSON.stringify(json))
+            return json;
+        }
+        console.log("User not found adding to db " + email)
+        response = await fetch('/api/user', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: email,
+            })
+        })
+        json = await response.json()
+        console.log("user " + JSON.stringify(json))
+        return json
     }
 
     const entriesApi = async () => {
@@ -309,6 +313,66 @@ export default function Example() {
             alert("User is not a hospital admin")
         } else {
             alert("User is not part of a hospital or admin")
+        }
+    }
+
+    const userToHospital = async (e) => {
+        e.preventDefault()
+        const userEmail = document.getElementById('userToHospitalEmail').value
+        const hospitalName = document.getElementById('userToHospitalHospitalName').value
+        const admin = document.getElementById('userToHospitalAdmin').checked
+        console.log("user email " + userEmail + " hospital name " + hospitalName)
+        const session = await getSession()
+        if (!session) {
+            alert("Must be logged on to add user to hospital")
+            return
+        }
+        var user = await insertUserIfRequired(session)
+        if (user == null) {
+            alert("User not found in db")
+            return
+        }
+        if (user.admin == null && user.hospitalRole == null) {
+            alert("User is not admin not connected to a hospital")
+            return
+        }
+        if (user.admin == null && hospitalName != user.hospitalRole.hospital.hospitalName) {
+            alert("User does not have permission for hospital " + hospitalName)
+            return
+        }
+        if (user.admin == null && user.hospitalRole.admin != true) {
+            alert("User is not an admin for hospital or in general " + hospitalName)
+            return
+        }
+        user = await insertUserIfRequiredByEmail(userEmail)
+        const hospital = await fetch('/api/hospital?name=' + hospitalName, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        });
+        const hospitalJson = await hospital.json()
+        if (hospitalJson == null || hospitalJson.error != null) {
+            alert("Can't find hospital name in db " + hospitalName)
+            return
+        }
+        const body = {
+            userId: user.id,
+            hospitalId: hospitalJson.id,
+            admin: admin
+        }
+        const response = await fetch('/api/hospitalRole', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)
+        })
+        if (response.status !== 200) {
+            alert("Something went wrong")
+            console.log('something went wrong')
+            //set an error banner here
+        } else {
+            console.log('form submitted successfully !!!')
+            //set a success banner here
+            alert("Form submitted success")
+            Router.reload(window.location.pathname)
         }
     }
 
@@ -573,6 +637,52 @@ export default function Example() {
                 </div>
                 <div className="mt-10">
                     <p id="demoExcel"></p>
+                    <button
+                        type="submit"
+                        className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                        Submit
+                    </button>
+                </div>
+            </form>
+            <form action="#" method="POST" onSubmit={(e) => userToHospital(e)} className="mx-auto mt-16 max-w-xl sm:mt-20">
+                <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
+                    <div>
+                        <label htmlFor="userEmail" className="block text-sm font-semibold leading-6 text-gray-900">
+                            User Email
+                        </label>
+                        <div className="mt-2.5">
+                            <input
+                                type="text"
+                                name="userEmail"
+                                id="userToHospitalEmail"
+                                required/>
+                        </div>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
+                    <div>
+                        <label htmlFor="hospitalName" className="block text-sm font-semibold leading-6 text-gray-900">
+                            Hospital Name
+                        </label>
+                        <div className="mt-2.5">
+                            <input
+                                type="text"
+                                name="hospitalName"
+                                id="userToHospitalHospitalName"
+                                required/>
+                        </div>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
+                    <div>
+                        <div className="mt-2.5">
+                            <input type="checkbox" name="admin" value="admin" id="userToHospitalAdmin"/>
+                                <label htmlFor="admin"> Admin</label>
+                        </div>
+                    </div>
+                </div>
+                <div className="mt-10">
                     <button
                         type="submit"
                         className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
