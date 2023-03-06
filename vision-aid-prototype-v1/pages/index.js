@@ -20,6 +20,7 @@ import Image from 'next/image';
 import { useSession, signIn, signOut, getSession } from "next-auth/react";
 import moment from 'moment';
 import Router from 'next/router'
+import readXlsxFile from 'read-excel-file'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -88,58 +89,96 @@ export default function Example() {
     e.preventDefault()
 
     const body = { date, hospitalName, sessionNumber, mrn, beneficiaryName, age, gender, phoneNumber, Education, Occupation, Districts, State, Diagnosis }
-    try {
-     const session = await getSession()
-     if (!session) {
-       alert("You need to be logged in to enter data")
-       return
-     }
-     const user = await insertUserIfRequired(session)
-      if (user == null) {
-        alert("User not found in db")
-        return
-      }
-      if (user.admin == null && user.hospitalRole == null) {
-        alert("User is not admin not connected to a hospital")
-        return
-      }
-      if (user.admin == null && hospitalName != user.hospitalRole.hospital.hospitalName) {
-        alert("User does not have permission for hospital " + hospitalName)
-        return
-      }
-      const hospital = await fetch('/api/hospital?name='+hospitalName, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      const hospitalJson = await hospital.json()
-      if (hospitalJson == null || hospitalJson.error != null) {
-        alert("Can't find hospital name in db " + hospitalName)
-        return
-      }
-      body.hospitalId = hospitalJson.id
-      const response = await fetch('/api/patients', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      })
-      if (response.status !== 200) {
-        alert("Something went wrong")
-        console.log('something went wrong')
-        //set an error banner here
-      } else {
-        resetForm();
-        readDB();
-        document.getElementById("demo").innerHTML = "Beneficiary's information submitted. Click on List of Beneficiaries to see the updated list.";
-        console.log('form submitted successfully !!!')
-        //set a success banner here
-        alert("Form submitted success")
-        Router.reload(window.location.pathname)
-      }
-      //check response, if success is false, dont take them to success page
-    } catch (error) {
-      console.log('there was an error submitting', error)
-    }
+      await addPatientsToDB(body, true)
   }
+
+    const addPatientsToDB = async (body, reloadOnSuccess) => {
+        try {
+            const session = await getSession()
+            if (!session) {
+                alert("You need to be logged in to enter data")
+                return
+            }
+            const user = await insertUserIfRequired(session)
+            if (user == null) {
+                alert("User not found in db")
+                return
+            }
+            if (user.admin == null && user.hospitalRole == null) {
+                alert("User is not admin not connected to a hospital")
+                return
+            }
+            if (user.admin == null && body.hospitalName != user.hospitalRole.hospital.hospitalName) {
+                alert("User does not have permission for hospital " + body.hospitalName)
+                return
+            }
+            const hospital = await fetch('/api/hospital?name='+body.hospitalName, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const hospitalJson = await hospital.json()
+            if (hospitalJson == null || hospitalJson.error != null) {
+                alert("Can't find hospital name in db " + body.hospitalName)
+                return
+            }
+            body.hospitalId = hospitalJson.id
+            console.log(body)
+            const response = await fetch('/api/patients', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            })
+            if (response.status !== 200) {
+                alert("Something went wrong")
+                console.log('something went wrong')
+                //set an error banner here
+            } else {
+                resetForm();
+                readDB();
+                document.getElementById("demo").innerHTML = "Beneficiary's information submitted. Click on List of Beneficiaries to see the updated list.";
+                console.log('form submitted successfully !!!')
+                //set a success banner here
+                alert("Form submitted success")
+                if (reloadOnSuccess) {
+                    Router.reload(window.location.pathname)
+                }
+            }
+            //check response, if success is false, dont take them to success page
+        } catch (error) {
+            console.log('there was an error submitting', error)
+        }
+    }
+
+    const excelSubmit = async (e) => {
+        e.preventDefault()
+
+        // File.
+        const input = document.getElementById('excelInput')
+        readXlsxFile(input.files[0]).then((rows) => {
+            // `rows` is an array of rows
+            // each row being an array of cells.
+            if (rows.length < 2) {
+                alert("The first row must be the data id and the following must be the values length at a min must be 2")
+            }
+            const jsonMap = []
+            const keyMap = []
+            for (let i = 0; i < rows[0].length; i++) {
+                keyMap.push(rows[0][i])
+            }
+            console.log("Key map " + keyMap)
+            for (let i = 1; i < rows.length; i++) {
+                const pojo = {}
+                for (let j = 0; j < rows[i].length; j++) {
+                    pojo[rows[0][j]] = rows[i][j]
+                }
+                jsonMap.push(pojo)
+            }
+            console.log("excel to json object " + JSON.stringify(jsonMap))
+            for (let i = 0; i < jsonMap.length; i++) {
+                addPatientsToDB(jsonMap[i], false)
+            }
+        })
+    }
   
   const resetForm = () => {
     setDate();
@@ -177,9 +216,6 @@ const { data: session } = useSession();
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 email: session.user.email,
-                dataEntry: false,
-                admin: false,
-                manager: false
               })
        })
        json = await response.json()
@@ -498,6 +534,37 @@ const { data: session } = useSession();
           </button>
         </div>
       </form>
+        <br/>
+        <div className="mx-auto max-w-2xl text-center">
+            <p className="mt-2 text-lg leading-8 text-gray-600">
+                This form is for submitting the personal information of a beneficiary in excel format
+            </p>
+        </div>
+        <form action="#" method="POST" onSubmit={(e) => excelSubmit(e)} className="mx-auto mt-16 max-w-xl sm:mt-20">
+            <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
+                <div>
+                    <label htmlFor="excel" className="block text-sm font-semibold leading-6 text-gray-900">
+                        Excel Import
+                    </label>
+                    <div className="mt-2.5">
+                        <input
+                            id="excelInput"
+                            accept=".xlsx"
+                            type="file"
+                            required/>
+                    </div>
+                </div>
+            </div>
+            <div className="mt-10">
+                <p id="demoExcel"></p>
+                <button
+                    type="submit"
+                    className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                    Submit
+                </button>
+            </div>
+        </form>
       <br />
       <button onClick={() => runApi()} >List of Beneficiaries</button>
       <br />

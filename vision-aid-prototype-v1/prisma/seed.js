@@ -24,7 +24,7 @@ async function main() {
       hospitalRole: true,
     },
   })
-  console.log(seth + " " + sethHospital)
+  console.log(JSON.stringify(seth) + " " + JSON.stringify(sethHospital))
 }
 main()
   .then(async () => {
