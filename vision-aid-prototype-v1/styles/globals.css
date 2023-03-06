@@ -110,31 +110,31 @@ a {
 */
 
 html {
-  background-color: darkseagreen;
+    background-color: darkseagreen;
 }
 
 h2 {
-  font-family: verdana;
-  font-size: 20px;
-  text-align: center;
+    font-family: verdana;
+    font-size: 20px;
+    text-align: center;
 }
 
 div,
 p,
 label {
-  font-family: verdana;
-  font-size: 15px;
-  text-align: center;
+    font-family: verdana;
+    font-size: 15px;
+    text-align: center;
 }
 
 .api-response {
-  display: inline-block;
-  vertical-align: top;
+    display: inline-block;
+    vertical-align: top;
 }
 
 .api-entries {
-  display: inline-block;
-  vertical-align: top;
-  max-width: 50%;
+    display: inline-block;
+    vertical-align: top;
+    max-width: 50%;
 }
 
