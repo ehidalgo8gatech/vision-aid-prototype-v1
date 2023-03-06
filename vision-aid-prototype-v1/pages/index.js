@@ -31,7 +31,7 @@ function classNames(...classes) {
 //}
 
 function myFunction() {
-    const inputs = document.querySelectorAll('input[type=text], input[type=tel], input[type=number], input[type=email], select');
+    const inputs = document.querySelectorAll('#date, #hospital-name, #session-number, #mrn, #patients-name, #age, #gender, #phone-number, #education, #occupation, #districts, #state, #diagnosis');
     for (let i = 0; i < inputs.length; i++) {
         if (!inputs[i].value) {
             alert("Please fill out all the fields.");
@@ -122,10 +122,6 @@ export default function Example() {
                 alert("User is not admin or not connected to a hospital")
                 return
             }
-            if (user.admin == null && body.hospitalName != user.hospitalRole.hospital.hospitalName) {
-                alert("User does not have permission for hospital " + body.hospitalName)
-                return
-            }
             const hospital = await fetch('/api/hospital?name=' + body.hospitalName, {
                 method: 'GET',
                 headers: {'Content-Type': 'application/json'},
@@ -133,6 +129,10 @@ export default function Example() {
             const hospitalJson = await hospital.json()
             if (hospitalJson == null || hospitalJson.error != null) {
                 alert("Can't find hospital name in db " + body.hospitalName)
+                return
+            }
+            if (user.admin == null && hospitalJson.id != user.hospitalRole.hospitalId) {
+                alert("User does not have permission for hospital " + body.hospitalName)
                 return
             }
             body.hospitalId = hospitalJson.id
@@ -336,15 +336,6 @@ export default function Example() {
             alert("User is not admin not connected to a hospital")
             return
         }
-        if (user.admin == null && hospitalName != user.hospitalRole.hospital.hospitalName) {
-            alert("User does not have permission for hospital " + hospitalName)
-            return
-        }
-        if (user.admin == null && user.hospitalRole.admin != true) {
-            alert("User is not an admin for hospital or in general " + hospitalName)
-            return
-        }
-        user = await insertUserIfRequiredByEmail(userEmail)
         const hospital = await fetch('/api/hospital?name=' + hospitalName, {
             method: 'GET',
             headers: {'Content-Type': 'application/json'},
@@ -354,6 +345,15 @@ export default function Example() {
             alert("Can't find hospital name in db " + hospitalName)
             return
         }
+        if (user.admin == null && hospitalJson.id != user.hospitalRole.hospitalId) {
+            alert("User does not have permission for hospital " + hospitalName)
+            return
+        }
+        if (user.admin == null && user.hospitalRole.admin != true) {
+            alert("User is not an admin for hospital or in general " + hospitalName)
+            return
+        }
+        user = await insertUserIfRequiredByEmail(userEmail)
         const body = {
             userId: user.id,
             hospitalId: hospitalJson.id,

@@ -15,16 +15,16 @@ export default async function handler(req, res) {
 async function readData(req, res) {
     try {
         if (req.query.hospitalId != null) {
-            const patients = await prisma.Beneficiary.findMany(
+            const patients = await prisma.beneficiary.findMany(
                 {
                     where: {
-                        hospitalId: req.query.hospitalId,
+                        hospitalId: parseInt(req.query.hospitalId),
                     },
                 }
             );
             return res.status(200).json(patients, {success: true});
         }
-        const patients = await prisma.Beneficiary.findMany();
+        const patients = await prisma.beneficiary.findMany();
         return res.status(200).json(patients, {success: true});
     } catch (error) {
         console.log(error)
@@ -35,7 +35,7 @@ async function readData(req, res) {
 async function addData(req, res) {
     const body = req.body;
     try {
-        const newEntry = await prisma.Beneficiary.create({
+        const newEntry = await prisma.beneficiary.create({
             data: {
                 date: body.date,
                 hospitalId: body.hospitalId,
