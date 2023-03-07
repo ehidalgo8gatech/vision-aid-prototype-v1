@@ -616,9 +616,42 @@ export default function Example() {
             </form>
             <br/>
             <div className="mx-auto max-w-2xl text-center">
-                <p className="mt-2 text-lg leading-8 text-gray-600">
-                    This form is for submitting the personal information of a beneficiary in excel format
-                </p>
+                <p className="mt-2 text-lg leading-8 text-gray-600">This form is for submitting the personal information of a beneficiary in excel format</p>
+                <p className="mt-2 text-lg leading-8 text-gray-600">Sample excel format</p>
+                <table className="center">
+                    <tbody>
+                    <tr>
+                        <th>date</th>
+                        <th>hospitalName</th>
+                        <th>sessionNumber</th>
+                        <th>mrn</th>
+                        <th>beneficiaryName</th>
+                        <th>age</th>
+                        <th>gender</th>
+                        <th>phoneNumber</th>
+                        <th>Education</th>
+                        <th>Occupation</th>
+                        <th>Districts</th>
+                        <th>State</th>
+                        <th>Diagnosis</th>
+                    </tr>
+                    <tr>
+                        <td>03/05/23</td>
+                        <td>SethHospital</td>
+                        <td>1</td>
+                        <td>SomeMRN</td>
+                        <td>SomeBeneficiaryName</td>
+                        <td>25</td>
+                        <td>m</td>
+                        <td>12345</td>
+                        <td>MS</td>
+                        <td>SDE</td>
+                        <td>Broward</td>
+                        <td>FL</td>
+                        <td>GlassesRequired</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
             <form action="#" method="POST" onSubmit={(e) => excelSubmit(e)} className="mx-auto mt-16 max-w-xl sm:mt-20">
                 <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
