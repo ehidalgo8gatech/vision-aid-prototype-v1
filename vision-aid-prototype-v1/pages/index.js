@@ -420,6 +420,7 @@ export default function Example() {
                 <title>Vision Aid P11</title>
                 <link rel="manifest" href="/manifest.json" />
                 <meta name="description" content="Vision Aid P11"/>
+                <meta name="theme-color" content="#317EFB"/>
             </Head>
             {!session ? (
                 <div>
