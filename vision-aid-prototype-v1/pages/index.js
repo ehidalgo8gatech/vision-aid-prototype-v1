@@ -376,6 +376,43 @@ export default function Example() {
         }
     }
 
+    const addHospital = async (e) => {
+        e.preventDefault()
+        const hospitalName = document.getElementById('addHospitalName').value
+        const session = await getSession()
+        if (!session) {
+            alert("Must be logged on to add user to hospital")
+            return
+        }
+        var user = await insertUserIfRequired(session)
+        if (user == null) {
+            alert("User not found in db")
+            return
+        }
+        if (user.admin == null) {
+            alert("User is not admin")
+            return
+        }
+        const body = {
+            name: hospitalName,
+        }
+        const response = await fetch('/api/hospital', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)
+        })
+        if (response.status !== 200) {
+            alert("Something went wrong")
+            console.log('something went wrong')
+            //set an error banner here
+        } else {
+            console.log('form submitted successfully !!!')
+            //set a success banner here
+            alert("Form submitted success")
+            Router.reload()
+        }
+    }
+
     return insertUserIfRequired(session) && (
         <div className="isolate bg-white py-24 px-6 sm:py-32 lg:px-8">
             {!session ? (
@@ -681,6 +718,7 @@ export default function Example() {
             <form action="#" method="POST" onSubmit={(e) => userToHospital(e)} className="mx-auto mt-16 max-w-xl sm:mt-20">
                 <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
                     <div>
+                        <p>Add User To Hospital</p>
                         <label htmlFor="userEmail" className="block text-sm font-semibold leading-6 text-gray-900">
                             User Email
                         </label>
@@ -712,6 +750,31 @@ export default function Example() {
                         <div className="mt-2.5">
                             <input type="checkbox" name="admin" value="admin" id="userToHospitalAdmin"/>
                                 <label htmlFor="admin"> Admin</label>
+                        </div>
+                    </div>
+                </div>
+                <div className="mt-10">
+                    <button
+                        type="submit"
+                        className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                        Submit
+                    </button>
+                </div>
+            </form>
+            <form action="#" method="POST" onSubmit={(e) => addHospital(e)} className="mx-auto mt-16 max-w-xl sm:mt-20">
+                <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
+                    <div>
+                        <p>Add New Hospital</p>
+                        <label htmlFor="userEmail" className="block text-sm font-semibold leading-6 text-gray-900">
+                            Hospital Name
+                        </label>
+                        <div className="mt-2.5">
+                            <input
+                                type="text"
+                                name="hospitalName"
+                                id="addHospitalName"
+                                required/>
                         </div>
                     </div>
                 </div>

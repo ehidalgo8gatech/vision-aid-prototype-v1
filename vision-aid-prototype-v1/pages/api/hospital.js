@@ -42,7 +42,7 @@ async function addData(req, res) {
     console.log("Request body " + JSON.stringify(body) + " create value " + JSON.stringify(create))
 
     try {
-        const newEntry = await prisma.user.create(create)
+        const newEntry = await prisma.hospital.create(create)
         return res.status(200).json(newEntry, {success: true});
     } catch (error) {
         console.log('Request error ' + error);
