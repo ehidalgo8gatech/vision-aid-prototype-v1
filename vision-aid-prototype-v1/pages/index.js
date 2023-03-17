@@ -21,6 +21,7 @@ import {useSession, signIn, signOut, getSession} from "next-auth/react";
 import moment from 'moment';
 import Router from 'next/router'
 import readXlsxFile from 'read-excel-file'
+import Head from 'next/head'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -415,6 +416,11 @@ export default function Example() {
 
     return insertUserIfRequired(session) && (
         <div className="isolate bg-white py-24 px-6 sm:py-32 lg:px-8">
+            <Head>
+                <title>Vision Aid P11</title>
+                <link rel="manifest" href="/manifest.json" />
+                <meta name="description" content="Vision Aid P11"/>
+            </Head>
             {!session ? (
                 <div>
                     <p>Not signed in</p>
