@@ -42,6 +42,7 @@ function myFunction() {
 }
 
 export default function Example() {
+    const [selectedOption, setSelectedOption] = useState(null);
     const [agreed, setAgreed] = useState(false)
     const [date, setDate] = useState();
     const [hospitalName, setHospitalName] = useState();
@@ -452,199 +453,235 @@ export default function Example() {
                   className="mx-auto mt-16 max-w-xl sm:mt-20">
                 <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
                     <div>
-                        <label htmlFor="date" className="block text-sm font-semibold leading-6 text-gray-900">
-                            Date
+                        <label htmlFor="option-select" className="block text-sm font-semibold leading-6 text-gray-900">
+                            Select an option
                         </label>
                         <div className="mt-2.5">
-                            <input
-                                onChange={(e) => setDate(moment(new Date(e.target.value)))}
-                                type="date"
-                                name="date"
-                                id="date"
-                                autoComplete=""
-                                className=""
-                                required/>
-                        </div>
-                    </div>
-                    <div>
-                        <label htmlFor="hospital-name" className="block text-sm font-semibold leading-6 text-gray-900">
-                            Hospital Name
-                        </label>
-                        <div className="mt-2.5">
-                            <input
-                                onChange={(e) => setHospitalName(e.target.value)}
-                                type="text"
-                                name="hospital-name"
-                                id="hospital-name"
-                                autoComplete="hospital-name"
-                                className=""
-                                required/>
-                        </div>
-                    </div>
-                    <div>
-                        <label htmlFor="session-number" className="block text-sm font-semibold leading-6 text-gray-900">
+                            <select
+                            id="option-select"
+                            name="option-select"
+                            onChange={(e) => setSelectedOption(e.target.value)}
+                            className="border-gray-400 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 focus:ring-opacity-50">
+                            <option value="">Select an option</option>
+                            <option value="mobile-tracking">Mobile Tracking</option>
+                            </select>
+                        </div> 
+                        {selectedOption === 'mobile-tracking' && (
+                            <>
+                            <div>
+                                <label htmlFor="date" className="block text-sm font-semibold leading-6 text-gray-900">
+                                Date
+                                </label>
+                                <div className="mt-2.5">
+                                <input
+                                    onChange={(e) => setDate(moment(new Date(e.target.value)))}
+                                    type="date"
+                                    name="date"
+                                    id="date"
+                                    autoComplete=""
+                                    className=""
+                                    required
+                                />
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="hospital-name" className="block text-sm font-semibold leading-6 text-gray-900">
+                                Hospital Name
+                                </label>
+                                <div className="mt-2.5">
+                                <input
+                                    onChange={(e) => setHospitalName(e.target.value)}
+                                    type="text"
+                                    name="hospital-name"
+                                    id="hospital-name"
+                                    autoComplete="hospital-name"
+                                    className=""
+                                    required
+                                />
+                                </div>
+                            </div>
+                            <div>
+                            <label htmlFor="session-number" className="block text-sm font-semibold leading-6 text-gray-900">
                             Number of Session
-                        </label>
-                        <div className="mt-2.5">
-                            <input
-                                onChange={(e) => setSessionNummber(parseInt(e.target.value))}
-                                type="number"
-                                name="session-number"
-                                id="session-number"
-                                autoComplete="given-name"
-                                className=""
-                                required/>
-                        </div>
-                    </div>
-                    <div>
-                        <label htmlFor="mrn" className="block text-sm font-semibold leading-6 text-gray-900">
-                            MRN
-                        </label>
-                        <div className="mt-2.5">
-                            <input
-                                onChange={(e) => setMRN(e.target.value)}
-                                type="text"
-                                name="mrn"
-                                id="mrn"
-                                autoComplete="given-name"
-                                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                                required/>
-                        </div>
-                    </div>
-                    <div>
-                        <label htmlFor="patients-name" className="block text-sm font-semibold leading-6 text-gray-900">
-                            Name of the Beneficiary
-                        </label>
-                        <div className="mt-2.5">
-                            <input
-                                onChange={(e) => setBeneficiaryName(e.target.value)}
-                                type="text"
-                                name="patients-name"
-                                id="patients-name"
-                                autoComplete="given-name"
-                                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                                required/>
-                        </div>
-                    </div>
-                    <div>
-                        <label htmlFor="age" className="block text-sm font-semibold leading-6 text-gray-900">
-                            Age
-                        </label>
-                        <div className="mt-2.5">
-                            <input
-                                onChange={(e) => setAge(parseInt(e.target.value))}
-                                type="number"
-                                name="age"
-                                id="age"
-                                autoComplete="family-name"
-                                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                                required/>
-                        </div>
-                    </div>
-                    <div className="sm:col-span-2">
-                        <label htmlFor="gender" className="block text-sm font-semibold leading-6 text-gray-900">
-                            Gender
-                        </label>
-                        <div className="mt-2.5">
-                            <input
-                                onChange={(e) => setGender(e.target.value)}
-                                type="text"
-                                name="gender"
-                                id="gender"
-                                autoComplete="organization"
-                                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                                required/>
-                        </div>
-                    </div>
-                    <div className="sm:col-span-2">
-                        <label htmlFor="phone-number" className="block text-sm font-semibold leading-6 text-gray-900">
-                            Phone Number
-                        </label>
-                        <div className="mt-2.5">
-                            <input
-                                onChange={(e) => setPhoneNumber(parseInt(e.target.value))}
-                                type="number"
-                                name="phone-number"
-                                id="phone-number"
-                                autoComplete="organization"
-                                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                                required/>
-                        </div>
-                    </div>
-                    <div className="sm:col-span-2">
-                        <label htmlFor="education" className="block text-sm font-semibold leading-6 text-gray-900">
-                            Education
-                        </label>
-                        <div className="mt-2.5">
-                            <input
-                                onChange={(e) => setEducation(e.target.value)}
-                                type="education"
-                                name="education"
-                                id="education"
-                                autoComplete="education"
-                                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                                required/>
-                        </div>
-                    </div>
-                    <div className="sm:col-span-2">
-                        <label htmlFor="occupation" className="block text-sm font-semibold leading-6 text-gray-900">
-                            Occupation
-                        </label>
-                        <div className="mt-2.5">
-                            <input
-                                onChange={(e) => setOccupation(e.target.value)}
-                                type="text"
-                                name="occupation"
-                                id="occupation"
-                                autoComplete="education"
-                                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                                required/>
-                        </div>
-                    </div>
-                    <div className="sm:col-span-2">
-                        <label htmlFor="districts" className="block text-sm font-semibold leading-6 text-gray-900">
-                            District
-                        </label>
-                        <div className="mt-2.5">
-                            <input
-                                onChange={(e) => setDistricts(e.target.value)}
-                                type="text"
-                                name="districts"
-                                id="districts"
-                                autoComplete="education"
-                                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                                required/>
-                        </div>
-                    </div>
-                    <div className="sm:col-span-2">
-                        <label htmlFor="state" className="block text-sm font-semibold leading-6 text-gray-900">
-                            State
-                        </label>
-                        <div className="mt-2.5">
-                            <input
-                                onChange={(e) => setState(e.target.value)}
-                                type="text"
-                                name="state"
-                                id="state"
-                                autoComplete="education"
-                                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                                required/>
-                        </div>
-                    </div>
-                    <div className="sm:col-span-2">
-                        <label htmlFor="diagnosis" className="block text-sm font-semibold leading-6 text-gray-900">
-                            Diagnosis
-                        </label>
-                        <div className="mt-2.5">
-                            <input
-                                onChange={(e) => setDiagnosis(e.target.value)}
-                                type="text"
-                                name="diagnosis"
-                                id="diagnosis"
-                                autoComplete="education"
-                                className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                                required/>
-                        </div>
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setSessionNummber(parseInt(e.target.value))}
+                                        type="number"
+                                        name="session-number"
+                                        id="session-number"
+                                        autoComplete="given-name"
+                                        className=""
+                                        required/>
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="mrn" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    MRN
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setMRN(e.target.value)}
+                                        type="text"
+                                        name="mrn"
+                                        id="mrn"
+                                        autoComplete="given-name"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="patients-name" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Name of the Beneficiary
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setBeneficiaryName(e.target.value)}
+                                        type="text"
+                                        name="patients-name"
+                                        id="patients-name"
+                                        autoComplete="given-name"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="age" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Age
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setAge(parseInt(e.target.value))}
+                                        type="number"
+                                        name="age"
+                                        id="age"
+                                        autoComplete="family-name"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="gender" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Gender
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setGender(e.target.value)}
+                                        type="text"
+                                        name="gender"
+                                        id="gender"
+                                        autoComplete="organization"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="phone-number" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Phone Number
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setPhoneNumber(parseInt(e.target.value))}
+                                        type="number"
+                                        name="phone-number"
+                                        id="phone-number"
+                                        autoComplete="organization"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="phone-number" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Phone Number
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setPhoneNumber(parseInt(e.target.value))}
+                                        type="number"
+                                        name="phone-number"
+                                        id="phone-number"
+                                        autoComplete="organization"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="education" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Education
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setEducation(e.target.value)}
+                                        type="education"
+                                        name="education"
+                                        id="education"
+                                        autoComplete="education"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="occupation" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Occupation
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setOccupation(e.target.value)}
+                                        type="text"
+                                        name="occupation"
+                                        id="occupation"
+                                        autoComplete="education"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="districts" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    District
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setDistricts(e.target.value)}
+                                        type="text"
+                                        name="districts"
+                                        id="districts"
+                                        autoComplete="education"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="state" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    State
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setState(e.target.value)}
+                                        type="text"
+                                        name="state"
+                                        id="state"
+                                        autoComplete="education"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="diagnosis" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Diagnosis
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setDiagnosis(e.target.value)}
+                                        type="text"
+                                        name="diagnosis"
+                                        id="diagnosis"
+                                        autoComplete="education"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            </>
+                        )}    
                     </div>
                 </div>
                 <div className="mt-10">
