@@ -10,11 +10,21 @@ datasource db {
 }
 
 model PatientInformation {
-  id          Int    @id @default(autoincrement())
-  patientName String
-  age         String
-  gender      String
-  education   String
+  id                        Int                         @id @default(autoincrement())
+  date                      DateTime
+  sessionNumber             Int
+  mrn                       String
+  beneficiaryName           String
+  age                       Int
+  gender                    String
+  phoneNumber               Int
+  Education                 String
+  Occupation                String
+  Districts                 String
+  State                     String
+  Diagnosis                 String
+  hospitalId                Int
+  beneficiary_subcategories Beneficiary_Subcategories[]
 }
 
 model User {
@@ -63,6 +73,41 @@ model Beneficiary {
   beneficiary_subcategories Beneficiary_Subcategories[]
 }
 
+model Computer_Training {
+  id                        Int                         @id @default(autoincrement())
+  date                      DateTime
+  sessionNumber             Int
+  mrn                       String
+  beneficiaryName           String
+  age                       Int
+  gender                    String
+  phoneNumber               Int
+  Education                 String
+  Occupation                String
+  Districts                 String
+  State                     String
+  Diagnosis                 String
+  hospitalId                Int
+  beneficiary_subcategories Beneficiary_Subcategories[]
+}
+
+model Mobile_Training {
+  id                        Int                         @id @default(autoincrement())
+  date                      DateTime
+  sessionNumber             Int
+  beneficiaryName           String
+  age                       Int
+  gender                    String
+  phoneNumber               Int
+  Education                 String
+  Occupation                String
+  Districts                 String
+  State                     String
+  Vision                    String
+  hospitalId                Int
+  beneficiary_subcategories Beneficiary_Subcategories[]
+}
+
 model Categories {
   id           Int             @id @default(autoincrement())
   categoryName String
@@ -82,4 +127,11 @@ model Beneficiary_Subcategories {
   beneficiaryId Int           @id
   subcategory   Subcategories @relation(fields: [subcategoryId], references: [id])
   subcategoryId Int
+  computer_training   Computer_Training @relation(fields: [computer_trainingId], references: [id])
+  computer_trainingId Int
+  mobile_training   Mobile_Training @relation(fields: [mobile_trainingId], references: [id])
+  mobile_trainingId Int
+  pi   PatientInformation @relation(fields: [piId], references: [id])
+  piId Int
 }
+

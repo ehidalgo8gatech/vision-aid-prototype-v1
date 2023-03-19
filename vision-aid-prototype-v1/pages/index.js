@@ -13,7 +13,7 @@
   ```
 */
 import {useState} from 'react'
-import {useEffect} from 'react'
+import {useEffect, useRef} from 'react'
 import {ChevronDownIcon} from '@heroicons/react/20/solid'
 import {Switch} from '@headlessui/react'
 import Image from 'next/image';
@@ -57,7 +57,13 @@ export default function Example() {
     const [Districts, setDistricts] = useState("");
     const [State, setState] = useState("");
     const [Diagnosis, setDiagnosis] = useState("");
+    const [Vision, setVision] = useState("");
     const [APIResponse, setAPIResponse] = useState(null);
+    const [focusedInput, setFocusedInput] = useState(null);
+
+    const dateRef = useRef(null);
+    const hospitalNameRef = useRef(null);
+    const sessionNumberRef = useRef(null);
 
 
     //useEffect(() => {
@@ -87,28 +93,44 @@ export default function Example() {
         }
     }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-
-        const body = {
-            date,
-            hospitalName,
-            sessionNumber,
-            mrn,
-            beneficiaryName,
-            age,
-            gender,
-            phoneNumber,
-            Education,
-            Occupation,
-            Districts,
-            State,
-            Diagnosis
-        }
-        await addPatientsToDB(body, true)
+    const postData = async (url = '', data = {}, functionName = '') => {
+        const response = await fetch(`${url}?functionName=${functionName}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        return response;
     }
 
-    const addPatientsToDB = async (body, reloadOnSuccess) => {
+    const handleSubmit = async (e, selectedOption) => {
+        e.preventDefault()
+        let body
+        if (selectedOption === 'computer-training') {
+            body = {date,hospitalName,sessionNumber,mrn,beneficiaryName,age,gender,phoneNumber,Education,Occupation,Districts,State,Diagnosis}
+        } else if (selectedOption === 'mobile-training') {
+            body = {date,hospitalName,sessionNumber,beneficiaryName,age,gender,phoneNumber,Education,Occupation,Districts,State,Vision}
+        }
+        //const body = {
+        //    date,
+        //    hospitalName,
+        //    sessionNumber,
+        //    mrn,
+        //    beneficiaryName,
+        //    age,
+        //    gender,
+        //    phoneNumber,
+        //    Education,
+        //    Occupation,
+        //    Districts,
+        //    State,
+        //    Diagnosis
+        //}
+        await addPatientsToDB(body, true, selectedOption)
+    }
+
+    const addPatientsToDB = async (body, reloadOnSuccess, selectedOption) => {
         try {
             const session = await getSession()
             if (!session) {
@@ -139,12 +161,15 @@ export default function Example() {
             }
             body.hospitalId = hospitalJson.id
             console.log(body)
-            const response = await fetch('/api/patients', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(body)
-            })
+            //const response = await fetch('/api/patients', {
+            //    method: 'POST',
+            //    headers: {'Content-Type': 'application/json'},
+            //    body: JSON.stringify(body)
+            //})
+            const response = await postData('/api/patients',body,selectedOption)
+            //const response = await postData('/api/patients',body,'addData')
             if (response.status !== 200) {
+                alert(body)
                 alert("Something went wrong")
                 console.log('something went wrong')
                 //set an error banner here
@@ -449,12 +474,12 @@ export default function Example() {
                     This form is for submitting the personal information of a beneficiary
                 </p>
             </div>
-            <form action="#" method="POST" onSubmit={(e) => handleSubmit(e)}
+            <form action="#" method="POST" onSubmit={(e) => handleSubmit(e, selectedOption)}
                   className="mx-auto mt-16 max-w-xl sm:mt-20">
                 <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
                     <div>
                         <label htmlFor="option-select" className="block text-sm font-semibold leading-6 text-gray-900">
-                            Select an option
+                            Select the desired subcategory
                         </label>
                         <div className="mt-2.5">
                             <select
@@ -462,11 +487,12 @@ export default function Example() {
                             name="option-select"
                             onChange={(e) => setSelectedOption(e.target.value)}
                             className="border-gray-400 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 focus:ring-opacity-50">
-                            <option value="">Select an option</option>
-                            <option value="mobile-tracking">Mobile Tracking</option>
+                            <option value="">Subcategory</option>
+                            <option value="computer-training">Computer Training</option>
+                            <option value="mobile-training">Mobile Training</option>
                             </select>
                         </div> 
-                        {selectedOption === 'mobile-tracking' && (
+                        {selectedOption === 'computer-training' && (
                             <>
                             <div>
                                 <label htmlFor="date" className="block text-sm font-semibold leading-6 text-gray-900">
@@ -479,7 +505,7 @@ export default function Example() {
                                     name="date"
                                     id="date"
                                     autoComplete=""
-                                    className=""
+                                    className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                                     required
                                 />
                                 </div>
@@ -495,14 +521,14 @@ export default function Example() {
                                     name="hospital-name"
                                     id="hospital-name"
                                     autoComplete="hospital-name"
-                                    className=""
+                                    className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                                     required
                                 />
                                 </div>
                             </div>
                             <div>
-                            <label htmlFor="session-number" className="block text-sm font-semibold leading-6 text-gray-900">
-                            Number of Session
+                                <label htmlFor="session-number" className="block text-sm font-semibold leading-6 text-gray-900">
+                                Number of Session
                                 </label>
                                 <div className="mt-2.5">
                                     <input
@@ -570,21 +596,6 @@ export default function Example() {
                                         type="text"
                                         name="gender"
                                         id="gender"
-                                        autoComplete="organization"
-                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                                        required/>
-                                </div>
-                            </div>
-                            <div className="sm:col-span-2">
-                                <label htmlFor="phone-number" className="block text-sm font-semibold leading-6 text-gray-900">
-                                    Phone Number
-                                </label>
-                                <div className="mt-2.5">
-                                    <input
-                                        onChange={(e) => setPhoneNumber(parseInt(e.target.value))}
-                                        type="number"
-                                        name="phone-number"
-                                        id="phone-number"
                                         autoComplete="organization"
                                         className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                                         required/>
@@ -680,7 +691,193 @@ export default function Example() {
                                         required/>
                                 </div>
                             </div>
-                            </>
+                            </>    
+                        )}
+                        {selectedOption === 'mobile-training' && (
+                            <>
+                            <div>
+                                <label htmlFor="date" className="block text-sm font-semibold leading-6 text-gray-900">
+                                Date
+                                </label>
+                                <div className="mt-2.5">
+                                <input
+                                    onChange={(e) => setDate(moment(new Date(e.target.value)))}
+                                    type="date"
+                                    name="date"
+                                    id="date"
+                                    autoComplete=""
+                                    className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                    required
+                                />
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="hospital-name" className="block text-sm font-semibold leading-6 text-gray-900">
+                                Hospital Name
+                                </label>
+                                <div className="mt-2.5">
+                                <input
+                                    onChange={(e) => setHospitalName(e.target.value)}
+                                    type="text"
+                                    name="hospital-name"
+                                    id="hospital-name"
+                                    autoComplete="hospital-name"
+                                    className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                    required
+                                />
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="session-number" className="block text-sm font-semibold leading-6 text-gray-900">
+                                Number of Session
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setSessionNummber(parseInt(e.target.value))}
+                                        type="number"
+                                        name="session-number"
+                                        id="session-number"
+                                        autoComplete="given-name"
+                                        className=""
+                                        required/>
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="patients-name" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Name of the Beneficiary
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setBeneficiaryName(e.target.value)}
+                                        type="text"
+                                        name="patients-name"
+                                        id="patients-name"
+                                        autoComplete="given-name"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="age" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Age
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setAge(parseInt(e.target.value))}
+                                        type="number"
+                                        name="age"
+                                        id="age"
+                                        autoComplete="family-name"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="gender" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Gender
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setGender(e.target.value)}
+                                        type="text"
+                                        name="gender"
+                                        id="gender"
+                                        autoComplete="organization"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="phone-number" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Phone Number
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setPhoneNumber(parseInt(e.target.value))}
+                                        type="number"
+                                        name="phone-number"
+                                        id="phone-number"
+                                        autoComplete="organization"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="education" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Education
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setEducation(e.target.value)}
+                                        type="education"
+                                        name="education"
+                                        id="education"
+                                        autoComplete="education"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="occupation" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Occupation
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setOccupation(e.target.value)}
+                                        type="text"
+                                        name="occupation"
+                                        id="occupation"
+                                        autoComplete="education"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="districts" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    District
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setDistricts(e.target.value)}
+                                        type="text"
+                                        name="districts"
+                                        id="districts"
+                                        autoComplete="education"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="state" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    State
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setState(e.target.value)}
+                                        type="text"
+                                        name="state"
+                                        id="state"
+                                        autoComplete="education"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label htmlFor="diagnosis" className="block text-sm font-semibold leading-6 text-gray-900">
+                                    Vision
+                                </label>
+                                <div className="mt-2.5">
+                                    <input
+                                        onChange={(e) => setVision(e.target.value)}
+                                        type="text"
+                                        name="vision"
+                                        id="vision"
+                                        autoComplete="vision"
+                                        className="block w-full rounded-md border-0 py-2 px-3.5 text-sm leading-6 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                        required/>
+                                </div>
+                            </div>
+                            </>    
                         )}    
                     </div>
                 </div>
