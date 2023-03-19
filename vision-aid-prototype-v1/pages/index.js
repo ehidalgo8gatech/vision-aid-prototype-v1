@@ -856,7 +856,7 @@ export default function Example() {
                                 </label>
                                 <div className="mt-2.5">
                                     <input
-                                        onChange={(e) => setPhoneNumber(parseInt(e.target.value))}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
                                         type="number"
                                         name="phone-number"
                                         id="phone-number"
@@ -1057,7 +1057,7 @@ export default function Example() {
                                 </label>
                                 <div className="mt-2.5">
                                     <input
-                                        onChange={(e) => setPhoneNumber(parseInt(e.target.value))}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
                                         type="number"
                                         name="phone-number"
                                         id="phone-number"
@@ -1258,7 +1258,7 @@ export default function Example() {
                                 </label>
                                 <div className="mt-2.5">
                                     <input
-                                        onChange={(e) => setPhoneNumber(parseInt(e.target.value))}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
                                         type="number"
                                         name="phone-number"
                                         id="phone-number"
@@ -1429,7 +1429,7 @@ export default function Example() {
                                 </label>
                                 <div className="mt-2.5">
                                     <input
-                                        onChange={(e) => setPhoneNumber(parseInt(e.target.value))}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
                                         type="number"
                                         name="phone-number"
                                         id="phone-number"
