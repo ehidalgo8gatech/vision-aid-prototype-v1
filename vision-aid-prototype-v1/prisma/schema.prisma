@@ -108,6 +108,95 @@ model Mobile_Training {
   beneficiary_subcategories Beneficiary_Subcategories[]
 }
 
+model Orientation_Mobility_Training {
+  id                        Int                         @id @default(autoincrement())
+  date                      DateTime
+  sessionNumber             Int
+  mrn                       String
+  beneficiaryName           String
+  age                       Int
+  gender                    String
+  phoneNumber               Int
+  Education                 String
+  Occupation                String
+  Districts                 String
+  State                     String
+  Diagnosis                 String
+  hospitalId                Int
+  beneficiary_subcategories Beneficiary_Subcategories[]
+}
+
+model Vision_Enhancement {
+  id                        Int                         @id @default(autoincrement())
+  date                      DateTime
+  sessionNumber             Int
+  mrn                       String
+  beneficiaryName           String
+  age                       Int
+  gender                    String
+  phoneNumber               Int
+  Districts                 String
+  Diagnosis                 String
+  MDVI                      String
+  hospitalId                Int
+  beneficiary_subcategories Beneficiary_Subcategories[]
+}
+
+model Counselling_Education {
+  id                        Int                         @id @default(autoincrement())
+  date                      DateTime
+  sessionNumber             Int
+  mrn                       String
+  beneficiaryName           String
+  age                       Int
+  gender                    String
+  phoneNumber               Int
+  Districts                 String
+  Diagnosis                 String
+  typeCounselling           String
+  hospitalId                Int
+  beneficiary_subcategories Beneficiary_Subcategories[]
+}
+
+model Camps {
+  id                        Int                         @id @default(autoincrement())
+  date                      DateTime
+  schoolName                String
+  studentName               String
+  age                       Int
+  gender                    String
+  Diagnosis                 String
+  visualAcuityRE            String
+  visualAcuityLE            String
+  unaidedNearVision         String
+  refractionVALE            String
+  LVA                       String
+  LVANear                   String
+  nonOpticalAid             String
+  actionNeeded              String
+  hospitalId                Int
+  beneficiary_subcategories Beneficiary_Subcategories[]
+}
+
+model School_Screening {
+  id                        Int                         @id @default(autoincrement())
+  date                      DateTime
+  typeCamp                  String
+  screeningPlace            String
+  organiser                 String
+  contactNumber             Int
+  address                   String
+  screenedTotal             Int
+  refractiveErrors          Int
+  spectaclesDistributed     Int
+  checked                   String
+  refer                     Int
+  staff                     Int
+  lowVision                 Int
+  hospitalId                Int
+  beneficiary_subcategories Beneficiary_Subcategories[]
+}
+
 model Categories {
   id           Int             @id @default(autoincrement())
   categoryName String
@@ -131,6 +220,16 @@ model Beneficiary_Subcategories {
   computer_trainingId Int
   mobile_training   Mobile_Training @relation(fields: [mobile_trainingId], references: [id])
   mobile_trainingId Int
+  orientation_mobility_training   Orientation_Mobility_Training @relation(fields: [orientation_mobility_trainingId], references: [id])
+  orientation_mobility_trainingId Int
+  vision_enhancement   Vision_Enhancement @relation(fields: [vision_enhancementId], references: [id])
+  vision_enhancementId Int
+  counselling_education   Counselling_Education @relation(fields: [counselling_educationId], references: [id])
+  counselling_educationId Int
+  camps   Camps @relation(fields: [campsId], references: [id])
+  campsId Int
+  school_screening   School_Screening @relation(fields: [school_screeningId], references: [id])
+  school_screeningId Int
   pi   PatientInformation @relation(fields: [piId], references: [id])
   piId Int
 }

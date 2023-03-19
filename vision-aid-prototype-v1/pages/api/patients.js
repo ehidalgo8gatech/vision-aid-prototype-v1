@@ -11,6 +11,16 @@ export default async function handler(req, res) {
             return await addData(req, res);
         } else if (functionName == 'mobile-training'){
             return await addDataMobileTraining(req, res);
+        } else if (functionName == 'orientation-mobility-training'){
+            return await addDataOrientationMobilityTraining(req, res);
+        } else if (functionName == 'vision-enhancement'){
+            return await addDataVisionEnhancement(req, res);
+        } else if (functionName == 'counselling-education'){
+            return await addDataCounsellingEducation(req, res);
+        } else if (functionName == 'camps'){
+            return await addDataCamps(req, res);
+        } else if (functionName == 'school-screenings'){
+            return await addDataSchoolScreenings(req, res);
         }
     } else if (req.method == 'GET') {
         return await readData(req, res);
@@ -110,6 +120,140 @@ async function addDataMobileTraining(req, res) {
                 Districts: body.Districts,
                 State: body.State,
                 Vision: body.Vision
+            }
+        })
+        return res.status(200).json(newEntry, {success: true});
+    } catch (error) {
+        console.error('Request error', error);
+        res.status(500).json({error: 'Error adding patient information', success: false});
+    }
+}
+
+async function addDataOrientationMobilityTraining(req, res) {
+    const body = req.body;
+    try {
+        const newEntry = await prisma.orientation_Mobility_Training.create({
+            data: {
+                date: body.date,
+                hospitalId: body.hospitalId,
+                sessionNumber: body.sessionNumber,
+                mrn: body.mrn,
+                beneficiaryName: body.beneficiaryName,
+                age: body.age,
+                gender: body.gender,
+                phoneNumber: body.phoneNumber,
+                Education: body.Education,
+                Occupation: body.Occupation,
+                Districts: body.Districts,
+                State: body.State,
+                Diagnosis: body.Diagnosis
+            }
+        })
+        return res.status(200).json(newEntry, {success: true});
+    } catch (error) {
+        console.error('Request error', error);
+        res.status(500).json({error: 'Error adding patient information', success: false});
+    }
+}
+
+async function addDataVisionEnhancement(req, res) {
+    const body = req.body;
+    try {
+        const newEntry = await prisma.vision_Enhancement.create({
+            data: {
+                date: body.date,
+                hospitalId: body.hospitalId,
+                sessionNumber: body.sessionNumber,
+                mrn: body.mrn,
+                beneficiaryName: body.beneficiaryName,
+                age: body.age,
+                gender: body.gender,
+                phoneNumber: body.phoneNumber,
+                Districts: body.Districts,
+                Diagnosis: body.Diagnosis,
+                MDVI: body.MDVI
+            }
+        })
+        return res.status(200).json(newEntry, {success: true});
+    } catch (error) {
+        console.error('Request error', error);
+        res.status(500).json({error: 'Error adding patient information', success: false});
+    }
+}
+
+async function addDataCounsellingEducation(req, res) {
+    const body = req.body;
+    try {
+        const newEntry = await prisma.counselling_Education.create({
+            data: {
+                date: body.date,
+                hospitalId: body.hospitalId,
+                sessionNumber: body.sessionNumber,
+                mrn: body.mrn,
+                beneficiaryName: body.beneficiaryName,
+                age: body.age,
+                gender: body.gender,
+                phoneNumber: body.phoneNumber,
+                Districts: body.Districts,
+                Diagnosis: body.Diagnosis,
+                typeCounselling: body.typeCounselling
+            }
+        })
+        return res.status(200).json(newEntry, {success: true});
+    } catch (error) {
+        console.error('Request error', error);
+        res.status(500).json({error: 'Error adding patient information', success: false});
+    }
+}
+
+async function addDataCamps(req, res) {
+    const body = req.body;
+    try {
+        const newEntry = await prisma.camps.create({
+            data: {
+                date: body.date,
+                hospitalId: body.hospitalId,
+                schoolName: body.schoolName,
+                studentName: body.studentName,
+                age: body.age,
+                gender: body.gender,
+                Diagnosis: body.Diagnosis,
+                visualAcuityRE: body.visualAcuityRE,
+                visualAcuityLE: body.visualAcuityLE,
+                unaidedNearVision: body.unaidedNearVision,
+                refractionVALE: body.refractionVALE,
+                LVA: body.LVA,
+                LVANear: body.LVANear,
+                nonOpticalAid: body.nonOpticalAid,
+                actionNeeded: body.actionNeeded,
+            }
+        })
+        return res.status(200).json(newEntry, {success: true});
+    } catch (error) {
+        console.error('Request error', error);
+        res.status(500).json({error: 'Error adding patient information', success: false});
+    }
+}
+
+async function addDataSchoolScreenings(req, res) {
+    const body = req.body;
+    try {
+        const newEntry = await prisma.school_Screening.create({
+            data: {
+                date: body.date,
+                hospitalId: body.hospitalId,
+                typeCamp: body.typeCamp,
+                screeningPlace: body.screeningPlace,
+                organiser: body.organiser,
+                contactNumber: body.contactNumber,
+                address: body.address,
+                screenedTotal: body.screenedTotal,
+                refractiveErrors: body.refractiveErrors,
+                spectaclesDistributed: body.spectaclesDistributed,
+                checked: body.checked,
+                refer: body.refer,
+                staff: body.staff,
+                lowVision: body.lowVision
             }
         })
         return res.status(200).json(newEntry, {success: true});
