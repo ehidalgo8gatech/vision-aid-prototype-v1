@@ -52,14 +52,14 @@ export default function Example() {
     const [beneficiaryName, setBeneficiaryName] = useState("");
     const [age, setAge] = useState();
     const [gender, setGender] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState();
+    const [phoneNumber, setPhoneNumber] = useState("");
     const [Education, setEducation] = useState("");
     const [Occupation, setOccupation] = useState("");
     const [Districts, setDistricts] = useState("");
     const [State, setState] = useState("");
     const [Diagnosis, setDiagnosis] = useState("");
     const [Vision, setVision] = useState("");
-    
+
     const [MDVI, setMDVI] = useState("");
     const [typeCounselling, settypeCounselling] = useState("");
     const [schoolName, setschoolName] = useState("");
@@ -202,7 +202,6 @@ export default function Example() {
             const response = await postData('/api/patients',body,selectedOption)
             //const response = await postData('/api/patients',body,'addData')
             if (response.status !== 200) {
-                alert(body)
                 alert("Something went wrong")
                 console.log('something went wrong')
                 //set an error banner here
@@ -300,6 +299,32 @@ export default function Example() {
         json = await response.json()
         console.log("user " + JSON.stringify(json))
         return json
+    }
+
+    const hospitalsApi = async () => {
+        const session = await getSession()
+        if (!session) {
+            alert("Must be logged on to view entries")
+            return
+        }
+        const user = await insertUserIfRequired(session)
+        if (user.admin != null) {
+            alert("User must be admin to view hospitals")
+        } else {
+            fetch('/api/hospital')
+                .then(response => response.json())
+                .then(data => {
+                    const responseDiv = document.getElementById('api-hospitals');
+                    const hospitals = data.map((hospital, index) => `<li key=${index}>${
+                        JSON.stringify(hospital, null, 2)
+                            .replaceAll("{", "")
+                            .replaceAll("}", "")
+                            .replaceAll(",", "")
+                    }</li>`);
+                    responseDiv.innerHTML = `<ul>${hospitals}</ul>`;
+                })
+                .catch(error => console.error(error));
+        }
     }
 
     const entriesApi = async () => {
@@ -529,7 +554,7 @@ export default function Example() {
                             <option value="camps">Camps</option>
                             <option value="school-screenings">School Screenings</option>
                             </select>
-                        </div> 
+                        </div>
                         {selectedOption === 'computer-training' && (
                             <>
                             <div>
@@ -645,7 +670,7 @@ export default function Example() {
                                 </label>
                                 <div className="mt-2.5">
                                     <input
-                                        onChange={(e) => setPhoneNumber(parseInt(e.target.value))}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
                                         type="number"
                                         name="phone-number"
                                         id="phone-number"
@@ -729,7 +754,7 @@ export default function Example() {
                                         required/>
                                 </div>
                             </div>
-                            </>    
+                            </>
                         )}
                         {selectedOption === 'mobile-training' && (
                             <>
@@ -915,8 +940,8 @@ export default function Example() {
                                         required/>
                                 </div>
                             </div>
-                            </>    
-                        )} 
+                            </>
+                        )}
                         {selectedOption === 'orientation-mobility-training' && (
                             <>
                             <div>
@@ -1116,7 +1141,7 @@ export default function Example() {
                                         required/>
                                 </div>
                             </div>
-                            </>    
+                            </>
                         )}
                         {selectedOption === 'vision-enhancement' && (
                             <>
@@ -1287,7 +1312,7 @@ export default function Example() {
                                         required/>
                                 </div>
                             </div>
-                            </>    
+                            </>
                         )}
                         {selectedOption === 'counselling-education' && (
                             <>
@@ -1458,7 +1483,7 @@ export default function Example() {
                                         required/>
                                 </div>
                             </div>
-                            </>    
+                            </>
                         )}
                         {selectedOption === 'camps' && (
                             <>
@@ -1689,8 +1714,8 @@ export default function Example() {
                                         required/>
                                 </div>
                             </div>
-                            </>    
-                        )}  
+                            </>
+                        )}
                         {selectedOption === 'school-screenings' && (
                             <>
                             <div>
@@ -1905,8 +1930,8 @@ export default function Example() {
                                         required/>
                                 </div>
                             </div>
-                            </>    
-                        )} 
+                            </>
+                        )}
                     </div>
                 </div>
                 <div className="mt-10">
@@ -1949,7 +1974,7 @@ export default function Example() {
                         <td>SomeBeneficiaryName</td>
                         <td>25</td>
                         <td>m</td>
-                        <td>12345</td>
+                        <td>123-456-7890</td>
                         <td>MS</td>
                         <td>SDE</td>
                         <td>Broward</td>
@@ -2064,6 +2089,10 @@ export default function Example() {
             <button onClick={() => entriesApi()}>List Of Entries</button>
             <br/>
             <div className="api-entries" id="api-entries"></div>
+            <br/>
+            <button onClick={() => hospitalsApi()}>List Of Hospitals</button>
+            <br/>
+            <div className="api-hospitals" id="api-hospitals"></div>
         </div>
     )
 }

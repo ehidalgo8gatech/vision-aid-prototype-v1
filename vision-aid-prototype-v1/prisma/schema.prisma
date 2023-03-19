@@ -63,6 +63,7 @@ model Beneficiary {
   beneficiaryName           String
   age                       Int
   gender                    String
+  // @deprecated see pNummber
   phoneNumber               Int
   Education                 String
   Occupation                String
@@ -70,6 +71,7 @@ model Beneficiary {
   State                     String
   Diagnosis                 String
   hospitalId                Int
+  pNumber                   String
   beneficiary_subcategories Beneficiary_Subcategories[]
 }
 

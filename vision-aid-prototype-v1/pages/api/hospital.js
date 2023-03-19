@@ -14,14 +14,23 @@ export default async function handler(req, res) {
 
 async function readData(req, res) {
     try {
-        const user = await prisma.hospital.findUnique({
-            where: {
-                name: req.query.name,
-            },
-            include: {
-                hospitalRole: true,
-            },
-        })
+        var user
+        if (req.query.name != null) {
+             user = await prisma.hospital.findUnique({
+                where: {
+                    name: req.query.name,
+                },
+                include: {
+                    hospitalRole: true,
+                },
+            })
+        } else {
+            user = await prisma.hospital.findMany({
+                include: {
+                    hospitalRole: true,
+                },
+            })
+        }
         return res.status(200).json(user, {success: true});
     } catch (error) {
         console.log(error)
