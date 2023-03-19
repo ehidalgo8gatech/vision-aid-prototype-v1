@@ -671,7 +671,7 @@ export default function Example() {
                                 <div className="mt-2.5">
                                     <input
                                         onChange={(e) => setPhoneNumber(e.target.value)}
-                                        type="number"
+                                        type="text"
                                         name="phone-number"
                                         id="phone-number"
                                         autoComplete="organization"
@@ -857,7 +857,7 @@ export default function Example() {
                                 <div className="mt-2.5">
                                     <input
                                         onChange={(e) => setPhoneNumber(e.target.value)}
-                                        type="number"
+                                        type="text"
                                         name="phone-number"
                                         id="phone-number"
                                         autoComplete="organization"
@@ -1058,7 +1058,7 @@ export default function Example() {
                                 <div className="mt-2.5">
                                     <input
                                         onChange={(e) => setPhoneNumber(e.target.value)}
-                                        type="number"
+                                        type="text"
                                         name="phone-number"
                                         id="phone-number"
                                         autoComplete="organization"
@@ -1259,7 +1259,7 @@ export default function Example() {
                                 <div className="mt-2.5">
                                     <input
                                         onChange={(e) => setPhoneNumber(e.target.value)}
-                                        type="number"
+                                        type="text"
                                         name="phone-number"
                                         id="phone-number"
                                         autoComplete="organization"
@@ -1430,7 +1430,7 @@ export default function Example() {
                                 <div className="mt-2.5">
                                     <input
                                         onChange={(e) => setPhoneNumber(e.target.value)}
-                                        type="number"
+                                        type="text"
                                         name="phone-number"
                                         id="phone-number"
                                         autoComplete="organization"
@@ -1802,7 +1802,7 @@ export default function Example() {
                                 <div className="mt-2.5">
                                     <input
                                         onChange={(e) => setcontactNumber(parseInt(e.target.value))}
-                                        type="number"
+                                        type="text"
                                         name="phone-number"
                                         id="phone-number"
                                         autoComplete="organization"
