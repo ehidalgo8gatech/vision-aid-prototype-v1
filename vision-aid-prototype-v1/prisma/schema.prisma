@@ -17,7 +17,7 @@ model PatientInformation {
   beneficiaryName           String
   age                       Int
   gender                    String
-  phoneNumber               Int
+  pNumber                   String
   Education                 String
   Occupation                String
   Districts                 String
@@ -63,15 +63,13 @@ model Beneficiary {
   beneficiaryName           String
   age                       Int
   gender                    String
-  // @deprecated see pNummber
-  phoneNumber               Int
+  pNumber                   String
   Education                 String
   Occupation                String
   Districts                 String
   State                     String
   Diagnosis                 String
   hospitalId                Int
-  pNumber                   String
   beneficiary_subcategories Beneficiary_Subcategories[]
 }
 
@@ -83,7 +81,7 @@ model Computer_Training {
   beneficiaryName           String
   age                       Int
   gender                    String
-  phoneNumber               Int
+  pNumber                   String
   Education                 String
   Occupation                String
   Districts                 String
@@ -100,7 +98,7 @@ model Mobile_Training {
   beneficiaryName           String
   age                       Int
   gender                    String
-  phoneNumber               Int
+  pNumber                   String
   Education                 String
   Occupation                String
   Districts                 String
@@ -118,7 +116,7 @@ model Orientation_Mobility_Training {
   beneficiaryName           String
   age                       Int
   gender                    String
-  phoneNumber               Int
+  pNumber                   String
   Education                 String
   Occupation                String
   Districts                 String
@@ -136,7 +134,7 @@ model Vision_Enhancement {
   beneficiaryName           String
   age                       Int
   gender                    String
-  phoneNumber               Int
+  pNumber                   String
   Districts                 String
   Diagnosis                 String
   MDVI                      String
@@ -152,7 +150,7 @@ model Counselling_Education {
   beneficiaryName           String
   age                       Int
   gender                    String
-  phoneNumber               Int
+  pNumber                   String
   Districts                 String
   Diagnosis                 String
   typeCounselling           String
@@ -214,25 +212,24 @@ model Subcategories {
 }
 
 model Beneficiary_Subcategories {
-  beneficiary   Beneficiary   @relation(fields: [beneficiaryId], references: [id])
-  beneficiaryId Int           @id
-  subcategory   Subcategories @relation(fields: [subcategoryId], references: [id])
-  subcategoryId Int
-  computer_training   Computer_Training @relation(fields: [computer_trainingId], references: [id])
-  computer_trainingId Int
-  mobile_training   Mobile_Training @relation(fields: [mobile_trainingId], references: [id])
-  mobile_trainingId Int
+  beneficiary                     Beneficiary                   @relation(fields: [beneficiaryId], references: [id])
+  beneficiaryId                   Int                           @id
+  subcategory                     Subcategories                 @relation(fields: [subcategoryId], references: [id])
+  subcategoryId                   Int
+  computer_training               Computer_Training             @relation(fields: [computer_trainingId], references: [id])
+  computer_trainingId             Int
+  mobile_training                 Mobile_Training               @relation(fields: [mobile_trainingId], references: [id])
+  mobile_trainingId               Int
   orientation_mobility_training   Orientation_Mobility_Training @relation(fields: [orientation_mobility_trainingId], references: [id])
   orientation_mobility_trainingId Int
-  vision_enhancement   Vision_Enhancement @relation(fields: [vision_enhancementId], references: [id])
-  vision_enhancementId Int
-  counselling_education   Counselling_Education @relation(fields: [counselling_educationId], references: [id])
-  counselling_educationId Int
-  camps   Camps @relation(fields: [campsId], references: [id])
-  campsId Int
-  school_screening   School_Screening @relation(fields: [school_screeningId], references: [id])
-  school_screeningId Int
-  pi   PatientInformation @relation(fields: [piId], references: [id])
-  piId Int
+  vision_enhancement              Vision_Enhancement            @relation(fields: [vision_enhancementId], references: [id])
+  vision_enhancementId            Int
+  counselling_education           Counselling_Education         @relation(fields: [counselling_educationId], references: [id])
+  counselling_educationId         Int
+  camps                           Camps                         @relation(fields: [campsId], references: [id])
+  campsId                         Int
+  school_screening                School_Screening              @relation(fields: [school_screeningId], references: [id])
+  school_screeningId              Int
+  pi                              PatientInformation            @relation(fields: [piId], references: [id])
+  piId                            Int
 }
-
