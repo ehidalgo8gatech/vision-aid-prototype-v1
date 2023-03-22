@@ -308,7 +308,7 @@ export default function Example() {
             return
         }
         const user = await insertUserIfRequired(session)
-        if (user.admin != null) {
+        if (user.admin == null) {
             alert("User must be admin to view hospitals")
         } else {
             fetch('/api/hospital')
