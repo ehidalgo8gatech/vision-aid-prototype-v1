@@ -14,9 +14,9 @@ export default async function handler(req, res) {
 
 async function readData(req, res) {
     try {
-        var user
+        var hospital
         if (req.query.name != null) {
-             user = await prisma.hospital.findUnique({
+            hospital = await prisma.hospital.findUnique({
                 where: {
                     name: req.query.name,
                 },
@@ -25,13 +25,13 @@ async function readData(req, res) {
                 },
             })
         } else {
-            user = await prisma.hospital.findMany({
+            hospital = await prisma.hospital.findMany({
                 include: {
                     hospitalRole: true,
                 },
             })
         }
-        return res.status(200).json(user, {success: true});
+        return res.status(200).json(hospital, {success: true});
     } catch (error) {
         console.log(error)
         return res.status(500).json({error: "Error reading from database", success: false});

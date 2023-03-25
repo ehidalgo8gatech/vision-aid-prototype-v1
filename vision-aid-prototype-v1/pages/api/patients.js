@@ -61,7 +61,7 @@ async function addData(req, res) {
                 beneficiaryName: body.beneficiaryName,
                 age: body.age,
                 gender: body.gender,
-                pNumber: body.phoneNumber,
+                phoneNumber: body.phoneNumber,
                 Education: body.Education,
                 Occupation: body.Occupation,
                 Districts: body.Districts,

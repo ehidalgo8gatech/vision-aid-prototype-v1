@@ -14,20 +14,24 @@ export default async function handler(req, res) {
 
 async function readData(req, res) {
     try {
-        const user = await prisma.user.findUnique({
-            where: {
-                email: req.query.email,
-            },
-            include: {
-                hospitalRole: true,
-                admin: true
-            },
-        })
+        const user = await readUser(req.query.email)
         return res.status(200).json(user, {success: true});
     } catch (error) {
         console.log(error)
         return res.status(500).json({error: "Error reading from database", success: false});
     }
+}
+
+export async function readUser(email) {
+        return prisma.user.findUnique({
+            where: {
+                email: email,
+            },
+            include: {
+                hospitalRole: true,
+                admin: true
+            },
+        });
 }
 
 async function addData(req, res) {
