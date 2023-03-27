@@ -23,6 +23,7 @@ import Router from 'next/router'
 import readXlsxFile from 'read-excel-file'
 import Head from 'next/head'
 import Navbar from '../comps/Navbar'
+import styles from '@/styles/Home.module.css'
 
 
 function classNames(...classes) {
@@ -35,7 +36,7 @@ function classNames(...classes) {
 
 function myFunction() {
 
-    <Navbar />
+
     const inputs = document.querySelectorAll('#date, #hospital-name, #session-number, #mrn, #patients-name, #age, #gender, #phone-number, #education, #occupation, #districts, #state, #diagnosis');
     for (let i = 0; i < inputs.length; i++) {
         if (!inputs[i].value) {
@@ -503,13 +504,14 @@ export default function Example() {
     }
 
     return insertUserIfRequired(session) && (
-        <div className="isolate bg-white py-24 px-6 sm:py-32 lg:px-8">
+        <div className={styles.main}>
             <Head>
                 <title>Vision Aid P11</title>
                 <link rel="manifest" href="/manifest.json" />
                 <meta name="description" content="Vision Aid P11"/>
                 <meta name="theme-color" content="#317EFB"/>
             </Head>
+            <Navbar />
             {!session ? (
                 <div>
                     <p>Not signed in</p>
@@ -529,15 +531,15 @@ export default function Example() {
                 width={144}
                 alt=""
             />
-            <div className="mx-auto max-w-2xl text-center">
-                <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Vision Aid Partner Tracking
+            <div className={styles.main}>
+                <h2 className={styles.main}>Vision Aid Partner Tracking
                     System</h2>
-                <p className="mt-2 text-lg leading-8 text-gray-600">
+                <p className={styles.main}>
                     This form is for submitting the personal information of a beneficiary
                 </p>
             </div>
             <form action="#" method="POST" onSubmit={(e) => handleSubmit(e, selectedOption)}
-                  className="mx-auto mt-16 max-w-xl sm:mt-20">
+                  className={styles.main}>
                 <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
                     <div>
                         <label htmlFor="option-select" className="block text-sm font-semibold leading-6 text-gray-900">
