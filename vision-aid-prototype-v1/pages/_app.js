@@ -4,22 +4,15 @@ import {SessionProvider} from "next-auth/react"
 import { Inter } from 'next/font/google'
 
 // If loading a variable font, you don't need to specify the font weight
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
 
-
-
-export default function App({
-                                Component,
-                                pageProps: {session, ...pageProps}
-                                ,
-                            }) {
-    return (
-
-        <><main className={inter.className}>
-            <Component {...pageProps} />
-        </main><SessionProvider session={session}>
-                <Component {...pageProps} />
-            </SessionProvider></>
-        
-    )
+export default function MyApp({ Component, pageProps }) {
+  return (
+    <main className={`${inter.variable} font-sans`}>
+      <Component {...pageProps} />
+    </main>
+  )
 }
