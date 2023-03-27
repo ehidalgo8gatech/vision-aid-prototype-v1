@@ -535,7 +535,7 @@ export default function Example() {
             <div className={styles.description}>
                 <p className={styles.description}>Vision Aid Partner Tracking
                     System</p>
-                <p className={styles.main}>
+                <p className={styles.center}>
                     This form is for submitting the personal information of a beneficiary
                 </p>
             </div>
