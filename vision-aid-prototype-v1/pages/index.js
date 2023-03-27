@@ -22,8 +22,8 @@ import moment from 'moment';
 import Router from 'next/router'
 import readXlsxFile from 'read-excel-file'
 import Head from 'next/head'
-import Navbar from '../comps/Navbar'
 import styles from '@/styles/Home.module.css'
+
 
 
 function classNames(...classes) {
@@ -511,7 +511,7 @@ export default function Example() {
                 <meta name="description" content="Vision Aid P11"/>
                 <meta name="theme-color" content="#317EFB"/>
             </Head>
-            <Navbar />
+         
             {!session ? (
                 <div>
                     <p>Not signed in</p>
