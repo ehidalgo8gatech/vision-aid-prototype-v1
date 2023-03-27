@@ -504,7 +504,7 @@ export default function Example() {
     }
 
     return insertUserIfRequired(session) && (
-        <div className={styles.main}>
+        <div className="isolate bg-white py-24 px-6 sm:py-32 lg:px-8">
             
             <Head>
                 <title>Vision Aid P11</title>
@@ -532,8 +532,8 @@ export default function Example() {
                 width={144}
                 alt=""
             />
-            <div className="mx-auto max-w-2xl text-center">
-                <p className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Vision Aid Partner Tracking
+            <div className={styles.description}>
+                <p className={styles.description}>Vision Aid Partner Tracking
                     System</p>
                 <p className="mt-2 text-lg leading-8 text-gray-600">
                     This form is for submitting the personal information of a beneficiary
