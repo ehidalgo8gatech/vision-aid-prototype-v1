@@ -532,11 +532,11 @@ export default function Example() {
                 alt=""
             />
             <div className={styles.description}>
-                <h2 className={styles.description}>Vision Aid Partner Tracking
-                    System</h2>
-                <p className={styles.description}>
+                <a className={styles.description}>Vision Aid Partner Tracking
+                    System</a>
+                <a className={styles.description}>
                     This form is for submitting the personal information of a beneficiary
-                </p>
+                </a>
             </div>
             <form action="#" method="POST" onSubmit={(e) => handleSubmit(e, selectedOption)}
                   className={styles.description}>
