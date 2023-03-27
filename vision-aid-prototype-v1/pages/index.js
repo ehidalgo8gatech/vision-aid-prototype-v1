@@ -535,9 +535,9 @@ export default function Example() {
             <div className={styles.description}>
                 <a className={styles.description}>Vision Aid Partner Tracking
                     System</a>
-                <a className={styles.description}>
+                <p className={styles.description}>
                     This form is for submitting the personal information of a beneficiary
-                </a>
+                </p>
             </div>
             <form action="#" method="POST" onSubmit={(e) => handleSubmit(e, selectedOption)}
                   className={styles.description}>
