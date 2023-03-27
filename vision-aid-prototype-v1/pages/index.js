@@ -22,6 +22,8 @@ import moment from 'moment';
 import Router from 'next/router'
 import readXlsxFile from 'read-excel-file'
 import Head from 'next/head'
+import Navbar from '../comps/Navbar'
+
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
