@@ -32,6 +32,8 @@ function classNames(...classes) {
 //}
 
 function myFunction() {
+
+    <Navbar />
     const inputs = document.querySelectorAll('#date, #hospital-name, #session-number, #mrn, #patients-name, #age, #gender, #phone-number, #education, #occupation, #districts, #state, #diagnosis');
     for (let i = 0; i < inputs.length; i++) {
         if (!inputs[i].value) {
