@@ -8,14 +8,18 @@ const inter = Inter({ subsets: ['latin'] })
 
 
 
-export default function App({
+export function App({
                                 Component,
-                                pageProps: {session, ...pageProps},
+                                pageProps: {session, ...pageProps}
+                                ,
                             }) {
     return (
-        <SessionProvider session={session}>
+
+        <><main className={inter.className}>
             <Component {...pageProps} />
-        </SessionProvider>
+        </main><SessionProvider session={session}>
+                <Component {...pageProps} />
+            </SessionProvider></>
         
     )
 }
