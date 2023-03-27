@@ -23,7 +23,7 @@ import Router from 'next/router'
 import readXlsxFile from 'read-excel-file'
 import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
-import Navbar from '@/comps/Navbar'
+/*import Navbar from '@/comps/Navbar'*/
 
 
 function classNames(...classes) {
@@ -505,7 +505,7 @@ export default function Example() {
 
     return insertUserIfRequired(session) && (
         <div className={styles.main}>
-            <Navbar />
+            
             <Head>
                 <title>Vision Aid P11</title>
                 <link rel="manifest" href="/manifest.json" />
@@ -533,8 +533,8 @@ export default function Example() {
                 alt=""
             />
             <div className={styles.description}>
-                <a className={styles.description}>Vision Aid Partner Tracking
-                    System</a>
+                <p className={styles.description}>Vision Aid Partner Tracking
+                    System</p>
                 <p className={styles.description}>
                     This form is for submitting the personal information of a beneficiary
                 </p>
