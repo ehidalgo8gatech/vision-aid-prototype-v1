@@ -17,6 +17,7 @@
     "bootstrap": "^5.2.3",
     "eslint": "8.34.0",
     "eslint-config-next": "13.1.6",
+    "import-google-fonts": "^0.0.2",
     "js-cookie": "^3.0.1",
     "moment": "^2.29.4",
     "next": "^13.1.6",
