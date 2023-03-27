@@ -23,7 +23,7 @@ import Router from 'next/router'
 import readXlsxFile from 'read-excel-file'
 import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
-
+import Navbar from '../comps/Navbar'
 
 
 function classNames(...classes) {
@@ -505,6 +505,7 @@ export default function Example() {
 
     return insertUserIfRequired(session) && (
         <div className={styles.main}>
+            <Navbar />
             <Head>
                 <title>Vision Aid P11</title>
                 <link rel="manifest" href="/manifest.json" />
