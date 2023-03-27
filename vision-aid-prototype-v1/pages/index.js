@@ -531,15 +531,15 @@ export default function Example() {
                 width={144}
                 alt=""
             />
-            <div className={styles.main}>
-                <h2 className={styles.main}>Vision Aid Partner Tracking
+            <div className={styles.description}>
+                <h2 className={styles.description}>Vision Aid Partner Tracking
                     System</h2>
-                <p className={styles.main}>
+                <p className={styles.description}>
                     This form is for submitting the personal information of a beneficiary
                 </p>
             </div>
             <form action="#" method="POST" onSubmit={(e) => handleSubmit(e, selectedOption)}
-                  className={styles.main}>
+                  className={styles.description}>
                 <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
                     <div>
                         <label htmlFor="option-select" className="block text-sm font-semibold leading-6 text-gray-900">
