@@ -272,10 +272,62 @@ function requiredFields(props) {
             </div>)
     })
 
+    async function search(e) {
+        e.preventDefault()
+        let nameSearch = document.getElementById("searchName").value
+        const beneficiary = await fetch('/api/beneficiary?beneficiaryName=' + nameSearch, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        })
+        const beneficiaryJson = await beneficiary.json()
+        if (beneficiaryJson == null || beneficiaryJson.error != null) {
+            alert("Can't find beneficiary name in db " + nameSearch)
+            return
+        }
+        beneficiaryJson.forEach((b) => {
+            let container = document.getElementById("searchNameDiv")
+            let tr = document.createElement("tr")
+            let tdName = document.createElement("td")
+            let tdMRN = document.createElement("td")
+            let tdDOB = document.createElement("td")
+            let tdHospitalName = document.createElement("td")
+            tdName.innerText = b.beneficiaryName
+            tdMRN.innerText = b.mrn
+            tdDOB.innerText = b.dateOfBirth
+            tdHospitalName.innerText = b.hospital.name
+            tr.appendChild(tdName)
+            tr.appendChild(tdMRN)
+            tr.appendChild(tdDOB)
+            tr.appendChild(tdHospitalName)
+            container.appendChild(tr)
+            }
+        )
+    }
+
     return (
         <div>
+            <p>Search beneficiary information by name</p>
+            <form action="#" method="POST" onSubmit={(e) => search(e)}>
+                <input type="text" id="searchName"/>
+                <label className="form-check-label" htmlFor="searchName">name</label>
+                <br/>
+                <button type="submit" className="btn btn-primary">Submit</button>
+            </form>
+            <table className="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>MRN</th>
+                    <th>Date Of Birth</th>
+                    <th>Hospital Name</th>
+                </tr>
+                </thead>
+                <tbody id="searchNameDiv">
+                </tbody>
+            </table>
+
+            <p>Enter Beneficiary Information</p>
             <form action="#" method="POST" onSubmit={(e) => submitInfo(e)}>
-                <p>Enter Beneficiary Information</p>
                 {mrn}
                 {beneficiaryName}
                 {hospitalName}

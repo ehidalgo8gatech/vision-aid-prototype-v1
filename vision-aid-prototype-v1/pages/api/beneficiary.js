@@ -13,7 +13,31 @@ export default async function handler(req, res) {
 }
 
 async function readData(req, res) {
-
+    try {
+        var beneficiary
+        if (req.query.beneficiaryName != null) {
+            beneficiary = await prisma.beneficiary.findMany({
+                where: {
+                    beneficiaryName: {
+                        contains: req.query.beneficiaryName,
+                    }
+                },
+                include: {
+                    hospital: true
+                }
+            })
+        } else {
+            beneficiary = await prisma.beneficiary.findMany({
+                include: {
+                hospital: true
+            }
+            })
+        }
+        return res.status(200).json(beneficiary, {success: true});
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({error: "Error reading from database", success: false});
+    }
 }
 
 async function addData(req, res) {
@@ -34,6 +58,9 @@ async function addData(req, res) {
             vision: body.vision,
             mDVI: body.mDVI,
             extraInformation: body.extraInformation
+        },
+        include: {
+            hospital: true
         },
     }
     try {
