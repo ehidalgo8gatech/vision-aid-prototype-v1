@@ -1,6 +1,6 @@
-import {useState} from 'react'
+/*import {useState} from 'react'
 import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
 import moment from 'moment';
 
@@ -1497,4 +1497,4 @@ Vision Aid Partner Tracking
 </form>
 
 </>
-)}
+)}*/
