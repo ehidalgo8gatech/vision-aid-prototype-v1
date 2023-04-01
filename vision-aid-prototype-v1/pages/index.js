@@ -37,7 +37,7 @@ export default function Home() {
             >
               {' '}
               <Image
-                src="/vision-aid-logo-trns(1).png"
+                src="/vision-aid-logo.jpeg"
                 alt="Vercel Logo"
                 className={styles.vercelLogo}
                 width={100}
@@ -53,7 +53,7 @@ export default function Home() {
         <div className={styles.center}>
           <Image
             className={styles.logo}
-            src="/vision-aid-logo-trns(1).png"
+            src="/vision-aid-logo.jpeg"
             alt="VisionAid Logo trns"
             width={200}
             height={200}
