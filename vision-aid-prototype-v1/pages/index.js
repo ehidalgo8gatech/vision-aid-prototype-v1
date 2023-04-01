@@ -17,6 +17,12 @@ export default function Home() {
       
       <main className={styles.main}>
       <div className={styles.description}>
+        <Head>
+          <title>Vision Aid P11</title>
+          <link rel="manifest" href="/manifest.json" />
+          <meta name="description" content="Vision Aid P11"/>
+          <meta name="theme-color" content="#317EFB"/>
+        </Head>
 
       
         
