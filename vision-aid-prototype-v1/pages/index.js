@@ -33,7 +33,7 @@ export default function Home() {
                                 <div>
                                     <p1> Signed in as {session.user.email} </p1>
                                     <br/>
-                                    <button onClick={() => signOut()}>Sign out</button>
+                                    <button type="button" class="btn rounded-pill btn-secondary" onClick={() => signOut()}>Sign out</button>
                                 </div>
                         )}
         </a>
@@ -72,7 +72,7 @@ export default function Home() {
           </a>
 
           <a
-            href=""
+            href="/requiredfields"
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"
