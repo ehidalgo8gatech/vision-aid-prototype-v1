@@ -2,7 +2,9 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
+import Link from 'next/link'
 import {useSession, signIn, signOut, getSession} from "next-auth/react";
+
 
 import Navbar from '../comps/Navbar'
 /*import Footer from './footer'*/
@@ -16,8 +18,12 @@ export default function Home() {
 
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/">
-          <img src="/vision-aid-logo.jpeg" width="80" height="80" class="d-inline-block" alt="Home"/>
+        <div class="navbar-brand">
+          <Link href="/">
+            <img src="/vision-aid-logo.jpeg" width="80" height="80" class="d-inline-block" alt="Home"/>
+          </Link>
+        </div>
+
           <a class="d-inline-block">
                         {!session ? (
                             <div>
@@ -31,7 +37,7 @@ export default function Home() {
                                 </div>
                         )}
         </a>
-    </a>
+
   </nav>
 
   <main className={styles.body}>
