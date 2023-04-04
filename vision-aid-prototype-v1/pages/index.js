@@ -10,82 +10,60 @@ import Navbar from '../comps/Navbar'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+    const {data: session} = useSession();
   return (
     <>
-     
-     <Navbar />
-      
-      <main className={styles.main}>
-      <div className={styles.description}>
 
-      
-        
-        
-        <code className={styles.code}></code>
-        
-         
-          <div>
-            <a
-              href="https://sites.google.com/view/visionaidwebinterface/home?authuser=0"
-              
-            >
-              {' '}
-              <Image
-                src="/vision-aid-logo-trns(1).png"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={100}
-                priority
-              /> 
-          
-                
-            </a>
-          </div>
-        </div>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">
+          <img src="/vision-aid-logo.jpeg" width="80" height="80" class="d-inline-block" alt="Home"/>
+          <a class="d-inline-block">
+                        {!session ? (
+                            <div>
+                               <button type="button" class="btn rounded-pill btn-secondary" onClick={() => signIn()}>Sign in</button>
+                            </div>
+                            ) : (
+                                <div>
+                                    <p1> Signed in as {session.user.email} </p1>
+                                    <br/>
+                                    <button onClick={() => signOut()}>Sign out</button>
+                                </div>
+                        )}
+        </a>
+    </a>
+  </nav>
 
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/vision-aid-logo-trns(1).png"
-            alt="VisionAid Logo trns"
-            width={200}
-            height={200}
-            priority
-          />
-          
-            
-        </div>
-        
-
+  <main className={styles.body}>
+  <div class="container">
+     <div class="row">
         <div className={styles.grid}>
           <a
-            href=""
+            href="/requiredfields"
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"
           >
             <h2 className={inter.className}>
-              Admin <span>-&gt;</span>
+              Admin
             </h2>
             <p className={inter.className}>
-              For Vision Aid Admins to  and enter data.
+              For Vision Aid Admins to edit & enter data
             </p>
           </a>
-          
-          <a href="/tech"
+
+          <a href="/beneficiaryinformation"
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"
           >
             <h2 className={inter.className}>
-              Technician <span>-&gt;</span>
+              Technician
             </h2>
             <p className={inter.className}>
-              Data Entry (in development).
+              Data Entry (in development)
             </p>
           </a>
-          
+
           <a
             href=""
             className={styles.card}
@@ -93,15 +71,22 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             <h2 className={inter.className}>
-              Manager <span>-&gt;</span>
+              Manager
             </h2>
             <p className={inter.className}>
-              Manager Overview for Vision Aid Beneficiaries.
+              Manager Overview for Vision Aid Beneficiaries
             </p>
           </a>
+
+
+         </div>
         </div>
-      </main>
-    </>
+
+        </div>
+        </main>
+
+
+   </>
   )
 }
 
