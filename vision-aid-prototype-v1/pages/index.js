@@ -14,6 +14,7 @@ export default function Home() {
   return (
     <>
 
+
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/">
           <img src="/vision-aid-logo.jpeg" width="80" height="80" class="d-inline-block" alt="Home"/>
