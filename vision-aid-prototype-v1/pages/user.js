@@ -11,9 +11,58 @@ function UserPage({ user }) {
   return (
     <div className="container">
       <h1 className="text-center mt-4 mb-4">User Details</h1>
-      {/* Display user information */}
-      <p><strong>MRN:</strong> {user.mrn}</p>
-      {/* Add other user attributes as needed */}
+      <div className="row">
+        <div className="col-md-6">
+          <div className="mb-3">
+            <strong>MRN:</strong> {user.mrn}
+          </div>
+          <div className="mb-3">
+            <strong>Beneficiary Name:</strong> {user.beneficiaryName}
+          </div>
+          <div className="mb-3">
+            <strong>Hospital ID:</strong> {user.hospitalId}
+          </div>
+          <div className="mb-3">
+            <strong>Date of Birth:</strong> {user.dateOfBirth}
+          </div>
+          <div className="mb-3">
+            <strong>Gender:</strong> {user.gender}
+          </div>
+        </div>
+        <div className="col-md-6">
+          <div className="mb-3">
+            <strong>Phone Number:</strong> {user.phoneNumber}
+          </div>
+          <div className="mb-3">
+            <strong>Education:</strong> {user.education}
+          </div>
+          <div className="mb-3">
+            <strong>Occupation:</strong> {user.occupation}
+          </div>
+          <div className="mb-3">
+            <strong>Districts:</strong> {user.districts}
+          </div>
+          <div className="mb-3">
+            <strong>State:</strong> {user.state}
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-12">
+          <div className="mb-3">
+            <strong>Diagnosis:</strong> {user.diagnosis}
+          </div>
+          <div className="mb-3">
+            <strong>Vision:</strong> {user.vision}
+          </div>
+          <div className="mb-3">
+            <strong>mDVI:</strong> {user.mDVI}
+          </div>
+          <div className="mb-3">
+            <strong>Extra Information:</strong> {user.extraInformation}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
