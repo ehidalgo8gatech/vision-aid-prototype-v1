@@ -1,68 +1,91 @@
 // pages/user.js
+import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { Pencil } from 'react-bootstrap-icons';
 
 function UserPage({ user }) {
   const router = useRouter();
+
+  // State variable for form fields
+  const [formData, setFormData] = useState(user);
+  const [editableField, setEditableField] = useState('');
+
+  // Handle input changes
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Handle edit icon click
+  const handleEditClick = (field) => {
+    setEditableField(field);
+  };
+
+  // Submit the edited data
+  const handleSubmit = async (e, field) => {
+    e.preventDefault();
+  
+    // Update user data in the database
+    const response = await fetch(`/api/beneficiary`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ mrn: user.mrn, [field]: formData[field] }),
+    });
+  
+    // Handle response from the API
+    if (response.ok) {
+      alert('User data saved successfully!');
+      setEditableField('');
+    } else {
+      alert('An error occurred while saving user data. Please try again.');
+    }
+  };
 
   if (!user) {
     return <div>Loading...</div>;
   }
 
+  const renderField = (label, field) => (
+    <div className="mb-3">
+      <strong>{label}:</strong>
+      {editableField === field ? (
+        <form onSubmit={(e) => handleSubmit(e, field)} className="d-inline ms-2">
+          <input
+            type="text"
+            className="form-control d-inline w-auto"
+            name={field}
+            value={formData[field]}
+            onChange={handleInputChange}
+          />
+          <button type="submit" className="btn btn-primary btn-sm ms-2">
+            Save
+          </button>
+        </form>
+      ) : (
+        <span className="ms-2">
+          {formData[field]}
+          <button
+            type="button"
+            className="btn btn-link btn-sm text-primary ms-2"
+            onClick={() => handleEditClick(field)}
+          >
+           <Pencil />
+          </button>
+        </span>
+      )}
+    </div>
+  );
+
   return (
     <div className="container">
       <h1 className="text-center mt-4 mb-4">User Details</h1>
-      <div className="row">
-        <div className="col-md-6">
-          <div className="mb-3">
-            <strong>MRN:</strong> {user.mrn}
-          </div>
-          <div className="mb-3">
-            <strong>Beneficiary Name:</strong> {user.beneficiaryName}
-          </div>
-          <div className="mb-3">
-            <strong>Hospital ID:</strong> {user.hospitalId}
-          </div>
-          <div className="mb-3">
-            <strong>Date of Birth:</strong> {user.dateOfBirth}
-          </div>
-          <div className="mb-3">
-            <strong>Gender:</strong> {user.gender}
-          </div>
-        </div>
-        <div className="col-md-6">
-          <div className="mb-3">
-            <strong>Phone Number:</strong> {user.phoneNumber}
-          </div>
-          <div className="mb-3">
-            <strong>Education:</strong> {user.education}
-          </div>
-          <div className="mb-3">
-            <strong>Occupation:</strong> {user.occupation}
-          </div>
-          <div className="mb-3">
-            <strong>Districts:</strong> {user.districts}
-          </div>
-          <div className="mb-3">
-            <strong>State:</strong> {user.state}
-          </div>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-12">
-          <div className="mb-3">
-            <strong>Diagnosis:</strong> {user.diagnosis}
-          </div>
-          <div className="mb-3">
-            <strong>Vision:</strong> {user.vision}
-          </div>
-          <div className="mb-3">
-            <strong>mDVI:</strong> {user.mDVI}
-          </div>
-          <div className="mb-3">
-            <strong>Extra Information:</strong> {user.extraInformation}
-          </div>
-        </div>
-      </div>
+      {renderField('MRN', 'mrn')}
+      {renderField('Beneficiary Name', 'beneficiaryName')}
+      {/* Add more fields using the renderField function */}
     </div>
   );
 }
