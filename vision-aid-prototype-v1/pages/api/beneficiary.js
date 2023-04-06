@@ -26,6 +26,17 @@ async function readData(req, res) {
                     hospital: true
                 }
             })
+        } else if (req.query.mrn != null) {
+            beneficiary = await prisma.beneficiary.findFirst({
+                where: {
+                    mrn: {
+                        contains: req.query.mrn,
+                    }
+                },
+                include: {
+                    hospital: true
+                }
+            })
         } else {
             beneficiary = await prisma.beneficiary.findMany({
                 include: {
