@@ -83,9 +83,58 @@ function UserPage({ user }) {
   return (
     <div className="container">
       <h1 className="text-center mt-4 mb-4">User Details</h1>
-      {renderField('MRN', 'mrn')}
-      {renderField('Beneficiary Name', 'beneficiaryName')}
-      {/* Add more fields using the renderField function */}
+      <div className="row">
+        <div className="col-md-6">
+          <div className="mb-3">
+            {renderField('MRN', 'mrn')}
+          </div>
+          <div className="mb-3">
+            {renderField('Beneficiary Name', 'beneficiaryName')}
+          </div>
+          <div className="mb-3">
+            {renderField('Hospital ID', 'hospitalId')}
+          </div>
+          <div className="mb-3">
+            {renderField('Date of Birth', 'dateOfBirth')}
+          </div>
+          <div className="mb-3">
+            {renderField('Gender', 'gender')}
+          </div>
+        </div>
+        <div className="col-md-6">
+          <div className="mb-3">
+            {renderField('Phone Number', 'phoneNumber')}
+          </div>
+          <div className="mb-3">
+            {renderField('Education', 'education')}
+          </div>
+          <div className="mb-3">
+            {renderField('Occupation', 'occupation')}
+          </div>
+          <div className="mb-3">
+            {renderField('Districts', 'districts')}
+          </div>
+          <div className="mb-3">
+            {renderField('State', 'state')}
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-12">
+          <div className="mb-3">
+            {renderField('Diagnosis', 'diagnosis')}
+          </div>
+          <div className="mb-3">
+            {renderField('Vision', 'vision')}
+          </div>
+          <div className="mb-3">
+            {renderField('mDVI', 'mDVI')}
+          </div>
+          <div className="mb-3">
+            {renderField('Extra Information', 'extraInformation')}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
