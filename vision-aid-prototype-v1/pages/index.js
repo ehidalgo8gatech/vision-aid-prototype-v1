@@ -58,7 +58,7 @@ export default function Home() {
             </p>
           </a>
 
-          <a href="/beneficiaryinformation"
+          <a href="/beneficiary"
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"

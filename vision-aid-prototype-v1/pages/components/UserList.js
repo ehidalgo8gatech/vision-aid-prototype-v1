@@ -94,7 +94,7 @@ function UserList({ users }) {
           </div>
         ))}
         <div className='col-md-4 col-sm-6 col-12 mb-4'>
-            <div className="card">
+            <div className="card" style={{ backgroundColor: '#6c757d' }}>
               <div className="card-body">
                 <h5 className="card-title">Create User</h5>
               </div>
