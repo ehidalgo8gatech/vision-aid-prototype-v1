@@ -73,9 +73,13 @@ import { useRouter } from 'next/router';
 function UserList({ users }) {
     const router = useRouter();
   
-    const openUserPage = (mrn) => {
-      router.push(`/user?mrn=${mrn}`);
+    const openUserPage = async (mrn = null) => {
+      if (mrn)
+        router.push(`/user?mrn=${mrn}`);
+      else
+        router.push(`/adduser`);
     };
+
   
     return (
       <div className="row">
@@ -93,7 +97,7 @@ function UserList({ users }) {
             </div>
           </div>
         ))}
-        <div className='col-md-4 col-sm-6 col-12 mb-4'>
+        <div className='col-md-4 col-sm-6 col-12 mb-4' onClick={() => openUserPage()}>
             <div className="card" style={{ backgroundColor: '#6c757d' }}>
               <div className="card-body">
                 <h5 className="card-title">Create User</h5>
