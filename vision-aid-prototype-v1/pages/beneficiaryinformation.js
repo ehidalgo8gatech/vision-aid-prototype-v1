@@ -18,8 +18,8 @@ export async function getServerSideProps(ctx) {
         }
     }
     const user = await readUser(session.user.email)
-    if (user.admin == null && user.hospitalRole == null) {
-        console.log("user admin is not null or added to a hospital")
+    if (user == null || (user.admin == null && user.hospitalRole == null)) {
+        console.log("user not logged in or admin is not null or added to a hospital")
         return {
             redirect: {
                 destination: '/',
