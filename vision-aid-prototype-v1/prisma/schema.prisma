@@ -74,6 +74,7 @@ model Beneficiary_Mirror {
   visionRequired           Boolean
   mDVIRequired             Boolean
   extraInformationRequired String  @db.Text
+  hospitalName             String?
 }
 
 model Computer_Training {
@@ -90,6 +91,7 @@ model Computer_Training_Mirror {
   date                     Boolean
   sessionNumber            Boolean
   extraInformationRequired String  @db.Text
+  hospitalName             String?
 }
 
 model Mobile_Training {
@@ -106,6 +108,7 @@ model Mobile_Training_Mirror {
   date                     Boolean
   sessionNumber            Boolean
   extraInformationRequired String  @db.Text
+  hospitalName             String?
 }
 
 model Orientation_Mobility_Training {
@@ -121,6 +124,7 @@ model Orientation_Mobility_Training_Mirror {
   date                     Boolean
   sessionNumber            Boolean
   extraInformationRequired String  @db.Text
+  hospitalName             String?
 }
 
 model Vision_Enhancement {
@@ -136,6 +140,7 @@ model Vision_Enhancement_Mirror {
   date                     Boolean
   sessionNumber            Boolean
   extraInformationRequired String  @db.Text
+  hospitalName             String?
 }
 
 model Counselling_Education {
@@ -153,6 +158,7 @@ model Counselling_Education_Mirror {
   sessionNumber            Boolean
   typeCounselling          Boolean
   extraInformationRequired String  @db.Text
+  hospitalName             String?
 }
 
 model Camps {

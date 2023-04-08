@@ -30,7 +30,7 @@ export async function getServerSideProps(ctx) {
     return {
         props: {
             user: user,
-            requiredBeneficiaryFields: await readBeneficiaryMirror(),
+            requiredBeneficiaryFields: await readBeneficiaryMirror(null),
             error: null
         },
     }
@@ -48,6 +48,7 @@ function requiredFields(props) {
 
     async function addFieldsSubmit(e) {
         e.preventDefault()
+        let hospitalNameOverride = document.getElementById("hospitalNameOverride").value
         let phoneNumberRequired = document.getElementById("phoneNumberRequired").checked
         let educationRequired = document.getElementById("educationRequired").checked
         let occupationRequired = document.getElementById("occupationRequired").checked
@@ -73,6 +74,7 @@ function requiredFields(props) {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
+                hospitalNameOverride: hospitalNameOverride,
                 phoneNumberRequired: phoneNumberRequired,
                 educationRequired: educationRequired,
                 occupationRequired: occupationRequired,
@@ -124,6 +126,11 @@ function requiredFields(props) {
             <form action="#" method="POST" onSubmit={(e) => addFieldsSubmit(e)}>
                 <p>Required Beneficiary Input Fields</p>
                 <p>MRN, Beneficiary Name, And Hospital Name Will Always Be Required</p>
+                <p>Optional Override At Hospital Level</p>
+                <div className="form-group">
+                    <input type="text" id="hospitalNameOverride"/>
+                    <label className="form-check-label" htmlFor="hospitalNameOverride">Hospital Name Override</label>
+                </div>
                 <p>Default Fields</p>
                 <div className="form-group">
                     <input type="checkbox" className="form-check-input" id="phoneNumberRequired" defaultChecked={props.requiredBeneficiaryFields.phoneNumberRequired}/>

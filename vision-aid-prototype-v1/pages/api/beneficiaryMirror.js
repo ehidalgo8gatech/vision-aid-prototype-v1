@@ -17,8 +17,12 @@ async function readData(req, res) {
 }
 
 async function addData(req, res) {
-    let beneficiaryMirror = await readBeneficiaryMirror()
     const body = req.body;
+    let beneficiaryMirror = await readBeneficiaryMirror(await prisma.hospital.findFirst({
+        where: {
+            name: body.hospitalNameOverride
+        }
+    }))
     const update = {
         where: {
             id: beneficiaryMirror.id,
@@ -44,6 +48,29 @@ async function addData(req, res) {
     }
 }
 
-export async function readBeneficiaryMirror() {
+export async function readBeneficiaryMirror(hospital) {
+    if (hospital != null && hospital.name != null) {
+        const bm = await prisma.beneficiary_Mirror.findFirst({
+            where: {
+                hospitalName: hospital.name
+            }
+        })
+        if (bm != null) return bm
+        return prisma.beneficiary_Mirror.create({
+            data: {
+                id: Math.ceil(Math.random() * (2000000000 - 2) + 2),
+                hospitalName: hospital.name,
+                phoneNumberRequired: true,
+                educationRequired: true,
+                occupationRequired: true,
+                districtsRequired: true,
+                stateRequired: true,
+                diagnosisRequired: true,
+                visionRequired: true,
+                mDVIRequired: true,
+                extraInformationRequired: "[]"
+            }
+        })
+    }
     return prisma.beneficiary_Mirror.findFirst({});
 }

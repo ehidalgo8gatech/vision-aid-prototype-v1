@@ -4,6 +4,7 @@ import {getSession} from "next-auth/react";
 import {readBeneficiaryMirror} from "@/pages/api/beneficiaryMirror";
 import {v4 as uuidv4} from 'uuid';
 import Router from "next/router";
+import {getHospitalRoleByUserId} from "@/pages/api/hospitalRole";
 
 // http://localhost:3000/beneficiaryinformation
 export async function getServerSideProps(ctx) {
@@ -27,10 +28,15 @@ export async function getServerSideProps(ctx) {
             },
         }
     }
+    const hospitalRole = await getHospitalRoleByUserId(user.id)
+    var hospital = null
+    if (hospitalRole != null) {
+        hospital = hospitalRole.hospital
+    }
     return {
         props: {
             user: user,
-            requiredBeneficiaryFields: await readBeneficiaryMirror(),
+            requiredBeneficiaryFields: await readBeneficiaryMirror(hospital),
             error: null
         },
     }
