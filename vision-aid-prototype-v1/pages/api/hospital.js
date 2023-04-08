@@ -25,17 +25,21 @@ async function readData(req, res) {
                 },
             })
         } else {
-            hospital = await prisma.hospital.findMany({
-                include: {
-                    hospitalRole: true,
-                },
-            })
+            return findAllHospital()
         }
         return res.status(200).json(hospital, {success: true});
     } catch (error) {
         console.log(error)
         return res.status(500).json({error: "Error reading from database", success: false});
     }
+}
+
+export async function findAllHospital() {
+    return prisma.hospital.findMany({
+        include: {
+            hospitalRole: true,
+        },
+    })
 }
 
 async function addData(req, res) {

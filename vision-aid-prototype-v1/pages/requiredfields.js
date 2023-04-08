@@ -4,6 +4,7 @@ import {getSession} from "next-auth/react";
 import {readBeneficiaryMirror} from "@/pages/api/beneficiaryMirror";
 import { v4 as uuidv4 } from 'uuid';
 import Router from "next/router";
+import {findAllHospital} from "@/pages/api/hospital";
 
 // http://localhost:3000/requiredfields
 export async function getServerSideProps(ctx) {
@@ -31,6 +32,7 @@ export async function getServerSideProps(ctx) {
         props: {
             user: user,
             requiredBeneficiaryFields: await readBeneficiaryMirror(null),
+            hospitals: await findAllHospital(),
             error: null
         },
     }
@@ -121,8 +123,17 @@ function requiredFields(props) {
             <button type="button" id={data.name} onClick={removeExtraField(data.name, data.name)} className="btn btn-primary">remove field</button>
         </div>)
     })
+    const hospitalInfo = []
+    props.hospitals.forEach((data) => {
+        hospitalInfo.push(<div>
+            <p>{data.name}</p>
+            <br/>
+        </div>)
+    })
     return (
         <div>
+            <p>Hospitals</p>
+            {hospitalInfo}
             <form action="#" method="POST" onSubmit={(e) => addFieldsSubmit(e)}>
                 <p>Required Beneficiary Input Fields</p>
                 <p>MRN, Beneficiary Name, And Hospital Name Will Always Be Required</p>
