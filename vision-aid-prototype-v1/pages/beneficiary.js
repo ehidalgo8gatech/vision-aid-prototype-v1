@@ -5,6 +5,7 @@ import { useState } from 'react';
 import AddUserForm from './components/AddUserForm';
 import SearchBar from './components/SearchBar';
 import UserList from './components/UserList';
+import Navigation from './navigation/Navigation';
 
 function HomePage() {
     const [users, setUsers] = useState([]);
@@ -24,10 +25,13 @@ const searchUsers = async (searchTerm) => {
 };
 
 return (
-    <div className="container">
-    <h1 className="text-center mt-4 mb-4">Beneficiary Search</h1>
-    <SearchBar onSearch={searchUsers} />
-    <UserList users={users} />
+    <div>
+      <Navigation />
+      <h1 className="text-center mt-4 mb-4">Beneficiary Search</h1>
+      <div className='container'>
+        <SearchBar onSearch={searchUsers} />
+        <UserList users={users} />
+      </div>
     </div>
     
 );

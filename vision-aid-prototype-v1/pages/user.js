@@ -122,15 +122,6 @@ function UserPage({ user }) {
       <div className="row">
         <div className="col-12">
           <div className="mb-3">
-            {renderField('Diagnosis', 'diagnosis')}
-          </div>
-          <div className="mb-3">
-            {renderField('Vision', 'vision')}
-          </div>
-          <div className="mb-3">
-            {renderField('mDVI', 'mDVI')}
-          </div>
-          <div className="mb-3">
             {renderField('Extra Information', 'extraInformation')}
           </div>
         </div>

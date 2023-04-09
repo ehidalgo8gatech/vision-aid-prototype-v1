@@ -14,6 +14,7 @@ function SearchBar({ onSearch }) {
   
     return (
       <form onSubmit={handleSubmit} className="mb-3">
+        <div>
         <input
           type="text"
           value={searchTerm}
@@ -21,6 +22,9 @@ function SearchBar({ onSearch }) {
           className="form-control"
           placeholder="Search users"
         />
+        <br/>
+        <button type="submit" className="btn btn-primary">Submit</button>
+        </div>
       </form>
     );
   }

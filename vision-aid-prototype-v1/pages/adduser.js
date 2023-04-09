@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Navigation from './navigation/Navigation';
 
 const AddUser = () => {
   const [formData, setFormData] = useState({});
@@ -57,6 +58,7 @@ const AddUser = () => {
 
   return (
     <div className="container">
+      <Navigation />
       <h1 className="text-center mt-4 mb-4">Add User</h1>
       <form onSubmit={handleSubmit}>
         <div className="row">

@@ -4,6 +4,8 @@ import {getSession} from "next-auth/react";
 import {readBeneficiaryMirror} from "@/pages/api/beneficiaryMirror";
 import {v4 as uuidv4} from 'uuid';
 import Router from "next/router";
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 // http://localhost:3000/beneficiaryinformation
 export async function getServerSideProps(ctx) {
@@ -37,7 +39,7 @@ export async function getServerSideProps(ctx) {
 }
 
 function requiredFields(props) {
-
+    const router = useRouter();
     async function submitInfo(e) {
         e.preventDefault()
         let mrn = document.getElementById("mrn") != null ? document.getElementById("mrn").value : null
@@ -54,7 +56,8 @@ function requiredFields(props) {
         let vision = document.getElementById("vision") != null ? document.getElementById("vision").value : null
         let mDVI = document.getElementById("mDVI") != null ? document.getElementById("mDVI").value : null
         console.log("mrn" + mrn + "beneficiaryName" + beneficiaryName + "dateOfBirth" + dateOfBirth + "gender" + gender + "phoneNumber" + phoneNumber, "education" + education, "occupation" + occupation, "districts" + districts, "state" + state, "diagnosis" + diagnosis, "vision" + vision, "mDVI" + mDVI)
-        let elements = document.getElementsByClassName("extraField");
+        let elements = document.getElementsByName("extraField");
+        document.get
         let extraInformation = []
         for (let i = 0; i < elements.length; i++) {
             let body = {
@@ -101,30 +104,45 @@ function requiredFields(props) {
             })
         })
         let json = await response.json()
-        alert("beneficiary " + JSON.stringify(json))
-        Router.reload()
+        //alert("beneficiary " + JSON.stringify(json))
+        //Router.reload()
+        if (response.ok) {
+            router.push('/user?mrn=' + mrn);
+        } else {
+          alert('An error occurred while creating the user. Please try again.');
+        }
+
     }
 
     const mrn = (
-        <div className="form-group">
-            <input type="text" id="mrn"/>
-            <label className="form-check-label" htmlFor="mrn">MRN</label>
+        <div>
+            <label htmlFor='mrn'>MRN</label>
+            <input 
+                type="text" 
+                className="form-control"
+                id="mrn"/>
         </div>
     )
 
     const beneficiaryName = (
-        <div className="form-group">
-            <input type="text" id="beneficiaryName"/>
-            <label className="form-check-label" htmlFor="beneficiaryName">Beneficiary Name</label>
+        <div>
+            <label htmlFor='beneficiaryName'>Beneficiary Name</label>
+            <input 
+                type="text" 
+                className="form-control"
+                id="beneficiaryName"/>
         </div>
     )
 
     var hospitalName;
     if (props.user.hospitalRole == null) {
         hospitalName = (
-        <div className="form-group">
-            <input type="text" id="hospitalName"/>
-            <label className="form-check-label" htmlFor="hospitalName">Hospital Name</label>
+        <div>
+            <label htmlFor='hospitalName'>Hospital Name</label>
+            <input 
+                type="text" 
+                className="form-control"
+                id="hospitalName"/>
         </div>
     )} else {
         hospitalName = (
@@ -133,17 +151,23 @@ function requiredFields(props) {
     }
 
     const dateOfBirth = (
-        <div className="form-group">
-            <input type="date" id="dateOfBirth"/>
-            <label className="form-check-label" htmlFor="dateOfBirth">Date Of Birth</label>
+        <div>
+            <label htmlFor='dateOfBirth'>Date Of Birth</label>
+            <input 
+                type="date" 
+                className="form-control"
+                id="dateOfBirth"/>
         </div>
     )
 
 
     const gender = (
-        <div className="form-group">
-            <input type="text" id="gender"/>
-            <label className="form-check-label" htmlFor="gender">Gender</label>
+        <div>
+            <label htmlFor='gender'>Gender</label>
+            <input 
+                type="text" 
+                className="form-control"
+                id="gender"/>
         </div>
     )
 
@@ -155,9 +179,12 @@ function requiredFields(props) {
         )
     } else {
         phoneNumber = (
-            <div className="form-group">
-                <input type="text" id="phoneNumber"/>
-                <label className="form-check-label" htmlFor="phoneNumber">Phone Number</label>
+            <div>
+                <label htmlFor='phoneNumber'>Phone Number</label>
+                <input 
+                    type="text" 
+                    className="form-control"
+                    id="phoneNumber"/>
             </div>
         )
     }
@@ -169,9 +196,12 @@ function requiredFields(props) {
         )
     } else {
         education = (
-            <div className="form-group">
-                <input type="text" id="education"/>
-                <label className="form-check-label" htmlFor="education">Education</label>
+            <div>
+                <label htmlFor='education'>Education</label>
+                <input 
+                    type="text" 
+                    className="form-control"
+                    id="education"/>
             </div>
         )
     }
@@ -184,9 +214,12 @@ function requiredFields(props) {
     } else {
 
         occupation = (
-            <div className="form-group">
-                <input type="text" id="occupation"/>
-                <label className="form-check-label" htmlFor="occupation">Occupation</label>
+            <div>
+                <label htmlFor='occupation'>Occupation</label>
+                <input 
+                    type="text" 
+                    className="form-control"
+                    id="occupation"/>
             </div>
         )
     }
@@ -198,9 +231,12 @@ function requiredFields(props) {
         )
     } else {
         districts = (
-            <div className="form-group">
-                <input type="text" id="districts"/>
-                <label className="form-check-label" htmlFor="districts">Districts</label>
+            <div>
+                <label htmlFor='districts'>Districts</label>
+                <input 
+                    type="text" 
+                    className="form-control"
+                    id="districts"/>
             </div>
         )
     }
@@ -212,10 +248,13 @@ function requiredFields(props) {
         )
     } else {
         state = (
-            <div className="form-group">
-                <input type="text" id="state"/>
-                <label className="form-check-label" htmlFor="state">State</label>
-            </div>
+            <div>
+                <label htmlFor='state'>State</label>
+                <input 
+                    type="text" 
+                    className="form-control"
+                    id="state"/>
+            </div>       
         )
     }
 
@@ -267,9 +306,14 @@ function requiredFields(props) {
     extraInformation.forEach((data) => {
         exInfo.push(
             <div>
-                <input type="text" id={data.name} className="extraField"/>
-                <label className="form-check-label" htmlFor={data.name}>{data.name}</label>
-            </div>)
+                <label htmlFor={data.name}>{data.name}</label>
+                <input 
+                    type="text" 
+                    className="form-control"
+                    name="extraField"
+                    id={data.name}/> 
+            </div> 
+            )
     })
 
     async function search(e) {
@@ -305,45 +349,31 @@ function requiredFields(props) {
     }
 
     return (
-        <div>
-            <p>Search beneficiary information by name</p>
-            <form action="#" method="POST" onSubmit={(e) => search(e)}>
-                <input type="text" id="searchName"/>
-                <label className="form-check-label" htmlFor="searchName">name</label>
-                <br/>
-                <button type="submit" className="btn btn-primary">Submit</button>
-            </form>
-            <table className="table">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>MRN</th>
-                    <th>Date Of Birth</th>
-                    <th>Hospital Name</th>
-                </tr>
-                </thead>
-                <tbody id="searchNameDiv">
-                </tbody>
-            </table>
-
-            <p>Enter Beneficiary Information</p>
+        <div className="container">
+            <h1 className="text-center mt-4 mb-4">Add User</h1>
             <form action="#" method="POST" onSubmit={(e) => submitInfo(e)}>
-                {mrn}
-                {beneficiaryName}
-                {hospitalName}
-                {dateOfBirth}
-                {gender}
-                {phoneNumber}
-                {education}
-                {occupation}
-                {districts}
-                {state}
+                <div className="row">
+                    <div className="col-md-6">
+                        <div className="mb-3">{mrn}</div>
+                        <div className="mb-3">{beneficiaryName}</div>
+                        <div className="mb-3">{hospitalName}</div>
+                        <div className="mb-3">{dateOfBirth}</div>
+                        <div className="mb-3">{gender}</div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="mb-3">{phoneNumber}</div>
+                        <div className="mb-3">{education}</div>
+                        <div className="mb-3">{occupation}</div>
+                        <div className="mb-3">{districts}</div>
+                        <div className="mb-3">{state}</div>
+                    </div>
+                </div>
                 {diagnosis}
                 {vision}
                 {mDVI}
                 <br/>
                 <div id="extraFields">
-                    <p>Extra Fields</p>
+                    <p>Additional Fields</p>
                     {exInfo}
                 </div>
                 <br/>
