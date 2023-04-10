@@ -112,11 +112,12 @@ model Mobile_Training_Mirror {
 }
 
 model Orientation_Mobility_Training {
-  id            Int         @id @default(autoincrement())
-  beneficiary   Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
-  beneficiaryId String
-  date          DateTime?
-  sessionNumber Int?
+  id               Int         @id @default(autoincrement())
+  beneficiary      Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
+  beneficiaryId    String
+  date             DateTime?
+  sessionNumber    Int?
+  extraInformation String      @db.Text
 }
 
 model Orientation_Mobility_Training_Mirror {
@@ -128,11 +129,12 @@ model Orientation_Mobility_Training_Mirror {
 }
 
 model Vision_Enhancement {
-  id            Int         @id @default(autoincrement())
-  beneficiary   Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
-  beneficiaryId String
-  date          DateTime?
-  sessionNumber Int?
+  id               Int         @id @default(autoincrement())
+  beneficiary      Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
+  beneficiaryId    String
+  date             DateTime?
+  sessionNumber    Int?
+  extraInformation String      @db.Text
 }
 
 model Vision_Enhancement_Mirror {
@@ -144,12 +146,13 @@ model Vision_Enhancement_Mirror {
 }
 
 model Counselling_Education {
-  id              Int         @id @default(autoincrement())
-  beneficiary     Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
-  beneficiaryId   String
-  date            DateTime?
-  sessionNumber   Int?
-  typeCounselling String?
+  id               Int         @id @default(autoincrement())
+  beneficiary      Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
+  beneficiaryId    String
+  date             DateTime?
+  sessionNumber    Int?
+  typeCounselling  String?
+  extraInformation String      @db.Text
 }
 
 model Counselling_Education_Mirror {
