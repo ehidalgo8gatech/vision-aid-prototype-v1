@@ -13,7 +13,12 @@ export default async function handler(req, res) {
 }
 
 async function readData(req, res) {
-
+    try {
+        return res.status(200).json(getBenMirror(req.query.hospital), {success: true});
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({error: "Error reading from database", success: false});
+    }
 }
 
 async function addData(req, res) {
@@ -72,5 +77,16 @@ export async function readBeneficiaryMirror(hospital) {
             }
         })
     }
+    return prisma.beneficiary_Mirror.findFirst({});
+}
+
+export async function getBenMirror(hospitalName) {
+        const bm = await prisma.beneficiary_Mirror.findFirst({
+            where: {
+                hospitalName: hospitalName
+            }
+        })
+    console.log(bm)
+        if (bm != null) return bm
     return prisma.beneficiary_Mirror.findFirst({});
 }

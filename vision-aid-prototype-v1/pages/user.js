@@ -4,11 +4,11 @@ import { useRouter } from 'next/router';
 import { Pencil } from 'react-bootstrap-icons';
 import Navigation from './navigation/Navigation';
 
-function UserPage({ user }) {
+function UserPage(props) {
   const router = useRouter();
 
   // State variable for form fields
-  const [formData, setFormData] = useState(user);
+  const [formData, setFormData] = useState(props.user);
   const [editableField, setEditableField] = useState('');
 
   // Handle input changes
@@ -34,7 +34,7 @@ function UserPage({ user }) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ mrn: user.mrn, [field]: formData[field] }),
+      body: JSON.stringify({ mrn: props.user.mrn, [field]: formData[field] }),
     });
   
     // Handle response from the API
@@ -46,17 +46,18 @@ function UserPage({ user }) {
     }
   };
 
-  if (!user) {
+  if (!props.user) {
     return <div>Loading...</div>;
   }
 
-  const renderField = (label, field) => (
+  const renderField = (label, field, type) => (
     <div className="mb-3">
-      <strong>{label}:</strong>
       {editableField === field ? (
+              <div>
+                  <strong>{label}:</strong>
         <form onSubmit={(e) => handleSubmit(e, field)} className="d-inline ms-2">
           <input
-            type="text"
+            type={type}
             className="form-control d-inline w-auto"
             name={field}
             value={formData[field]}
@@ -66,7 +67,10 @@ function UserPage({ user }) {
             Save
           </button>
         </form>
-      ) : (
+              </div>
+      ) : type == 'hidden' ? (<div></div>) : (
+          <div>
+              <strong>{label}:</strong>
         <span className="ms-2">
           {formData[field]}
           <button
@@ -77,6 +81,7 @@ function UserPage({ user }) {
            <Pencil />
           </button>
         </span>
+          </div>
       )}
     </div>
   );
@@ -89,36 +94,36 @@ function UserPage({ user }) {
         <div className="row">
             <div className="col-md-6">
             <div className="mb-3">
-                {renderField('MRN', 'mrn')}
+                {renderField('MRN', 'mrn', 'text')}
             </div>
             <div className="mb-3">
-                {renderField('Beneficiary Name', 'beneficiaryName')}
+                {renderField('Beneficiary Name', 'beneficiaryName', 'text')}
             </div>
             <div className="mb-3">
-                {renderField('Hospital ID', 'hospitalId')}
+                {renderField('Hospital ID', 'hospitalId', 'text')}
             </div>
             <div className="mb-3">
-                {renderField('Date of Birth', 'dateOfBirth')}
+                {renderField('Date of Birth', 'dateOfBirth', 'date')}
             </div>
             <div className="mb-3">
-                {renderField('Gender', 'gender')}
+                {renderField('Gender', 'gender', 'text')}
             </div>
             </div>
             <div className="col-md-6">
             <div className="mb-3">
-                {renderField('Phone Number', 'phoneNumber')}
+                {renderField('Phone Number', 'phoneNumber', ((props.beneficiaryMirror.phoneNumberRequired) ? 'text' : (props.beneficiaryMirror)))}
             </div>
             <div className="mb-3">
-                {renderField('Education', 'education')}
+                {renderField('Education', 'education', ((props.beneficiaryMirror.educationRequired) ? 'text' : 'hidden'))}
             </div>
             <div className="mb-3">
-                {renderField('Occupation', 'occupation')}
+                {renderField('Occupation', 'occupation', ((props.beneficiaryMirror.occupationRequired) ? 'text' : 'hidden'))}
             </div>
             <div className="mb-3">
-                {renderField('Districts', 'districts')}
+                {renderField('Districts', 'districts', ((props.beneficiaryMirror.districtsRequired) ? 'text' : 'hidden'))}
             </div>
             <div className="mb-3">
-                {renderField('State', 'state')}
+                {renderField('State', 'state', ((props.beneficiaryMirror.stateRequired) ? 'text' : 'hidden'))}
             </div>
             </div>
         </div>
@@ -152,8 +157,18 @@ export async function getServerSideProps({ query }) {
     };
   }
 
+    const benMirror = await fetch(`${process.env.NEXTAUTH_URL}/api/beneficiaryMirror?hospital=` + user.hospital.name, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    })
+    const benMirrorJson = await benMirror.json();
+
+
   return {
-    props: { user },
+    props: {
+        user: user,
+        beneficiaryMirror: benMirrorJson
+    },
   };
 }
 
