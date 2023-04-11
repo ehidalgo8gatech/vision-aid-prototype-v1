@@ -23,7 +23,9 @@ async function addData(req, res) {
             beneficiaryId: body.beneficiaryId,
             date: body.date,
             sessionNumber: body.sessionNumber,
+            visionType: body.visionType,
             typeCounselling: body.typeCounselling,
+            MDVI: body.MDVI,
             extraInformation: body.extraInformation,
         },
         include: {
