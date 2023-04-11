@@ -79,7 +79,10 @@ function UserList({ users }) {
       else
         router.push(`/beneficiaryinformation`);
     };
-
+  
+    if (!users) {
+      return <div>Loading...</div>;
+    }
   
     return (
       <div className="row">
@@ -104,4 +107,5 @@ function UserList({ users }) {
     );
   }
   
-export default UserList;
+  export default UserList;
+  
