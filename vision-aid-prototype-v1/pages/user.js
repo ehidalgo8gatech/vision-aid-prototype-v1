@@ -39,7 +39,6 @@ function UserPage(props) {
       // parse date
       data['date'] = new Date(data['date']);
       data['beneficiaryId'] = props.user.mrn;
-      console.log(data);
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -206,16 +205,19 @@ function UserPage(props) {
             existingTrainings={mobileTrainingData}
             addNewTraining={handleSubmitMobileTraining}
             title="Mobile Training"
+            customFields={['vision', 'typeOfCounselling']}
           />
           <TrainingForm
             existingTrainings={computerTrainingData}
             addNewTraining={handleSubmitComputerTraining}
             title="Computer Training"
+            customFields={['vision', 'typeOfCounselling']}
           />
           <TrainingForm
             existingTrainings={visionTrainingData}
             addNewTraining={handleSubmitVisionTraining}
             title="Vision Training"
+            customFields={[]}
           />
         </div>
         </div>

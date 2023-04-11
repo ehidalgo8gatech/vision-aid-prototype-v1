@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import { Pencil } from 'react-bootstrap-icons';
 
-const TrainingForm = ({ existingTrainings, addNewTraining, title }) => {
+const TrainingForm = ({ existingTrainings, addNewTraining, customFields, title }) => {
   const [showForm, setShowForm] = useState(false);
 
   const handleToggle = () => {
@@ -11,14 +11,22 @@ const TrainingForm = ({ existingTrainings, addNewTraining, title }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const customData = customFields.reduce((acc, field) => {
+        acc[field] = e.target[field].value;
+        return acc;
+      }, {})
     const newTraining = {
       date: e.target.date.value,
       sessionNumber: e.target.sessionNumber.value,
       extraInformation: e.target.extraInformation.value,
+      ...customData
     };
+    console.log(newTraining);
     addNewTraining(newTraining);
     setShowForm(false);
   };
+
+  console.log(existingTrainings);
 
   return (
     <div className="col-4">
@@ -31,6 +39,11 @@ const TrainingForm = ({ existingTrainings, addNewTraining, title }) => {
           <p>
             <strong>Session Number:</strong> {training.sessionNumber}
           </p>
+          {customFields.map((field) => (
+            <p key={field}>
+              <strong>{field}:</strong> {training[field]}
+            </p>
+          ))}
           <p>
             <strong>Extra Information:</strong> {training.extraInformation}
           </p>
@@ -56,6 +69,12 @@ const TrainingForm = ({ existingTrainings, addNewTraining, title }) => {
               </Form.Group>
             </Col>
           </Row>
+          {customFields.map((field) => (
+            <Form.Group controlId={field} key={field}>
+              <Form.Label>{field}</Form.Label>
+              <Form.Control type="text" />
+            </Form.Group>
+          ))}
           <Form.Group controlId="extraInformation">
             <Form.Label>Extra Information</Form.Label>
             <Form.Control as="textarea" rows={3} />
