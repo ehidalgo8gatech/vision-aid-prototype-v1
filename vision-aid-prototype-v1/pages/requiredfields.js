@@ -5,6 +5,7 @@ import {readBeneficiaryMirror} from "@/pages/api/beneficiaryMirror";
 import { v4 as uuidv4 } from 'uuid';
 import Router from "next/router";
 import Navigation from './navigation/Navigation';
+import {findAllHospital} from "@/pages/api/hospital";
 
 // http://localhost:3000/requiredfields
 export async function getServerSideProps(ctx) {
@@ -32,6 +33,7 @@ export async function getServerSideProps(ctx) {
         props: {
             user: user,
             requiredBeneficiaryFields: await readBeneficiaryMirror(),
+            hospitals: await findAllHospital(),
             error: null
         },
     }
@@ -49,6 +51,7 @@ function RequiredFields(props) {
 
     async function addFieldsSubmit(e) {
         e.preventDefault()
+        let hospitalNameOverride = document.getElementById("hospitalNameOverride").value
         let phoneNumberRequired = document.getElementById("phoneNumberRequired").checked
         let educationRequired = document.getElementById("educationRequired").checked
         let occupationRequired = document.getElementById("occupationRequired").checked
@@ -74,6 +77,7 @@ function RequiredFields(props) {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
+                hospitalNameOverride: hospitalNameOverride,
                 phoneNumberRequired: phoneNumberRequired,
                 educationRequired: educationRequired,
                 occupationRequired: occupationRequired,
@@ -135,6 +139,13 @@ function RequiredFields(props) {
 
         )
     })
+    const hospitalInfo = []
+    props.hospitals.forEach((data) => {
+        hospitalInfo.push(<div>
+            <p>{data.name}</p>
+            <br/>
+        </div>)
+    })
     return (
         <div>
             <Navigation />
@@ -142,6 +153,12 @@ function RequiredFields(props) {
                 <h1 className="text-center mt-4 mb-4">Required Beneficiary Input Fields</h1>
                 
                 <p>MRN, Beneficiary Name, And Hospital Name Will Always Be Required</p>
+                
+                <div className='container' hidden>
+                    <strong>Optional Override At Hospital Level</strong>
+                    <input type="text" id="hospitalNameOverride" class="form-control"/>
+                    <label className="form-check-label" htmlFor="hospitalNameOverride">Hospital Name Override</label>
+                </div>
                 <div className="row">
                     <div className="col-md-6">
                         <strong>Default Fields</strong>
