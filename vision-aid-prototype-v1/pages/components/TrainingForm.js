@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import { Pencil } from 'react-bootstrap-icons';
 
-const TrainingForm = ({ existingTrainings, addNewTraining, customFields, title }) => {
+const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, title }) => {
   const [showForm, setShowForm] = useState(false);
 
   const handleToggle = () => {
