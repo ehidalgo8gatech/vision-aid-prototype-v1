@@ -18,25 +18,7 @@ async function readData(req, res) {
         if (req.query.email != null) {
             user = await readUser(req.query.email)
         } else if (req.query.hospitalName != null) {
-            const hospital = await prisma.hospitalRole.findMany({
-                where: {
-                    name: req.query.hospitalName,
-                },
-                include: {
-                    hospitalRole: true
-                }
-            })
-            let userId = []
-            hospital.forEach(hospital => {
-                hospital.hospitalRole.forEach(role => {
-                    userId.push(role.userId)
-                })
-            })
-            user = prisma.user.findMany({
-                where: {
-                    userId: { in: userId },
-                }
-            })
+            getUsersByHospital(req.query.hospitalName)
         } else {
             user = await prisma.user.findMany({
                 include: {
@@ -50,6 +32,28 @@ async function readData(req, res) {
         console.log(error)
         return res.status(500).json({error: "Error reading from database", success: false});
     }
+}
+
+export async function getUsersByHospital(hospitalId){
+    const hospital = await prisma.hospitalRole.findMany({
+        where: {
+            name: hospitalId,
+        },
+        include: {
+            hospitalRole: true
+        }
+    })
+    let userId = []
+    hospital.forEach(hospital => {
+        hospital.hospitalRole.forEach(role => {
+            userId.push(role.userId)
+        })
+    })
+    return prisma.user.findMany({
+        where: {
+            userId: { in: userId },
+        }
+    })
 }
 
 export async function readUser(email) {

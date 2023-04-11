@@ -1,7 +1,6 @@
 import Navigation from './navigation/Navigation';
 import {getSession} from "next-auth/react";
 import {readUser} from "@/pages/api/user";
-import {readBeneficiaryMirror} from "@/pages/api/beneficiaryMirror";
 import {findAllHospital} from "@/pages/api/hospital";
 
 export async function getServerSideProps(ctx) {
@@ -52,8 +51,19 @@ function Users(props) {
             <Navigation />
             <strong>Hospital Information</strong>
             {displayAllHospitals}
-            <form>
-
+            <form action="#" method="POST" onSubmit={(e) => addFieldsSubmit(e)}>
+                <div>
+                    <label htmlFor='email'>User Email</label>
+                    <input type="text" className="form-control" id="userEmail"/>
+                </div>
+                <div>
+                    <label htmlFor='hospitalId'>Hospital Id</label>
+                    <input type="text" className="form-control" id="hospitalId"/>
+                </div>
+                <div>
+                    <label htmlFor='manager'>Manager</label>
+                    <input type="checkbox" className="form-check-input" id="manager"/>
+                </div>
             </form>
         </div>
     )
