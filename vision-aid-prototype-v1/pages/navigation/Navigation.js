@@ -6,6 +6,9 @@ const Navigation = () => {
 
   return (
     <nav>
+      <div className="logo">
+      <img src="/vision-aid-logo.jpeg" width="80" height="80" class="d-inline-block" alt="logo"/>
+      </div>
       <ul>
         <li>
           <Link href="/beneficiary" legacyBehavior>
@@ -32,6 +35,10 @@ const Navigation = () => {
       <style jsx>{`
         nav {
           background-color: #1B5E20;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 2rem;
         }
         
         ul {
@@ -41,12 +48,16 @@ const Navigation = () => {
           padding: 0;
         }
         
+        .logo img {
+          height: 80px;
+        }
         
         a {
           color: #fff;
           text-decoration: none;
           padding: 0.5rem;
           border-radius: 0.5rem;
+          font-size: 1.2rem
         }
         
         a:hover {
@@ -64,3 +75,4 @@ const Navigation = () => {
 };
 
 export default Navigation;
+

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Pencil } from 'react-bootstrap-icons';
+import Navigation from './navigation/Navigation';
 
 function UserPage({ user }) {
   const router = useRouter();
@@ -81,51 +82,54 @@ function UserPage({ user }) {
   );
 
   return (
-    <div className="container">
-      <h1 className="text-center mt-4 mb-4">User Details</h1>
-      <div className="row">
-        <div className="col-md-6">
-          <div className="mb-3">
-            {renderField('MRN', 'mrn')}
-          </div>
-          <div className="mb-3">
-            {renderField('Beneficiary Name', 'beneficiaryName')}
-          </div>
-          <div className="mb-3">
-            {renderField('Hospital ID', 'hospitalId')}
-          </div>
-          <div className="mb-3">
-            {renderField('Date of Birth', 'dateOfBirth')}
-          </div>
-          <div className="mb-3">
-            {renderField('Gender', 'gender')}
-          </div>
+    <div>
+        <Navigation />
+        <div className="container">
+        <h1 className="text-center mt-4 mb-4">Beneficiary Details</h1>
+        <div className="row">
+            <div className="col-md-6">
+            <div className="mb-3">
+                {renderField('MRN', 'mrn')}
+            </div>
+            <div className="mb-3">
+                {renderField('Beneficiary Name', 'beneficiaryName')}
+            </div>
+            <div className="mb-3">
+                {renderField('Hospital ID', 'hospitalId')}
+            </div>
+            <div className="mb-3">
+                {renderField('Date of Birth', 'dateOfBirth')}
+            </div>
+            <div className="mb-3">
+                {renderField('Gender', 'gender')}
+            </div>
+            </div>
+            <div className="col-md-6">
+            <div className="mb-3">
+                {renderField('Phone Number', 'phoneNumber')}
+            </div>
+            <div className="mb-3">
+                {renderField('Education', 'education')}
+            </div>
+            <div className="mb-3">
+                {renderField('Occupation', 'occupation')}
+            </div>
+            <div className="mb-3">
+                {renderField('Districts', 'districts')}
+            </div>
+            <div className="mb-3">
+                {renderField('State', 'state')}
+            </div>
+            </div>
         </div>
-        <div className="col-md-6">
-          <div className="mb-3">
-            {renderField('Phone Number', 'phoneNumber')}
-          </div>
-          <div className="mb-3">
-            {renderField('Education', 'education')}
-          </div>
-          <div className="mb-3">
-            {renderField('Occupation', 'occupation')}
-          </div>
-          <div className="mb-3">
-            {renderField('Districts', 'districts')}
-          </div>
-          <div className="mb-3">
-            {renderField('State', 'state')}
-          </div>
+        <div className="row">
+            <div className="col-12">
+            <div className="mb-3">
+                {renderField('Extra Information', 'extraInformation')}
+            </div>
+            </div>
         </div>
-      </div>
-      <div className="row">
-        <div className="col-12">
-          <div className="mb-3">
-            {renderField('Extra Information', 'extraInformation')}
-          </div>
         </div>
-      </div>
     </div>
   );
 }

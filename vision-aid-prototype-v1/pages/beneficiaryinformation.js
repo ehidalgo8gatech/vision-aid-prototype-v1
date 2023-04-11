@@ -6,6 +6,7 @@ import {v4 as uuidv4} from 'uuid';
 import Router from "next/router";
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import Navigation from './navigation/Navigation';
 
 // http://localhost:3000/beneficiaryinformation
 export async function getServerSideProps(ctx) {
@@ -349,36 +350,39 @@ function RequiredFields(props) {
     }
 
     return (
-        <div className="container">
-            <h1 className="text-center mt-4 mb-4">Add User</h1>
-            <form action="#" method="POST" onSubmit={(e) => submitInfo(e)}>
-                <div className="row">
-                    <div className="col-md-6">
-                        <div className="mb-3">{mrn}</div>
-                        <div className="mb-3">{beneficiaryName}</div>
-                        <div className="mb-3">{hospitalName}</div>
-                        <div className="mb-3">{dateOfBirth}</div>
-                        <div className="mb-3">{gender}</div>
+        <div>
+            <Navigation />
+            <div className="container">
+                <h1 className="text-center mt-4 mb-4">Add User</h1>
+                <form action="#" method="POST" onSubmit={(e) => submitInfo(e)}>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <div className="mb-3">{mrn}</div>
+                            <div className="mb-3">{beneficiaryName}</div>
+                            <div className="mb-3">{hospitalName}</div>
+                            <div className="mb-3">{dateOfBirth}</div>
+                            <div className="mb-3">{gender}</div>
+                        </div>
+                        <div className="col-md-6">
+                            <div className="mb-3">{phoneNumber}</div>
+                            <div className="mb-3">{education}</div>
+                            <div className="mb-3">{occupation}</div>
+                            <div className="mb-3">{districts}</div>
+                            <div className="mb-3">{state}</div>
+                        </div>
                     </div>
-                    <div className="col-md-6">
-                        <div className="mb-3">{phoneNumber}</div>
-                        <div className="mb-3">{education}</div>
-                        <div className="mb-3">{occupation}</div>
-                        <div className="mb-3">{districts}</div>
-                        <div className="mb-3">{state}</div>
+                    {diagnosis}
+                    {vision}
+                    {mDVI}
+                    <br/>
+                    <div id="extraFields">
+                        <p>Additional Fields</p>
+                        {exInfo}
                     </div>
-                </div>
-                {diagnosis}
-                {vision}
-                {mDVI}
-                <br/>
-                <div id="extraFields">
-                    <p>Additional Fields</p>
-                    {exInfo}
-                </div>
-                <br/>
-                <button type="submit" className="btn btn-primary">Submit</button>
-            </form>
+                    <br/>
+                    <button type="submit" className="btn btn-primary">Submit</button>
+                </form>
+            </div>
         </div>
     )
 }
