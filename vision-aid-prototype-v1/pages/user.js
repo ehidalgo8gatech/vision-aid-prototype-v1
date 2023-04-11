@@ -1,8 +1,9 @@
 // pages/user.js
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Pencil } from 'react-bootstrap-icons';
 import Navigation from './navigation/Navigation';
+import TrainingForm from './components/TrainingForm';
 
 function UserPage(props) {
   const router = useRouter();
@@ -10,6 +11,73 @@ function UserPage(props) {
   // State variable for form fields
   const [formData, setFormData] = useState(props.user);
   const [editableField, setEditableField] = useState('');
+
+  const [mobileTrainingData, setMobileTrainingData] = useState([]);
+  const [computerTrainingData, setComputerTrainingData] = useState([]);
+  const [visionTrainingData, setVisionTrainingData] = useState([]);
+  const [openMobile, setOpenMobile] = useState(false);
+  const [openComputer, setOpenComputer] = useState(false);
+  const [openVision, setOpenVision] = useState(false);
+
+
+  useEffect(() => {
+    setMobileTrainingData(props.user.Mobile_Training);
+   }, []);
+   useEffect(() => {
+      setComputerTrainingData(props.user.Computer_Training);
+   }, []);
+    useEffect(() => {
+      if (props.user.Vision_Enhancement){
+        setVisionTrainingData(props.user.Vision_Enhancement);
+      }
+
+    }, []);
+
+  
+    const callMe = async (data, url, setter, cur_data) => {
+      data['sessionNumber'] = parseInt(data['sessionNumber']);
+      // parse date
+      data['date'] = new Date(data['date']);
+      data['beneficiaryId'] = props.user.mrn;
+      console.log(data);
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+  
+      // Handle response from the API
+      if (response.ok) {
+        alert('Training data saved successfully!');
+        setOpenMobile(false);
+        // get data from response
+        data['date'] = data['date'].toISOString().split('T')[0];
+        setter([...cur_data, data]);
+      } else {
+        alert('An error occurred while saving Mobile Training data. Please try again.');
+      }
+    }
+
+
+  const handleSubmitMobileTraining = async (data) => {
+    // Submit the MobileTraining data to the API
+    const url = '/api/mobileTraining';
+    callMe(data, url, setMobileTrainingData, mobileTrainingData);
+  };
+  
+  const handleSubmitComputerTraining = async (data) => {
+    // Submit the ComputerTraining data to the API
+    const url = '/api/computerTraining';
+    callMe(data, url, setComputerTrainingData, computerTrainingData);
+  };
+  
+  const handleSubmitVisionTraining = async (data) => {
+    // Submit the VisionTraining data to the API
+    const url = '/api/visionEnhancement';
+    callMe(data, url, setVisionTrainingData, visionTrainingData);
+  };  
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -85,7 +153,6 @@ function UserPage(props) {
       )}
     </div>
   );
-
   return (
     <div>
         <Navigation />
@@ -133,6 +200,23 @@ function UserPage(props) {
                 {renderField('Extra Information', 'extraInformation')}
             </div>
             </div>
+        </div>
+        <div className='row'>
+          <TrainingForm
+            existingTrainings={mobileTrainingData}
+            addNewTraining={handleSubmitMobileTraining}
+            title="Mobile Training"
+          />
+          <TrainingForm
+            existingTrainings={computerTrainingData}
+            addNewTraining={handleSubmitComputerTraining}
+            title="Computer Training"
+          />
+          <TrainingForm
+            existingTrainings={visionTrainingData}
+            addNewTraining={handleSubmitVisionTraining}
+            title="Vision Training"
+          />
         </div>
         </div>
     </div>

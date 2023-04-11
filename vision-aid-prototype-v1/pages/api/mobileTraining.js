@@ -13,11 +13,43 @@ export default async function handler(req, res) {
 }
 
 async function readData(req, res) {
-
+    try {
+        var training
+        if (req.query.beneficiaryId != null) {
+            training = await prisma.mobile_Training.findMany({
+                where: {
+                    beneficiaryId: {
+                        contains: req.query.beneficiaryId,
+                    }
+                },
+                include: {
+                    beneficiary: true
+                }
+            })
+        } else {
+            training = await prisma.mobile_Training.findMany({
+                include: {
+                    beneficiary: true
+                }
+            })
+        }
+        return res.status(200).json(training, {success: true});
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({error: 'Error reading data' + error, success: false});
+    }
 }
 
 async function addData(req, res) {
     const body = req.body;
+    //get beneficary from beneficiaryId
+    // const beneficiary = await prisma.beneficiary.findUnique({
+    //     where: {
+    //         mrn: {
+    //             contains: body.beneficiaryId
+    //         }
+    //     }
+    // })
     const create = {
         data: {
             beneficiaryId: body.beneficiaryId,
@@ -26,6 +58,7 @@ async function addData(req, res) {
             visionType: body.visionType,
             typeOfCounselling: body.typeOfCounselling,
             extraInformation: body.extraInformation,
+            // beneficiary: beneficiary
         },
         include: {
             beneficiary: true

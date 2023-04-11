@@ -7,7 +7,7 @@ const Navigation = () => {
   return (
     <nav>
       <div className="logo">
-      <img src="/vision-aid-logo.jpeg" width="80" height="80" class="d-inline-block" alt="logo"/>
+      <img src="/vision-aid-logo.jpeg" width="80" height="80" className="d-inline-block" alt="logo"/>
       </div>
       <ul>
         <li>
