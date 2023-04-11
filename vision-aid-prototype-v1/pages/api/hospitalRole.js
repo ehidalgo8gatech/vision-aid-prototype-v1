@@ -36,6 +36,18 @@ export async function getHospitalRoleByUserId(userId) {
 
 async function addData(req, res) {
     const body = req.body;
+    const hospitalRole = await prisma.hospitalRole.findUnique({
+        where: {
+            userId: req.body.userId
+        }})
+    const update = {
+        where: {
+            id: hospitalRole == null ? null : hospitalRole.id
+        },
+        data: {
+            admin: req.body.admin,
+        },
+    }
     const create = {
         data: {
             userId: body.userId,
@@ -43,10 +55,14 @@ async function addData(req, res) {
             admin: body.admin,
         },
     }
-    console.log("Request body " + JSON.stringify(body) + " create value " + JSON.stringify(create))
 
     try {
-        const newEntry = await prisma.hospitalRole.create(create)
+        var newEntry
+        if (hospitalRole != null) {
+            newEntry = await prisma.hospitalRole.update(update)
+        } else {
+            newEntry = await prisma.hospitalRole.create(create)
+        }
         return res.status(200).json(newEntry, {success: true});
     } catch (error) {
         console.log('Request error ' + error);
