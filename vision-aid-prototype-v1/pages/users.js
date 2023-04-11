@@ -40,17 +40,21 @@ function Users(props) {
     props.hospitals.forEach(hospital => {
         displayAllHospitals.push((
             <div>
+                <br/>
                 <div>Hospital Name {hospital.name}</div>
                 <div>Hospital Id {hospital.id}</div>
+                <br/>
             </div>
         ))
     })
     return(
         <div>
             <Navigation />
-            <p>Hospital Information</p>
+            <strong>Hospital Information</strong>
             {displayAllHospitals}
-            <h1 className="text-center mt-4 mb-4">Coming soon!</h1>
+            <form>
+
+            </form>
         </div>
     )
 
