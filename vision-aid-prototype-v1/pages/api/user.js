@@ -14,7 +14,37 @@ export default async function handler(req, res) {
 
 async function readData(req, res) {
     try {
-        const user = await readUser(req.query.email)
+        var user
+        if (req.query.email != null) {
+            user = await readUser(req.query.email)
+        } else if (req.query.hospitalName != null) {
+            const hospital = await prisma.hospitalRole.findMany({
+                where: {
+                    name: req.query.hospitalName,
+                },
+                include: {
+                    hospitalRole: true
+                }
+            })
+            let userId = []
+            hospital.forEach(hospital => {
+                hospital.hospitalRole.forEach(role => {
+                    userId.push(role.userId)
+                })
+            })
+            user = prisma.user.findMany({
+                where: {
+                    userId: { in: userId },
+                }
+            })
+        } else {
+            user = await prisma.user.findMany({
+                include: {
+                    hospitalRole: true,
+                    admin: true
+                },
+            })
+        }
         return res.status(200).json(user, {success: true});
     } catch (error) {
         console.log(error)

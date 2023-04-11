@@ -25,7 +25,10 @@ async function readData(req, res) {
                     }
                 },
                 include: {
-                    hospital: true
+                    hospital: true,
+                    Computer_Training: true,
+                    Mobile_Training: true,
+                    Orientation_Mobility_Training: true
                 }
             })
         } else if (req.query.mrn != null) {
@@ -36,13 +39,19 @@ async function readData(req, res) {
                     }
                 },
                 include: {
-                    hospital: true
+                    hospital: true,
+                    Computer_Training: true,
+                    Mobile_Training: true,
+                    Orientation_Mobility_Training: true
                 }
             })
         } else {
             beneficiary = await prisma.beneficiary.findMany({
                 include: {
-                hospital: true
+                hospital: true,
+                    Computer_Training: true,
+                    Mobile_Training: true,
+                    Orientation_Mobility_Training: true
             }
             })
         }
@@ -73,7 +82,10 @@ async function addData(req, res) {
             extraInformation: body.extraInformation
         },
         include: {
-            hospital: true
+            hospital: true,
+            Computer_Training: true,
+            Mobile_Training: true,
+            Orientation_Mobility_Training: true
         },
     }
     try {
