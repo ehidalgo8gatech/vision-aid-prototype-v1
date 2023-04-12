@@ -42,20 +42,12 @@ async function readData(req, res) {
 
 async function addData(req, res) {
     const body = req.body;
-    //get beneficary from beneficiaryId
-    // const beneficiary = await prisma.beneficiary.findUnique({
-    //     where: {
-    //         mrn: {
-    //             contains: body.beneficiaryId
-    //         }
-    //     }
-    // })
     const create = {
         data: {
             beneficiaryId: body.beneficiaryId,
             date: body.date,
             sessionNumber: body.sessionNumber,
-            visionType: body.visionType,
+            vision: body.vision,
             typeOfCounselling: body.typeOfCounselling,
             extraInformation: body.extraInformation,
             // beneficiary: beneficiary
