@@ -105,24 +105,54 @@ function Users(props) {
             </div>
         ))
     })
+
+    const hospitalOptions = [];
+    for (let i = 0; i < props.hospitals.length; i++) {
+    const hospital = props.hospitals[i];
+    hospitalOptions.push(
+        <option key={hospital.id} value={hospital.id}>
+        {hospital.name} (ID {hospital.id})
+        </option>
+    );
+    }
+
     return(
         <div>
             <Navigation />
-            <strong>Hospital Information</strong>
-            {displayAllHospitals}
+            <h1 className="text-center mt-4 mb-4">Hospital Information</h1>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <label htmlFor="hospitalSelect" style={{ marginRight: '10px' }}>Select a hospital</label>
+                <select id="hospitalSelect"
+                style={{
+                    border: "1px solid #ccc",
+                    borderRadius: "0.25rem",
+                    color: "#495057",
+                    backgroundColor: "#fff",
+                    boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
+                    transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
+                  }}
+                  >
+                    <option value="">Hospital Name</option>
+                    {hospitalOptions}
+                </select>
+            </div>
+            <br/>
             <form action="#" method="POST" onSubmit={(e) => addUser(e)}>
-                <div>
-                    <label htmlFor='email'>User Email</label>
-                    <input type="text" className="form-control" id="userEmail"/>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <label htmlFor='email' style={{ marginRight: '10px' }}>User Email</label>
+                    <input type="text" className="form-control" id="userEmail" style={{ width: '200px' }} />
                 </div>
-                <div>
-                    <label htmlFor='hospitalId'>Hospital Id</label>
-                    <input type="text" className="form-control" id="hospitalId"/>
+                <br/>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <label htmlFor='hospitalId' style={{ marginRight: '10px' }}>Hospital Id</label>
+                    <input type="text" className="form-control" id="hospitalId" style={{ width: '200px' }}/>
                 </div>
-                <div>
-                    <label htmlFor='manager'>Manager</label>
+                <br/>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <label htmlFor='manager' style={{ marginRight: '10px' }}>Manager</label>
                     <input type="checkbox" className="form-check-input" id="manager"/>
                 </div>
+                <br/>
                 <button type="submit" className="btn btn-primary">Submit</button>
             </form>
         </div>
