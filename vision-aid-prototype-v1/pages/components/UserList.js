@@ -100,9 +100,6 @@ function UserList({ users }) {
             </div>
           </div>
         ))}
-        <div className='col-md-4 col-sm-6 col-12 mb-4' onClick={() => openUserPage()}>
-        <button type="button" onClick={() => openUserPage()} class="btn btn-success border-0 btn-block">Create User</button>
-        </div>
       </div>
     );
   }
