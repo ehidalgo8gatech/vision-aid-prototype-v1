@@ -161,32 +161,32 @@ function RequiredFields(props) {
                 </div>
                 <div className="row">
                     <div className="col-md-6">
-                        <strong>Default Fields</strong>
+                        <strong>Required Fields</strong>
                         <br/>
                         <br/>
                         <div className="form-group">
                             <input type="checkbox" className="form-check-input" id="phoneNumberRequired" defaultChecked={props.requiredBeneficiaryFields.phoneNumberRequired}/>
-                            <label className="form-check-label" htmlFor="phoneNumberRequired">Phone Number Required</label>
+                            <label className="form-check-label" htmlFor="phoneNumberRequired" style={{ marginLeft: '10px' }}>Phone Number</label>
                         </div>
                         <br/>
                         <div className="form-group">
                             <input type="checkbox" className="form-check-input" id="educationRequired" defaultChecked={props.requiredBeneficiaryFields.educationRequired}/>
-                            <label className="form-check-label" htmlFor="educationRequired">Education Required</label>
+                            <label className="form-check-label" htmlFor="educationRequired" style={{ marginLeft: '10px' }}>Education</label>
                         </div>
                         <br/>
                         <div className="form-group">
                             <input type="checkbox" className="form-check-input" id="occupationRequired" defaultChecked={props.requiredBeneficiaryFields.occupationRequired}/>
-                            <label className="form-check-label" htmlFor="occupationRequired">Occupation Required</label>
+                            <label className="form-check-label" htmlFor="occupationRequired" style={{ marginLeft: '10px' }}>Occupation</label>
                         </div>
                         <br/>
                         <div className="form-group">
                             <input type="checkbox" className="form-check-input" id="districtsRequired" defaultChecked={props.requiredBeneficiaryFields.districtsRequired}/>
-                            <label className="form-check-label" htmlFor="districtsRequired">Districts Required</label>
+                            <label className="form-check-label" htmlFor="districtsRequired" style={{ marginLeft: '10px' }}>Districts</label>
                         </div>
                         <br/>
                         <div className="form-group">
                             <input type="checkbox" className="form-check-input" id="stateRequired" defaultChecked={props.requiredBeneficiaryFields.stateRequired}/>
-                            <label className="form-check-label" htmlFor="stateRequired">State Required</label>
+                            <label className="form-check-label" htmlFor="stateRequired" style={{ marginLeft: '10px' }}>State</label>
                         </div>
                     </div>
                     <div className="col-md-6">
