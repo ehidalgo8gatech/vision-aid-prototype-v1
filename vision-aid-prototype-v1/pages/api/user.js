@@ -63,8 +63,7 @@ export async function readUser(email) {
             },
             include: {
                 hospitalRole: true,
-                admin: true,
-                vision_Enhancement: true,
+                admin: true
             },
         });
 }
