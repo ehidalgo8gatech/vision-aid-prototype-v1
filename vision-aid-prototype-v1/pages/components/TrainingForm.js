@@ -25,9 +25,6 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
     addNewTraining(newTraining);
     setShowForm(false);
   };
-
-  console.log(existingTrainings);
-
   return (
     <div className="col-12">
       <h2 className="text-center">{title}</h2>

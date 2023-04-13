@@ -28,7 +28,8 @@ async function readData(req, res) {
                     hospital: true,
                     Computer_Training: true,
                     Mobile_Training: true,
-                    Orientation_Mobility_Training: true
+                    Orientation_Mobility_Training: true,
+                    Vision_Enhancement: true
                 }
             })
         } else if (req.query.mrn != null) {
@@ -42,7 +43,8 @@ async function readData(req, res) {
                     hospital: true,
                     Computer_Training: true,
                     Mobile_Training: true,
-                    Orientation_Mobility_Training: true
+                    Orientation_Mobility_Training: true,
+                    Vision_Enhancement: true
                 }
             })
         } else {
@@ -51,7 +53,8 @@ async function readData(req, res) {
                 hospital: true,
                     Computer_Training: true,
                     Mobile_Training: true,
-                    Orientation_Mobility_Training: true
+                    Orientation_Mobility_Training: true,
+                    Vision_Enhancement: true
             }
             })
         }
