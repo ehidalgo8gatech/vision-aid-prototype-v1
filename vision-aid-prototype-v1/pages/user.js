@@ -27,10 +27,7 @@ function UserPage(props) {
       setComputerTrainingData(props.user.Computer_Training);
    }, []);
     useEffect(() => {
-      if (props.user.Vision_Enhancement){
-        setVisionTrainingData(props.user.Vision_Enhancement);
-      }
-
+      setVisionTrainingData(props.user.Vision_Enhancement);
     }, []);
 
   
@@ -55,7 +52,7 @@ function UserPage(props) {
         data['date'] = data['date'].toISOString().split('T')[0];
         setter([...cur_data, data]);
       } else {
-        alert('An error occurred while saving Mobile Training data. Please try again.');
+        alert('An error occurred while saving data. Please try again.');
       }
     }
 
