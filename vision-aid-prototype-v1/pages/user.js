@@ -174,51 +174,48 @@ function UserPage(props) {
             <div className="mb-3">
                 {renderField('Gender', 'gender', 'text')}
             </div>
-            </div>
-            <div className="col-md-6">
             <div className="mb-3">
                 {renderField('Phone Number', 'phoneNumber', ((props.beneficiaryMirror.phoneNumberRequired) ? 'text' : (props.beneficiaryMirror)))}
             </div>
             <div className="mb-3">
-                {renderField('Education', 'education', ((props.beneficiaryMirror.educationRequired) ? 'text' : 'hidden'))}
+                {renderField('Education', 'education', ((props.beneficiaryMirror.educationRequired) ? 'text' : (props.beneficiaryMirror)))}
             </div>
             <div className="mb-3">
-                {renderField('Occupation', 'occupation', ((props.beneficiaryMirror.occupationRequired) ? 'text' : 'hidden'))}
+                {renderField('Occupation', 'occupation', ((props.beneficiaryMirror.occupationRequired) ? 'text' : (props.beneficiaryMirror)))}
             </div>
             <div className="mb-3">
-                {renderField('Districts', 'districts', ((props.beneficiaryMirror.districtsRequired) ? 'text' : 'hidden'))}
+                {renderField('Districts', 'districts', ((props.beneficiaryMirror.districtsRequired) ? 'text' : (props.beneficiaryMirror)))}
             </div>
             <div className="mb-3">
-                {renderField('State', 'state', ((props.beneficiaryMirror.stateRequired) ? 'text' : 'hidden'))}
+                {renderField('State', 'state', ((props.beneficiaryMirror.stateRequired) ? 'text' : (props.beneficiaryMirror)))}
             </div>
-            </div>
-        </div>
-        <div className="row">
-            <div className="col-12">
             <div className="mb-3">
                 {renderField('Extra Information', 'extraInformation')}
             </div>
             </div>
-        </div>
-        <div className='row'>
-          <TrainingForm
+            <div className="col-md-6">
+            <TrainingForm
             existingTrainings={mobileTrainingData}
             addNewTraining={handleSubmitMobileTraining}
             title="Mobile Training"
             customFields={['vision', 'typeOfCounselling']}
           />
+          <br/>
           <TrainingForm
             existingTrainings={computerTrainingData}
             addNewTraining={handleSubmitComputerTraining}
             title="Computer Training"
             customFields={['vision', 'typeOfCounselling']}
           />
+          <br/>
           <TrainingForm
             existingTrainings={visionTrainingData}
             addNewTraining={handleSubmitVisionTraining}
-            title="Vision Training"
-            customFields={[]}
+            title="Vision Enhancement"
+            customFields={['Diagnosis', 'MDVI']}
           />
+            
+            </div>
         </div>
         </div>
     </div>

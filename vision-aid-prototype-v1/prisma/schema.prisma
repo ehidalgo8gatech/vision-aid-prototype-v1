@@ -140,6 +140,8 @@ model Vision_Enhancement {
   beneficiaryId    String
   date             DateTime?
   sessionNumber    Int?
+  Diagnosis        String?
+  MDVI             String?
   extraInformation String      @db.Text
 }
 

@@ -13,6 +13,31 @@ export default async function handler(req, res) {
 }
 
 async function readData(req, res) {
+    try {
+        var training
+        if (req.query.beneficiaryId != null) {
+            training = await prisma.vision_Enhancement.findMany({
+                where: {
+                    beneficiaryId: {
+                        contains: req.query.beneficiaryId,
+                    }
+                },
+                include: {
+                    beneficiary: true
+                }
+            })
+        } else {
+            training = await prisma.vision_Enhancement.findMany({
+                include: {
+                    beneficiary: true
+                }
+            })
+        }
+        return res.status(200).json(training, {success: true});
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({error: 'Error reading data' + error, success: false});
+    }
 
 }
 
@@ -23,6 +48,8 @@ async function addData(req, res) {
             beneficiaryId: body.beneficiaryId,
             date: body.date,
             sessionNumber: body.sessionNumber,
+            Diagnosis: body.Diagnosis,
+            MDVI: body.MDVI,
             extraInformation: body.extraInformation,
         },
         include: {

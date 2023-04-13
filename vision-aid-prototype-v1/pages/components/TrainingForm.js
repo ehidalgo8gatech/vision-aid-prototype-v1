@@ -29,7 +29,7 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
   console.log(existingTrainings);
 
   return (
-    <div className="col-4">
+    <div className="col-12">
       <h2 className="text-center">{title}</h2>
       {existingTrainings.map((training, index) => (
         <div key={index}>
@@ -51,7 +51,7 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
         </div>
       ))}
       <Button variant="primary" onClick={handleToggle}>
-        {showForm ? 'Cancel' : 'Add New Training'}
+        {showForm ? 'Collapse' : 'Expand'}
       </Button>
       {showForm && (
         <Form onSubmit={handleSubmit} className="mt-3">
@@ -79,6 +79,7 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
             <Form.Label>Extra Information</Form.Label>
             <Form.Control as="textarea" rows={3} />
           </Form.Group>
+          <br/>
           <Button variant="primary" type="submit">
             Submit
           </Button>
