@@ -39,25 +39,20 @@ function Users(props) {
     const addUser = async (e) => {
         e.preventDefault()
         const userEmail = document.getElementById('userEmail').value
-        const hospitalName = document.getElementById('hospitalId').value
-        const admin = document.getElementById('manager').checked
+        const hospitalElement = document.getElementById('hospitalSelect')
+        const hosidx = hospitalElement.selectedIndex;
+        const hospitalId = parseInt(hospitalElement.options[hosidx].value);
+        console.log("hospitalId " + hospitalId)
+        const admin = document.getElementById('manager').options[document.getElementById('manager').selectedIndex].value == 'manager'
+        console.log("admin " + admin)
         const user = await insertUserIfRequiredByEmail(userEmail)
-        const hospital = await fetch('/api/hospital?name=' + hospitalName, {
-            method: 'GET',
-            headers: {'Content-Type': 'application/json'},
-        });
-        const hospitalJson = await hospital.json()
-        if (hospitalJson == null || hospitalJson.error != null) {
-            alert("Can't find hospital name in db " + hospitalName)
-            return
-        }
-        console.log(user.id + hospitalJson.id + admin)
+        console.log(user.id + hospitalId + admin)
         const response = await fetch('/api/hospitalRole', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 userId: user.id,
-                hospitalId: hospitalJson.id,
+                hospitalId: hospitalId,
                 admin: admin
             })
         })
@@ -110,7 +105,7 @@ function Users(props) {
     for (let i = 0; i < props.hospitals.length; i++) {
     const hospital = props.hospitals[i];
     hospitalOptions.push(
-        <option key={hospital.id} value={hospital.id}>
+        <option key={hospital.name} value={hospital.id}>
         {hospital.name} (ID {hospital.id})
         </option>
     );
@@ -143,14 +138,13 @@ function Users(props) {
                     <input type="text" className="form-control" id="userEmail" style={{ width: '200px' }} />
                 </div>
                 <br/>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <label htmlFor='hospitalId' style={{ marginRight: '10px' }}>Hospital Id</label>
-                    <input type="text" className="form-control" id="hospitalId" style={{ width: '200px' }}/>
-                </div>
                 <br/>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <label htmlFor='manager' style={{ marginRight: '10px' }}>Manager</label>
-                    <input type="checkbox" className="form-check-input" id="manager"/>
+                    <label htmlFor='manager' style={{ marginRight: '10px' }}>Role Type</label>
+                    <select id="manager" name="role">
+                        <option value="manager">Manager</option>
+                        <option value="tech">Technician</option>
+                    </select>
                 </div>
                 <br/>
                 <button type="submit" className="btn btn-primary">Submit</button>
