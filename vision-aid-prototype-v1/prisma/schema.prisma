@@ -41,26 +41,27 @@ model HospitalRole {
 }
 
 model Beneficiary {
-  mrn                           String                          @id @unique
-  beneficiaryName               String
-  hospital                      Hospital                        @relation(fields: [hospitalId], references: [id])
-  hospitalId                    Int
-  dateOfBirth                   DateTime
-  gender                        String
-  phoneNumber                   String?
-  education                     String?
-  occupation                    String?
-  districts                     String?
-  state                         String?
-  diagnosis                     String?
-  vision                        String?
-  mDVI                          String?
-  extraInformation              String                          @db.Text
-  Computer_Training             Computer_Training[]
-  Mobile_Training               Mobile_Training[]
-  Orientation_Mobility_Training Orientation_Mobility_Training[]
-  Vision_Enhancement            Vision_Enhancement[]
-  Counselling_Education         Counselling_Education[]
+  mrn                                 String                                @id @unique
+  beneficiaryName                     String
+  hospital                            Hospital                              @relation(fields: [hospitalId], references: [id])
+  hospitalId                          Int
+  dateOfBirth                         DateTime
+  gender                              String
+  phoneNumber                         String?
+  education                           String?
+  occupation                          String?
+  districts                           String?
+  state                               String?
+  diagnosis                           String?
+  vision                              String?
+  mDVI                                String?
+  extraInformation                    String                                @db.Text
+  Computer_Training                   Computer_Training[]
+  Mobile_Training                     Mobile_Training[]
+  Orientation_Mobility_Training       Orientation_Mobility_Training[]
+  Vision_Enhancement                  Vision_Enhancement[]
+  Counselling_Education               Counselling_Education[]
+  Comprehensive_Low_Vision_Evaluation Comprehensive_Low_Vision_Evaluation[]
 }
 
 model Beneficiary_Mirror {
@@ -149,6 +150,23 @@ model Vision_Enhancement_Mirror {
   id                       Int     @id
   date                     Boolean
   sessionNumber            Boolean
+  extraInformationRequired String  @db.Text
+  hospitalName             String?
+}
+
+model Comprehensive_Low_Vision_Evaluation {
+  beneficiary            Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
+  beneficiaryId          String      @id
+  distanceVisualAcuityRE String
+  distanceVisualAcuityLE String
+  nearVisualAcuityRE     String
+  nearVisualAcuityLE     String
+  recommendations        String
+  extraInformation       String      @db.Text
+}
+
+model Comprehensive_Low_Vision_Evaluation_Mirror {
+  id                       Int     @id
   extraInformationRequired String  @db.Text
   hospitalName             String?
 }
