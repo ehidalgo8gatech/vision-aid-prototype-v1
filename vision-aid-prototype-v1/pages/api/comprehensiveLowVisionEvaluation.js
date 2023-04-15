@@ -32,28 +32,24 @@ async function addData(req, res) {
             beneficiary: true
         },
     }
-    const update = {
-        where: {
-            beneficiaryId: body.beneficiaryId,
-        },
-        data: {
-            distanceVisualAcuityRE: body.distanceVisualAcuityRE,
-            distanceVisualAcuityLE: body.distanceVisualAcuityLE,
-            nearVisualAcuityRE: body.nearVisualAcuityRE,
-            nearVisualAcuityLE: body.nearVisualAcuityLE,
-            recommendations: body.recommendations,
-            extraInformation: body.extraInformation,
-        },
-        include: {
-            beneficiary: true
-        },
-    }
     try {
-        if (prisma.comprehensive_Low_Vision_Evaluation.findFirst({
-            where: {
-                beneficiaryId: body.beneficiaryId,
+        if (body.id != null) {
+            const update = {
+                where: {
+                    id: body.id,
+                },
+                data: {
+                    distanceVisualAcuityRE: body.distanceVisualAcuityRE,
+                    distanceVisualAcuityLE: body.distanceVisualAcuityLE,
+                    nearVisualAcuityRE: body.nearVisualAcuityRE,
+                    nearVisualAcuityLE: body.nearVisualAcuityLE,
+                    recommendations: body.recommendations,
+                    extraInformation: body.extraInformation,
+                },
+                include: {
+                    beneficiary: true
+                },
             }
-        }) != null) {
             const comp_eval = await prisma.comprehensive_Low_Vision_Evaluation.update(update)
             return res.status(200).json(comp_eval, {success: true});
         }
