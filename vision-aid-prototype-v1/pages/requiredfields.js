@@ -10,6 +10,9 @@ import TrainingForm from "@/pages/components/TrainingForm";
 import {readMobileTrainingMirror} from "@/pages/api/mobileTrainingMirror";
 import {readComputerTrainingMirror} from "@/pages/api/computerTrainingMirror";
 import {readOrientationMobilityTrainingMirror} from "@/pages/api/orientationMobilityTrainingMirror";
+import {readVisionEnhancementMirror} from "@/pages/api/visionEnhancementMirror";
+import {readComprehensiveLowVisionEvaluationMirror} from "@/pages/api/comprehensiveLowVisionEvaluationMirror";
+import {readCounsellingEducationMirror} from "@/pages/api/counsellingEducationMirror";
 
 // http://localhost:3000/requiredfields
 export async function getServerSideProps(ctx) {
@@ -40,6 +43,9 @@ export async function getServerSideProps(ctx) {
             requiredMobileTraining: await  readMobileTrainingMirror(),
             requiredComputerTraining: await  readComputerTrainingMirror(),
             requiredOrientationMobilityTraining: await  readOrientationMobilityTrainingMirror(),
+            requiredVisionEnhancement: await readVisionEnhancementMirror(),
+            requiredComprehensiveLowVisionEvaluation: await readComprehensiveLowVisionEvaluationMirror(),
+            requiredCounsellingEducation: await readCounsellingEducationMirror(),
             hospitals: await findAllHospital(),
             error: null
         },
@@ -257,6 +263,69 @@ function RequiredFields(props) {
             </div>
         )
     })
+
+    let exInfoComprehensiveLowVisionEvaluationPOJO = JSON.parse(props.requiredComprehensiveLowVisionEvaluation.extraInformationRequired)
+    const exInfoComprehensiveLowVisionEvaluation = []
+    exInfoComprehensiveLowVisionEvaluationPOJO.forEach((data) => {
+        exInfoComprehensiveLowVisionEvaluation.push(
+            <div class="col-md-12" id={data.name + "comprehensiveLowVisionEvaluation"}>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" name="extraFieldsComprehensiveLowVisionEvaluation" class="form-control"
+                               defaultValue={data.name}/>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" onClick={removeExtraField(data.name + "comprehensiveLowVisionEvaluation")}
+                                class="btn btn-danger border-0 btn-block">Remove Field
+                        </button>
+                    </div>
+                </div>
+                <br/>
+            </div>
+        )
+    })
+
+    let exInfoVisionEnhancementPOJO = JSON.parse(props.requiredVisionEnhancement.extraInformationRequired)
+    const exInfoVisionEnhancement = []
+    exInfoVisionEnhancementPOJO.forEach((data) => {
+        exInfoVisionEnhancement.push(
+            <div class="col-md-12" id={data.name + "visionEnhancement"}>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" name="extraFieldsVisionEnhancement" class="form-control"
+                               defaultValue={data.name}/>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" onClick={removeExtraField(data.name + "visionEnhancement")}
+                                class="btn btn-danger border-0 btn-block">Remove Field
+                        </button>
+                    </div>
+                </div>
+                <br/>
+            </div>
+        )
+    })
+
+    let exInfoCounsellingEducationPOJO = JSON.parse(props.requiredCounsellingEducation.extraInformationRequired)
+    const exInfoCounsellingEducation = []
+    exInfoCounsellingEducationPOJO.forEach((data) => {
+        exInfoCounsellingEducation.push(
+            <div class="col-md-12" id={data.name + "counsellingEducation"}>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" name="extraFieldsCounsellingEducation" class="form-control"
+                               defaultValue={data.name}/>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" onClick={removeExtraField(data.name + "counsellingEducation")}
+                                class="btn btn-danger border-0 btn-block">Remove Field
+                        </button>
+                    </div>
+                </div>
+                <br/>
+            </div>
+        )
+    })
     
     return (
         <div>
@@ -402,6 +471,78 @@ function RequiredFields(props) {
                         </form>
                     </div>
                     <button className="btn btn-primary" id="orientationMobilityTrainingRequiredButton" onClick={() => toggleTraining("orientationMobility")}>Expand</button>
+                    <br/>
+                    <h2 className="text-center">Vision Enhancement</h2>
+                    <div className='container' id="visionEnhancementTrainingRequiredFields">
+                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "VisionEnhancement", "visionEnhancementMirror")}>
+                            <div className='container'>
+                                <strong>Optional Override At Hospital Level</strong>
+                                <input type="text" id="hospitalNameOverrideVisionEnhancement" className="form-control"/>
+                                <label className="form-check-label" htmlFor="hospitalNameOverrideVisionEnhancement">Hospital Name
+                                    Override</label>
+                            </div>
+                            <div id="extraFieldsVisionEnhancement">
+                                <strong>Extra Fields</strong>
+                                <br/>
+                                <br/>
+                                {exInfoVisionEnhancement}
+                            </div>
+                            <button type="button" onClick={() => addField("extraFieldsVisionEnhancement", "extraFieldsVisionEnhancement")}
+                                    className="btn btn-success border-0 btn-block">Add Required Field
+                            </button>
+                            <br/>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <button className="btn btn-primary" id="visionEnhancementTrainingRequiredButton" onClick={() => toggleTraining("visionEnhancement")}>Expand</button>
+                    <br/>
+                    <h2 className="text-center">Comprehensive Low Vision Evaluation</h2>
+                    <div className='container' id="comprehensiveLowVisionEvaluationTrainingRequiredFields">
+                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "ComprehensiveLowVisionEvaluation", "comprehensiveLowVisionEvaluationMirror")}>
+                            <div className='container'>
+                                <strong>Optional Override At Hospital Level</strong>
+                                <input type="text" id="hospitalNameOverrideComprehensiveLowVisionEvaluation" className="form-control"/>
+                                <label className="form-check-label" htmlFor="hospitalNameOverrideComprehensiveLowVisionEvaluation">Hospital Name
+                                    Override</label>
+                            </div>
+                            <div id="extraFieldsComprehensiveLowVisionEvaluation">
+                                <strong>Extra Fields</strong>
+                                <br/>
+                                <br/>
+                                {exInfoComprehensiveLowVisionEvaluation}
+                            </div>
+                            <button type="button" onClick={() => addField("extraFieldsComprehensiveLowVisionEvaluation", "extraFieldsComprehensiveLowVisionEvaluation")}
+                                    className="btn btn-success border-0 btn-block">Add Required Field
+                            </button>
+                            <br/>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <button className="btn btn-primary" id="comprehensiveLowVisionEvaluationTrainingRequiredButton" onClick={() => toggleTraining("comprehensiveLowVisionEvaluation")}>Expand</button>
+                    <br/>
+                    <h2 className="text-center">Counselling Education</h2>
+                    <div className='container' id="counsellingEducationTrainingRequiredFields">
+                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "CounsellingEducation", "counsellingEducationMirror")}>
+                            <div className='container'>
+                                <strong>Optional Override At Hospital Level</strong>
+                                <input type="text" id="hospitalNameOverrideCounsellingEducation" className="form-control"/>
+                                <label className="form-check-label" htmlFor="hospitalNameOverrideCounsellingEducation">Hospital Name
+                                    Override</label>
+                            </div>
+                            <div id="extraFieldsCounsellingEducation">
+                                <strong>Extra Fields</strong>
+                                <br/>
+                                <br/>
+                                {exInfoCounsellingEducation}
+                            </div>
+                            <button type="button" onClick={() => addField("extraFieldsCounsellingEducation", "extraFieldsCounsellingEducation")}
+                                    className="btn btn-success border-0 btn-block">Add Required Field
+                            </button>
+                            <br/>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <button className="btn btn-primary" id="counsellingEducationTrainingRequiredButton" onClick={() => toggleTraining("counsellingEducation")}>Expand</button>
                 </div>
             </div>
         </div>

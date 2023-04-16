@@ -287,3 +287,15 @@ label {
     display: none;
 }
 
+#visionEnhancementTrainingRequiredFields{
+    display: none;
+}
+
+#comprehensiveLowVisionEvaluationTrainingRequiredFields{
+    display: none;
+}
+
+#counsellingEducationTrainingRequiredFields{
+    display: none;
+}
+
