@@ -121,6 +121,12 @@ async function main() {
             extraInformationRequired: "[]"
         },
     })
+    await prisma.comprehensive_Low_Vision_Evaluation_Mirror.create({
+        data: {
+            id: 1,
+            extraInformationRequired: "[]"
+        },
+    })
 }
 
 main()

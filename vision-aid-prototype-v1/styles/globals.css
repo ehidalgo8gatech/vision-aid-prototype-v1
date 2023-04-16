@@ -275,3 +275,15 @@ label {
     margin-right: auto;
 }
 
+#mobileTrainingRequiredFields{
+    display: none;
+}
+
+#computerTrainingRequiredFields{
+    display: none;
+}
+
+#orientationMobilityTrainingRequiredFields{
+    display: none;
+}
+
