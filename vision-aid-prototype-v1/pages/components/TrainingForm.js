@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
-import { Pencil } from 'react-bootstrap-icons';
+import { ChevronDown, ChevronRight } from 'react-bootstrap-icons';
 
 const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, title }) => {
   const [showForm, setShowForm] = useState(false);
@@ -12,45 +12,58 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
   const handleSubmit = (e) => {
     e.preventDefault();
     const customData = customFields.reduce((acc, field) => {
-        acc[field] = e.target[field].value;
-        return acc;
-      }, {})
+      acc[field] = e.target[field].value;
+      return acc;
+    }, {});
     const newTraining = {
       date: e.target.date.value,
       sessionNumber: e.target.sessionNumber.value,
       extraInformation: e.target.extraInformation.value,
-      ...customData
+      ...customData,
     };
-    console.log(newTraining);
     addNewTraining(newTraining);
     setShowForm(false);
   };
   return (
-    <div className="col-12">
-      <h2 className="text-center">{title}</h2>
-      {existingTrainings.map((training, index) => (
-        <div key={index}>
-          <p>
-            <strong>Date:</strong> {training.date}
-          </p>
-          <p>
-            <strong>Session Number:</strong> {training.sessionNumber}
-          </p>
-          {customFields.map((field) => (
-            <p key={field}>
-              <strong>{field}:</strong> {training[field]}
-            </p>
-          ))}
-          <p>
-            <strong>Extra Information:</strong> {training.extraInformation}
-          </p>
-          <hr />
-        </div>
-      ))}
-      <Button variant="primary" onClick={handleToggle}>
-        {showForm ? 'Collapse' : 'Expand'}
-      </Button>
+<div className="col-12">
+      <div className="d-flex justify-content-center align-items-center">
+        {showForm ? (
+          <ChevronDown
+            className="ml-2"
+            onClick={handleToggle}
+            style={{ cursor: 'pointer' }}
+          />
+        ) : (
+          <ChevronRight
+            className="ml-2"
+            onClick={handleToggle}
+            style={{ cursor: 'pointer' }}
+          />
+        )}
+        <h2>{title}</h2>
+      </div>
       {showForm && (
+        <>
+          {existingTrainings.map((training, index) => (
+            <div key={index}>
+              <p>
+                <strong>Date:</strong> {training.date}
+              </p>
+              <p>
+                <strong>Session Number:</strong> {training.sessionNumber}
+              </p>
+              {customFields.map((field) => (
+                <p key={field}>
+                  <strong>{field}:</strong> {training[field]}
+                </p>
+              ))}
+              <p>
+                <strong>Extra Information:</strong> {training.extraInformation}
+              </p>
+              <hr />
+            </div>
+          ))}
+                {showForm && (
         <Form onSubmit={handleSubmit} className="mt-3">
           <Row>
             <Col>
@@ -78,9 +91,11 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
           </Form.Group>
           <br/>
           <Button variant="primary" type="submit">
-            Submit
+            Add New Training
           </Button>
         </Form>
+      )}
+        </>
       )}
     </div>
   );
