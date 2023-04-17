@@ -9,7 +9,7 @@ function UserList({ users }) {
   };
   return (
     <>
-      {users.length > 0 && (
+      {users && users.length > 0 && (
         <Table striped bordered hover responsive>
           <thead>
             <tr>
