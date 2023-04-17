@@ -23,7 +23,7 @@ function UserList({ users }) {
             {users.map((user) => (
               <tr key={user.mrn}>
                 <td>{user.beneficiaryName}</td>
-                <td>{user.dateOfBirth}</td>
+                <td>{(new Date(user.dateOfBirth)).toDateString()}</td>
                 <td>{user.gender}</td>
                 <td>
                   <a
