@@ -42,6 +42,94 @@ export async function findAllHospital() {
     })
 }
 
+export async function getSummaryForAllHospitals() {
+  const hospitals = await prisma.hospital.findMany();
+
+  const result = [];
+
+  for (const hospital of hospitals) {
+    const mobileTrainingCount = await prisma.mobile_Training.count({
+      where: {
+        beneficiary: {
+          hospitalId: hospital.id
+        }
+      }
+    });
+
+    const computerTrainingCount = await prisma.computer_Training.count({
+      where: {
+        beneficiary: {
+          hospitalId: hospital.id
+        }
+      }
+    });
+
+    const orientationMobilityTrainingCount = await prisma.orientation_Mobility_Training.count({
+      where: {
+        beneficiary: {
+          hospitalId: hospital.id
+        }
+      }
+    });
+
+    const visionEnhancementCount = await prisma.vision_Enhancement.count({
+      where: {
+        beneficiary: {
+          hospitalId: hospital.id
+        }
+      }
+    });
+
+    const counsellingEducationCount = await prisma.counselling_Education.count({
+      where: {
+        beneficiary: {
+          hospitalId: hospital.id
+        }
+      }
+    });
+
+    const comprehensiveLowVisionEvaluationCount = await prisma.comprehensive_Low_Vision_Evaluation.count({
+      where: {
+        beneficiary: {
+          hospitalId: hospital.id
+        }
+      }
+    });
+
+    const beneficiaryCount = await prisma.beneficiary.count({
+      where: {
+        hospitalId: hospital.id
+      }
+    });
+
+    const totalTrainingCount =
+      mobileTrainingCount +
+      computerTrainingCount +
+      orientationMobilityTrainingCount +
+      visionEnhancementCount +
+      counsellingEducationCount +
+      comprehensiveLowVisionEvaluationCount;
+
+    const hospitalResult = {
+      id: hospital.id,
+      name: hospital.name,
+      mobileTraining: mobileTrainingCount,
+      computerTraining: computerTrainingCount,
+      orientationMobilityTraining: orientationMobilityTrainingCount,
+      visionEnhancement: visionEnhancementCount,
+      counsellingEducation: counsellingEducationCount,
+      comprehensiveLowVisionEvaluation: comprehensiveLowVisionEvaluationCount,
+      totalTraining: totalTrainingCount,
+      beneficiary: beneficiaryCount
+    };
+
+    result.push(hospitalResult);
+  }
+
+  return result;
+}
+
+
 async function addData(req, res) {
     const body = req.body;
     const create = {

@@ -1,3 +1,4 @@
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -5,69 +6,52 @@ const Navigation = () => {
   const router = useRouter();
 
   return (
-    <nav>
-      <div className="logo">
-      <img src="/vision-aid-logo.jpeg" width="80" height="80" className="d-inline-block" alt="logo"/>
+    <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: '#1B5E20' }}>
+      <div className="container-fluid">
+        <Link href="/" legacyBehavior>
+          <a className="navbar-brand">
+            <img src="/vision-aid-logo.jpeg" alt="Logo" height="80" width="80" />
+          </a>
+        </Link>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <Link href="/beneficiary" legacyBehavior>
+                <a className={`nav-link custom-link ${router.pathname === '/beneficiary' ? 'active' : ''}`}>Beneficiaries</a>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link href="/reports" legacyBehavior>
+                <a className={`nav-link custom-link ${router.pathname === '/reports' ? 'active' : ''}`}>Reports</a>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link href="/users" legacyBehavior>
+                <a className={`nav-link custom-link ${router.pathname === '/users' ? 'active' : ''}`}>Users</a>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link href="/requiredfields" legacyBehavior>
+                <a className={`nav-link custom-link ${router.pathname === '/requiredfields' ? 'active' : ''}`}>Configuration</a>
+              </Link>
+            </li>
+          </ul>
+        </div>
       </div>
-      <ul>
-        <li>
-          <Link href="/beneficiary" legacyBehavior>
-            <a className={router.pathname === "/beneficiary" ? "active" : ""}>Beneficiaries</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/reports" legacyBehavior>
-            <a className={router.pathname === "/reports" ? "active" : ""}>Reports</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/users" legacyBehavior>
-            <a className={router.pathname === "/users" ? "active" : ""}>Users</a>
-          </Link>
-        </li>
-        <li>
-          <Link href="/requiredfields" legacyBehavior>
-            <a className={router.pathname === "/requiredfields" ? "active" : ""}>Configuration</a>
-          </Link>
-        </li>
-      </ul>
-      
       <style jsx>{`
-        nav {
-          background-color: #1B5E20;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0 2rem;
-        }
-        
-        ul {
-          display: flex;
-          list-style: none;
-          margin: 0;
-          padding: 0;
-          flex-wrap: wrap;
-        }
-        .logo img {
-          height: 80px;
-        }
-        
-        a {
-          color: #fff;
-          text-decoration: none;
-          padding: 0.5rem;
-          border-radius: 0.5rem;
-          font-size: 1.2rem
-        }
-        
-        a:hover {
-          background-color: #4CAF50;
-          color: #fff;
-        }
-        
-        a.active {
-          background-color: #81C784;
-          color: #000;
+        .custom-link {
+          font-size: 1.5rem;
         }
       `}</style>
     </nav>
@@ -75,4 +59,3 @@ const Navigation = () => {
 };
 
 export default Navigation;
-

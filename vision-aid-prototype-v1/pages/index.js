@@ -45,7 +45,7 @@ export default function Home() {
      <div class="row">
         <div className={styles.grid}>
           <a
-            href="/requiredfields"
+            href="/summary"
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"

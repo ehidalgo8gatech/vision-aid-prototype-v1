@@ -10,6 +10,14 @@ async function main() {
             hospitalRole: true,
         },
     })
+    const hospital2 = await prisma.hospital.create({
+        data: {
+            name: "SuryatejHospital",
+        },
+        include: {
+            hospitalRole: true,
+        },
+    })
     await prisma.user.create({
         data: {
             email: "sethlevine111@gmail.com",
