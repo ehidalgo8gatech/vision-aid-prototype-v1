@@ -76,6 +76,7 @@ function RequiredFields(props) {
         let elements = document.getElementsByName("extraField");
         let extraInformation = []
         for (let i = 0; i < elements.length; i++) {
+            if (elements[i].value == null || elements[i].value == "") continue
             let body = {
                 name: elements[i].value,
                 type: "txt",
@@ -178,6 +179,7 @@ function RequiredFields(props) {
         let elements = document.getElementsByName("extraFields" + type);
         let extraInformation = []
         for (let i = 0; i < elements.length; i++) {
+            if (elements[i].value == null || elements[i].value == "") continue
             let body = {
                 name: elements[i].value,
                 type: "txt",
