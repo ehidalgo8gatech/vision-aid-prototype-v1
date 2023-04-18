@@ -13,6 +13,8 @@ import {readOrientationMobilityTrainingMirror} from "@/pages/api/orientationMobi
 import {readVisionEnhancementMirror} from "@/pages/api/visionEnhancementMirror";
 import {readComprehensiveLowVisionEvaluationMirror} from "@/pages/api/comprehensiveLowVisionEvaluationMirror";
 import {readCounsellingEducationMirror} from "@/pages/api/counsellingEducationMirror";
+import {ChevronDown, ChevronRight} from "react-bootstrap-icons";
+import {useState} from "react";
 
 // http://localhost:3000/requiredfields
 export async function getServerSideProps(ctx) {
@@ -161,17 +163,6 @@ function RequiredFields(props) {
             <br/>
         </div>)
     })
-    function toggleTraining(type) {
-        var displayTrainingElement = document.getElementById(type + "TrainingRequiredFields");
-        var trainingRequiredButton = document.getElementById(type + "TrainingRequiredButton");
-        if (displayTrainingElement.style.display === "block") {
-            displayTrainingElement.style.display = "none";
-            trainingRequiredButton.innerText = "Expand"
-        } else {
-            displayTrainingElement.style.display = "block";
-            trainingRequiredButton.innerText = "Collapse"
-        }
-    }
 
     async function addFieldsTrainingSubmit(e, type, api) {
         e.preventDefault()
@@ -328,7 +319,25 @@ function RequiredFields(props) {
             </div>
         )
     })
-    
+
+    var showForm = {
+        "ComprehensiveLowVisionEvaluation": false,
+        "visionEnhancement": false,
+        "counsellingEducation": false,
+        "mobile": false,
+        "computer": false,
+        "orientationMobility": false,
+    }
+    function handleToggle(type) {
+        var displayTrainingElement = document.getElementById(type + "TrainingRequiredFields");
+        if (displayTrainingElement.style.display === "block") {
+            displayTrainingElement.style.display = "none";
+        } else {
+            displayTrainingElement.style.display = "block";
+        }
+        showForm[type] = !showForm[type]
+    }
+
     return (
         <div>
             <Navigation/>
@@ -404,106 +413,26 @@ function RequiredFields(props) {
                         <button type="submit" className="btn btn-primary">Submit</button>
                     </form>
                 </div>
+
                 <div className="col-md-6">
                     <h1 className="text-center mt-4 mb-4">Other Form Required Fields</h1>
                     <br/>
-                    <h2 className="text-center">Mobile Training</h2>
-                    <div className='container' id="mobileTrainingRequiredFields">
-                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "MobileTraining", "mobileTrainingMirror")}>
-                            <div className='container'>
-                                <strong>Optional Override At Hospital Level</strong>
-                                <input type="text" id="hospitalNameOverrideMobileTraining" className="form-control"/>
-                                <label className="form-check-label" htmlFor="hospitalNameOverrideMobileTraining">Hospital Name
-                                    Override</label>
-                            </div>
-                            <div id="extraFieldsMobileTraining">
-                                <strong>Extra Fields</strong>
-                                <br/>
-                                <br/>
-                                {exInfoMobileTraining}
-                            </div>
-                            <button type="button" onClick={() => addField("extraFieldsMobileTraining", "extraFieldsMobileTraining")}
-                                    className="btn btn-success border-0 btn-block">Add Required Field
-                            </button>
-                            <br/>
-                            <button type="submit" className="btn btn-primary">Submit</button>
-                        </form>
-                    </div>
-                    <button className="btn btn-primary" id="mobileTrainingRequiredButton" onClick={() => toggleTraining("mobile")}>Expand</button>
-                    <br/>
-                    <h2 className="text-center">Computer Training</h2>
-                    <div className='container' id="computerTrainingRequiredFields">
-                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "ComputerTraining", "computerTrainingMirror")}>
-                            <div className='container'>
-                                <strong>Optional Override At Hospital Level</strong>
-                                <input type="text" id="hospitalNameOverrideComputerTraining" className="form-control"/>
-                                <label className="form-check-label" htmlFor="hospitalNameOverrideComputerTraining">Hospital Name
-                                    Override</label>
-                            </div>
-                            <div id="extraFieldsComputerTraining">
-                                <strong>Extra Fields</strong>
-                                <br/>
-                                <br/>
-                                {exInfoComputerTraining}
-                            </div>
-                            <button type="button" onClick={() => addField("extraFieldsComputerTraining", "extraFieldsComputerTraining")}
-                                    className="btn btn-success border-0 btn-block">Add Required Field
-                            </button>
-                            <br/>
-                            <button type="submit" className="btn btn-primary">Submit</button>
-                        </form>
-                    </div>
-                    <button className="btn btn-primary" id="computerTrainingRequiredButton" onClick={() => toggleTraining("computer")}>Expand</button>
-                    <br/>
-                    <h2 className="text-center">Orientation Mobility Training</h2>
-                    <div className='container' id="orientationMobilityTrainingRequiredFields">
-                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "OrientationMobilityTraining", "orientationMobilityTrainingMirror")}>
-                            <div className='container'>
-                                <strong>Optional Override At Hospital Level</strong>
-                                <input type="text" id="hospitalNameOverrideOrientationMobilityTraining" className="form-control"/>
-                                <label className="form-check-label" htmlFor="hospitalNameOverrideOrientationMobilityTraining">Hospital Name
-                                    Override</label>
-                            </div>
-                            <div id="extraFieldsOrientationMobilityTraining">
-                                <strong>Extra Fields</strong>
-                                <br/>
-                                <br/>
-                                {exInfoOrientationMobilityTraining}
-                            </div>
-                            <button type="button" onClick={() => addField("extraFieldsOrientationMobilityTraining", "extraFieldsOrientationMobilityTraining", "orientationMobilityTrainingMirror")}
-                                    className="btn btn-success border-0 btn-block">Add Required Field
-                            </button>
-                            <br/>
-                            <button type="submit" className="btn btn-primary">Submit</button>
-                        </form>
-                    </div>
-                    <button className="btn btn-primary" id="orientationMobilityTrainingRequiredButton" onClick={() => toggleTraining("orientationMobility")}>Expand</button>
-                    <br/>
-                    <h2 className="text-center">Vision Enhancement</h2>
-                    <div className='container' id="visionEnhancementTrainingRequiredFields">
-                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "VisionEnhancement", "visionEnhancementMirror")}>
-                            <div className='container'>
-                                <strong>Optional Override At Hospital Level</strong>
-                                <input type="text" id="hospitalNameOverrideVisionEnhancement" className="form-control"/>
-                                <label className="form-check-label" htmlFor="hospitalNameOverrideVisionEnhancement">Hospital Name
-                                    Override</label>
-                            </div>
-                            <div id="extraFieldsVisionEnhancement">
-                                <strong>Extra Fields</strong>
-                                <br/>
-                                <br/>
-                                {exInfoVisionEnhancement}
-                            </div>
-                            <button type="button" onClick={() => addField("extraFieldsVisionEnhancement", "extraFieldsVisionEnhancement")}
-                                    className="btn btn-success border-0 btn-block">Add Required Field
-                            </button>
-                            <br/>
-                            <button type="submit" className="btn btn-primary">Submit</button>
-                        </form>
-                    </div>
-                    <button className="btn btn-primary" id="visionEnhancementTrainingRequiredButton" onClick={() => toggleTraining("visionEnhancement")}>Expand</button>
-                    <br/>
+                    <div className="d-flex justify-content-center align-items-center">
+                    {showForm["comprehensiveLowVisionEvaluation"] ? (
+                        <ChevronDown
+                            className="ml-2"
+                            onClick={() => handleToggle("comprehensiveLowVisionEvaluation")}
+                            style={{ cursor: 'pointer' }}
+                        />
+                    ) : (
+                        <ChevronRight
+                            className="ml-2"
+                            onClick={() => handleToggle("comprehensiveLowVisionEvaluation")}
+                            style={{ cursor: 'pointer' }}
+                        />
+                    )}
                     <h2 className="text-center">Comprehensive Low Vision Evaluation</h2>
+                    </div>
                     <div className='container' id="comprehensiveLowVisionEvaluationTrainingRequiredFields">
                         <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "ComprehensiveLowVisionEvaluation", "comprehensiveLowVisionEvaluationMirror")}>
                             <div className='container'>
@@ -525,9 +454,63 @@ function RequiredFields(props) {
                             <button type="submit" className="btn btn-primary">Submit</button>
                         </form>
                     </div>
-                    <button className="btn btn-primary" id="comprehensiveLowVisionEvaluationTrainingRequiredButton" onClick={() => toggleTraining("comprehensiveLowVisionEvaluation")}>Expand</button>
                     <br/>
-                    <h2 className="text-center">Counselling Education</h2>
+
+                    <div className="d-flex justify-content-center align-items-center">
+                        {showForm["visionEnhancement"] ? (
+                            <ChevronDown
+                                className="ml-2"
+                                onClick={() => handleToggle("visionEnhancement")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        ) : (
+                            <ChevronRight
+                                className="ml-2"
+                                onClick={() => handleToggle("visionEnhancement")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        )}
+                        <h2 className="text-center">Vision Enhancement</h2>
+                    </div>
+                    <div className='container' id="visionEnhancementTrainingRequiredFields">
+                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "VisionEnhancement", "visionEnhancementMirror")}>
+                            <div className='container'>
+                                <strong>Optional Override At Hospital Level</strong>
+                                <input type="text" id="hospitalNameOverrideVisionEnhancement" className="form-control"/>
+                                <label className="form-check-label" htmlFor="hospitalNameOverrideVisionEnhancement">Hospital Name
+                                    Override</label>
+                            </div>
+                            <div id="extraFieldsVisionEnhancement">
+                                <strong>Extra Fields</strong>
+                                <br/>
+                                <br/>
+                                {exInfoVisionEnhancement}
+                            </div>
+                            <button type="button" onClick={() => addField("extraFieldsVisionEnhancement", "extraFieldsVisionEnhancement")}
+                                    className="btn btn-success border-0 btn-block">Add Required Field
+                            </button>
+                            <br/>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <br/>
+
+                    <div className="d-flex justify-content-center align-items-center">
+                        {showForm["counsellingEducation"] ? (
+                            <ChevronDown
+                                className="ml-2"
+                                onClick={() => handleToggle("counsellingEducation")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        ) : (
+                            <ChevronRight
+                                className="ml-2"
+                                onClick={() => handleToggle("counsellingEducation")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        )}
+                        <h2 className="text-center">Counselling Education</h2>
+                    </div>
                     <div className='container' id="counsellingEducationTrainingRequiredFields">
                         <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "CounsellingEducation", "counsellingEducationMirror")}>
                             <div className='container'>
@@ -549,7 +532,123 @@ function RequiredFields(props) {
                             <button type="submit" className="btn btn-primary">Submit</button>
                         </form>
                     </div>
-                    <button className="btn btn-primary" id="counsellingEducationTrainingRequiredButton" onClick={() => toggleTraining("counsellingEducation")}>Expand</button>
+                    <br/>
+
+                    <div className="d-flex justify-content-center align-items-center">
+                        {showForm["mobile"] ? (
+                            <ChevronDown
+                                className="ml-2"
+                                onClick={() => handleToggle("mobile")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        ) : (
+                            <ChevronRight
+                                className="ml-2"
+                                onClick={() => handleToggle("mobile")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        )}
+                        <h2 className="text-center">Mobile Training</h2>
+                    </div>
+                    <div className='container' id="mobileTrainingRequiredFields">
+                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "MobileTraining", "mobileTrainingMirror")}>
+                            <div className='container'>
+                                <strong>Optional Override At Hospital Level</strong>
+                                <input type="text" id="hospitalNameOverrideMobileTraining" className="form-control"/>
+                                <label className="form-check-label" htmlFor="hospitalNameOverrideMobileTraining">Hospital Name
+                                    Override</label>
+                            </div>
+                            <div id="extraFieldsMobileTraining">
+                                <strong>Extra Fields</strong>
+                                <br/>
+                                <br/>
+                                {exInfoMobileTraining}
+                            </div>
+                            <button type="button" onClick={() => addField("extraFieldsMobileTraining", "extraFieldsMobileTraining")}
+                                    className="btn btn-success border-0 btn-block">Add Required Field
+                            </button>
+                            <br/>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <br/>
+
+                    <div className="d-flex justify-content-center align-items-center">
+                        {showForm["computer"] ? (
+                            <ChevronDown
+                                className="ml-2"
+                                onClick={() => handleToggle("computer")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        ) : (
+                            <ChevronRight
+                                className="ml-2"
+                                onClick={() => handleToggle("computer")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        )}
+                        <h2 className="text-center">Computer Training</h2>
+                    </div>
+                    <div className='container' id="computerTrainingRequiredFields">
+                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "ComputerTraining", "computerTrainingMirror")}>
+                            <div className='container'>
+                                <strong>Optional Override At Hospital Level</strong>
+                                <input type="text" id="hospitalNameOverrideComputerTraining" className="form-control"/>
+                                <label className="form-check-label" htmlFor="hospitalNameOverrideComputerTraining">Hospital Name
+                                    Override</label>
+                            </div>
+                            <div id="extraFieldsComputerTraining">
+                                <strong>Extra Fields</strong>
+                                <br/>
+                                <br/>
+                                {exInfoComputerTraining}
+                            </div>
+                            <button type="button" onClick={() => addField("extraFieldsComputerTraining", "extraFieldsComputerTraining")}
+                                    className="btn btn-success border-0 btn-block">Add Required Field
+                            </button>
+                            <br/>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <br/>
+
+                    <div className="d-flex justify-content-center align-items-center">
+                        {showForm["orientationMobility"] ? (
+                            <ChevronDown
+                                className="ml-2"
+                                onClick={() => handleToggle("orientationMobility")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        ) : (
+                            <ChevronRight
+                                className="ml-2"
+                                onClick={() => handleToggle("orientationMobility")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        )}
+                        <h2 className="text-center">Orientation Mobility Training</h2>
+                    </div>
+                    <div className='container' id="orientationMobilityTrainingRequiredFields">
+                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "OrientationMobilityTraining", "orientationMobilityTrainingMirror")}>
+                            <div className='container'>
+                                <strong>Optional Override At Hospital Level</strong>
+                                <input type="text" id="hospitalNameOverrideOrientationMobilityTraining" className="form-control"/>
+                                <label className="form-check-label" htmlFor="hospitalNameOverrideOrientationMobilityTraining">Hospital Name
+                                    Override</label>
+                            </div>
+                            <div id="extraFieldsOrientationMobilityTraining">
+                                <strong>Extra Fields</strong>
+                                <br/>
+                                <br/>
+                                {exInfoOrientationMobilityTraining}
+                            </div>
+                            <button type="button" onClick={() => addField("extraFieldsOrientationMobilityTraining", "extraFieldsOrientationMobilityTraining", "orientationMobilityTrainingMirror")}
+                                    className="btn btn-success border-0 btn-block">Add Required Field
+                            </button>
+                            <br/>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
