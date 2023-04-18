@@ -365,13 +365,36 @@ function RequiredFields(props) {
         );
     }
 
+    async function addHospital(e) {
+        e.preventDefault()
+        let hospitalName = document.getElementById("createHospitalName").value
+        let response = await fetch('/api/hospital', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                name: hospitalName
+            })
+        })
+        let json = await response.json()
+        alert("hospital added " + JSON.stringify(json))
+        Router.reload()
+    }
+
     return (
         <div>
             <Navigation/>
             <div className="row">
                 <div className="col-md-6">
+                    <form action="#" method="POST" onSubmit={(e) => addHospital(e)}>
+                        <h2 className="text-center mt-4 mb-4">Add A Hospital</h2>
+                        <input type="text" className="form-input" id="createHospitalName"/>
+                        <label className="form-label" htmlFor="createHospitalName"
+                               style={{marginLeft: '10px'}}>Hospital Name</label>
+                        <br/>
+                        <button type="submit" className="btn btn-primary">Submit</button>
+                    </form>
                     <form action="#" method="POST" onSubmit={(e) => addFieldsSubmit(e)}>
-                        <h1 className="text-center mt-4 mb-4">Required Beneficiary Fields</h1>
+                        <h2 className="text-center mt-4 mb-4">Required Beneficiary Fields</h2>
 
                         <p>MRN, Beneficiary Name, And Hospital Name Will Always Be Required</p>
 
