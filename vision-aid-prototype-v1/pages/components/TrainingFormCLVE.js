@@ -12,7 +12,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
   const handleSubmit = (e) => {
     e.preventDefault();
     const customData = customFields.reduce((acc, field) => {
-      acc[field] = e.target[field].value + ' ' + e.target[`${field}-unit`].value
+      acc[field] = e.target[field].value + ' ' + e.target[`unit`].value
       return acc;
     }, {});
     const newTraining = {
@@ -88,17 +88,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
               </Form.Group>
             </Col>
           </Row>
-          
-          {customFields.map((field) => (
-            <Row key={field}>
-            <Col>
-            <Form.Group controlId={field} key={field}>
-              <Form.Label>{field}</Form.Label>
-              <Form.Control type="text" />
-            </Form.Group>
-            </Col>
-            <Col>
-            <Form.Group controlId={`${field}-unit`}>
+          <Form.Group controlId="unit">
                 <Form.Label>Select metric:</Form.Label>
                 <Form.Control as="select">
                 <option defaultValue></option>
@@ -108,6 +98,14 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                 <option>Metric</option>
                 <option>LogMAR</option>
                 </Form.Control>
+            </Form.Group>
+          
+          {customFields.map((field) => (
+            <Row key={field}>
+            <Col>
+            <Form.Group controlId={field} key={field}>
+              <Form.Label>{field}</Form.Label>
+              <Form.Control type="text" />
             </Form.Group>
             </Col>
           </Row>
