@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { Pencil } from 'react-bootstrap-icons';
 import Navigation from './navigation/Navigation';
 import TrainingForm from './components/TrainingForm';
+import TrainingFormCLVE from './components/TrainingFormCLVE';
 
 function UserPage(props) {
   const router = useRouter();
@@ -201,33 +202,37 @@ function UserPage(props) {
             </div>
             </div>
             <div className="col-md-6">
+            <TrainingFormCLVE
+              existingTrainings={comprehensiveLowVisionEvaluationData}
+              addNewTraining={handleSubmitComprehensiveLowVisionEvaluation}
+              title="Comprehensive Low Vision Evaluation"
+              customFields={['distanceVisualAcuityRE', 'distanceVisualAcuityLE', 'nearVisualAcuityRE', 'nearVisualAcuityLE']}
+            />
+            <br/>
             <TrainingForm
-            existingTrainings={mobileTrainingData}
-            addNewTraining={handleSubmitMobileTraining}
-            title="Mobile Training"
-            customFields={['vision', 'typeOfCounselling']}
-          />
-          <br/>
-          <TrainingForm
-            existingTrainings={computerTrainingData}
-            addNewTraining={handleSubmitComputerTraining}
-            title="Computer Training"
-            customFields={['vision', 'typeOfCounselling']}
-          />
-          <br/>
-          <TrainingForm
-            existingTrainings={visionTrainingData}
-            addNewTraining={handleSubmitVisionTraining}
-            title="Vision Enhancement"
-            customFields={['Diagnosis', 'MDVI']}
-          />
-          <br/>
-          <TrainingForm
-            existingTrainings={comprehensiveLowVisionEvaluationData}
-            addNewTraining={handleSubmitComprehensiveLowVisionEvaluation}
-            title="Comprehensive Low Vision Evaluation"
-            customFields={['distanceVisualAcuityRE', 'distanceVisualAcuityLE', 'nearVisualAcuityRE', 'nearVisualAcuityLE', 'recommendations']}
-          />
+              existingTrainings={visionTrainingData}
+              addNewTraining={handleSubmitVisionTraining}
+              title="Vision Enhancement"
+              customFields={['Diagnosis', 'MDVI']}
+            />
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <TrainingForm
+              existingTrainings={mobileTrainingData}
+              addNewTraining={handleSubmitMobileTraining}
+              title="Mobile Training"
+              customFields={['vision', 'typeOfCounselling']}
+            />
+            <br/>
+            <TrainingForm
+              existingTrainings={computerTrainingData}
+              addNewTraining={handleSubmitComputerTraining}
+              title="Computer Training"
+              customFields={['vision', 'typeOfCounselling']}
+            />
+            <br/>
             
             </div>
         </div>

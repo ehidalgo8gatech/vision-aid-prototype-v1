@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import { ChevronDown, ChevronRight } from 'react-bootstrap-icons';
 
-const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, title }) => {
+const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields, title }) => {
   const [showForm, setShowForm] = useState(false);
 
   const handleToggle = () => {
@@ -12,12 +12,13 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
   const handleSubmit = (e) => {
     e.preventDefault();
     const customData = customFields.reduce((acc, field) => {
-      acc[field] = e.target[field].value;
+      acc[field] = e.target[field].value + ' ' + e.target[`${field}-unit`].value
       return acc;
     }, {});
     const newTraining = {
       date: e.target.date.value,
       sessionNumber: e.target.sessionNumber.value,
+      recommendations: e.target.recommendations.value,
       extraInformation: e.target.extraInformation.value,
       ...customData,
     };
@@ -58,6 +59,9 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
                 </p>
               ))}
               <p>
+                <strong>Recommendations:</strong> {training.recommendations}
+              </p>
+              <p>
                 <strong>Extra Information:</strong> {training.extraInformation}
               </p>
               <hr />
@@ -65,7 +69,7 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
           ))}
                 {showForm && (
         <Form onSubmit={handleSubmit} className="mt-3">
-          <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit">
             Add New Training
           </Button>
           <br/>
@@ -84,12 +88,34 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
               </Form.Group>
             </Col>
           </Row>
+          
           {customFields.map((field) => (
+            <Row key={field}>
+            <Col>
             <Form.Group controlId={field} key={field}>
               <Form.Label>{field}</Form.Label>
               <Form.Control type="text" />
             </Form.Group>
+            </Col>
+            <Col>
+            <Form.Group controlId={`${field}-unit`}>
+                <Form.Label>Select metric:</Form.Label>
+                <Form.Control as="select">
+                <option defaultValue></option>
+                <option>N-scale</option>
+                <option>M-units</option>
+                <option>Imperial</option>
+                <option>Metric</option>
+                <option>LogMAR</option>
+                </Form.Control>
+            </Form.Group>
+            </Col>
+          </Row>
           ))}
+          <Form.Group controlId="recommendations" key="recommendations">
+            <Form.Label>Recommendations</Form.Label>
+            <Form.Control as="textarea" rows={3} />
+          </Form.Group>
           <Form.Group controlId="extraInformation">
             <Form.Label>Extra Information</Form.Label>
             <Form.Control as="textarea" rows={3} />
@@ -103,4 +129,4 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
   );
 };
 
-export default TrainingForm;
+export default TrainingFormCLVE;
