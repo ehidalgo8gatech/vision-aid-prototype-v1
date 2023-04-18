@@ -118,39 +118,50 @@ function RequiredFields(props) {
         let input = document.createElement("input")
         let fieldId = uuidv4()
 
+        let outerWrapper = document.createElement("div")
+        outerWrapper.id = fieldId
+
+        let wrapper = document.createElement("div")
+        wrapper.className = "row"
+
         let inputDiv = document.createElement("div")
-        inputDiv.className = "form-group"
-        container.appendChild(inputDiv)
+        inputDiv.className = "col-md-6"
+
+        let buttonDiv = document.createElement("div")
+        buttonDiv.className = "col-md-6"
+
         input.type = "text"
         input.name = name
-        input.className = "extraField"
-        input.id = fieldId
-        container.appendChild(input)
-        container.appendChild(document.createElement("br"))
-        // let button = document.createElement("button")
-        // let buttonId = uuidv4()
+        input.className = "form-control"
+        let button = document.createElement("button")
+        let buttonId = uuidv4()
 
-        //button.onclick = removeExtraField(fieldId)
-        //button.id = buttonId
-        //button.type = "button"
-        //button.className = "btn btn-primary"
-        //button.textContent = "remove field"
-        //container.appendChild(button)
-        //container.appendChild(document.createElement("br"))
+        button.onclick = removeExtraField(fieldId)
+        button.id = buttonId
+        button.type = "button"
+        button.className = "btn btn-danger border-0 btn-block"
+        button.textContent = "Remove Field"
+        inputDiv.appendChild(input)
+        buttonDiv.appendChild(button)
+        wrapper.appendChild(inputDiv)
+        wrapper.appendChild(buttonDiv)
+        outerWrapper.appendChild(wrapper)
+        outerWrapper.appendChild(document.createElement("br"))
+        container.appendChild(outerWrapper)
     }
 
     let extraInformation = JSON.parse(props.requiredBeneficiaryFields.extraInformationRequired)
     const exInfo = []
     extraInformation.forEach((data) => {
         exInfo.push(
-            <div class="col-md-12" id={data.name}>
+            <div class="col-md-12" id={data.name + "Beneficiary"}>
                 <div class="row">
                     <div class="col-md-6">
                         <input type="text" name="extraField" class="form-control"
                                defaultValue={data.name}/>
                     </div>
                     <div class="col-md-6">
-                        <button type="button" onClick={removeExtraField(data.name)}
+                        <button type="button" onClick={removeExtraField(data.name + "Beneficiary")}
                                 class="btn btn-danger border-0 btn-block">Remove Field
                         </button>
                     </div>
