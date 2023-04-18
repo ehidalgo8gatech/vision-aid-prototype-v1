@@ -65,7 +65,10 @@ function RequiredFields(props) {
 
     async function addFieldsSubmit(e) {
         e.preventDefault()
-        let hospitalNameOverride = document.getElementById("hospitalNameOverride").value
+        let hospitalNameOverride = document.getElementById("hospitalSelect").value
+        if (hospitalNameOverride == "") {
+            hospitalNameOverride = null
+        }
         let phoneNumberRequired = document.getElementById("phoneNumberRequired").checked
         let educationRequired = document.getElementById("educationRequired").checked
         let occupationRequired = document.getElementById("occupationRequired").checked
@@ -167,6 +170,9 @@ function RequiredFields(props) {
     async function addFieldsTrainingSubmit(e, type, api) {
         e.preventDefault()
         let hospitalNameOverride = document.getElementById("hospitalNameOverride" + type).value
+        if (hospitalNameOverride == "") {
+            hospitalNameOverride = null
+        }
         let elements = document.getElementsByName("extraFields" + type);
         let extraInformation = []
         for (let i = 0; i < elements.length; i++) {
@@ -338,6 +344,16 @@ function RequiredFields(props) {
         showForm[type] = !showForm[type]
     }
 
+    const hospitalOptions = [];
+    for (let i = 0; i < props.hospitals.length; i++) {
+        const hospital = props.hospitals[i];
+        hospitalOptions.push(
+            <option key={hospital.name} value={hospital.name}>
+                {hospital.name} (ID {hospital.id})
+            </option>
+        );
+    }
+
     return (
         <div>
             <Navigation/>
@@ -350,10 +366,22 @@ function RequiredFields(props) {
 
                         <div class="row justify-content-center">
                         <div className="col-md-6 mx-auto">
-                            <strong>Optional Override At Hospital Level</strong>
-                            <input type="text" id="hospitalNameOverride" class="form-control"/>
-                            <label className="form-check-label" htmlFor="hospitalNameOverride">Hospital Name
-                                Override</label>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <label htmlFor="hospitalSelect" style={{ marginRight: '10px' }}>Select a hospital</label>
+                                <select id="hospitalSelect"
+                                        style={{
+                                            border: "1px solid #ccc",
+                                            borderRadius: "0.25rem",
+                                            color: "#495057",
+                                            backgroundColor: "#fff",
+                                            boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
+                                            transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
+                                        }}
+                                >
+                                    <option value="">All</option>
+                                    {hospitalOptions}
+                                </select>
+                            </div>
                         </div>
                         </div>
                         <br/>
@@ -436,10 +464,26 @@ function RequiredFields(props) {
                     <div className='container' id="comprehensiveLowVisionEvaluationTrainingRequiredFields">
                         <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "ComprehensiveLowVisionEvaluation", "comprehensiveLowVisionEvaluationMirror")}>
                             <div className='container'>
-                                <strong>Optional Override At Hospital Level</strong>
-                                <input type="text" id="hospitalNameOverrideComprehensiveLowVisionEvaluation" className="form-control"/>
-                                <label className="form-check-label" htmlFor="hospitalNameOverrideComprehensiveLowVisionEvaluation">Hospital Name
-                                    Override</label>
+                                <div class="row justify-content-center">
+                                    <div className="col-md-6 mx-auto">
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <label htmlFor="hospitalNameOverrideComprehensiveLowVisionEvaluation" style={{ marginRight: '10px' }}>Select a hospital</label>
+                                            <select id="hospitalNameOverrideComprehensiveLowVisionEvaluation"
+                                                    style={{
+                                                        border: "1px solid #ccc",
+                                                        borderRadius: "0.25rem",
+                                                        color: "#495057",
+                                                        backgroundColor: "#fff",
+                                                        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
+                                                        transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
+                                                    }}
+                                            >
+                                                <option value="">All</option>
+                                                {hospitalOptions}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div id="extraFieldsComprehensiveLowVisionEvaluation">
                                 <strong>Extra Fields</strong>
@@ -475,10 +519,26 @@ function RequiredFields(props) {
                     <div className='container' id="visionEnhancementTrainingRequiredFields">
                         <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "VisionEnhancement", "visionEnhancementMirror")}>
                             <div className='container'>
-                                <strong>Optional Override At Hospital Level</strong>
-                                <input type="text" id="hospitalNameOverrideVisionEnhancement" className="form-control"/>
-                                <label className="form-check-label" htmlFor="hospitalNameOverrideVisionEnhancement">Hospital Name
-                                    Override</label>
+                                <div class="row justify-content-center">
+                                    <div className="col-md-6 mx-auto">
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <label htmlFor="hospitalNameOverrideVisionEnhancement" style={{ marginRight: '10px' }}>Select a hospital</label>
+                                            <select id="hospitalNameOverrideVisionEnhancement"
+                                                    style={{
+                                                        border: "1px solid #ccc",
+                                                        borderRadius: "0.25rem",
+                                                        color: "#495057",
+                                                        backgroundColor: "#fff",
+                                                        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
+                                                        transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
+                                                    }}
+                                            >
+                                                <option value="">All</option>
+                                                {hospitalOptions}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div id="extraFieldsVisionEnhancement">
                                 <strong>Extra Fields</strong>
@@ -514,10 +574,26 @@ function RequiredFields(props) {
                     <div className='container' id="counsellingEducationTrainingRequiredFields">
                         <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "CounsellingEducation", "counsellingEducationMirror")}>
                             <div className='container'>
-                                <strong>Optional Override At Hospital Level</strong>
-                                <input type="text" id="hospitalNameOverrideCounsellingEducation" className="form-control"/>
-                                <label className="form-check-label" htmlFor="hospitalNameOverrideCounsellingEducation">Hospital Name
-                                    Override</label>
+                                <div class="row justify-content-center">
+                                    <div className="col-md-6 mx-auto">
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <label htmlFor="hospitalNameOverrideCounsellingEducation" style={{ marginRight: '10px' }}>Select a hospital</label>
+                                            <select id="hospitalNameOverrideCounsellingEducation"
+                                                    style={{
+                                                        border: "1px solid #ccc",
+                                                        borderRadius: "0.25rem",
+                                                        color: "#495057",
+                                                        backgroundColor: "#fff",
+                                                        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
+                                                        transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
+                                                    }}
+                                            >
+                                                <option value="">All</option>
+                                                {hospitalOptions}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div id="extraFieldsCounsellingEducation">
                                 <strong>Extra Fields</strong>
@@ -553,10 +629,26 @@ function RequiredFields(props) {
                     <div className='container' id="mobileTrainingRequiredFields">
                         <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "MobileTraining", "mobileTrainingMirror")}>
                             <div className='container'>
-                                <strong>Optional Override At Hospital Level</strong>
-                                <input type="text" id="hospitalNameOverrideMobileTraining" className="form-control"/>
-                                <label className="form-check-label" htmlFor="hospitalNameOverrideMobileTraining">Hospital Name
-                                    Override</label>
+                                <div class="row justify-content-center">
+                                    <div className="col-md-6 mx-auto">
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <label htmlFor="hospitalNameOverrideMobileTraining" style={{ marginRight: '10px' }}>Select a hospital</label>
+                                            <select id="hospitalNameOverrideMobileTraining"
+                                                    style={{
+                                                        border: "1px solid #ccc",
+                                                        borderRadius: "0.25rem",
+                                                        color: "#495057",
+                                                        backgroundColor: "#fff",
+                                                        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
+                                                        transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
+                                                    }}
+                                            >
+                                                <option value="">All</option>
+                                                {hospitalOptions}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div id="extraFieldsMobileTraining">
                                 <strong>Extra Fields</strong>
@@ -592,10 +684,26 @@ function RequiredFields(props) {
                     <div className='container' id="computerTrainingRequiredFields">
                         <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "ComputerTraining", "computerTrainingMirror")}>
                             <div className='container'>
-                                <strong>Optional Override At Hospital Level</strong>
-                                <input type="text" id="hospitalNameOverrideComputerTraining" className="form-control"/>
-                                <label className="form-check-label" htmlFor="hospitalNameOverrideComputerTraining">Hospital Name
-                                    Override</label>
+                                <div class="row justify-content-center">
+                                    <div className="col-md-6 mx-auto">
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <label htmlFor="hospitalNameOverrideComputerTraining" style={{ marginRight: '10px' }}>Select a hospital</label>
+                                            <select id="hospitalNameOverrideComputerTraining"
+                                                    style={{
+                                                        border: "1px solid #ccc",
+                                                        borderRadius: "0.25rem",
+                                                        color: "#495057",
+                                                        backgroundColor: "#fff",
+                                                        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
+                                                        transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
+                                                    }}
+                                            >
+                                                <option value="">All</option>
+                                                {hospitalOptions}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div id="extraFieldsComputerTraining">
                                 <strong>Extra Fields</strong>
@@ -631,10 +739,26 @@ function RequiredFields(props) {
                     <div className='container' id="orientationMobilityTrainingRequiredFields">
                         <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "OrientationMobilityTraining", "orientationMobilityTrainingMirror")}>
                             <div className='container'>
-                                <strong>Optional Override At Hospital Level</strong>
-                                <input type="text" id="hospitalNameOverrideOrientationMobilityTraining" className="form-control"/>
-                                <label className="form-check-label" htmlFor="hospitalNameOverrideOrientationMobilityTraining">Hospital Name
-                                    Override</label>
+                                <div class="row justify-content-center">
+                                    <div className="col-md-6 mx-auto">
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <label htmlFor="hospitalNameOverrideOrientationMobilityTraining" style={{ marginRight: '10px' }}>Select a hospital</label>
+                                            <select id="hospitalNameOverrideOrientationMobilityTraining"
+                                                    style={{
+                                                        border: "1px solid #ccc",
+                                                        borderRadius: "0.25rem",
+                                                        color: "#495057",
+                                                        backgroundColor: "#fff",
+                                                        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
+                                                        transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
+                                                    }}
+                                            >
+                                                <option value="">All</option>
+                                                {hospitalOptions}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div id="extraFieldsOrientationMobilityTraining">
                                 <strong>Extra Fields</strong>
