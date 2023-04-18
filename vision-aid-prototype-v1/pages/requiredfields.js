@@ -335,7 +335,7 @@ function RequiredFields(props) {
             <div className="row">
                 <div className="col-md-6">
                     <form action="#" method="POST" onSubmit={(e) => addFieldsSubmit(e)}>
-                        <h1 className="text-center mt-4 mb-4">Required Beneficiary Input Fields</h1>
+                        <h1 className="text-center mt-4 mb-4">Required Beneficiary Fields</h1>
 
                         <p>MRN, Beneficiary Name, And Hospital Name Will Always Be Required</p>
 
