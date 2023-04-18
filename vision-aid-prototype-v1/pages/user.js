@@ -15,6 +15,7 @@ function UserPage(props) {
   const [mobileTrainingData, setMobileTrainingData] = useState([]);
   const [computerTrainingData, setComputerTrainingData] = useState([]);
   const [visionTrainingData, setVisionTrainingData] = useState([]);
+  const [comprehensiveLowVisionEvaluationData, setComprehensiveLowVisionEvaluationData] = useState([]);
   const [openMobile, setOpenMobile] = useState(false);
   const [openComputer, setOpenComputer] = useState(false);
   const [openVision, setOpenVision] = useState(false);
@@ -28,6 +29,9 @@ function UserPage(props) {
    }, []);
     useEffect(() => {
       setVisionTrainingData(props.user.Vision_Enhancement);
+    }, []);
+    useEffect(() => {
+      setComprehensiveLowVisionEvaluationData(props.user.Comprehensive_Low_Vision_Evaluation);
     }, []);
 
   
@@ -74,6 +78,12 @@ function UserPage(props) {
     const url = '/api/visionEnhancement';
     callMe(data, url, setVisionTrainingData, visionTrainingData);
   };  
+
+  const handleSubmitComprehensiveLowVisionEvaluation = async (data) => {
+    // Submit the VisionTraining data to the API
+    const url = '/api/comprehensiveLowVisionEvaluation';
+    callMe(data, url, setVisionTrainingData, visionTrainingData);
+  }; 
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -210,6 +220,13 @@ function UserPage(props) {
             addNewTraining={handleSubmitVisionTraining}
             title="Vision Enhancement"
             customFields={['Diagnosis', 'MDVI']}
+          />
+          <br/>
+          <TrainingForm
+            existingTrainings={comprehensiveLowVisionEvaluationData}
+            addNewTraining={handleSubmitComprehensiveLowVisionEvaluation}
+            title="Comprehensive Low Vision Evaluation"
+            customFields={['distanceVisualAcuityRE', 'distanceVisualAcuityLE', 'nearVisualAcuityRE', 'nearVisualAcuityLE', 'recommendations']}
           />
             
             </div>

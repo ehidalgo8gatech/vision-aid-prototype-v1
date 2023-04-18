@@ -155,7 +155,7 @@ model Vision_Enhancement_Mirror {
 }
 
 model Comprehensive_Low_Vision_Evaluation {
-  id                     Int         @id
+  id                     Int         @id @default(autoincrement())
   beneficiary            Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
   beneficiaryId          String
   distanceVisualAcuityRE String

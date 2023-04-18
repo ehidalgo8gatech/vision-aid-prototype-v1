@@ -337,12 +337,15 @@ function RequiredFields(props) {
 
                         <p>MRN, Beneficiary Name, And Hospital Name Will Always Be Required</p>
 
-                        <div className='container'>
+                        <div class="row justify-content-center">
+                        <div className="col-md-6 mx-auto">
                             <strong>Optional Override At Hospital Level</strong>
                             <input type="text" id="hospitalNameOverride" class="form-control"/>
                             <label className="form-check-label" htmlFor="hospitalNameOverride">Hospital Name
                                 Override</label>
                         </div>
+                        </div>
+                        <br/>
                         <strong>Required Fields</strong>
                         <br/>
                         <br/>
@@ -379,7 +382,9 @@ function RequiredFields(props) {
                                    defaultChecked={props.requiredBeneficiaryFields.stateRequired}/>
                             <label className="form-check-label" htmlFor="stateRequired"
                                    style={{marginLeft: '10px'}}>State</label>
-                            <div className="col-md-6">
+                            <br/>
+                            <br/>
+                            <div className="col-md-8 mx-auto">
                                 <div id="extraFields">
                                     <strong>Extra Fields</strong>
                                     <br/>

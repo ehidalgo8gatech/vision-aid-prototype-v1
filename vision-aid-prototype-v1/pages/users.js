@@ -141,7 +141,16 @@ function Users(props) {
                 <br/>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <label htmlFor='manager' style={{ marginRight: '10px' }}>Role Type</label>
-                    <select id="manager" name="role">
+                    <select id="manager" name="role"
+                    style={{
+                        border: "1px solid #ccc",
+                        borderRadius: "0.25rem",
+                        color: "#495057",
+                        backgroundColor: "#fff",
+                        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
+                        transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
+                      }}
+                      >
                         <option value="manager">Manager</option>
                         <option value="tech">Technician</option>
                     </select>

@@ -29,7 +29,8 @@ async function readData(req, res) {
                     Computer_Training: true,
                     Mobile_Training: true,
                     Orientation_Mobility_Training: true,
-                    Vision_Enhancement: true
+                    Vision_Enhancement: true,
+                    Comprehensive_Low_Vision_Evaluation: true
                 }
             })
         } else if (req.query.mrn != null) {
@@ -44,7 +45,8 @@ async function readData(req, res) {
                     Computer_Training: true,
                     Mobile_Training: true,
                     Orientation_Mobility_Training: true,
-                    Vision_Enhancement: true
+                    Vision_Enhancement: true,
+                    Comprehensive_Low_Vision_Evaluation: true
                 }
             })
         } else {
@@ -54,7 +56,8 @@ async function readData(req, res) {
                     Computer_Training: true,
                     Mobile_Training: true,
                     Orientation_Mobility_Training: true,
-                    Vision_Enhancement: true
+                    Vision_Enhancement: true,
+                    Comprehensive_Low_Vision_Evaluation: true
             }
             })
         }
