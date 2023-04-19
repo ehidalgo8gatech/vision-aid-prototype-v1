@@ -40,27 +40,39 @@ export async function getServerSideProps(ctx) {
 }
 
 export default function Summary({ summary }) {
-    const labels = summary.map((item) => item.name);
-    const mobileTraining = summary.map((item) => item.mobileTraining);
-    const computerTraining = summary.map((item) => item.computerTraining);
-    const orientationMobilityTraining = summary.map((item) => item.orientationMobilityTraining);
-    const visionEnhancement = summary.map((item) => item.visionEnhancement);
-    const counsellingEducation = summary.map((item) => item.counsellingEducation);
-    const comprehensiveLowVisionEvaluation = summary.map((item) => item.comprehensiveLowVisionEvaluation);
+    const mobileTrainingCount = summary.reduce((sum, item) => sum + item.mobileTraining, 0);
+    const computerTrainingCount = summary.reduce((sum, item) => sum + item.computerTraining, 0);
+    const orientationMobilityTrainingCount = summary.reduce((sum, item) => sum + item.orientationMobilityTraining, 0);
+    const visionEnhancementCount = summary.reduce((sum, item) => sum + item.visionEnhancement, 0);
+    const counsellingEducationCount = summary.reduce((sum, item) => sum + item.counsellingEducation, 0);
+    const comprehensiveLowVisionEvaluationCount = summary.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation, 0);
+    const beneficiaryCount = summary.reduce((sum, item) => sum + item.beneficiary, 0);
+    
   
     const chartData = {
-      labels: ["Hospitals", "Mobile Training", "Computer Training", "Orientation/Mobility Training", "Vision Enhancement", "Counselling/Education", "Comprehensive Low Vision Evaluation"],
+        labels: [
+            `Hospitals (${summary.length})`,
+            `Beneficiaries (${beneficiaryCount})`,
+            `Mobile Training (${mobileTrainingCount})`,
+            `Computer Training (${computerTrainingCount})`,
+            `Orientation/Mobility Training (${orientationMobilityTrainingCount})`,
+            `Vision Enhancement (${visionEnhancementCount})`,
+            `Counselling/Education (${counsellingEducationCount})`,
+            `Comprehensive Low Vision Evaluation (${comprehensiveLowVisionEvaluationCount})`,
+          ],
+        
       datasets: [
         {
           label: "Cumulative Counts",
           data: [
-            labels.length,
-            mobileTraining.reduce((a, b) => a + b, 0),
-            computerTraining.reduce((a, b) => a + b, 0),
-            orientationMobilityTraining.reduce((a, b) => a + b, 0),
-            visionEnhancement.reduce((a, b) => a + b, 0),
-            counsellingEducation.reduce((a, b) => a + b, 0),
-            comprehensiveLowVisionEvaluation.reduce((a, b) => a + b, 0),
+            summary.length,
+            beneficiaryCount,
+            mobileTrainingCount,
+            computerTrainingCount,
+            orientationMobilityTrainingCount,
+            visionEnhancementCount,
+            counsellingEducationCount,
+            comprehensiveLowVisionEvaluationCount
           ],
           backgroundColor: [
             "rgba(255, 99, 132, 0.2)",
@@ -70,6 +82,7 @@ export default function Summary({ summary }) {
             "rgba(153, 102, 255, 0.2)",
             "rgba(255, 159, 64, 0.2)",
             "rgba(255, 99, 132, 0.2)",
+            "rgba(119, 221, 119, 0.2)"
           ],
           borderColor: [
             "rgba(255, 99, 132, 1)",
@@ -79,41 +92,42 @@ export default function Summary({ summary }) {
             "rgba(153, 102, 255, 1)",
             "rgba(255, 159, 64, 1)",
             "rgba(255, 99, 132, 1)",
+            "rgba(119, 221, 119, 1)"
           ],
           borderWidth: 1,
         },
       ],
     };
-  
-    return (
-        <div>
-            <Navigation />
-        <Container>
-          <h1>Summary</h1>
-          <Bar data={chartData} options={{}} />
-          <Table striped bordered hover>
-        <thead>
-            <tr>
-            <th>Hospital</th>
-            <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {summary.map((item) => (
-            <tr key={item.id}>
-                <td>{item.name}</td>
-                <td>
-                <Link href={`/requiredfields`}>
-                    Configure
-                </Link>
-                </td>
-            </tr>
-            ))}
-        </tbody>
-        </Table>
 
-        </Container>
-        </div>
+    return (
+<div>
+  <Navigation />
+  <Container>
+    <h1>Summary</h1>
+    <div className="row">
+    <div className="col-md-2">
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>List of Hospitals</th>
+            </tr>
+          </thead>
+          <tbody>
+            {summary.map((item) => (
+              <tr key={item.id}>
+                <td>{item.name}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
+      <div className="col-md-10">
+        <Bar data={chartData} />
+      </div>
+    </div>
+  </Container>
+</div>
+
       );
   }
 
