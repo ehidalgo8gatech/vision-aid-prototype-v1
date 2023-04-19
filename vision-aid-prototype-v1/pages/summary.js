@@ -40,15 +40,6 @@ export async function getServerSideProps(ctx) {
 }
 
 export default function Summary({ summary }) {
-    console.log(summary);
-    const mobileTraining = summary.map((item) => item.mobileTraining);
-    const computerTraining = summary.map((item) => item.computerTraining);
-    const orientationMobilityTraining = summary.map((item) => item.orientationMobilityTraining);
-    const visionEnhancement = summary.map((item) => item.visionEnhancement);
-    const counsellingEducation = summary.map((item) => item.counsellingEducation);
-    const comprehensiveLowVisionEvaluation = summary.map((item) => item.comprehensiveLowVisionEvaluation);
-    const beneficiary = summary.map((item) => item.beneficiary);
-
     const mobileTrainingCount = summary.reduce((sum, item) => sum + item.mobileTraining, 0);
     const computerTrainingCount = summary.reduce((sum, item) => sum + item.computerTraining, 0);
     const orientationMobilityTrainingCount = summary.reduce((sum, item) => sum + item.orientationMobilityTraining, 0);
