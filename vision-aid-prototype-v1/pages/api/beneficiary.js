@@ -20,9 +20,46 @@ async function readData(req, res) {
         if (req.query.beneficiaryName != null) {
             beneficiary = await prisma.beneficiary.findMany({
                 where: {
-                    beneficiaryName: {
-                        contains: req.query.beneficiaryName,
-                    }
+                    OR: [
+                        {
+                            beneficiaryName: {
+                                contains: req.query.beneficiaryName,
+                            },
+                            mrn: {
+                                contains: req.query.beneficiaryName,
+                            },
+                            gender: {
+                                contains: req.query.beneficiaryName,
+                            },
+                            phoneNumber: {
+                                contains: req.query.beneficiaryName,
+                            },
+                            education: {
+                                contains: req.query.beneficiaryName,
+                            },
+                            occupation: {
+                                contains: req.query.beneficiaryName,
+                            },
+                            districts: {
+                                contains: req.query.beneficiaryName,
+                            },
+                            state: {
+                                contains: req.query.beneficiaryName,
+                            },
+                            diagnosis: {
+                                contains: req.query.beneficiaryName,
+                            },
+                            vision: {
+                                contains: req.query.beneficiaryName,
+                            },
+                            mDVI: {
+                                contains: req.query.beneficiaryName,
+                            },
+                            extraInformation: {
+                                contains: req.query.beneficiaryName,
+                            },
+                        },
+                    ],
                 },
                 include: {
                     hospital: true,
