@@ -64,7 +64,6 @@ export default function Summary({ summary }) {
         {
           label: "Cumulative Counts",
           data: [
-            summary.length,
             beneficiaryCount,
             mobileTrainingCount,
             computerTrainingCount,
