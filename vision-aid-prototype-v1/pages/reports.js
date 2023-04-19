@@ -1,39 +1,132 @@
+import {readUser} from './api/user'
+import {getSession} from "next-auth/react";
+import { Chart as ChartJS } from 'chart.js/auto'
+import { Chart }            from 'react-chartjs-2'
+import { Bar } from "react-chartjs-2";
+import {getSummaryForAllHospitals} from "@/pages/api/hospital";
+import { Container } from "react-bootstrap";
 import Navigation from './navigation/Navigation';
-import { useState, useEffect } from 'react';
+import { Table } from 'react-bootstrap';
+import Link from "next/link";
 
-function Reports() {
-  const [totalUsers, setTotalUsers] = useState();
-
-  useEffect(() => {
-    async function fetchUsers() {
-      try {
-        const beneficiary = await fetch('/api/beneficiary', {
-          method: 'GET',
-          headers: {'Content-Type': 'application/json'},
-        });
-        const beneficiaryJson = await beneficiary.json();
-        setTotalUsers(beneficiaryJson.length);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        setTotalUsers();
-      }
+export async function getServerSideProps(ctx) {
+    const session = await getSession(ctx)
+    if (session == null) {
+        console.log("session is null")
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        }
     }
-    fetchUsers();
-  }, []);
-
-  return (
-    <div>
-      <Navigation />
-      <h1 className="text-center mt-4 mb-4">Basic Information</h1>
-      <div className="row">
-            <div className="col-md-6">
-                <div className="form-group">
-                    <p><strong>Total number of beneficiaries: </strong>{totalUsers}</p>
-                </div>
-            </div>
-     </div>
-    </div>
-  );
+    const user = await readUser(session.user.email)
+    if (user.admin == null) {
+        console.log("user admin is null")
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        }
+    }
+    return {
+        props: {
+            user: user,
+            summary : await getSummaryForAllHospitals(),
+            error: null
+        },
+    }
 }
 
-export default Reports;
+export default function Summary({ summary }) {
+    const mobileTrainingCount = summary.reduce((sum, item) => sum + item.mobileTraining, 0);
+    const computerTrainingCount = summary.reduce((sum, item) => sum + item.computerTraining, 0);
+    const orientationMobilityTrainingCount = summary.reduce((sum, item) => sum + item.orientationMobilityTraining, 0);
+    const visionEnhancementCount = summary.reduce((sum, item) => sum + item.visionEnhancement, 0);
+    const counsellingEducationCount = summary.reduce((sum, item) => sum + item.counsellingEducation, 0);
+    const comprehensiveLowVisionEvaluationCount = summary.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation, 0);
+    const beneficiaryCount = summary.reduce((sum, item) => sum + item.beneficiary, 0);
+    
+  
+    const chartData = {
+        labels: [
+            `Beneficiaries (${beneficiaryCount})`,
+            `Mobile Training (${mobileTrainingCount})`,
+            `Computer Training (${computerTrainingCount})`,
+            `Orientation/Mobility Training (${orientationMobilityTrainingCount})`,
+            `Vision Enhancement (${visionEnhancementCount})`,
+            `Counselling/Education (${counsellingEducationCount})`,
+            `Comprehensive Low Vision Evaluation (${comprehensiveLowVisionEvaluationCount})`,
+          ],
+        
+      datasets: [
+        {
+          label: "Cumulative Counts",
+          data: [
+            summary.length,
+            beneficiaryCount,
+            mobileTrainingCount,
+            computerTrainingCount,
+            orientationMobilityTrainingCount,
+            visionEnhancementCount,
+            counsellingEducationCount,
+            comprehensiveLowVisionEvaluationCount
+          ],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 206, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+            "rgba(153, 102, 255, 0.2)",
+            "rgba(255, 159, 64, 0.2)",
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(119, 221, 119, 0.2)"
+          ],
+          borderColor: [
+            "rgba(255, 99, 132, 1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(75, 192, 192, 1)",
+            "rgba(153, 102, 255, 1)",
+            "rgba(255, 159, 64, 1)",
+            "rgba(255, 99, 132, 1)",
+            "rgba(119, 221, 119, 1)"
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+
+    return (
+<div>
+  <Navigation />
+  <Container>
+    <h1>Summary</h1>
+    <div className="row">
+    <div className="col-md-2">
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>List of Hospitals</th>
+            </tr>
+          </thead>
+          <tbody>
+            {summary.map((item) => (
+              <tr key={item.id}>
+                <td>{item.name}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
+      <div className="col-md-10">
+        <Bar data={chartData} />
+      </div>
+    </div>
+  </Container>
+</div>
+
+      );
+  }
+
