@@ -12,7 +12,7 @@ function HomePage() {
 
 const searchUsers = async (searchTerm) => {
   try {
-    const beneficiary = await await fetch('/api/beneficiary?beneficiaryName=' + searchTerm, {
+    const beneficiary = await fetch('/api/beneficiary?beneficiaryName=' + searchTerm, {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
     })
