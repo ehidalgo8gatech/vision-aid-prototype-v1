@@ -17,6 +17,7 @@ function UserPage(props) {
   const [computerTrainingData, setComputerTrainingData] = useState([]);
   const [visionTrainingData, setVisionTrainingData] = useState([]);
   const [comprehensiveLowVisionEvaluationData, setComprehensiveLowVisionEvaluationData] = useState([]);
+  const [counsellingEducationData, setCounsellingEducationData] = useState([]);
   const [openMobile, setOpenMobile] = useState(false);
   const [openComputer, setOpenComputer] = useState(false);
   const [openVision, setOpenVision] = useState(false);
@@ -33,6 +34,9 @@ function UserPage(props) {
     }, []);
     useEffect(() => {
       setComprehensiveLowVisionEvaluationData(props.user.Comprehensive_Low_Vision_Evaluation);
+    }, []);
+    useEffect(() => {
+      setCounsellingEducationData(props.user.Counselling_Education);
     }, []);
 
   
@@ -84,6 +88,12 @@ function UserPage(props) {
     // Submit the VisionTraining data to the API
     const url = '/api/comprehensiveLowVisionEvaluation';
     callMe(data, url, setVisionTrainingData, visionTrainingData);
+  }; 
+
+  const handleSubmitCounsellingEducation = async (data) => {
+    // Submit the VisionTraining data to the API
+    const url = '/api/counsellingEducation';
+    callMe(data, url, setCounsellingEducationData, counsellingEducationData);
   }; 
 
   // Handle input changes
@@ -233,6 +243,12 @@ function UserPage(props) {
               customFields={['vision', 'typeOfCounselling']}
             />
             <br/>
+            <TrainingForm
+              existingTrainings={counsellingEducationData}
+              addNewTraining={handleSubmitCounsellingEducation}
+              title="Counselling Education"
+              customFields={['vision', 'typeCounselling', 'MDVI']}
+            />
             
             </div>
         </div>
