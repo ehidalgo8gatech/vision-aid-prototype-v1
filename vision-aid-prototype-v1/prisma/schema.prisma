@@ -160,9 +160,15 @@ model Comprehensive_Low_Vision_Evaluation {
   beneficiaryId          String
   distanceVisualAcuityRE String
   distanceVisualAcuityLE String
+  distanceBinocularVisionBE String
   nearVisualAcuityRE     String
   nearVisualAcuityLE     String
-  recommendations        String
+  nearBinocularVisionBE  String
+  recommendation         String
+  dispensed              String
+  dispensedDate          DateTime?
+  cost                   Int
+  costToBeneficiary      Int
   extraInformation       String      @db.Text
 }
 

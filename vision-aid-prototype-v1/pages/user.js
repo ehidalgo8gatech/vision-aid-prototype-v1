@@ -226,7 +226,16 @@ function UserPage(props) {
               existingTrainings={comprehensiveLowVisionEvaluationData}
               addNewTraining={handleSubmitComprehensiveLowVisionEvaluation}
               title="Comprehensive Low Vision Evaluation"
-              customFields={['distanceVisualAcuityRE', 'distanceVisualAcuityLE', 'nearVisualAcuityRE', 'nearVisualAcuityLE']}
+              customFieldsDistance={[
+                'distanceVisualAcuityRE', 
+                'distanceVisualAcuityLE', 
+                'distanceBinocularVisionBE',
+              ]}
+              customFieldsNear={[
+                'nearVisualAcuityRE', 
+                'nearVisualAcuityLE',
+                'nearBinocularVisionBE',
+              ]}
             />
             <br/>
             <TrainingForm

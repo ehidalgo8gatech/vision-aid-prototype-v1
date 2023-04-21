@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import { ChevronDown, ChevronRight } from 'react-bootstrap-icons';
 
-const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields, title }) => {
+const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFieldsDistance, customFieldsNear,title }) => {
   const [showForm, setShowForm] = useState(false);
 
   const handleToggle = () => {
@@ -11,16 +11,25 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const customData = customFields.reduce((acc, field) => {
-      acc[field] = e.target[field].value + ' ' + e.target[`unit`].value
+    const customDataDistance = customFieldsDistance.reduce((acc, field) => {
+      acc[field] = e.target[field].value + ' ' + e.target[`unit-distance`].value
+      return acc;
+    }, {});
+    const customDataNear = customFieldsNear.reduce((acc, field) => {
+      acc[field] = e.target[field].value + ' ' + e.target[`unit-near`].value
       return acc;
     }, {});
     const newTraining = {
       date: e.target.date.value,
       sessionNumber: e.target.sessionNumber.value,
-      recommendations: e.target.recommendations.value,
+      recommendation: e.target.recommendation.value,
+      dispensed: e.target.dispensed.value,
+      dispensedDate: new Date(e.target.dispensedDate.value),
+      cost: parseInt(e.target.cost.value),
+      costToBeneficiary: parseInt(e.target.costToBeneficiary.value),
       extraInformation: e.target.extraInformation.value,
-      ...customData,
+      ...customDataDistance,
+      ...customDataNear
     };
     addNewTraining(newTraining);
     setShowForm(false);
@@ -53,13 +62,30 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
               <p>
                 <strong>Session Number:</strong> {training.sessionNumber}
               </p>
-              {customFields.map((field) => (
+              {customFieldsDistance.map((field) => (
+                <p key={field}>
+                  <strong>{field}:</strong> {training[field]}
+                </p>
+              ))}
+              {customFieldsNear.map((field) => (
                 <p key={field}>
                   <strong>{field}:</strong> {training[field]}
                 </p>
               ))}
               <p>
-                <strong>Recommendations:</strong> {training.recommendations}
+                <strong>Recommendation:</strong> {training.recommendation}
+              </p>
+              <p>
+                <strong>Dispensed:</strong> {training.dispensed}
+              </p>
+              <p>
+                <strong>Dispensed Date:</strong> {training.dispensedDate.toString().split('T')[0]}
+              </p>
+              <p>
+                <strong>Cost:</strong> {training.cost}
+              </p>
+              <p>
+                <strong>Cost to beneficiary:</strong> {training.costToBeneficiary}
               </p>
               <p>
                 <strong>Extra Information:</strong> {training.extraInformation}
@@ -69,11 +95,6 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
           ))}
                 {showForm && (
         <Form onSubmit={handleSubmit} className="mt-3">
-            <Button variant="primary" type="submit">
-            Add New Training
-          </Button>
-          <br/>
-          <br/>
           <Row>
             <Col>
               <Form.Group controlId="date">
@@ -88,8 +109,8 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
               </Form.Group>
             </Col>
           </Row>
-          <Form.Group controlId="unit">
-                <Form.Label>Select metric:</Form.Label>
+          <Form.Group controlId="unit-distance">
+                <Form.Label>Select Distance metric:</Form.Label>
                 <Form.Control as="select">
                 <option defaultValue></option>
                 <option>N-scale</option>
@@ -100,7 +121,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                 </Form.Control>
             </Form.Group>
           
-          {customFields.map((field) => (
+          {customFieldsDistance.map((field) => (
             <Row key={field}>
             <Col>
             <Form.Group controlId={field} key={field}>
@@ -110,15 +131,64 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
             </Col>
           </Row>
           ))}
-          <Form.Group controlId="recommendations" key="recommendations">
-            <Form.Label>Recommendations</Form.Label>
-            <Form.Control as="textarea" rows={3} />
+           <Form.Group controlId="unit-near">
+                <Form.Label>Select Near metric:</Form.Label>
+                <Form.Control as="select">
+                <option defaultValue></option>
+                <option>N-scale</option>
+                <option>M-units</option>
+                <option>Imperial</option>
+                <option>Metric</option>
+                <option>LogMAR</option>
+                </Form.Control>
+            </Form.Group>
+            {customFieldsNear.map((field) => (
+            <Row key={field}>
+            <Col>
+            <Form.Group controlId={field} key={field}>
+              <Form.Label>{field}</Form.Label>
+              <Form.Control type="text" />
+            </Form.Group>
+            </Col>
+          </Row>
+          ))}
+          <Form.Group controlId="recommendation" key="recommendation">
+            <Form.Label>Recommendation</Form.Label>
+            <Form.Control as="select">
+                <option defaultValue></option>
+                <option>Optical</option>
+                <option>non-Optical</option>
+                <option>Electronic</option>
+                </Form.Control>
+          </Form.Group>
+          <Form.Group controlId="dispensed" key="dispensed">
+            <Form.Label>Dispensed</Form.Label>
+            <Form.Control as="select">
+                <option defaultValue></option>
+                <option>Yes</option>
+                <option>No</option>
+                </Form.Control>
+          </Form.Group>
+          <Form.Group controlId="dispensedDate">
+                <Form.Label>Dispensed date</Form.Label>
+                <Form.Control type="date" />
+          </Form.Group>
+          <Form.Group controlId="cost">
+                <Form.Label>Cost</Form.Label>
+                <Form.Control type="number" />
+          </Form.Group>
+          <Form.Group controlId="costToBeneficiary">
+                <Form.Label>Cost to beneficiary</Form.Label>
+                <Form.Control type="number" />
           </Form.Group>
           <Form.Group controlId="extraInformation">
-            <Form.Label>Extra Information</Form.Label>
+            <Form.Label>Comments</Form.Label>
             <Form.Control as="textarea" rows={3} />
           </Form.Group>
           <br/>
+          <Button variant="primary" type="submit">
+            Submit Evaluation
+          </Button>
         </Form>
       )}
         </>
