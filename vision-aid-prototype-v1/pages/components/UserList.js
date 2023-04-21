@@ -13,6 +13,7 @@ function UserList({ users }) {
         <Table striped bordered hover responsive>
           <thead>
             <tr>
+              <th>MRN</th>
               <th>Name</th>
               <th>Date of Birth</th>
               <th>Gender</th>
@@ -22,6 +23,7 @@ function UserList({ users }) {
           <tbody>
             {users.map((user) => (
               <tr key={user.mrn}>
+                <td>{user.mrn}</td>
                 <td>{user.beneficiaryName}</td>
                 <td>{(new Date(user.dateOfBirth)).toDateString()}</td>
                 <td>{user.gender}</td>
