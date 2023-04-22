@@ -236,6 +236,7 @@ function UserPage(props) {
                 'nearVisualAcuityLE',
                 'nearBinocularVisionBE',
               ]}
+              api='comprehensiveLowVisionEvaluation'
             />
             <br/>
             <TrainingForm

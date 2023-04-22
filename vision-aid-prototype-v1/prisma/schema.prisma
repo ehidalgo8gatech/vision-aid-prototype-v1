@@ -36,7 +36,7 @@ model HospitalRole {
   user       User     @relation(fields: [userId], references: [id])
   userId     Int      @unique // relation scalar field (used in the `@relation` attribute above)
   hospital   Hospital @relation(fields: [hospitalId], references: [id])
-  hospitalId Int      // relation scalar field (used in the `@relation` attribute above)
+  hospitalId Int // relation scalar field (used in the `@relation` attribute above)
   admin      Boolean
 }
 
@@ -155,21 +155,23 @@ model Vision_Enhancement_Mirror {
 }
 
 model Comprehensive_Low_Vision_Evaluation {
-  id                     Int         @id @default(autoincrement())
-  beneficiary            Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
-  beneficiaryId          String
-  distanceVisualAcuityRE String
-  distanceVisualAcuityLE String
+  id                        Int         @id @default(autoincrement())
+  beneficiary               Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
+  beneficiaryId             String
+  date                      DateTime?
+  sessionNumber             Int?
+  distanceVisualAcuityRE    String
+  distanceVisualAcuityLE    String
   distanceBinocularVisionBE String
-  nearVisualAcuityRE     String
-  nearVisualAcuityLE     String
-  nearBinocularVisionBE  String
-  recommendation         String
-  dispensed              String
-  dispensedDate          DateTime?
-  cost                   Int
-  costToBeneficiary      Int
-  extraInformation       String      @db.Text
+  nearVisualAcuityRE        String
+  nearVisualAcuityLE        String
+  nearBinocularVisionBE     String
+  recommendation            String
+  dispensed                 String
+  dispensedDate             DateTime?
+  cost                      Int
+  costToBeneficiary         Int
+  extraInformation          String      @db.Text
 }
 
 model Comprehensive_Low_Vision_Evaluation_Mirror {
