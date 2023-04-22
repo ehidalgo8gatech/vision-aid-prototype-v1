@@ -68,6 +68,15 @@ export async function readUser(email) {
         });
 }
 
+export async function allUsers() {
+    return prisma.user.findMany({
+        include: {
+            hospitalRole: true,
+            admin: true
+        }
+    });
+}
+
 async function addData(req, res) {
     const body = req.body;
     const create = {

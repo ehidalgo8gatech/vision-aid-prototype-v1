@@ -1,6 +1,6 @@
 import Navigation from './navigation/Navigation';
 import {getSession} from "next-auth/react";
-import {readUser} from "@/pages/api/user";
+import {allUsers, readUser} from "@/pages/api/user";
 import {findAllHospital} from "@/pages/api/hospital";
 import Router from "next/router";
 
@@ -25,10 +25,12 @@ export async function getServerSideProps(ctx) {
             },
         }
     }
+
     return {
         props: {
             user: user,
             hospitals: await findAllHospital(),
+            users: await allUsers(),
             error: null
         },
     }
@@ -111,9 +113,51 @@ function Users(props) {
     );
     }
 
+    let usersList = []
+    props.users.forEach(data => {
+        var admin
+        var hospital
+        if (data.admin != null) {
+            admin = "TRUE"
+            hospital = "ALL"
+        } else {
+            admin = "FALSE"
+            hospital = "NONE"
+            if (data.hospitalRole != null) {
+                const hospitalId = data.hospitalRole.id
+                props.hospitals.forEach(hospitalLoop => {
+                    if (hospitalLoop.id == hospitalId) {
+                        hospital = hospitalLoop.name
+                    }
+                })
+            }
+        }
+        usersList.push(
+            <tr>
+                <td>{data.id}</td>
+                <td>{data.email}</td>
+                <td>{admin}</td>
+                <td>{hospital}</td>
+            </tr>
+        )
+    })
     return(
         <div>
             <Navigation />
+            <h1 className="text-center mt-4 mb-4">List Of Users</h1>
+            <table className="table">
+                <thead>
+                <tr>
+                    <th>User Id</th>
+                    <th>User Email</th>
+                    <th>Admin</th>
+                    <th>Hospital</th>
+                </tr>
+                </thead>
+                <tbody>
+                {usersList}
+                </tbody>
+            </table>
             <h1 className="text-center mt-4 mb-4">Hospital Information</h1>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <label htmlFor="hospitalSelect" style={{ marginRight: '10px' }}>Select a hospital</label>
