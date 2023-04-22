@@ -17,7 +17,6 @@ export default async function handler(req, res) {
 async function updateData(req, res) {
     try {
         const { id, ...data } = req.body;
-        console.log("id and data for compre " + JSON.stringify(id) + JSON.stringify(data))
         const updatedUser = await prisma.comprehensive_Low_Vision_Evaluation.update({
             where: { id },
             data,
