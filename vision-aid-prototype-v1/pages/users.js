@@ -114,33 +114,46 @@ function Users(props) {
     }
 
     let usersList = []
-    props.users.forEach(data => {
+    for (let i = 0; i < props.users.length; i++){
+        const data = props.users[i];
+        console.log(data)
         var admin
         var hospital
+        var hospitalId = null
+        var manager = "FALSE"
         if (data.admin != null) {
             admin = "TRUE"
+            manager = "TRUE"
             hospital = "ALL"
         } else {
             admin = "FALSE"
             hospital = "NONE"
             if (data.hospitalRole != null) {
-                const hospitalId = data.hospitalRole.id
+                hospitalId = data.hospitalRole.hospitalId
+                if (data.hospitalRole.admin == true) {
+                    manager = "TRUE"
+                }
                 props.hospitals.forEach(hospitalLoop => {
                     if (hospitalLoop.id == hospitalId) {
+                        console.log(hospitalLoop.id + " " + hospitalId)
                         hospital = hospitalLoop.name
                     }
                 })
             }
+        }
+        if (props.user.hospitalRole != null && props.user.hospitalRole.hospitalId != hospitalId) {
+            continue
         }
         usersList.push(
             <tr>
                 <td>{data.id}</td>
                 <td>{data.email}</td>
                 <td>{admin}</td>
+                <td>{manager}</td>
                 <td>{hospital}</td>
             </tr>
         )
-    })
+    }
     return(
         <div>
             <Navigation />
@@ -151,6 +164,7 @@ function Users(props) {
                     <th>User Id</th>
                     <th>User Email</th>
                     <th>Admin</th>
+                    <th>Manager</th>
                     <th>Hospital</th>
                 </tr>
                 </thead>
