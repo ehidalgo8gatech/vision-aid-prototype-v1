@@ -55,8 +55,10 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
   const handleEditSubmit = async (e, api, field, index) => {
     e.preventDefault();
     var value
-    if (field == 'date') {
+    if (field == 'date' || field == 'dispensedDate') {
       value = new Date(existingTrainings[index][field])
+    } else if(field == 'sessionNumber' || field == 'cost' || field == 'costToBeneficiary') {
+      value = parseInt(existingTrainings[index][field])
     } else {
       value = existingTrainings[index][field]
     }
@@ -132,46 +134,302 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
         </span>
                   </div>
               )}
-              <p>
-                <strong>Session Number:</strong> {training.sessionNumber}
-                <Pencil />
-              </p>
+
+              {editableField === 'sessionNumber' ? (
+                  <div>
+                    <strong>Session Number:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'sessionNumber', index)} className="d-inline ms-2">
+                      <input id={title + index + 'sessionNumber'}
+                             type="number"
+                             className="form-control d-inline w-auto"
+                             name='sessionNumber'
+                             value={training.sessionNumber}
+                             onChange={() => handleInputChange(index, 'sessionNumber', title + index + 'sessionNumber')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Session Number:</strong>
+                    <span className="ms-2">
+          {training.sessionNumber}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('sessionNumber')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              
               {customFieldsDistance.map((field) => (
-                <p key={field}>
-                  <strong>{field}:</strong> {training[field]}
-                  <Pencil />
-                </p>
+                  <div key={field}>
+                    {editableField === field ? (
+                        <div>
+                          <strong>{field}:</strong>
+                          <form onSubmit={(e) => handleEditSubmit(e, api, field, index)} className="d-inline ms-2">
+                            <input id={title + index + field}
+                                   type="text"
+                                   className="form-control d-inline w-auto"
+                                   name={field}
+                                   value={training[field]}
+                                   onChange={() => handleInputChange(index, field, title + index + field)}
+                            />
+                            <button type="submit" className="btn btn-primary btn-sm ms-2">
+                              Save
+                            </button>
+                          </form>
+                        </div>
+                    ) : (
+                        <div>
+                          <strong>{field}: </strong>
+                          <span className="ms-2">
+          {training[field]}
+                            <button
+                                type="button"
+                                className="btn btn-link btn-sm text-primary ms-2"
+                                onClick={() => handleEditClick(field)}
+                            >
+           <Pencil/>
+          </button>
+        </span>
+                        </div>
+                    )}
+                  </div>
               ))}
+
               {customFieldsNear.map((field) => (
-                <p key={field}>
-                  <strong>{field}:</strong> {training[field]}
-                  <Pencil />
-                </p>
+                  <div key={field}>
+                    {editableField === field ? (
+                        <div>
+                          <strong>{field}:</strong>
+                          <form onSubmit={(e) => handleEditSubmit(e, api, field, index)} className="d-inline ms-2">
+                            <input id={title + index + field}
+                                   type="text"
+                                   className="form-control d-inline w-auto"
+                                   name={field}
+                                   value={training[field]}
+                                   onChange={() => handleInputChange(index, field, title + index + field)}
+                            />
+                            <button type="submit" className="btn btn-primary btn-sm ms-2">
+                              Save
+                            </button>
+                          </form>
+                        </div>
+                    ) : (
+                        <div>
+                          <strong>{field}: </strong>
+                          <span className="ms-2">
+          {training[field]}
+                            <button
+                                type="button"
+                                className="btn btn-link btn-sm text-primary ms-2"
+                                onClick={() => handleEditClick(field)}
+                            >
+           <Pencil/>
+          </button>
+        </span>
+                        </div>
+                    )}
+                  </div>
               ))}
-              <p>
-                <strong>Recommendation:</strong> {training.recommendation}
-                <Pencil />
-              </p>
-              <p>
-                <strong>Dispensed:</strong> {training.dispensed}
-                <Pencil />
-              </p>
-              <p>
-                <strong>Dispensed Date:</strong> {training.dispensedDate.toString().split('T')[0]}
-                <Pencil />
-              </p>
-              <p>
-                <strong>Cost:</strong> {training.cost}
-                <Pencil />
-              </p>
-              <p>
-                <strong>Cost to beneficiary:</strong> {training.costToBeneficiary}
-                <Pencil />
-              </p>
-              <p>
-                <strong>Extra Information:</strong> {training.extraInformation}
-                <Pencil />
-              </p>
+
+              {editableField === 'recommendation' ? (
+                  <div>
+                    <strong>Recommendation:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'recommendation', index)} className="d-inline ms-2">
+                      <input id={title + index + 'recommendation'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='recommendation'
+                             value={training.recommendation}
+                             onChange={() => handleInputChange(index, 'recommendation', title + index + 'recommendation')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Recommendation:</strong>
+                    <span className="ms-2">
+          {training.recommendation}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('recommendation')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
+              {editableField === 'dispensed' ? (
+                  <div>
+                    <strong>Dispensed:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'dispensed', index)} className="d-inline ms-2">
+                      <input id={title + index + 'dispensed'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='dispensed'
+                             value={training.dispensed}
+                             onChange={() => handleInputChange(index, 'dispensed', title + index + 'dispensed')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Dispensed:</strong>
+                    <span className="ms-2">
+          {training.dispensed}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('dispensed')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
+              {editableField === 'dispensedDate' ? (
+                  <div>
+                    <strong>Dispensed Date:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'dispensedDate', index)} className="d-inline ms-2">
+                      <input id={title + index + 'dispensedDate'}
+                             type="date"
+                             className="form-control d-inline w-auto"
+                             name='dispensedDate'
+                             value={training.dispensedDate}
+                             onChange={() => handleInputChange(index, 'dispensedDate', title + index + 'dispensedDate')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Dispensed Date:</strong>
+                    <span className="ms-2">
+          {training.dispensedDate}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('dispensedDate')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
+              {editableField === 'cost' ? (
+                  <div>
+                    <strong>cost:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'cost', index)} className="d-inline ms-2">
+                      <input id={title + index + 'cost'}
+                             type="number"
+                             className="form-control d-inline w-auto"
+                             name='cost'
+                             value={training.cost}
+                             onChange={() => handleInputChange(index, 'cost', title + index + 'cost')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>cost:</strong>
+                    <span className="ms-2">
+          {training.cost}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('cost')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
+              {editableField === 'costToBeneficiary' ? (
+                  <div>
+                    <strong>costToBeneficiary:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'costToBeneficiary', index)} className="d-inline ms-2">
+                      <input id={title + index + 'costToBeneficiary'}
+                             type="number"
+                             className="form-control d-inline w-auto"
+                             name='costToBeneficiary'
+                             value={training.costToBeneficiary}
+                             onChange={() => handleInputChange(index, 'costToBeneficiary', title + index + 'costToBeneficiary')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>costToBeneficiary:</strong>
+                    <span className="ms-2">
+          {training.costToBeneficiary}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('costToBeneficiary')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
+              {editableField === 'extraInformation' ? (
+                  <div>
+                    <strong>extraInformation:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'extraInformation', index)} className="d-inline ms-2">
+                      <input id={title + index + 'extraInformation'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='extraInformation'
+                             value={training.extraInformation}
+                             onChange={() => handleInputChange(index, 'extraInformation', title + index + 'extraInformation')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>extraInformation:</strong>
+                    <span className="ms-2">
+          {training.extraInformation}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('extraInformation')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
               <hr />
             </div>
           ))}
