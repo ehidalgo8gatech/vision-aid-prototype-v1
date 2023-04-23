@@ -158,6 +158,7 @@ model Comprehensive_Low_Vision_Evaluation {
   id                        Int         @id @default(autoincrement())
   beneficiary               Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
   beneficiaryId             String
+  diagnosis                 String?
   date                      DateTime?
   sessionNumber             Int?
   distanceVisualAcuityRE    String

@@ -21,7 +21,14 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
       acc[field] = e.target[field].value + ' ' + e.target[`unit-near`].value
       return acc;
     }, {});
+    var diagnosis
+    if (e.target.diagnosis.value == "Other") {
+      diagnosis = e.target.diagnosisOther.value
+    } else {
+      diagnosis = e.target.diagnosis.value
+    }
     const newTraining = {
+      diagnosis: diagnosis,
       date: e.target.date.value,
       sessionNumber: e.target.sessionNumber.value,
       recommendation: e.target.recommendation.value,
@@ -81,6 +88,17 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
     Router.reload()
   };
 
+  const [showDiagnosisOther, setShowDiagnosisOther] = useState(false)
+  function diagnosisOnChange(event) {
+    event.preventDefault()
+    if (event.target.value == "Other") {
+      console.log(event.target.value)
+      setShowDiagnosisOther(true)
+    } else {
+      setShowDiagnosisOther(false)
+    }
+  }
+
   return (
 <div className="col-12">
       <div className="d-flex justify-content-center align-items-center">
@@ -103,6 +121,39 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
         <>
           {existingTrainings.map((training, index) => (
             <div key={index}>
+              
+              {editableField === 'diagnosis' ? (
+                  <div>
+                    <strong>Diagnosis:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'diagnosis', index)} className="d-inline ms-2">
+                      <input id={title + index + 'diagnosis'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='diagnosis'
+                             value={training.diagnosis}
+                             onChange={() => handleInputChange(index, 'diagnosis', title + index + 'diagnosis')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>diagnosis:</strong>
+                    <span className="ms-2">
+          {training.diagnosis}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('diagnosis')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
               {editableField === 'date' ? (
                   <div>
                     <strong>Date:</strong>
@@ -435,6 +486,31 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
           ))}
                 {showForm && (
         <Form onSubmit={handleSubmit} className="mt-3">
+          <Row>
+            <Col>
+              <Form.Group controlId="diagnosis">
+                <Form.Label>Diagnosis</Form.Label>
+                <Form.Control as="select" onChange={(event) => diagnosisOnChange(event)}>
+                  <option defaultValue></option>
+                  <option>Anterior segment condition</option>
+                  <option>Posterior eye disease</option>
+                  <option>Hereditary eye disease</option>
+                  <option>Neuro-ophthalmic condition</option>
+                  <option>Other</option>
+                </Form.Control>
+              </Form.Group>
+            </Col>
+          </Row>
+          {showDiagnosisOther && (
+              <Row>
+                <Col>
+                  <Form.Group controlId="diagnosisOther">
+                    <Form.Label>Diagnosis Other</Form.Label>
+                    <Form.Control type="text" />
+                  </Form.Group>
+                </Col>
+              </Row>
+          )}
           <Row>
             <Col>
               <Form.Group controlId="date">

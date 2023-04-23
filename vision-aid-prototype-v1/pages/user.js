@@ -1,6 +1,6 @@
 // pages/user.js
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { Pencil } from 'react-bootstrap-icons';
 import Navigation from './navigation/Navigation';
 import TrainingForm from './components/TrainingForm';
@@ -67,6 +67,7 @@ function UserPage(props) {
       } else {
         alert('An error occurred while saving data. Please try again.');
       }
+      Router.reload()
     }
 
 
