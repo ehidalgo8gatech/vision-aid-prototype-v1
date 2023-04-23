@@ -37,7 +37,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
       diagnosis: diagnosis,
       date: e.target.date.value,
       sessionNumber: e.target.sessionNumber.value,
-      recommendation: e.target.recommendation.value,
+      recommendation: recs,
       dispensed: e.target.dispensed == null ? null : e.target.dispensed.value,
       dispensedDate: e.target.dispensedDate == null ? null : new Date(e.target.dispensedDate.value),
       cost: e.target.cost == null ? null : parseInt(e.target.cost.value),
