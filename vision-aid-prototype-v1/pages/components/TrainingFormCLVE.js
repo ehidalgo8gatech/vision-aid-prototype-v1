@@ -27,6 +27,12 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
     } else {
       diagnosis = e.target.diagnosis.value
     }
+    var recs = ""
+    e.target.recommendation.forEach((rec) => {
+      if (rec.checked) {
+        recs = recs + rec.name + " "
+      }
+    })
     const newTraining = {
       diagnosis: diagnosis,
       date: e.target.date.value,
@@ -768,12 +774,9 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
           ))}
           <Form.Group controlId="recommendation" key="recommendation">
             <Form.Label>Recommendation</Form.Label>
-            <Form.Control as="select">
-                <option defaultValue></option>
-                <option>Optical</option>
-                <option>non-Optical</option>
-                <option>Electronic</option>
-                </Form.Control>
+            <Form.Check type='checkbox' label='Optical' name='Optical' inline></Form.Check>
+            <Form.Check type='checkbox' label='non-Optical' name='non-Optical' inline></Form.Check>
+            <Form.Check type='checkbox' label='Electronic' name='Electronic' inline></Form.Check>
           </Form.Group>
           <Form.Group controlId="dispensed" key="dispensed">
             <Form.Label>Dispensed</Form.Label>
