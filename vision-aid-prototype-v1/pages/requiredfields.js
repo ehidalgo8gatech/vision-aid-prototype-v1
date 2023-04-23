@@ -588,60 +588,8 @@ function RequiredFields(props) {
                         </form>
                     </div>
                     <br/>
-
-                    <div className="d-flex justify-content-center align-items-center">
-                        {showForm["counsellingEducation"] ? (
-                            <ChevronDown
-                                className="ml-2"
-                                onClick={() => handleToggle("counsellingEducation")}
-                                style={{ cursor: 'pointer' }}
-                            />
-                        ) : (
-                            <ChevronRight
-                                className="ml-2"
-                                onClick={() => handleToggle("counsellingEducation")}
-                                style={{ cursor: 'pointer' }}
-                            />
-                        )}
-                        <h2 className="text-center">Counselling Education</h2>
-                    </div>
-                    <div className='container' id="counsellingEducationTrainingRequiredFields">
-                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "CounsellingEducation", "counsellingEducationMirror")}>
-                            <div className='container'>
-                                <div class="row justify-content-center">
-                                    <div className="col-md-6 mx-auto">
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                            <label htmlFor="hospitalNameOverrideCounsellingEducation" style={{ marginRight: '10px' }}>Select a hospital</label>
-                                            <select id="hospitalNameOverrideCounsellingEducation"
-                                                    style={{
-                                                        border: "1px solid #ccc",
-                                                        borderRadius: "0.25rem",
-                                                        color: "#495057",
-                                                        backgroundColor: "#fff",
-                                                        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-                                                        transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
-                                                    }}
-                                            >
-                                                <option value="">All</option>
-                                                {hospitalOptions}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="extraFieldsCounsellingEducation">
-                                <strong>Extra Fields</strong>
-                                <br/>
-                                <br/>
-                                {exInfoCounsellingEducation}
-                            </div>
-                            <button type="button" onClick={() => addField("extraFieldsCounsellingEducation", "extraFieldsCounsellingEducation")}
-                                    className="btn btn-success border-0 btn-block">Add Required Field
-                            </button>
-                            <br/>
-                            <button type="submit" className="btn btn-primary">Submit</button>
-                        </form>
-                    </div>
+                    <br/>
+                    <br/>
                     <br/>
 
                     <div className="d-flex justify-content-center align-items-center">
@@ -746,6 +694,61 @@ function RequiredFields(props) {
                                 {exInfoComputerTraining}
                             </div>
                             <button type="button" onClick={() => addField("extraFieldsComputerTraining", "extraFieldsComputerTraining")}
+                                    className="btn btn-success border-0 btn-block">Add Required Field
+                            </button>
+                            <br/>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <br/>
+
+                    <div className="d-flex justify-content-center align-items-center">
+                        {showForm["counsellingEducation"] ? (
+                            <ChevronDown
+                                className="ml-2"
+                                onClick={() => handleToggle("counsellingEducation")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        ) : (
+                            <ChevronRight
+                                className="ml-2"
+                                onClick={() => handleToggle("counsellingEducation")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        )}
+                        <h2 className="text-center">Counselling Education</h2>
+                    </div>
+                    <div className='container' id="counsellingEducationTrainingRequiredFields">
+                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "CounsellingEducation", "counsellingEducationMirror")}>
+                            <div className='container'>
+                                <div class="row justify-content-center">
+                                    <div className="col-md-6 mx-auto">
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <label htmlFor="hospitalNameOverrideCounsellingEducation" style={{ marginRight: '10px' }}>Select a hospital</label>
+                                            <select id="hospitalNameOverrideCounsellingEducation"
+                                                    style={{
+                                                        border: "1px solid #ccc",
+                                                        borderRadius: "0.25rem",
+                                                        color: "#495057",
+                                                        backgroundColor: "#fff",
+                                                        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
+                                                        transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
+                                                    }}
+                                            >
+                                                <option value="">All</option>
+                                                {hospitalOptions}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="extraFieldsCounsellingEducation">
+                                <strong>Extra Fields</strong>
+                                <br/>
+                                <br/>
+                                {exInfoCounsellingEducation}
+                            </div>
+                            <button type="button" onClick={() => addField("extraFieldsCounsellingEducation", "extraFieldsCounsellingEducation")}
                                     className="btn btn-success border-0 btn-block">Add Required Field
                             </button>
                             <br/>
