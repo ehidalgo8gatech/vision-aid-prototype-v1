@@ -36,6 +36,12 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
       dispensedDate: new Date(e.target.dispensedDate.value),
       cost: parseInt(e.target.cost.value),
       costToBeneficiary: parseInt(e.target.costToBeneficiary.value),
+      colourVisionRE:            e.target.colourVisionRE.value,
+      colourVisionLE:            e.target.colourVisionLE.value,
+      contrastSensitivityRE:     e.target.contrastSensitivityRE.value,
+      contrastSensitivityLE:     e.target.contrastSensitivityLE.value,
+      visualFieldsRE:            e.target.visualFieldsRE.value,
+      visualFieldsLE:            e.target.visualFieldsLE.value,
       extraInformation: e.target.extraInformation.value,
       ...customDataDistance,
       ...customDataNear
@@ -450,6 +456,198 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               )}
 
+              {editableField === 'colourVisionRE' ? (
+                  <div>
+                    <strong>Colour Vision Right Eye:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'colourVisionRE', index)} className="d-inline ms-2">
+                      <input id={title + index + 'colourVisionRE'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='colourVisionRE'
+                             value={training.colourVisionRE}
+                             onChange={() => handleInputChange(index, 'colourVisionRE', title + index + 'colourVisionRE')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Colour Vision Right Eye:</strong>
+                    <span className="ms-2">
+          {training.colourVisionRE}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('colourVisionRE')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
+              {editableField === 'colourVisionLE' ? (
+                  <div>
+                    <strong>Colour Vision Left Eye:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'colourVisionLE', index)} className="d-inline ms-2">
+                      <input id={title + index + 'colourVisionLE'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='colourVisionLE'
+                             value={training.colourVisionLE}
+                             onChange={() => handleInputChange(index, 'colourVisionLE', title + index + 'colourVisionLE')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Colour Vision Left Eye:</strong>
+                    <span className="ms-2">
+          {training.colourVisionLE}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('colourVisionLE')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
+              {editableField === 'contrastSensitivityRE' ? (
+                  <div>
+                    <strong>Contrast Sensitivity Right Eye :</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'contrastSensitivityRE', index)} className="d-inline ms-2">
+                      <input id={title + index + 'contrastSensitivityRE'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='contrastSensitivityRE'
+                             value={training.contrastSensitivityRE}
+                             onChange={() => handleInputChange(index, 'contrastSensitivityRE', title + index + 'contrastSensitivityRE')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Contrast Sensitivity Right Eye:</strong>
+                    <span className="ms-2">
+          {training.contrastSensitivityRE}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('contrastSensitivityRE')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
+              {editableField === 'contrastSensitivityLE' ? (
+                  <div>
+                    <strong>Contrast Sensitivity Left Eye :</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'contrastSensitivityLE', index)} className="d-inline ms-2">
+                      <input id={title + index + 'contrastSensitivityLE'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='contrastSensitivityLE'
+                             value={training.contrastSensitivityLE}
+                             onChange={() => handleInputChange(index, 'contrastSensitivityLE', title + index + 'contrastSensitivityLE')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Contrast Sensitivity Left Eye:</strong>
+                    <span className="ms-2">
+          {training.contrastSensitivityLE}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('contrastSensitivityLE')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
+              {editableField === 'visualFieldsRE' ? (
+                  <div>
+                    <strong>Visual Fields Right Eye :</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'visualFieldsRE', index)} className="d-inline ms-2">
+                      <input id={title + index + 'visualFieldsRE'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='visualFieldsRE'
+                             value={training.visualFieldsRE}
+                             onChange={() => handleInputChange(index, 'visualFieldsRE', title + index + 'visualFieldsRE')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Visual Fields Right Eye:</strong>
+                    <span className="ms-2">
+          {training.visualFieldsRE}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('visualFieldsRE')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
+              {editableField === 'visualFieldsLE' ? (
+                  <div>
+                    <strong>Visual Fields Left Eye :</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'visualFieldsLE', index)} className="d-inline ms-2">
+                      <input id={title + index + 'visualFieldsLE'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='visualFieldsLE'
+                             value={training.visualFieldsLE}
+                             onChange={() => handleInputChange(index, 'visualFieldsLE', title + index + 'visualFieldsLE')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Visual Fields Left Eye:</strong>
+                    <span className="ms-2">
+          {training.visualFieldsLE}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('visualFieldsLE')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
               {editableField === 'extraInformation' ? (
                   <div>
                     <strong>extraInformation:</strong>
@@ -596,6 +794,30 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
           <Form.Group controlId="costToBeneficiary">
                 <Form.Label>Cost to beneficiary</Form.Label>
                 <Form.Control type="number" />
+          </Form.Group>
+          <Form.Group controlId="colourVisionRE">
+            <Form.Label>Colour Vision Right Eye</Form.Label>
+            <Form.Control as="textarea" rows={1} />
+          </Form.Group>
+          <Form.Group controlId="colourVisionLE">
+            <Form.Label>Colour Vision Left Eye</Form.Label>
+            <Form.Control as="textarea" rows={1} />
+          </Form.Group>
+          <Form.Group controlId="contrastSensitivityRE">
+            <Form.Label>Contrast Sensitivity Right Eye</Form.Label>
+            <Form.Control as="textarea" rows={1} />
+          </Form.Group>
+          <Form.Group controlId="contrastSensitivityLE">
+            <Form.Label>Contrast Sensitivity Left Eye</Form.Label>
+            <Form.Control as="textarea" rows={1} />
+          </Form.Group>
+          <Form.Group controlId="visualFieldsRE">
+            <Form.Label>Visual Fields Right Eye</Form.Label>
+            <Form.Control as="textarea" rows={1} />
+          </Form.Group>
+          <Form.Group controlId="visualFieldsLE">
+            <Form.Label>Visual Fields Left Eye</Form.Label>
+            <Form.Control as="textarea" rows={1} />
           </Form.Group>
           <Form.Group controlId="extraInformation">
             <Form.Label>Comments</Form.Label>

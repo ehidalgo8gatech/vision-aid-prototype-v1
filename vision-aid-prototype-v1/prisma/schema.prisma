@@ -172,6 +172,12 @@ model Comprehensive_Low_Vision_Evaluation {
   dispensedDate             DateTime?
   cost                      Int
   costToBeneficiary         Int
+  colourVisionRE            String?
+  colourVisionLE            String?
+  contrastSensitivityRE     String?
+  contrastSensitivityLE     String?
+  visualFieldsRE            String?
+  visualFieldsLE            String?
   extraInformation          String      @db.Text
 }
 

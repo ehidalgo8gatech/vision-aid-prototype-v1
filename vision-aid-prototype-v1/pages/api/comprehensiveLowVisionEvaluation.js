@@ -51,6 +51,12 @@ async function addData(req, res) {
             dispensedDate: body.dispensedDate,
             cost: body.cost,
             costToBeneficiary: body.costToBeneficiary,
+            colourVisionRE: body.colourVisionRE,
+            colourVisionLE: body.colourVisionLE,
+            contrastSensitivityRE: body.contrastSensitivityRE,
+            contrastSensitivityLE: body.contrastSensitivityLE,
+            visualFieldsRE: body.visualFieldsRE,
+            visualFieldsLE: body.visualFieldsLE,
             extraInformation: body.extraInformation,
         },
         include: {
