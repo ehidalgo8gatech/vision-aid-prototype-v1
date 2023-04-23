@@ -36,12 +36,12 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
     addNewTraining(newTraining);
     setShowForm(false);
   };
+
   const [editableField, setEditableField] = useState('')
   // Handle edit icon click
   const handleEditClick = (field) => {
     setEditableField(field);
   };
-
   const [rerenderForce, setRerenderForce] = useState();
   // Handle input changes
   const handleInputChange = (index, field, id) => {

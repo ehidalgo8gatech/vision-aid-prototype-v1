@@ -244,6 +244,7 @@ function UserPage(props) {
               addNewTraining={handleSubmitVisionTraining}
               title="Vision Enhancement"
               customFields={['Diagnosis', 'MDVI']}
+              api='visionEnhancement'
             />
             <br/>
             <br/>
@@ -254,6 +255,7 @@ function UserPage(props) {
               addNewTraining={handleSubmitMobileTraining}
               title="Mobile Training"
               customFields={['vision', 'typeOfCounselling']}
+              api='mobileTraining'
             />
             <br/>
             <TrainingForm
@@ -261,6 +263,7 @@ function UserPage(props) {
               addNewTraining={handleSubmitComputerTraining}
               title="Computer Training"
               customFields={['vision', 'typeOfCounselling']}
+              api='computerTraining'
             />
             <br/>
             <TrainingForm
@@ -268,6 +271,7 @@ function UserPage(props) {
               addNewTraining={handleSubmitCounsellingEducation}
               title="Counselling Education"
               customFields={['vision', 'typeCounselling', 'MDVI']}
+              api='counsellingEducation'
             />
             <br/>
              <TrainingForm
@@ -275,6 +279,7 @@ function UserPage(props) {
               addNewTraining={handleSubmitOrientationMobility}
               title="Orientation & Mobility Training"
               customFields={['vision', 'typeOfCounselling']}
+              api='orientationMobileTraining'
             />
             
             </div>
