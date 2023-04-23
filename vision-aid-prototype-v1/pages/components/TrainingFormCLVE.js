@@ -4,7 +4,7 @@ import {ChevronDown, ChevronRight, Pencil} from 'react-bootstrap-icons';
 import {v4 as uuidv4} from "uuid";
 import Router from "next/router";
 
-const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFieldsDistance, customFieldsNear,title,api }) => {
+const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFieldsDistance, customFieldsNear,title,api, allfields }) => {
   const [showForm, setShowForm] = useState(false);
 
   const handleToggle = () => {
@@ -38,16 +38,16 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
       date: e.target.date.value,
       sessionNumber: e.target.sessionNumber.value,
       recommendation: e.target.recommendation.value,
-      dispensed: e.target.dispensed.value,
-      dispensedDate: new Date(e.target.dispensedDate.value),
-      cost: parseInt(e.target.cost.value),
-      costToBeneficiary: parseInt(e.target.costToBeneficiary.value),
-      colourVisionRE:            e.target.colourVisionRE.value,
-      colourVisionLE:            e.target.colourVisionLE.value,
-      contrastSensitivityRE:     e.target.contrastSensitivityRE.value,
-      contrastSensitivityLE:     e.target.contrastSensitivityLE.value,
-      visualFieldsRE:            e.target.visualFieldsRE.value,
-      visualFieldsLE:            e.target.visualFieldsLE.value,
+      dispensed: e.target.dispensed == null ? null : e.target.dispensed.value,
+      dispensedDate: e.target.dispensedDate == null ? null : new Date(e.target.dispensedDate.value),
+      cost: e.target.cost == null ? null : parseInt(e.target.cost.value),
+      costToBeneficiary: e.target.costToBeneficiary == null ? null : parseInt(e.target.costToBeneficiary.value),
+      colourVisionRE: e.target.colourVisionRE == null ? null : e.target.colourVisionRE.value,
+      colourVisionLE: e.target.colourVisionLE == null ? null : e.target.colourVisionLE.value,
+      contrastSensitivityRE: e.target.contrastSensitivityRE == null ? null : e.target.contrastSensitivityRE.value,
+      contrastSensitivityLE: e.target.contrastSensitivityLE == null ? null : e.target.contrastSensitivityLE.value,
+      visualFieldsRE: e.target.visualFieldsRE == null ? null : e.target.visualFieldsRE.value,
+      visualFieldsLE: e.target.visualFieldsLE == null ? null : e.target.visualFieldsLE.value,
       extraInformation: e.target.extraInformation.value,
       ...customDataDistance,
       ...customDataNear
@@ -334,7 +334,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               )}
 
-              {editableField === 'dispensed' ? (
+              {allfields && editableField === 'dispensed' ? (
                   <div>
                     <strong>Dispensed:</strong>
                     <form onSubmit={(e) => handleEditSubmit(e, api, 'dispensed', index)} className="d-inline ms-2">
@@ -350,7 +350,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Dispensed:</strong>
                     <span className="ms-2">
@@ -366,7 +366,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               )}
 
-              {editableField === 'dispensedDate' ? (
+              {allfields && editableField === 'dispensedDate' ? (
                   <div>
                     <strong>Dispensed Date:</strong>
                     <form onSubmit={(e) => handleEditSubmit(e, api, 'dispensedDate', index)} className="d-inline ms-2">
@@ -382,7 +382,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Dispensed Date:</strong>
                     <span className="ms-2">
@@ -398,7 +398,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               )}
 
-              {editableField === 'cost' ? (
+              {allfields && editableField === 'cost' ? (
                   <div>
                     <strong>cost:</strong>
                     <form onSubmit={(e) => handleEditSubmit(e, api, 'cost', index)} className="d-inline ms-2">
@@ -414,7 +414,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>cost:</strong>
                     <span className="ms-2">
@@ -430,7 +430,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               )}
 
-              {editableField === 'costToBeneficiary' ? (
+              {allfields && editableField === 'costToBeneficiary' ? (
                   <div>
                     <strong>costToBeneficiary:</strong>
                     <form onSubmit={(e) => handleEditSubmit(e, api, 'costToBeneficiary', index)} className="d-inline ms-2">
@@ -446,7 +446,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>costToBeneficiary:</strong>
                     <span className="ms-2">
@@ -462,7 +462,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               )}
 
-              {editableField === 'colourVisionRE' ? (
+              {allfields && editableField === 'colourVisionRE' ? (
                   <div>
                     <strong>Colour Vision Right Eye:</strong>
                     <form onSubmit={(e) => handleEditSubmit(e, api, 'colourVisionRE', index)} className="d-inline ms-2">
@@ -478,7 +478,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Colour Vision Right Eye:</strong>
                     <span className="ms-2">
@@ -494,7 +494,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               )}
 
-              {editableField === 'colourVisionLE' ? (
+              {allfields && editableField === 'colourVisionLE' ? (
                   <div>
                     <strong>Colour Vision Left Eye:</strong>
                     <form onSubmit={(e) => handleEditSubmit(e, api, 'colourVisionLE', index)} className="d-inline ms-2">
@@ -510,7 +510,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Colour Vision Left Eye:</strong>
                     <span className="ms-2">
@@ -526,7 +526,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               )}
 
-              {editableField === 'contrastSensitivityRE' ? (
+              {allfields && editableField === 'contrastSensitivityRE' ? (
                   <div>
                     <strong>Contrast Sensitivity Right Eye :</strong>
                     <form onSubmit={(e) => handleEditSubmit(e, api, 'contrastSensitivityRE', index)} className="d-inline ms-2">
@@ -542,7 +542,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Contrast Sensitivity Right Eye:</strong>
                     <span className="ms-2">
@@ -558,7 +558,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               )}
 
-              {editableField === 'contrastSensitivityLE' ? (
+              {allfields && editableField === 'contrastSensitivityLE' ? (
                   <div>
                     <strong>Contrast Sensitivity Left Eye :</strong>
                     <form onSubmit={(e) => handleEditSubmit(e, api, 'contrastSensitivityLE', index)} className="d-inline ms-2">
@@ -574,7 +574,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Contrast Sensitivity Left Eye:</strong>
                     <span className="ms-2">
@@ -590,7 +590,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               )}
 
-              {editableField === 'visualFieldsRE' ? (
+              {allfields && editableField === 'visualFieldsRE' ? (
                   <div>
                     <strong>Visual Fields Right Eye :</strong>
                     <form onSubmit={(e) => handleEditSubmit(e, api, 'visualFieldsRE', index)} className="d-inline ms-2">
@@ -606,7 +606,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields &&(
                   <div>
                     <strong>Visual Fields Right Eye:</strong>
                     <span className="ms-2">
@@ -622,7 +622,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               )}
 
-              {editableField === 'visualFieldsLE' ? (
+              {allfields && editableField === 'visualFieldsLE' ? (
                   <div>
                     <strong>Visual Fields Left Eye :</strong>
                     <form onSubmit={(e) => handleEditSubmit(e, api, 'visualFieldsLE', index)} className="d-inline ms-2">
@@ -638,7 +638,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Visual Fields Left Eye:</strong>
                     <span className="ms-2">
@@ -778,50 +778,54 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
             <Form.Check type='checkbox' label='non-Optical' name='non-Optical' inline></Form.Check>
             <Form.Check type='checkbox' label='Electronic' name='Electronic' inline></Form.Check>
           </Form.Group>
-          <Form.Group controlId="dispensed" key="dispensed">
-            <Form.Label>Dispensed</Form.Label>
-            <Form.Control as="select">
-                <option defaultValue></option>
-                <option>Yes</option>
-                <option>No</option>
+          {allfields && (
+              <div>
+              <Form.Group controlId="dispensed" key="dispensed">
+                <Form.Label>Dispensed</Form.Label>
+                <Form.Control as="select">
+                  <option defaultValue></option>
+                  <option>Yes</option>
+                  <option>No</option>
                 </Form.Control>
-          </Form.Group>
-          <Form.Group controlId="dispensedDate">
-                <Form.Label>Dispensed date</Form.Label>
-                <Form.Control type="date" />
-          </Form.Group>
-          <Form.Group controlId="cost">
-                <Form.Label>Cost</Form.Label>
-                <Form.Control type="number" />
-          </Form.Group>
-          <Form.Group controlId="costToBeneficiary">
-                <Form.Label>Cost to beneficiary</Form.Label>
-                <Form.Control type="number" />
-          </Form.Group>
-          <Form.Group controlId="colourVisionRE">
+              </Form.Group>
+            <Form.Group controlId="dispensedDate">
+            <Form.Label>Dispensed date</Form.Label>
+            <Form.Control type="date" />
+            </Form.Group>
+            <Form.Group controlId="cost">
+            <Form.Label>Cost</Form.Label>
+            <Form.Control type="number" />
+            </Form.Group>
+            <Form.Group controlId="costToBeneficiary">
+            <Form.Label>Cost to beneficiary</Form.Label>
+            <Form.Control type="number" />
+            </Form.Group>
+            <Form.Group controlId="colourVisionRE">
             <Form.Label>Colour Vision Right Eye</Form.Label>
             <Form.Control as="textarea" rows={1} />
-          </Form.Group>
-          <Form.Group controlId="colourVisionLE">
-            <Form.Label>Colour Vision Left Eye</Form.Label>
-            <Form.Control as="textarea" rows={1} />
-          </Form.Group>
-          <Form.Group controlId="contrastSensitivityRE">
-            <Form.Label>Contrast Sensitivity Right Eye</Form.Label>
-            <Form.Control as="textarea" rows={1} />
-          </Form.Group>
-          <Form.Group controlId="contrastSensitivityLE">
-            <Form.Label>Contrast Sensitivity Left Eye</Form.Label>
-            <Form.Control as="textarea" rows={1} />
-          </Form.Group>
-          <Form.Group controlId="visualFieldsRE">
-            <Form.Label>Visual Fields Right Eye</Form.Label>
-            <Form.Control as="textarea" rows={1} />
-          </Form.Group>
-          <Form.Group controlId="visualFieldsLE">
-            <Form.Label>Visual Fields Left Eye</Form.Label>
-            <Form.Control as="textarea" rows={1} />
-          </Form.Group>
+                  </Form.Group>
+                  <Form.Group controlId="colourVisionLE">
+                  <Form.Label>Colour Vision Left Eye</Form.Label>
+                  <Form.Control as="textarea" rows={1} />
+        </Form.Group>
+        <Form.Group controlId="contrastSensitivityRE">
+        <Form.Label>Contrast Sensitivity Right Eye</Form.Label>
+        <Form.Control as="textarea" rows={1} />
+</Form.Group>
+  <Form.Group controlId="contrastSensitivityLE">
+    <Form.Label>Contrast Sensitivity Left Eye</Form.Label>
+    <Form.Control as="textarea" rows={1} />
+  </Form.Group>
+  <Form.Group controlId="visualFieldsRE">
+    <Form.Label>Visual Fields Right Eye</Form.Label>
+    <Form.Control as="textarea" rows={1} />
+  </Form.Group>
+  <Form.Group controlId="visualFieldsLE">
+    <Form.Label>Visual Fields Left Eye</Form.Label>
+    <Form.Control as="textarea" rows={1} />
+  </Form.Group>
+              </div>
+          )}
           <Form.Group controlId="extraInformation">
             <Form.Label>Comments</Form.Label>
             <Form.Control as="textarea" rows={3} />

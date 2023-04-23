@@ -17,6 +17,7 @@ function UserPage(props) {
   const [computerTrainingData, setComputerTrainingData] = useState([]);
   const [visionTrainingData, setVisionTrainingData] = useState([]);
   const [comprehensiveLowVisionEvaluationData, setComprehensiveLowVisionEvaluationData] = useState([]);
+  const [lowVisionEvaluationData, setLowVisionEvaluationData] = useState([]);
   const [counsellingEducationData, setCounsellingEducationData] = useState([]);
   const [orientationMobilityData, setOrientationMobilityData] = useState([]);
   const [openMobile, setOpenMobile] = useState(false);
@@ -35,6 +36,9 @@ function UserPage(props) {
     }, []);
     useEffect(() => {
       setComprehensiveLowVisionEvaluationData(props.user.Comprehensive_Low_Vision_Evaluation);
+    }, []);
+    useEffect(() => {
+        setLowVisionEvaluationData(props.user.Low_Vision_Evaluation);
     }, []);
     useEffect(() => {
       setCounsellingEducationData(props.user.Counselling_Education);
@@ -93,9 +97,15 @@ function UserPage(props) {
     // Submit the VisionTraining data to the API
     const url = '/api/comprehensiveLowVisionEvaluation';
     callMe(data, url, setVisionTrainingData, visionTrainingData);
-  }; 
+  };
 
-  const handleSubmitCounsellingEducation = async (data) => {
+    const handleSubmitLowVisionEvaluation = async (data) => {
+        // Submit the VisionTraining data to the API
+        const url = '/api/lowVisionEvaluation';
+        callMe(data, url, setVisionTrainingData, visionTrainingData);
+    };
+
+    const handleSubmitCounsellingEducation = async (data) => {
     // Submit the VisionTraining data to the API
     const url = '/api/counsellingEducation';
     callMe(data, url, setCounsellingEducationData, counsellingEducationData);
@@ -223,6 +233,24 @@ function UserPage(props) {
             </div>
             </div>
             <div className="col-md-6">
+                <TrainingFormCLVE
+                    existingTrainings={lowVisionEvaluationData}
+                    addNewTraining={handleSubmitLowVisionEvaluation}
+                    title="Low Vision Evaluation"
+                    customFieldsDistance={[
+                        'distanceVisualAcuityRE',
+                        'distanceVisualAcuityLE',
+                        'distanceBinocularVisionBE',
+                    ]}
+                    customFieldsNear={[
+                        'nearVisualAcuityRE',
+                        'nearVisualAcuityLE',
+                        'nearBinocularVisionBE',
+                    ]}
+                    api='lowVisionEvaluation'
+                    allfields={false}
+                />
+                <br/>
             <TrainingFormCLVE
               existingTrainings={comprehensiveLowVisionEvaluationData}
               addNewTraining={handleSubmitComprehensiveLowVisionEvaluation}
@@ -238,6 +266,7 @@ function UserPage(props) {
                 'nearBinocularVisionBE',
               ]}
               api='comprehensiveLowVisionEvaluation'
+              allfields={true}
             />
             <br/>
             <TrainingForm

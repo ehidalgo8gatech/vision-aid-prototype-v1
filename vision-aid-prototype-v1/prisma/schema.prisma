@@ -62,6 +62,7 @@ model Beneficiary {
   Vision_Enhancement                  Vision_Enhancement[]
   Counselling_Education               Counselling_Education[]
   Comprehensive_Low_Vision_Evaluation Comprehensive_Low_Vision_Evaluation[]
+  Low_Vision_Evaluation               Low_Vision_Evaluation[]
 }
 
 model Beneficiary_Mirror {
@@ -152,6 +153,23 @@ model Vision_Enhancement_Mirror {
   sessionNumber            Boolean
   extraInformationRequired String  @db.Text
   hospitalName             String?
+}
+
+model Low_Vision_Evaluation {
+  id                        Int         @id @default(autoincrement())
+  beneficiary               Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
+  beneficiaryId             String
+  diagnosis                 String?
+  date                      DateTime?
+  sessionNumber             Int?
+  distanceVisualAcuityRE    String?
+  distanceVisualAcuityLE    String?
+  distanceBinocularVisionBE String?
+  nearVisualAcuityRE        String?
+  nearVisualAcuityLE        String?
+  nearBinocularVisionBE     String?
+  recommendation            String?
+  extraInformation          String      @db.Text
 }
 
 model Comprehensive_Low_Vision_Evaluation {

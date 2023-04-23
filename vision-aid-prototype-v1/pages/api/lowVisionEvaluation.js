@@ -17,7 +17,7 @@ export default async function handler(req, res) {
 async function updateData(req, res) {
     try {
         const { id, ...data } = req.body;
-        const updatedUser = await prisma.comprehensive_Low_Vision_Evaluation.update({
+        const updatedUser = await prisma.low_Vision_Evaluation.update({
             where: { id },
             data,
         });
@@ -47,16 +47,6 @@ async function addData(req, res) {
             nearVisualAcuityLE: body.nearVisualAcuityLE,
             nearBinocularVisionBE: body.nearBinocularVisionBE,
             recommendation: body.recommendation,
-            dispensed: body.dispensed,
-            dispensedDate: body.dispensedDate,
-            cost: body.cost,
-            costToBeneficiary: body.costToBeneficiary,
-            colourVisionRE: body.colourVisionRE,
-            colourVisionLE: body.colourVisionLE,
-            contrastSensitivityRE: body.contrastSensitivityRE,
-            contrastSensitivityLE: body.contrastSensitivityLE,
-            visualFieldsRE: body.visualFieldsRE,
-            visualFieldsLE: body.visualFieldsLE,
             extraInformation: body.extraInformation,
         },
         include: {
@@ -80,26 +70,16 @@ async function addData(req, res) {
                     nearVisualAcuityLE: body.nearVisualAcuityLE,
                     nearBinocularVisionBE: body.nearBinocularVisionBE,
                     recommendation: body.recommendation,
-                    dispensed: body.dispensed,
-                    dispensedDate: body.dispensedDate,
-                    cost: body.cost,
-                    costToBeneficiary: body.costToBeneficiary,
-                    colourVisionRE: body.colourVisionRE,
-                    colourVisionLE: body.colourVisionLE,
-                    contrastSensitivityRE: body.contrastSensitivityRE,
-                    contrastSensitivityLE: body.contrastSensitivityLE,
-                    visualFieldsRE: body.visualFieldsRE,
-                    visualFieldsLE: body.visualFieldsLE,
                     extraInformation: body.extraInformation,
                 },
                 include: {
                     beneficiary: true
                 },
             }
-            const comp_eval = await prisma.comprehensive_Low_Vision_Evaluation.update(update)
+            const comp_eval = await prisma.low_Vision_Evaluation.update(update)
             return res.status(200).json(comp_eval, {success: true});
         }
-        const comp_eval = await prisma.comprehensive_Low_Vision_Evaluation.create(create)
+        const comp_eval = await prisma.low_Vision_Evaluation.create(create)
         return res.status(200).json(comp_eval, {success: true});
     } catch (error) {
         console.log('Request error ' + error);
