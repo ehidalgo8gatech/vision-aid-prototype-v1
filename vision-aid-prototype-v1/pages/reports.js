@@ -8,6 +8,8 @@ import { Container } from "react-bootstrap";
 import Navigation from './navigation/Navigation';
 import { Table } from 'react-bootstrap';
 import Link from "next/link";
+import moment from 'moment';
+import { useState } from 'react';
 
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx)
@@ -41,18 +43,81 @@ export async function getServerSideProps(ctx) {
   }
 }
 
+function filterByDate(training, start, end){
+  // increment end date by one day to include the end date
+  start = moment(start).subtract(1, 'day');
+  return moment(training.date).isBetween(moment(start).startOf('day'), moment(end).startOf('day'), null, '[]');
+}
+
+function filterTrainingSummaryByDateRange(startDate, endDate, summary) {
+  const filteredSummary = summary.map((hospital) => {
+    const mobileTraining = hospital.mobileTraining.filter((training) => {
+      // log data of each training
+      return filterByDate(training, startDate, endDate);
+    })
+    // log the difference in length before and after filter
+
+    const computerTraining = hospital.computerTraining.filter((training) => {
+      return filterByDate(training, startDate, endDate);
+    })
+
+    const orientationMobilityTraining = hospital.orientationMobilityTraining.filter((training) => {
+      return filterByDate(training, startDate, endDate);
+    })
+
+    const visionEnhancement = hospital.visionEnhancement.filter((training) => {
+      return filterByDate(training, startDate, endDate);
+    })
+
+    const counsellingEducation = hospital.counsellingEducation.filter((training) => {
+      return filterByDate(training, startDate, endDate);
+    })
+
+    const comprehensiveLowVisionEvaluation = hospital.comprehensiveLowVisionEvaluation.filter((training) => {
+      return filterByDate(training, startDate, endDate);
+    })
+
+    const lowVisionEvaluation = hospital.lowVisionEvaluation.filter((training) => {
+      return filterByDate(training, startDate, endDate);
+    })
+
+    const beneficiary = hospital.beneficiary
+
+    return {
+      ...hospital,
+      mobileTraining,
+      computerTraining,
+      orientationMobilityTraining,
+      visionEnhancement,
+      counsellingEducation,
+      comprehensiveLowVisionEvaluation,
+      lowVisionEvaluation,
+      beneficiary,
+    }
+  })
+
+  return filteredSummary
+}
+
+
 export default function Summary({ summary }) {
-  console.log(summary);
+  // create start date and end data states, start date is set to one year ago, end date is set to today
+  const [startDate, setStartDate] = useState(moment().subtract(1, 'year').toDate());
+  const [endDate, setEndDate] = useState(moment().toDate());
+
+  // filter summary data based on start and end date of the training
+  const filteredSummary = filterTrainingSummaryByDateRange(startDate, endDate, summary);
+
   //First get the evaluations
-  const lowVisionEvaluationCount = summary.reduce((sum, item) => sum + item.lowVisionEvaluation.length, 0);
-  const comprehensiveLowVisionEvaluationCount = summary.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.length, 0);
-  const visionEnhancementCount = summary.reduce((sum, item) => sum + item.visionEnhancement.length, 0);
+  const lowVisionEvaluationCount = filteredSummary.reduce((sum, item) => sum + item.lowVisionEvaluation.length, 0);
+  const comprehensiveLowVisionEvaluationCount = filteredSummary.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.length, 0);
+  const visionEnhancementCount = filteredSummary.reduce((sum, item) => sum + item.visionEnhancement.length, 0);
 
   // Then the trainings
-  const mobileTrainingCount = summary.reduce((sum, item) => sum + item.mobileTraining.length, 0);
-  const computerTrainingCount = summary.reduce((sum, item) => sum + item.computerTraining.length, 0);
-  const counsellingEducationCount = summary.reduce((sum, item) => sum + item.counsellingEducation.length, 0);
-  const orientationMobilityTrainingCount = summary.reduce((sum, item) => sum + item.orientationMobilityTraining.length, 0);
+  const mobileTrainingCount = filteredSummary.reduce((sum, item) => sum + item.mobileTraining.length, 0);
+  const computerTrainingCount = filteredSummary.reduce((sum, item) => sum + item.computerTraining.length, 0);
+  const counsellingEducationCount = filteredSummary.reduce((sum, item) => sum + item.counsellingEducation.length, 0);
+  const orientationMobilityTrainingCount = filteredSummary.reduce((sum, item) => sum + item.orientationMobilityTraining.length, 0);
 
 
   const chartData = {
@@ -102,6 +167,14 @@ export default function Summary({ summary }) {
     ],
   };
 
+  const handleStartDateChange = (e) => {
+    setStartDate(moment(e.target.value).toDate());
+  };
+
+  const handleEndDateChange = (e) => {
+    setEndDate(moment(e.target.value).toDate());
+  };
+
   return (
     <div>
       <Navigation />
@@ -125,8 +198,14 @@ export default function Summary({ summary }) {
             </Table>
           </div>
           <div className="col-md-10">
+            <div>
+              <label htmlFor="startDate">Start Date:</label>
+              <input type="date" id="startDate" name="startDate" value={moment(startDate).format('YYYY-MM-DD')} onChange={handleStartDateChange} />
+              <label htmlFor="endDate">End Date:</label>
+              <input type="date" id="endDate" name="endDate" value={moment(endDate).format('YYYY-MM-DD')} onChange={handleEndDateChange} />
+            </div>
             <Bar data={chartData} />
-            <h4>Total Number of Beneficiaries: {summary.reduce((sum, item) => sum + item.beneficiary.length, 0)}</h4>
+            <h4>Total Number of Beneficiaries: {filteredSummary.reduce((sum, item) => sum + item.beneficiary.length, 0)}</h4>
           </div>
         </div>
       </Container>
