@@ -284,7 +284,7 @@ function UserPage(props) {
               existingTrainings={mobileTrainingData}
               addNewTraining={handleSubmitMobileTraining}
               title="Mobile Training"
-              customFields={['vision', 'typeOfTraining']}
+              customFields={['typeOfTraining']}
               api='mobileTraining'
             />
             <br/>
@@ -292,7 +292,7 @@ function UserPage(props) {
               existingTrainings={computerTrainingData}
               addNewTraining={handleSubmitComputerTraining}
               title="Computer Training"
-              customFields={['vision', 'typeOfTraining']}
+              customFields={['typeOfTraining']}
               api='computerTraining'
             />
             <br/>
@@ -300,7 +300,7 @@ function UserPage(props) {
               existingTrainings={counsellingEducationData}
               addNewTraining={handleSubmitCounsellingEducation}
               title="Counselling Education"
-              customFields={['vision', 'typeCounselling']}
+              customFields={['typeCounselling']}
               api='counsellingEducation'
             />
             <br/>
@@ -308,7 +308,7 @@ function UserPage(props) {
               existingTrainings={orientationMobilityData}
               addNewTraining={handleSubmitOrientationMobility}
               title="Orientation & Mobility Training"
-              customFields={['vision', 'typeOfTraining']}
+              customFields={['typeOfTraining']}
               api='orientationMobileTraining'
             />
             
