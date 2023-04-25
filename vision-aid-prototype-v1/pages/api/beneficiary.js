@@ -18,6 +18,19 @@ async function readData(req, res) {
     try {
         var beneficiary
         if (req.query.beneficiaryName != null) {
+            const hospitalList = await prisma.hospital.findMany({
+                where: {
+                    name: {
+                        contains: req.query.beneficiaryName
+                    }
+                }
+            })
+            var hospitalId = []
+            if (hospitalList != null && hospitalList.length > 0) {
+                hospitalList.forEach(hospital => {
+                    hospitalId.push(hospital.id)
+                })
+            }
             beneficiary = await prisma.beneficiary.findMany({
                 where: {
                     OR: [
@@ -25,6 +38,9 @@ async function readData(req, res) {
                             beneficiaryName: {
                                 contains: req.query.beneficiaryName,
                             },
+                        },
+                        {
+                            hospitalId: { in: hospitalId },
                         },
                         {
                             mrn: {
@@ -136,7 +152,7 @@ async function readData(req, res) {
 
 async function addData(req, res) {
     const body = req.body;
-    if (prisma.beneficiary.findUnique({
+    if (await prisma.beneficiary.findUnique({
         where: {
             mrn: body.mrn
         }
