@@ -136,6 +136,13 @@ async function readData(req, res) {
 
 async function addData(req, res) {
     const body = req.body;
+    if (prisma.beneficiary.findUnique({
+        where: {
+            mrn: body.mrn
+        }
+    }) != null) {
+        return res.status(500).json({error: 'Error adding user mrn ' + body.mrn + " already in db", success: false});
+    }
     const create = {
         data: {
             mrn: body.mrn,
@@ -165,7 +172,7 @@ async function addData(req, res) {
         return res.status(200).json(beneficiary, {success: true});
     } catch (error) {
         console.log('Request error ' + error);
-        res.status(500).json({error: 'Error adding user' + error, success: false});
+        return res.status(500).json({error: 'Error adding user' + error, success: false});
     }
 }
 

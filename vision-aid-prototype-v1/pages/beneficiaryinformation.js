@@ -110,7 +110,7 @@ function RequiredFields(props) {
         if (response.ok) {
             router.push('/user?mrn=' + mrn);
         } else {
-          alert('An error occurred while creating the user. Please try again.');
+          alert('An error occurred while creating the user. Please try again. Error: ' + JSON.stringify(json));
         }
 
     }
