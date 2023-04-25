@@ -113,7 +113,7 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
                   <div>
                     <strong>Date:</strong>
                     <span className="ms-2">
-          {training.date}
+          {training.date.toString().split('T')[0]}
                       <button
                           type="button"
                           className="btn btn-link btn-sm text-primary ms-2"
