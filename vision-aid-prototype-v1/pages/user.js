@@ -275,6 +275,7 @@ function UserPage(props) {
               title="Vision Enhancement"
               customFields={['Diagnosis']}
               api='visionEnhancement'
+              submitButtonTest='Add New Vision Enhancement'
             />
             <br/>
             <br/>
@@ -286,6 +287,7 @@ function UserPage(props) {
               title="Mobile Training"
               customFields={['typeOfTraining']}
               api='mobileTraining'
+              submitButtonTest='Add New Training'
             />
             <br/>
             <TrainingForm
@@ -294,6 +296,7 @@ function UserPage(props) {
               title="Computer Training"
               customFields={['typeOfTraining']}
               api='computerTraining'
+              submitButtonTest='Add New Training'
             />
             <br/>
             <TrainingForm
@@ -302,6 +305,7 @@ function UserPage(props) {
               title="Counselling Education"
               customFields={['typeCounselling']}
               api='counsellingEducation'
+              submitButtonTest='Add New Counselling'
             />
             <br/>
              <TrainingForm
@@ -310,6 +314,7 @@ function UserPage(props) {
               title="Orientation & Mobility Training"
               customFields={['typeOfTraining']}
               api='orientationMobileTraining'
+              submitButtonTest='Add New Training'
             />
             
             </div>

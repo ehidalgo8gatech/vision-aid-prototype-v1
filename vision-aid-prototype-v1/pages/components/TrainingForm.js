@@ -4,7 +4,7 @@ import {ChevronDown, ChevronRight, Pencil} from 'react-bootstrap-icons';
 import {v4 as uuidv4} from "uuid";
 import Router from "next/router";
 
-const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, title, api }) => {
+const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, title, api, submitButtonTest }) => {
   const [showForm, setShowForm] = useState(false);
 
   const handleToggle = () => {
@@ -230,7 +230,7 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
                 {showForm && (
         <Form onSubmit={handleSubmit} className="mt-3">
           <Button variant="primary" type="submit">
-            Add New Training
+            {submitButtonTest}
           </Button>
           <br/>
           <br/>
