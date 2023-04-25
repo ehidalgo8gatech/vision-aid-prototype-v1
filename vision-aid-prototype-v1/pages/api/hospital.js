@@ -138,7 +138,6 @@ export async function getSummaryForAllHospitals() {
   return result;
 }
 
-
 async function addData(req, res) {
     const body = req.body;
     const create = {

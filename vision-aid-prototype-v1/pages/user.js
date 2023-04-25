@@ -156,9 +156,9 @@ function UserPage(props) {
     return <div>Loading...</div>;
   }
 
-  const renderField = (label, field, type) => (
+  const renderField = (label, field, type, canEdit) => (
     <div className="mb-3">
-      {editableField === field ? (
+      {canEdit && editableField === field ? (
               <div>
                   <strong>{label}:</strong>
         <form onSubmit={(e) => handleSubmit(e, field)} className="d-inline ms-2">
@@ -184,7 +184,7 @@ function UserPage(props) {
             className="btn btn-link btn-sm text-primary ms-2"
             onClick={() => handleEditClick(field)}
           >
-           <Pencil />
+              {canEdit && (<Pencil />)}
           </button>
         </span>
           </div>
@@ -199,37 +199,37 @@ function UserPage(props) {
         <div className="row">
             <div className="col-md-6">
             <div className="mb-3">
-                {renderField('MRN', 'mrn', 'text')}
+                {renderField('MRN', 'mrn', 'text', true)}
             </div>
             <div className="mb-3">
-                {renderField('Beneficiary Name', 'beneficiaryName', 'text')}
+                {renderField('Beneficiary Name', 'beneficiaryName', 'text', true)}
             </div>
             <div className="mb-3">
-                {renderField('Hospital ID', 'hospitalId', 'text')}
+                {renderField('Hospital Name', 'hospitalName', 'text', false)}
             </div>
             <div className="mb-3">
-                {renderField('Date of Birth', 'dateOfBirth', 'date')}
+                {renderField('Date of Birth', 'dateOfBirth', 'date', true)}
             </div>
             <div className="mb-3">
-                {renderField('Gender', 'gender', 'text')}
+                {renderField('Gender', 'gender', 'text', true)}
             </div>
             <div className="mb-3">
-                {renderField('Phone Number', 'phoneNumber', ((props.beneficiaryMirror.phoneNumberRequired) ? 'text' : (props.beneficiaryMirror)))}
+                {renderField('Phone Number', 'phoneNumber', ((props.beneficiaryMirror.phoneNumberRequired) ? 'text' : (props.beneficiaryMirror)), true)}
             </div>
             <div className="mb-3">
-                {renderField('Education', 'education', ((props.beneficiaryMirror.educationRequired) ? 'text' : (props.beneficiaryMirror)))}
+                {renderField('Education', 'education', ((props.beneficiaryMirror.educationRequired) ? 'text' : (props.beneficiaryMirror)), true)}
             </div>
             <div className="mb-3">
-                {renderField('Occupation', 'occupation', ((props.beneficiaryMirror.occupationRequired) ? 'text' : (props.beneficiaryMirror)))}
+                {renderField('Occupation', 'occupation', ((props.beneficiaryMirror.occupationRequired) ? 'text' : (props.beneficiaryMirror)), true)}
             </div>
             <div className="mb-3">
-                {renderField('Districts', 'districts', ((props.beneficiaryMirror.districtsRequired) ? 'text' : (props.beneficiaryMirror)))}
+                {renderField('Districts', 'districts', ((props.beneficiaryMirror.districtsRequired) ? 'text' : (props.beneficiaryMirror)), true)}
             </div>
             <div className="mb-3">
-                {renderField('State', 'state', ((props.beneficiaryMirror.stateRequired) ? 'text' : (props.beneficiaryMirror)))}
+                {renderField('State', 'state', ((props.beneficiaryMirror.stateRequired) ? 'text' : (props.beneficiaryMirror)), true)}
             </div>
             <div className="mb-3">
-                {renderField('Extra Information', 'extraInformation')}
+                {renderField('Extra Information', 'extraInformation', true)}
             </div>
             </div>
             <div className="col-md-6">
@@ -343,6 +343,7 @@ export async function getServerSideProps({ query }) {
     })
     const benMirrorJson = await benMirror.json();
 
+  user.hospitalName = user.hospital.name
 
   return {
     props: {
