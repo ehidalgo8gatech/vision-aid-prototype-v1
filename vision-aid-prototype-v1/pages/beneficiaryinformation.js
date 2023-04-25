@@ -353,7 +353,7 @@ function RequiredFields(props) {
         <div>
             <Navigation />
             <div className="container">
-                <h1 className="text-center mt-4 mb-4">Add User</h1>
+                <h1 className="text-center mt-4 mb-4">Add Beneficiary</h1>
                 <form action="#" method="POST" onSubmit={(e) => submitInfo(e)}>
                     <div className="row">
                         <div className="col-md-6">
