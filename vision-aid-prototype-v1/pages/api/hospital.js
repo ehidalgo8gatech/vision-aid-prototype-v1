@@ -57,6 +57,7 @@ export async function getSummaryForAllHospitals() {
   const result = [];
 
   for (const hospital of hospitals) {
+
     const mobileTrainingCount = await prisma.mobile_Training.count({
       where: {
         beneficiary: {
@@ -105,6 +106,14 @@ export async function getSummaryForAllHospitals() {
       }
     });
 
+    const lowVisionEvaluationCount = await prisma.Low_Vision_Evaluation.count({
+      where: {
+        beneficiary: {
+          hospitalId: hospital.id
+        }
+      }
+    });
+
     const beneficiaryCount = await prisma.beneficiary.count({
       where: {
         hospitalId: hospital.id
@@ -117,7 +126,8 @@ export async function getSummaryForAllHospitals() {
       orientationMobilityTrainingCount +
       visionEnhancementCount +
       counsellingEducationCount +
-      comprehensiveLowVisionEvaluationCount;
+      comprehensiveLowVisionEvaluationCount +
+      lowVisionEvaluationCount;
 
     const hospitalResult = {
       id: hospital.id,
@@ -128,6 +138,7 @@ export async function getSummaryForAllHospitals() {
       visionEnhancement: visionEnhancementCount,
       counsellingEducation: counsellingEducationCount,
       comprehensiveLowVisionEvaluation: comprehensiveLowVisionEvaluationCount,
+      lowVisionEvaluation: lowVisionEvaluationCount,
       totalTraining: totalTrainingCount,
       beneficiary: beneficiaryCount
     };
