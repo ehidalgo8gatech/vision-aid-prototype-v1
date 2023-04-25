@@ -3,7 +3,7 @@ import { getSession } from "next-auth/react";
 import { Chart as ChartJS } from 'chart.js/auto'
 import { Chart } from 'react-chartjs-2'
 import { Bar } from "react-chartjs-2";
-import { getSummaryForAllHospitals } from "@/pages/api/hospital";
+import { getSummaryForAllHospitals, getSummaryForHospitalFromID } from "@/pages/api/hospital";
 import { Container } from "react-bootstrap";
 import Navigation from './navigation/Navigation';
 import { Table } from 'react-bootstrap';
@@ -24,21 +24,24 @@ export async function getServerSideProps(ctx) {
   }
   const user = await readUser(session.user.email)
   if (user.admin == null) {
-    console.log("user admin is null")
+    const hospitalSummary = await getSummaryForHospitalFromID(user.hospitalRole.hospitalId);
     return {
-      redirect: {
-        destination: '/',
-        permanent: false,
+      props: {
+        user: user,
+        summary: JSON.parse(JSON.stringify([hospitalSummary])),
+        error: null
       },
     }
   }
-  const summary = await getSummaryForAllHospitals();
-  return {
-    props: {
-      user: user,
-      summary: JSON.parse(JSON.stringify(summary)),
-      error: null
-    },
+  if (user.admin != null) {
+    const summary = await getSummaryForAllHospitals();
+    return {
+      props: {
+        user: user,
+        summary: JSON.parse(JSON.stringify(summary)),
+        error: null
+      },
+    }
   }
 }
 
@@ -99,7 +102,7 @@ function filterTrainingSummaryByDateRange(startDate, endDate, summary) {
 }
 
 
-export default function Summary({ summary }) {
+export default function Summary({ user, summary }) {
   // create start date and end data states, start date is set to one year ago, end date is set to today
   const [startDate, setStartDate] = useState(moment().subtract(1, 'year').toDate());
   const [endDate, setEndDate] = useState(moment().toDate());
@@ -203,34 +206,36 @@ export default function Summary({ summary }) {
       <Container>
         <h1>Trainings Summary</h1>
         <div className="row">
-          <div className="col-md-2">
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>List of Hospitals</th>
-                  <th>
-                    <button type='button' className='btn btn-light' onClick={handleSelectAll}>Select All</button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {summary.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.name}</td>
-                    <td>
-                      <input
-                        type="checkbox"
-                        id={`hospital-${item.id}`}
-                        value={item.id}
-                        onChange={handleHospitalSelection}
-                        checked={selectedHospitals.includes(item.id)}
-                      />
-                    </td>
+          {user.admin != null && (
+            <div className="col-md-2">
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>List of Hospitals</th>
+                    <th>
+                      <button type='button' className='btn btn-light' onClick={handleSelectAll}>Select All</button>
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-          </div>
+                </thead>
+                <tbody>
+                  {summary.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.name}</td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          id={`hospital-${item.id}`}
+                          value={item.id}
+                          onChange={handleHospitalSelection}
+                          checked={selectedHospitals.includes(item.id)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          )}
           <div className="col-md-10">
             <div>
               <label htmlFor="startDate">Start Date:</label>
