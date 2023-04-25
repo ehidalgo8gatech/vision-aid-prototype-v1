@@ -9,7 +9,7 @@ import Navigation from './navigation/Navigation';
 import { Table } from 'react-bootstrap';
 import Link from "next/link";
 import moment from 'moment';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx)
@@ -33,7 +33,6 @@ export async function getServerSideProps(ctx) {
     }
   }
   const summary = await getSummaryForAllHospitals();
-  console.log(summary);
   return {
     props: {
       user: user,
@@ -43,7 +42,7 @@ export async function getServerSideProps(ctx) {
   }
 }
 
-function filterByDate(training, start, end){
+function filterByDate(training, start, end) {
   // increment end date by one day to include the end date
   start = moment(start).subtract(1, 'day');
   return moment(training.date).isBetween(moment(start).startOf('day'), moment(end).startOf('day'), null, '[]');
@@ -105,8 +104,31 @@ export default function Summary({ summary }) {
   const [startDate, setStartDate] = useState(moment().subtract(1, 'year').toDate());
   const [endDate, setEndDate] = useState(moment().toDate());
 
+  const [selectedHospitals, setSelectedHospitals] = useState([]);
+
+  useEffect(() => {
+    setSelectedHospitals(summary.map((item) => item.id));
+  }, []);
+
+  const handleHospitalSelection = (event) => {
+    const hospitalId = parseInt(event.target.value);
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      setSelectedHospitals([...selectedHospitals, hospitalId]);
+    } else {
+      setSelectedHospitals(selectedHospitals.filter(id => id !== hospitalId));
+    }
+  };
+
+  const handleSelectAll = () => {
+    setSelectedHospitals(summary.map((item) => item.id));
+  };
+
   // filter summary data based on start and end date of the training
-  const filteredSummary = filterTrainingSummaryByDateRange(startDate, endDate, summary);
+  const dateFilteredSummary = filterTrainingSummaryByDateRange(startDate, endDate, summary);
+  const filteredSummary = dateFilteredSummary.filter((item) => selectedHospitals.includes(item.id));
+
 
   //First get the evaluations
   const lowVisionEvaluationCount = filteredSummary.reduce((sum, item) => sum + item.lowVisionEvaluation.length, 0);
@@ -186,12 +208,24 @@ export default function Summary({ summary }) {
               <thead>
                 <tr>
                   <th>List of Hospitals</th>
+                  <th>
+                    <button type='button' className='btn btn-light' onClick={handleSelectAll}>Select All</button>
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {summary.map((item) => (
                   <tr key={item.id}>
                     <td>{item.name}</td>
+                    <td>
+                      <input
+                        type="checkbox"
+                        id={`hospital-${item.id}`}
+                        value={item.id}
+                        onChange={handleHospitalSelection}
+                        checked={selectedHospitals.includes(item.id)}
+                      />
+                    </td>
                   </tr>
                 ))}
               </tbody>
