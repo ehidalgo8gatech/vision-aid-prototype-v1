@@ -24,6 +24,15 @@ async function readData(req, res) {
                     hospitalRole: true,
                 },
             })
+        } else if (req.query.id != null) {
+            hospital = await prisma.hospital.findUnique({
+                where: {
+                    id: req.query.id,
+                },
+                include: {
+                    hospitalRole: true,
+                },
+            })
         } else {
             return findAllHospital()
         }
