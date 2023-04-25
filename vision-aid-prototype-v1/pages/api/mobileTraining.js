@@ -64,7 +64,7 @@ async function addData(req, res) {
             date: body.date,
             sessionNumber: body.sessionNumber,
             vision: body.vision,
-            typeOfCounselling: body.typeOfCounselling,
+            typeOfTraining: body.typeOfTraining,
             extraInformation: body.extraInformation,
             // beneficiary: beneficiary
         },

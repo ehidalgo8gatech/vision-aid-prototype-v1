@@ -80,14 +80,14 @@ model Beneficiary_Mirror {
 }
 
 model Computer_Training {
-  id                Int         @id @default(autoincrement())
-  beneficiary       Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
-  beneficiaryId     String
-  date              DateTime?
-  sessionNumber     Int?
-  visionType        String?
-  typeOfCounselling String?
-  extraInformation  String      @db.Text
+  id               Int         @id @default(autoincrement())
+  beneficiary      Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
+  beneficiaryId    String
+  date             DateTime?
+  sessionNumber    Int?
+  visionType       String?
+  typeOfTraining   String?
+  extraInformation String      @db.Text
 }
 
 model Computer_Training_Mirror {
@@ -99,14 +99,14 @@ model Computer_Training_Mirror {
 }
 
 model Mobile_Training {
-  id                Int         @id @default(autoincrement())
-  beneficiary       Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
-  beneficiaryId     String
-  date              DateTime?
-  sessionNumber     Int?
-  vision            String?
-  typeOfCounselling String?
-  extraInformation  String      @db.Text
+  id               Int         @id @default(autoincrement())
+  beneficiary      Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
+  beneficiaryId    String
+  date             DateTime?
+  sessionNumber    Int?
+  vision           String?
+  typeOfTraining   String?
+  extraInformation String      @db.Text
 }
 
 model Mobile_Training_Mirror {
@@ -118,14 +118,14 @@ model Mobile_Training_Mirror {
 }
 
 model Orientation_Mobility_Training {
-  id                Int         @id @default(autoincrement())
-  beneficiary       Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
-  beneficiaryId     String
-  date              DateTime?
-  sessionNumber     Int?
-  vision            String?
-  typeOfCounselling String?
-  extraInformation  String      @db.Text
+  id               Int         @id @default(autoincrement())
+  beneficiary      Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
+  beneficiaryId    String
+  date             DateTime?
+  sessionNumber    Int?
+  vision           String?
+  typeOfTraining   String?
+  extraInformation String      @db.Text
 }
 
 model Orientation_Mobility_Training_Mirror {

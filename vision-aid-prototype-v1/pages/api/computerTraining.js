@@ -40,7 +40,7 @@ async function addData(req, res) {
             date: body.date,
             sessionNumber: body.sessionNumber,
             visionType: body.visionType,
-            typeOfCounselling: body.typeOfCounselling,
+            typeOfTraining: body.typeOfTraining,
             extraInformation: body.extraInformation,
         },
         include: {
