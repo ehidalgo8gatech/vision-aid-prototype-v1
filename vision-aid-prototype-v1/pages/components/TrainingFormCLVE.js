@@ -386,7 +386,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   <div>
                     <strong>Dispensed Date:</strong>
                     <span className="ms-2">
-          {training.dispensedDate}
+          {training.dispensedDate.toString().split('T')[0]}
                       <button
                           type="button"
                           className="btn btn-link btn-sm text-primary ms-2"
