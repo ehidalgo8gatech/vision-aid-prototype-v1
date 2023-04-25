@@ -273,7 +273,7 @@ function UserPage(props) {
               existingTrainings={visionTrainingData}
               addNewTraining={handleSubmitVisionTraining}
               title="Vision Enhancement"
-              customFields={['Diagnosis', 'MDVI']}
+              customFields={['Diagnosis']}
               api='visionEnhancement'
             />
             <br/>
@@ -300,7 +300,7 @@ function UserPage(props) {
               existingTrainings={counsellingEducationData}
               addNewTraining={handleSubmitCounsellingEducation}
               title="Counselling Education"
-              customFields={['vision', 'typeCounselling', 'MDVI']}
+              customFields={['vision', 'typeCounselling']}
               api='counsellingEducation'
             />
             <br/>
