@@ -49,6 +49,10 @@ function Users(props) {
         console.log("admin " + admin)
         const user = await insertUserIfRequiredByEmail(userEmail)
         console.log(user.id + hospitalId + admin)
+        if (user.admin != null) {
+            alert("An admin can't be attached to a single hospital")
+            return
+        }
         const response = await fetch('/api/hospitalRole', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
