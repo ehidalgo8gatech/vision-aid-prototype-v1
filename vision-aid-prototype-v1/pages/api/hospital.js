@@ -56,9 +56,12 @@ export async function getSummaryForAllHospitals() {
 
   const result = [];
 
+
+
   for (const hospital of hospitals) {
 
-    const mobileTrainingCount = await prisma.mobile_Training.count({
+    //prisma map dates to strings
+    const mobileTrainingCount = await prisma.mobile_Training.findMany({
       where: {
         beneficiary: {
           hospitalId: hospital.id
@@ -66,7 +69,7 @@ export async function getSummaryForAllHospitals() {
       }
     });
 
-    const computerTrainingCount = await prisma.computer_Training.count({
+    const computerTrainingCount = await prisma.computer_Training.findMany({
       where: {
         beneficiary: {
           hospitalId: hospital.id
@@ -74,7 +77,7 @@ export async function getSummaryForAllHospitals() {
       }
     });
 
-    const orientationMobilityTrainingCount = await prisma.orientation_Mobility_Training.count({
+    const orientationMobilityTrainingCount = await prisma.orientation_Mobility_Training.findMany({
       where: {
         beneficiary: {
           hospitalId: hospital.id
@@ -82,7 +85,7 @@ export async function getSummaryForAllHospitals() {
       }
     });
 
-    const visionEnhancementCount = await prisma.vision_Enhancement.count({
+    const visionEnhancementCount = await prisma.vision_Enhancement.findMany({
       where: {
         beneficiary: {
           hospitalId: hospital.id
@@ -90,7 +93,7 @@ export async function getSummaryForAllHospitals() {
       }
     });
 
-    const counsellingEducationCount = await prisma.counselling_Education.count({
+    const counsellingEducationCount = await prisma.counselling_Education.findMany({
       where: {
         beneficiary: {
           hospitalId: hospital.id
@@ -98,7 +101,7 @@ export async function getSummaryForAllHospitals() {
       }
     });
 
-    const comprehensiveLowVisionEvaluationCount = await prisma.comprehensive_Low_Vision_Evaluation.count({
+    const comprehensiveLowVisionEvaluationCount = await prisma.comprehensive_Low_Vision_Evaluation.findMany({
       where: {
         beneficiary: {
           hospitalId: hospital.id
@@ -106,7 +109,7 @@ export async function getSummaryForAllHospitals() {
       }
     });
 
-    const lowVisionEvaluationCount = await prisma.Low_Vision_Evaluation.count({
+    const lowVisionEvaluationCount = await prisma.Low_Vision_Evaluation.findMany({
       where: {
         beneficiary: {
           hospitalId: hospital.id
@@ -114,20 +117,12 @@ export async function getSummaryForAllHospitals() {
       }
     });
 
-    const beneficiaryCount = await prisma.beneficiary.count({
+    const beneficiaryCount = await prisma.beneficiary.findMany({
       where: {
         hospitalId: hospital.id
       }
     });
 
-    const totalTrainingCount =
-      mobileTrainingCount +
-      computerTrainingCount +
-      orientationMobilityTrainingCount +
-      visionEnhancementCount +
-      counsellingEducationCount +
-      comprehensiveLowVisionEvaluationCount +
-      lowVisionEvaluationCount;
 
     const hospitalResult = {
       id: hospital.id,
@@ -139,7 +134,6 @@ export async function getSummaryForAllHospitals() {
       counsellingEducation: counsellingEducationCount,
       comprehensiveLowVisionEvaluation: comprehensiveLowVisionEvaluationCount,
       lowVisionEvaluation: lowVisionEvaluationCount,
-      totalTraining: totalTrainingCount,
       beneficiary: beneficiaryCount
     };
 

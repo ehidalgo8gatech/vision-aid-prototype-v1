@@ -30,26 +30,29 @@ export async function getServerSideProps(ctx) {
       },
     }
   }
+  const summary = await getSummaryForAllHospitals();
+  console.log(summary);
   return {
     props: {
       user: user,
-      summary: await getSummaryForAllHospitals(),
+      summary: JSON.parse(JSON.stringify(summary)),
       error: null
     },
   }
 }
 
 export default function Summary({ summary }) {
+  console.log(summary);
   //First get the evaluations
-  const lowVisionEvaluationCount = summary.reduce((sum, item) => sum + item.lowVisionEvaluation, 0);
-  const comprehensiveLowVisionEvaluationCount = summary.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation, 0);
-  const visionEnhancementCount = summary.reduce((sum, item) => sum + item.visionEnhancement, 0);
+  const lowVisionEvaluationCount = summary.reduce((sum, item) => sum + item.lowVisionEvaluation.length, 0);
+  const comprehensiveLowVisionEvaluationCount = summary.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.length, 0);
+  const visionEnhancementCount = summary.reduce((sum, item) => sum + item.visionEnhancement.length, 0);
 
   // Then the trainings
-  const mobileTrainingCount = summary.reduce((sum, item) => sum + item.mobileTraining, 0);
-  const computerTrainingCount = summary.reduce((sum, item) => sum + item.computerTraining, 0);
-  const counsellingEducationCount = summary.reduce((sum, item) => sum + item.counsellingEducation, 0);
-  const orientationMobilityTrainingCount = summary.reduce((sum, item) => sum + item.orientationMobilityTraining, 0);
+  const mobileTrainingCount = summary.reduce((sum, item) => sum + item.mobileTraining.length, 0);
+  const computerTrainingCount = summary.reduce((sum, item) => sum + item.computerTraining.length, 0);
+  const counsellingEducationCount = summary.reduce((sum, item) => sum + item.counsellingEducation.length, 0);
+  const orientationMobilityTrainingCount = summary.reduce((sum, item) => sum + item.orientationMobilityTraining.length, 0);
 
 
   const chartData = {
@@ -123,7 +126,7 @@ export default function Summary({ summary }) {
           </div>
           <div className="col-md-10">
             <Bar data={chartData} />
-            <h4>Total Number of Beneficiaries: {summary.reduce((sum, item) => sum + item.beneficiary, 0)}</h4>
+            <h4>Total Number of Beneficiaries: {summary.reduce((sum, item) => sum + item.beneficiary.length, 0)}</h4>
           </div>
         </div>
       </Container>
