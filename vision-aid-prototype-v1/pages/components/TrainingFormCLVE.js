@@ -353,7 +353,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Dispensed Date Optical:</strong>
                     <span className="ms-2">
@@ -384,7 +384,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Cost Optical:</strong>
                     <span className="ms-2">
@@ -415,7 +415,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Cost To Beneficiary Optical:</strong>
                     <span className="ms-2">
@@ -446,7 +446,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Dispensed Optical:</strong>
                     <span className="ms-2">
@@ -509,7 +509,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Dispensed Date NonOptical:</strong>
                     <span className="ms-2">
@@ -540,7 +540,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Cost NonOptical:</strong>
                     <span className="ms-2">
@@ -571,7 +571,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Cost To Beneficiary NonOptical:</strong>
                     <span className="ms-2">
@@ -602,7 +602,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Dispensed NonOptical:</strong>
                     <span className="ms-2">
@@ -665,7 +665,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Dispensed Date Electronic:</strong>
                     <span className="ms-2">
@@ -696,7 +696,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Cost Electronic:</strong>
                     <span className="ms-2">
@@ -727,7 +727,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Cost To Beneficiary Electronic:</strong>
                     <span className="ms-2">
@@ -758,7 +758,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : allfields && (
                   <div>
                     <strong>Dispensed Electronic:</strong>
                     <span className="ms-2">
