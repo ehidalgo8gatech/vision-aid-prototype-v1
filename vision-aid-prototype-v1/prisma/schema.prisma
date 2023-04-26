@@ -168,35 +168,47 @@ model Low_Vision_Evaluation {
   nearVisualAcuityRE        String?
   nearVisualAcuityLE        String?
   nearBinocularVisionBE     String?
-  recommendation            String?
+  recommendationOptical     String?
+  recommendationNonOptical  String?
+  recommendationElectronic  String?
   extraInformation          String      @db.Text
 }
 
 model Comprehensive_Low_Vision_Evaluation {
-  id                        Int         @id @default(autoincrement())
-  beneficiary               Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
-  beneficiaryId             String
-  diagnosis                 String?
-  date                      DateTime?
-  sessionNumber             Int?
-  distanceVisualAcuityRE    String
-  distanceVisualAcuityLE    String
-  distanceBinocularVisionBE String
-  nearVisualAcuityRE        String
-  nearVisualAcuityLE        String
-  nearBinocularVisionBE     String
-  recommendation            String
-  dispensed                 String
-  dispensedDate             DateTime?
-  cost                      Int
-  costToBeneficiary         Int
-  colourVisionRE            String?
-  colourVisionLE            String?
-  contrastSensitivityRE     String?
-  contrastSensitivityLE     String?
-  visualFieldsRE            String?
-  visualFieldsLE            String?
-  extraInformation          String      @db.Text
+  id                          Int         @id @default(autoincrement())
+  beneficiary                 Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
+  beneficiaryId               String
+  diagnosis                   String?
+  date                        DateTime?
+  sessionNumber               Int?
+  distanceVisualAcuityRE      String
+  distanceVisualAcuityLE      String
+  distanceBinocularVisionBE   String
+  nearVisualAcuityRE          String
+  nearVisualAcuityLE          String
+  nearBinocularVisionBE       String
+  recommendationOptical       String?
+  dispensedOptical            String?
+  dispensedDateOptical        DateTime?
+  costOptical                 Int?
+  costToBeneficiaryOptical    Int?
+  recommendationNonOptical    String?
+  dispensedNonOptical         String?
+  dispensedDateNonOptical     DateTime?
+  costNonOptical              Int?
+  costToBeneficiaryNonOptical Int?
+  recommendationElectronic    String?
+  dispensedElectronic         String?
+  dispensedDateElectronic     DateTime?
+  costElectronic              Int?
+  costToBeneficiaryElectronic Int?
+  colourVisionRE              String?
+  colourVisionLE              String?
+  contrastSensitivityRE       String?
+  contrastSensitivityLE       String?
+  visualFieldsRE              String?
+  visualFieldsLE              String?
+  extraInformation            String      @db.Text
 }
 
 model Comprehensive_Low_Vision_Evaluation_Mirror {

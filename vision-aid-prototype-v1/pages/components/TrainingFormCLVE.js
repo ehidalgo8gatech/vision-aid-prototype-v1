@@ -27,21 +27,25 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
     } else {
       diagnosis = e.target.diagnosis.value
     }
-    var recs = ""
-    e.target.recommendation.forEach((rec) => {
-      if (rec.checked) {
-        recs = recs + rec.name + " "
-      }
-    })
     const newTraining = {
       diagnosis: diagnosis,
       date: e.target.date.value,
       sessionNumber: e.target.sessionNumber.value,
-      recommendation: recs,
-      dispensed: e.target.dispensed == null ? null : e.target.dispensed.value,
-      dispensedDate: e.target.dispensedDate == null ? null : new Date(e.target.dispensedDate.value),
-      cost: e.target.cost == null ? null : parseInt(e.target.cost.value),
-      costToBeneficiary: e.target.costToBeneficiary == null ? null : parseInt(e.target.costToBeneficiary.value),
+      recommendationOptical: e.target.recommendationOptical == null ? null : e.target.recommendationOptical.value,
+      dispensedDateOptical: e.target.dispensedDateOptical == null ? null : new Date(e.target.dispensedDateOptical.value),
+      costOptical: e.target.costOptical == null ? null : parseInt(e.target.costOptical.value),
+      costToBeneficiaryOptical: e.target.costToBeneficiaryOptical == null ? null : parseInt(e.target.costToBeneficiaryOptical.value),
+      dispensedOptical: e.target.dispensedOptical == null ? null : e.target.dispensedOptical.value,
+      dispensedDateOpticalNonOptical: e.target.dispensedDateOpticalNonOptical == null ? null : e.target.dispensedDateOpticalNonOptical.value,
+      dispensedDateNonOptical: e.target.dispensedDateNonOptical == null ? null : new Date(e.target.dispensedDateNonOptical.value),
+      costNonOptical: e.target.costNonOptical == null ? null : parseInt(e.target.costNonOptical.value),
+      costToBeneficiaryNonOptical: e.target.costToBeneficiaryNonOptical == null ? null : parseInt(e.target.costToBeneficiaryNonOptical.value),
+      dispensedNonOptical: e.target.dispensedNonOptical == null ? null : e.target.dispensedNonOptical.value,
+      dispensedDateOpticalElectronic: e.target.dispensedDateOpticalElectronic == null ? null : e.target.dispensedDateOpticalElectronic.value,
+      dispensedDateElectronic: e.target.dispensedDateElectronic == null ? null : new Date(e.target.dispensedDateElectronic.value),
+      costElectronic: e.target.costElectronic == null ? null : parseInt(e.target.costElectronic.value),
+      costToBeneficiaryElectronic: e.target.costToBeneficiaryElectronic == null ? null : parseInt(e.target.costToBeneficiaryElectronic.value),
+      dispensedElectronic: e.target.dispensedElectronic == null ? null : e.target.dispensedElectronic.value,
       colourVisionRE: e.target.colourVisionRE == null ? null : e.target.colourVisionRE.value,
       colourVisionLE: e.target.colourVisionLE == null ? null : e.target.colourVisionLE.value,
       contrastSensitivityRE: e.target.contrastSensitivityRE == null ? null : e.target.contrastSensitivityRE.value,
@@ -74,9 +78,9 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
   const handleEditSubmit = async (e, api, field, index) => {
     e.preventDefault();
     var value
-    if (field == 'date' || field == 'dispensedDate') {
+    if (field == 'date' || field == 'dispensedDateOptical' || field == 'dispensedDateNonOptical' || field == 'dispensedDateElectronic') {
       value = new Date(existingTrainings[index][field])
-    } else if(field == 'sessionNumber' || field == 'cost' || field == 'costToBeneficiary') {
+    } else if(field == 'sessionNumber' || field == 'costOptical' || field == 'costToBeneficiaryOptical' || field == 'costNonOptical' || field == 'costToBeneficiaryNonOptical' || field == 'costElectronic' || field == 'costToBeneficiaryElectronic') {
       value = parseInt(existingTrainings[index][field])
     } else {
       value = existingTrainings[index][field]
@@ -302,16 +306,16 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               ))}
 
-              {editableField === 'recommendation' ? (
+              {editableField === 'recommendationOptical' ? (
                   <div>
-                    <strong>Recommendation:</strong>
-                    <form onSubmit={(e) => handleEditSubmit(e, api, 'recommendation', index)} className="d-inline ms-2">
-                      <input id={title + index + 'recommendation'}
+                    <strong>Recommendation Optical:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'recommendationOptical', index)} className="d-inline ms-2">
+                      <input id={title + index + 'recommendationOptical'}
                              type="text"
                              className="form-control d-inline w-auto"
-                             name='recommendation'
-                             value={training.recommendation}
-                             onChange={() => handleInputChange(index, 'recommendation', title + index + 'recommendation')}
+                             name='recommendationOptical'
+                             value={training.recommendationOptical}
+                             onChange={() => handleInputChange(index, 'recommendationOptical', title + index + 'recommendationOptical')}
                       />
                       <button type="submit" className="btn btn-primary btn-sm ms-2">
                         Save
@@ -320,77 +324,137 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               ) : (
                   <div>
-                    <strong>Recommendation:</strong>
+                    <strong>Recommendation Optical:</strong>
                     <span className="ms-2">
-          {training.recommendation}
+          {training.recommendationOptical}
                       <button
                           type="button"
                           className="btn btn-link btn-sm text-primary ms-2"
-                          onClick={() => handleEditClick('recommendation')}
+                          onClick={() => handleEditClick('recommendationOptical')}
                       >
            <Pencil/>
           </button>
         </span>
                   </div>
               )}
-
-              {allfields && editableField === 'dispensed' ? (
+              {allfields && editableField === 'dispensedDateOptical' ? (
                   <div>
-                    <strong>Dispensed:</strong>
-                    <form onSubmit={(e) => handleEditSubmit(e, api, 'dispensed', index)} className="d-inline ms-2">
-                      <input id={title + index + 'dispensed'}
-                             type="text"
-                             className="form-control d-inline w-auto"
-                             name='dispensed'
-                             value={training.dispensed}
-                             onChange={() => handleInputChange(index, 'dispensed', title + index + 'dispensed')}
-                      />
-                      <button type="submit" className="btn btn-primary btn-sm ms-2">
-                        Save
-                      </button>
-                    </form>
-                  </div>
-              ) : allfields && (
-                  <div>
-                    <strong>Dispensed:</strong>
-                    <span className="ms-2">
-          {training.dispensed}
-                      <button
-                          type="button"
-                          className="btn btn-link btn-sm text-primary ms-2"
-                          onClick={() => handleEditClick('dispensed')}
-                      >
-           <Pencil/>
-          </button>
-        </span>
-                  </div>
-              )}
-
-              {allfields && editableField === 'dispensedDate' ? (
-                  <div>
-                    <strong>Dispensed Date:</strong>
-                    <form onSubmit={(e) => handleEditSubmit(e, api, 'dispensedDate', index)} className="d-inline ms-2">
-                      <input id={title + index + 'dispensedDate'}
+                    <strong>Dispensed Date Optical:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'dispensedDateOptical', index)} className="d-inline ms-2">
+                      <input id={title + index + 'dispensedDateOptical'}
                              type="date"
                              className="form-control d-inline w-auto"
-                             name='dispensedDate'
-                             value={training.dispensedDate}
-                             onChange={() => handleInputChange(index, 'dispensedDate', title + index + 'dispensedDate')}
+                             name='dispensedDateOptical'
+                             value={training.dispensedDateOptical}
+                             onChange={() => handleInputChange(index, 'dispensedDateOptical', title + index + 'dispensedDateOptical')}
                       />
                       <button type="submit" className="btn btn-primary btn-sm ms-2">
                         Save
                       </button>
                     </form>
                   </div>
-              ) : allfields && (
+              ) : (
                   <div>
-                    <strong>Dispensed Date:</strong>
+                    <strong>Dispensed Date Optical:</strong>
                     <span className="ms-2">
-          {training.dispensedDate.toString().split('T')[0]}
+          {training.dispensedDateOptical}
                       <button
                           type="button"
                           className="btn btn-link btn-sm text-primary ms-2"
-                          onClick={() => handleEditClick('dispensedDate')}
+                          onClick={() => handleEditClick('dispensedDateOptical')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'costOptical' ? (
+                  <div>
+                    <strong>Cost Optical:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'costOptical', index)} className="d-inline ms-2">
+                      <input id={title + index + 'costOptical'}
+                             type="number"
+                             className="form-control d-inline w-auto"
+                             name='costOptical'
+                             value={training.costOptical}
+                             onChange={() => handleInputChange(index, 'costOptical', title + index + 'costOptical')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Cost Optical:</strong>
+                    <span className="ms-2">
+          {training.costOptical}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('costOptical')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'costToBeneficiaryOptical' ? (
+                  <div>
+                    <strong>Cost To Beneficiary Optical:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'costToBeneficiaryOptical', index)} className="d-inline ms-2">
+                      <input id={title + index + 'costToBeneficiaryOptical'}
+                             type="number"
+                             className="form-control d-inline w-auto"
+                             name='costToBeneficiaryOptical'
+                             value={training.costToBeneficiaryOptical}
+                             onChange={() => handleInputChange(index, 'costToBeneficiaryOptical', title + index + 'costToBeneficiaryOptical')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Cost To Beneficiary Optical:</strong>
+                    <span className="ms-2">
+          {training.costToBeneficiaryOptical}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('costToBeneficiaryOptical')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'dispensedOptical' ? (
+                  <div>
+                    <strong>Dispensed Optical:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'dispensedOptical', index)} className="d-inline ms-2">
+                      <input id={title + index + 'dispensedOptical'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='dispensedOptical'
+                             value={training.dispensedOptical}
+                             onChange={() => handleInputChange(index, 'dispensedOptical', title + index + 'dispensedOptical')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Dispensed Optical:</strong>
+                    <span className="ms-2">
+          {training.dispensedOptical}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('dispensedOptical')}
                       >
            <Pencil/>
           </button>
@@ -398,31 +462,155 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               )}
 
-              {allfields && editableField === 'cost' ? (
+              {editableField === 'recommendationNonOptical' ? (
                   <div>
-                    <strong>cost:</strong>
-                    <form onSubmit={(e) => handleEditSubmit(e, api, 'cost', index)} className="d-inline ms-2">
-                      <input id={title + index + 'cost'}
-                             type="number"
+                    <strong>Recommendation NonOptical:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'recommendationNonOptical', index)} className="d-inline ms-2">
+                      <input id={title + index + 'recommendationNonOptical'}
+                             type="text"
                              className="form-control d-inline w-auto"
-                             name='cost'
-                             value={training.cost}
-                             onChange={() => handleInputChange(index, 'cost', title + index + 'cost')}
+                             name='recommendationNonOptical'
+                             value={training.recommendationNonOptical}
+                             onChange={() => handleInputChange(index, 'recommendationNonOptical', title + index + 'recommendationNonOptical')}
                       />
                       <button type="submit" className="btn btn-primary btn-sm ms-2">
                         Save
                       </button>
                     </form>
                   </div>
-              ) : allfields && (
+              ) : (
                   <div>
-                    <strong>cost:</strong>
+                    <strong>Recommendation NonOptical:</strong>
                     <span className="ms-2">
-          {training.cost}
+          {training.recommendationNonOptical}
                       <button
                           type="button"
                           className="btn btn-link btn-sm text-primary ms-2"
-                          onClick={() => handleEditClick('cost')}
+                          onClick={() => handleEditClick('recommendationNonOptical')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'dispensedDateNonOptical' ? (
+                  <div>
+                    <strong>Dispensed Date NonOptical:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'dispensedDateNonOptical', index)} className="d-inline ms-2">
+                      <input id={title + index + 'dispensedDateNonOptical'}
+                             type="date"
+                             className="form-control d-inline w-auto"
+                             name='dispensedDateNonOptical'
+                             value={training.dispensedDateNonOptical}
+                             onChange={() => handleInputChange(index, 'dispensedDateNonOptical', title + index + 'dispensedDateNonOptical')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Dispensed Date NonOptical:</strong>
+                    <span className="ms-2">
+          {training.dispensedDateNonOptical}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('dispensedDateNonOptical')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'costNonOptical' ? (
+                  <div>
+                    <strong>Cost NonOptical:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'costNonOptical', index)} className="d-inline ms-2">
+                      <input id={title + index + 'costNonOptical'}
+                             type="number"
+                             className="form-control d-inline w-auto"
+                             name='costNonOptical'
+                             value={training.costNonOptical}
+                             onChange={() => handleInputChange(index, 'costNonOptical', title + index + 'costNonOptical')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Cost NonOptical:</strong>
+                    <span className="ms-2">
+          {training.costNonOptical}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('costNonOptical')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'costToBeneficiaryNonOptical' ? (
+                  <div>
+                    <strong>Cost To Beneficiary NonOptical:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'costToBeneficiaryNonOptical', index)} className="d-inline ms-2">
+                      <input id={title + index + 'costToBeneficiaryNonOptical'}
+                             type="number"
+                             className="form-control d-inline w-auto"
+                             name='costToBeneficiaryNonOptical'
+                             value={training.costToBeneficiaryNonOptical}
+                             onChange={() => handleInputChange(index, 'costToBeneficiaryNonOptical', title + index + 'costToBeneficiaryNonOptical')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Cost To Beneficiary NonOptical:</strong>
+                    <span className="ms-2">
+          {training.costToBeneficiaryNonOptical}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('costToBeneficiaryNonOptical')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'dispensedNonOptical' ? (
+                  <div>
+                    <strong>Dispensed NonOptical:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'dispensedNonOptical', index)} className="d-inline ms-2">
+                      <input id={title + index + 'dispensedNonOptical'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='dispensedNonOptical'
+                             value={training.dispensedNonOptical}
+                             onChange={() => handleInputChange(index, 'dispensedNonOptical', title + index + 'dispensedNonOptical')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Dispensed NonOptical:</strong>
+                    <span className="ms-2">
+          {training.dispensedNonOptical}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('dispensedNonOptical')}
                       >
            <Pencil/>
           </button>
@@ -430,31 +618,155 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   </div>
               )}
 
-              {allfields && editableField === 'costToBeneficiary' ? (
+              {editableField === 'recommendationElectronic' ? (
                   <div>
-                    <strong>costToBeneficiary:</strong>
-                    <form onSubmit={(e) => handleEditSubmit(e, api, 'costToBeneficiary', index)} className="d-inline ms-2">
-                      <input id={title + index + 'costToBeneficiary'}
-                             type="number"
+                    <strong>Recommendation Electronic:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'recommendationElectronic', index)} className="d-inline ms-2">
+                      <input id={title + index + 'recommendationElectronic'}
+                             type="text"
                              className="form-control d-inline w-auto"
-                             name='costToBeneficiary'
-                             value={training.costToBeneficiary}
-                             onChange={() => handleInputChange(index, 'costToBeneficiary', title + index + 'costToBeneficiary')}
+                             name='recommendationElectronic'
+                             value={training.recommendationElectronic}
+                             onChange={() => handleInputChange(index, 'recommendationElectronic', title + index + 'recommendationElectronic')}
                       />
                       <button type="submit" className="btn btn-primary btn-sm ms-2">
                         Save
                       </button>
                     </form>
                   </div>
-              ) : allfields && (
+              ) : (
                   <div>
-                    <strong>costToBeneficiary:</strong>
+                    <strong>Recommendation Electronic:</strong>
                     <span className="ms-2">
-          {training.costToBeneficiary}
+          {training.recommendationElectronic}
                       <button
                           type="button"
                           className="btn btn-link btn-sm text-primary ms-2"
-                          onClick={() => handleEditClick('costToBeneficiary')}
+                          onClick={() => handleEditClick('recommendationElectronic')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'dispensedDateElectronic' ? (
+                  <div>
+                    <strong>Dispensed Date Electronic:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'dispensedDateElectronic', index)} className="d-inline ms-2">
+                      <input id={title + index + 'dispensedDateElectronic'}
+                             type="date"
+                             className="form-control d-inline w-auto"
+                             name='dispensedDateElectronic'
+                             value={training.dispensedDateElectronic}
+                             onChange={() => handleInputChange(index, 'dispensedDateElectronic', title + index + 'dispensedDateElectronic')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Dispensed Date Electronic:</strong>
+                    <span className="ms-2">
+          {training.dispensedDateElectronic}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('dispensedDateElectronic')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'costElectronic' ? (
+                  <div>
+                    <strong>Cost Electronic:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'costElectronic', index)} className="d-inline ms-2">
+                      <input id={title + index + 'costElectronic'}
+                             type="number"
+                             className="form-control d-inline w-auto"
+                             name='costElectronic'
+                             value={training.costElectronic}
+                             onChange={() => handleInputChange(index, 'costElectronic', title + index + 'costElectronic')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Cost Electronic:</strong>
+                    <span className="ms-2">
+          {training.costElectronic}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('costElectronic')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'costToBeneficiaryElectronic' ? (
+                  <div>
+                    <strong>Cost To Beneficiary Electronic:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'costToBeneficiaryElectronic', index)} className="d-inline ms-2">
+                      <input id={title + index + 'costToBeneficiaryElectronic'}
+                             type="number"
+                             className="form-control d-inline w-auto"
+                             name='costToBeneficiaryElectronic'
+                             value={training.costToBeneficiaryElectronic}
+                             onChange={() => handleInputChange(index, 'costToBeneficiaryElectronic', title + index + 'costToBeneficiaryElectronic')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Cost To Beneficiary Electronic:</strong>
+                    <span className="ms-2">
+          {training.costToBeneficiaryElectronic}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('costToBeneficiaryElectronic')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'dispensedElectronic' ? (
+                  <div>
+                    <strong>Dispensed Electronic:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'dispensedElectronic', index)} className="d-inline ms-2">
+                      <input id={title + index + 'dispensedElectronic'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='dispensedElectronic'
+                             value={training.dispensedElectronic}
+                             onChange={() => handleInputChange(index, 'dispensedElectronic', title + index + 'dispensedElectronic')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Dispensed Electronic:</strong>
+                    <span className="ms-2">
+          {training.dispensedElectronic}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('dispensedElectronic')}
                       >
            <Pencil/>
           </button>
@@ -772,34 +1084,96 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
             </Col>
           </Row>
           ))}
-          <Form.Group controlId="recommendation" key="recommendation">
-            <Form.Label>Recommendation</Form.Label>
-            <Form.Check type='checkbox' label='Optical' name='Optical' inline></Form.Check>
-            <Form.Check type='checkbox' label='non-Optical' name='non-Optical' inline></Form.Check>
-            <Form.Check type='checkbox' label='Electronic' name='Electronic' inline></Form.Check>
+          
+          <Form.Group controlId="recommendationOptical">
+            <Form.Label>Recommendation Optical</Form.Label>
+            <Form.Control as="textarea" rows={1} />
           </Form.Group>
           {allfields && (
               <div>
-              <Form.Group controlId="dispensed" key="dispensed">
-                <Form.Label>Dispensed</Form.Label>
-                <Form.Control as="select">
-                  <option defaultValue></option>
-                  <option>Yes</option>
-                  <option>No</option>
-                </Form.Control>
-              </Form.Group>
-            <Form.Group controlId="dispensedDate">
-            <Form.Label>Dispensed date</Form.Label>
-            <Form.Control type="date" />
-            </Form.Group>
-            <Form.Group controlId="cost">
-            <Form.Label>Cost</Form.Label>
-            <Form.Control type="number" />
-            </Form.Group>
-            <Form.Group controlId="costToBeneficiary">
-            <Form.Label>Cost to beneficiary</Form.Label>
-            <Form.Control type="number" />
-            </Form.Group>
+                <Form.Group controlId="dispensedDateOptical">
+                  <Form.Label>Dispensed Date Optical</Form.Label>
+                  <Form.Control type="date" />
+                </Form.Group>
+                <Form.Group controlId="costOptical">
+                  <Form.Label>Cost Optical</Form.Label>
+                  <Form.Control type="number" />
+                </Form.Group>
+                <Form.Group controlId="costToBeneficiaryOptical">
+                  <Form.Label>Cost to Beneficiary Optical</Form.Label>
+                  <Form.Control type="number" />
+                </Form.Group>
+                <Form.Group controlId="dispensedOptical" key="dispensedOptical">
+                  <Form.Label>Dispensed Optical</Form.Label>
+                  <Form.Control as="select">
+                    <option defaultValue></option>
+                    <option>Yes</option>
+                    <option>No</option>
+                  </Form.Control>
+                </Form.Group>
+              </div>
+          )}
+
+          <Form.Group controlId="recommendationNonOptical">
+            <Form.Label>Recommendation NonOptical</Form.Label>
+            <Form.Control as="textarea" rows={1} />
+          </Form.Group>
+          {allfields && (
+              <div>
+                <Form.Group controlId="dispensedDateNonOptical">
+                  <Form.Label>Dispensed Date NonOptical</Form.Label>
+                  <Form.Control type="date" />
+                </Form.Group>
+                <Form.Group controlId="costNonOptical">
+                  <Form.Label>Cost NonOptical</Form.Label>
+                  <Form.Control type="number" />
+                </Form.Group>
+                <Form.Group controlId="costToBeneficiaryNonOptical">
+                  <Form.Label>Cost to Beneficiary NonOptical</Form.Label>
+                  <Form.Control type="number" />
+                </Form.Group>
+                <Form.Group controlId="dispensedNonOptical" key="dispensedNonOptical">
+                  <Form.Label>Dispensed NonOptical</Form.Label>
+                  <Form.Control as="select">
+                    <option defaultValue></option>
+                    <option>Yes</option>
+                    <option>No</option>
+                  </Form.Control>
+                </Form.Group>
+              </div>
+          )}
+
+          <Form.Group controlId="recommendationElectronic">
+            <Form.Label>Recommendation Electronic</Form.Label>
+            <Form.Control as="textarea" rows={1} />
+          </Form.Group>
+          {allfields && (
+              <div>
+                <Form.Group controlId="dispensedDateElectronic">
+                  <Form.Label>Dispensed Date Electronic</Form.Label>
+                  <Form.Control type="date" />
+                </Form.Group>
+                <Form.Group controlId="costElectronic">
+                  <Form.Label>Cost Electronic</Form.Label>
+                  <Form.Control type="number" />
+                </Form.Group>
+                <Form.Group controlId="costToBeneficiaryElectronic">
+                  <Form.Label>Cost to Beneficiary Electronic</Form.Label>
+                  <Form.Control type="number" />
+                </Form.Group>
+                <Form.Group controlId="dispensedElectronic" key="dispensedElectronic">
+                  <Form.Label>Dispensed Electronic</Form.Label>
+                  <Form.Control as="select">
+                    <option defaultValue></option>
+                    <option>Yes</option>
+                    <option>No</option>
+                  </Form.Control>
+                </Form.Group>
+              </div>
+          )}
+          
+          {allfields && (
+              <div>
             <Form.Group controlId="colourVisionRE">
             <Form.Label>Colour Vision Right Eye</Form.Label>
             <Form.Control as="textarea" rows={1} />
