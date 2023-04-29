@@ -236,7 +236,7 @@ function UserPage(props) {
                 <TrainingFormCLVE
                     existingTrainings={lowVisionEvaluationData}
                     addNewTraining={handleSubmitLowVisionEvaluation}
-                    title="Low Vision Evaluation"
+                    title="Low Vision Screening"
                     customFieldsDistance={[
                         'distanceVisualAcuityRE',
                         'distanceVisualAcuityLE',
