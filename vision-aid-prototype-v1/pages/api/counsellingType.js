@@ -1,10 +1,11 @@
 import {PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient();
-export async function getTrainingTypes(){
+
+export async function getCounsellingType() {
     var trainings = []
-     const tt = await prisma.training_Type.findMany({})
-         tt.forEach(t => {
+    const  ct = await prisma.counselling_Type.findMany({})
+    ct.forEach(t => {
         trainings.push(t.value)
     })
     return trainings
@@ -38,7 +39,7 @@ async function addData(req, res) {
         },
     }
     try {
-        const training = await prisma.training_Type.create(create)
+        const training = await prisma.counselling_Type.create(create)
         return res.status(200).json(training, {success: true});
     } catch (error) {
         console.log('Request error ' + error);

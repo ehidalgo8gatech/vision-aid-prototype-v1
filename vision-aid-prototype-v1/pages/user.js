@@ -5,7 +5,8 @@ import { Pencil } from 'react-bootstrap-icons';
 import Navigation from './navigation/Navigation';
 import TrainingForm from './components/TrainingForm';
 import TrainingFormCLVE from './components/TrainingFormCLVE';
-import {getCounsellingType, getTrainingTypes} from "@/pages/api/trainingType";
+import {getTrainingTypes} from "@/pages/api/trainingType";
+import {getCounsellingType} from "@/pages/api/counsellingType";
 
 function UserPage(props) {
   const router = useRouter();

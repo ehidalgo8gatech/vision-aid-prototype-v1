@@ -232,48 +232,6 @@ function RequiredFields(props) {
         )
     })
 
-    let exInfoComputerTrainingPOJO = JSON.parse(props.requiredComputerTraining.extraInformationRequired)
-    const exInfoComputerTraining = []
-    exInfoComputerTrainingPOJO.forEach((data) => {
-        exInfoComputerTraining.push(
-            <div class="col-md-12" id={data.name + "computerTraining"}>
-                <div class="row">
-                    <div class="col-md-6">
-                        <input type="text" name="extraFieldsComputerTraining" class="form-control"
-                               defaultValue={data.name}/>
-                    </div>
-                    <div class="col-md-6">
-                        <button type="button" onClick={removeExtraField(data.name + "computerTraining")}
-                                class="btn btn-danger border-0 btn-block">Remove Field
-                        </button>
-                    </div>
-                </div>
-                <br/>
-            </div>
-        )
-    })
-
-    let exInfoOrientationMobilityTrainingPOJO = JSON.parse(props.requiredOrientationMobilityTraining.extraInformationRequired)
-    const exInfoOrientationMobilityTraining = []
-    exInfoOrientationMobilityTrainingPOJO.forEach((data) => {
-        exInfoOrientationMobilityTraining.push(
-            <div class="col-md-12" id={data.name + "orientationMobilityTraining"}>
-                <div class="row">
-                    <div class="col-md-6">
-                        <input type="text" name="extraFieldsOrientationMobilityTraining" class="form-control"
-                               defaultValue={data.name}/>
-                    </div>
-                    <div class="col-md-6">
-                        <button type="button" onClick={removeExtraField(data.name + "orientationMobilityTraining")}
-                                class="btn btn-danger border-0 btn-block">Remove Field
-                        </button>
-                    </div>
-                </div>
-                <br/>
-            </div>
-        )
-    })
-
     let exInfoComprehensiveLowVisionEvaluationPOJO = JSON.parse(props.requiredComprehensiveLowVisionEvaluation.extraInformationRequired)
     const exInfoComprehensiveLowVisionEvaluation = []
     exInfoComprehensiveLowVisionEvaluationPOJO.forEach((data) => {
@@ -344,9 +302,21 @@ function RequiredFields(props) {
         "mobile": false,
         "computer": false,
         "orientationMobility": false,
+        "addCounsellingType": false,
+        "addTrainingType": false,
     }
     function handleToggle(type) {
         var displayTrainingElement = document.getElementById(type + "TrainingRequiredFields");
+        if (displayTrainingElement.style.display === "block") {
+            displayTrainingElement.style.display = "none";
+        } else {
+            displayTrainingElement.style.display = "block";
+        }
+        showForm[type] = !showForm[type]
+    }
+
+    function handleToggleByType(type) {
+        var displayTrainingElement = document.getElementById(type);
         if (displayTrainingElement.style.display === "block") {
             displayTrainingElement.style.display = "none";
         } else {
@@ -377,6 +347,25 @@ function RequiredFields(props) {
         })
         let json = await response.json()
         alert("hospital added " + JSON.stringify(json))
+        Router.reload()
+    }
+
+    async function addTypesSubmit(e, api, type) {
+        e.preventDefault()
+        const response = await fetch("api/" + api, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({value: e.target[type].value}),
+        });
+
+        // Handle response from the API
+        if (response.ok) {
+            alert('Type data saved successfully!');
+        } else {
+            alert('An error occurred while saving data. Please try again.');
+        }
         Router.reload()
     }
 
@@ -648,61 +637,6 @@ function RequiredFields(props) {
                     <br/>
 
                     <div className="d-flex justify-content-center align-items-center">
-                        {showForm["computer"] ? (
-                            <ChevronDown
-                                className="ml-2"
-                                onClick={() => handleToggle("computer")}
-                                style={{ cursor: 'pointer' }}
-                            />
-                        ) : (
-                            <ChevronRight
-                                className="ml-2"
-                                onClick={() => handleToggle("computer")}
-                                style={{ cursor: 'pointer' }}
-                            />
-                        )}
-                        <h2 className="text-center">Computer Training</h2>
-                    </div>
-                    <div className='container' id="computerTrainingRequiredFields">
-                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "ComputerTraining", "computerTrainingMirror")}>
-                            <div className='container'>
-                                <div class="row justify-content-center">
-                                    <div className="col-md-6 mx-auto">
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                            <label htmlFor="hospitalNameOverrideComputerTraining" style={{ marginRight: '10px' }}>Select a hospital</label>
-                                            <select id="hospitalNameOverrideComputerTraining"
-                                                    style={{
-                                                        border: "1px solid #ccc",
-                                                        borderRadius: "0.25rem",
-                                                        color: "#495057",
-                                                        backgroundColor: "#fff",
-                                                        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-                                                        transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
-                                                    }}
-                                            >
-                                                <option value="">All</option>
-                                                {hospitalOptions}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="extraFieldsComputerTraining">
-                                <strong>Extra Fields</strong>
-                                <br/>
-                                <br/>
-                                {exInfoComputerTraining}
-                            </div>
-                            <button type="button" onClick={() => addField("extraFieldsComputerTraining", "extraFieldsComputerTraining")}
-                                    className="btn btn-success border-0 btn-block">Add Required Field
-                            </button>
-                            <br/>
-                            <button type="submit" className="btn btn-primary">Submit</button>
-                        </form>
-                    </div>
-                    <br/>
-
-                    <div className="d-flex justify-content-center align-items-center">
                         {showForm["counsellingEducation"] ? (
                             <ChevronDown
                                 className="ml-2"
@@ -757,55 +691,54 @@ function RequiredFields(props) {
                     </div>
                     <br/>
 
+                    <h1 className="text-center mt-4 mb-4">Add Types</h1>
+                    <br/>
                     <div className="d-flex justify-content-center align-items-center">
-                        {showForm["orientationMobility"] ? (
+                        {showForm["addCounsellingType"] ? (
                             <ChevronDown
                                 className="ml-2"
-                                onClick={() => handleToggle("orientationMobility")}
+                                onClick={() => handleToggleByType("addCounsellingTypeContainer")}
                                 style={{ cursor: 'pointer' }}
                             />
                         ) : (
                             <ChevronRight
                                 className="ml-2"
-                                onClick={() => handleToggle("orientationMobility")}
+                                onClick={() => handleToggleByType("addCounsellingTypeContainer")}
                                 style={{ cursor: 'pointer' }}
                             />
                         )}
-                        <h2 className="text-center">Orientation Mobility Training</h2>
+                        <h2 className="text-center">Counseling Education</h2>
                     </div>
-                    <div className='container' id="orientationMobilityTrainingRequiredFields">
-                        <form action="#" method="POST" onSubmit={(e) => addFieldsTrainingSubmit(e, "OrientationMobilityTraining", "orientationMobilityTrainingMirror")}>
-                            <div className='container'>
-                                <div class="row justify-content-center">
-                                    <div className="col-md-6 mx-auto">
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                            <label htmlFor="hospitalNameOverrideOrientationMobilityTraining" style={{ marginRight: '10px' }}>Select a hospital</label>
-                                            <select id="hospitalNameOverrideOrientationMobilityTraining"
-                                                    style={{
-                                                        border: "1px solid #ccc",
-                                                        borderRadius: "0.25rem",
-                                                        color: "#495057",
-                                                        backgroundColor: "#fff",
-                                                        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-                                                        transition: "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out"
-                                                    }}
-                                            >
-                                                <option value="">All</option>
-                                                {hospitalOptions}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="extraFieldsOrientationMobilityTraining">
-                                <strong>Extra Fields</strong>
-                                <br/>
-                                <br/>
-                                {exInfoOrientationMobilityTraining}
-                            </div>
-                            <button type="button" onClick={() => addField("extraFieldsOrientationMobilityTraining", "extraFieldsOrientationMobilityTraining", "orientationMobilityTrainingMirror")}
-                                    className="btn btn-success border-0 btn-block">Add Required Field
-                            </button>
+                    <div className='container' id="addCounsellingTypeContainer">
+                        <form action="#" method="POST" onSubmit={(e) => addTypesSubmit(e, "counsellingType", "addCounsellingType")}>
+                            <label htmlFor="addCounsellingType">Add Counseling Type:</label>
+                            <input type="text" id="addCounsellingType" name="addCounsellingType"/>
+                            <br/>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+
+                    <br/>
+                    <div className="d-flex justify-content-center align-items-center">
+                        {showForm["addTrainingType"] ? (
+                            <ChevronDown
+                                className="ml-2"
+                                onClick={() => handleToggleByType("addTrainingTypeContainer")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        ) : (
+                            <ChevronRight
+                                className="ml-2"
+                                onClick={() => handleToggleByType("addTrainingTypeContainer")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        )}
+                        <h2 className="text-center">Add Training Type</h2>
+                    </div>
+                    <div className='container' id="addTrainingTypeContainer">
+                        <form action="#" method="POST" onSubmit={(e) => addTypesSubmit(e, "trainingType", "addTrainingType")}>
+                            <label htmlFor="addTrainingType">Add Training Type:</label>
+                            <input type="text" id="addTrainingType" name="addTrainingType"/>
                             <br/>
                             <button type="submit" className="btn btn-primary">Submit</button>
                         </form>
