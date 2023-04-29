@@ -1236,30 +1236,48 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
           
           {allfields && (
               <div>
-            <Form.Group controlId="colourVisionRE">
-            <Form.Label>Colour Vision Right Eye</Form.Label>
-            <Form.Control as="textarea" rows={1} />
-                  </Form.Group>
-                  <Form.Group controlId="colourVisionLE">
-                  <Form.Label>Colour Vision Left Eye</Form.Label>
-                  <Form.Control as="textarea" rows={1} />
-        </Form.Group>
-        <Form.Group controlId="contrastSensitivityRE">
-        <Form.Label>Contrast Sensitivity Right Eye</Form.Label>
-        <Form.Control as="textarea" rows={1} />
-</Form.Group>
-  <Form.Group controlId="contrastSensitivityLE">
-    <Form.Label>Contrast Sensitivity Left Eye</Form.Label>
-    <Form.Control as="textarea" rows={1} />
-  </Form.Group>
-  <Form.Group controlId="visualFieldsRE">
-    <Form.Label>Visual Fields Right Eye</Form.Label>
-    <Form.Control as="textarea" rows={1} />
-  </Form.Group>
-  <Form.Group controlId="visualFieldsLE">
-    <Form.Label>Visual Fields Left Eye</Form.Label>
-    <Form.Control as="textarea" rows={1} />
-  </Form.Group>
+                <Row>
+                  <Col>
+                    <Form.Group controlId="colourVisionRE">
+                      <Form.Label>Colour Vision Right Eye</Form.Label>
+                      <Form.Control as="textarea" rows={1} />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="colourVisionLE">
+                      <Form.Label>Colour Vision Left Eye</Form.Label>
+                      <Form.Control as="textarea" rows={1} />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Form.Group controlId="contrastSensitivityRE">
+                      <Form.Label>Contrast Sensitivity Right Eye</Form.Label>
+                      <Form.Control as="textarea" rows={1} />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="contrastSensitivityLE">
+                      <Form.Label>Contrast Sensitivity Left Eye</Form.Label>
+                      <Form.Control as="textarea" rows={1} />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Form.Group controlId="visualFieldsRE">
+                      <Form.Label>Visual Fields Right Eye</Form.Label>
+                      <Form.Control as="textarea" rows={1} />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="visualFieldsLE">
+                      <Form.Label>Visual Fields Left Eye</Form.Label>
+                      <Form.Control as="textarea" rows={1} />
+                    </Form.Group>
+                  </Col>
+                </Row>
               </div>
           )}
           <Form.Group controlId="extraInformation">
