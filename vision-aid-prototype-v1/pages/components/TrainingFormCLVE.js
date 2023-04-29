@@ -1139,14 +1139,20 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   <Form.Label>Dispensed Date Optical</Form.Label>
                   <Form.Control type="date" />
                 </Form.Group>
-                <Form.Group controlId="costOptical">
-                  <Form.Label>Cost Optical</Form.Label>
-                  <Form.Control type="number" />
-                </Form.Group>
-                <Form.Group controlId="costToBeneficiaryOptical">
-                  <Form.Label>Cost to Beneficiary Optical</Form.Label>
-                  <Form.Control type="number" />
-                </Form.Group>
+                <Row>
+                  <Col>
+                    <Form.Group controlId="costOptical">
+                      <Form.Label>Cost Optical</Form.Label>
+                      <Form.Control type="number" />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="costToBeneficiaryOptical">
+                      <Form.Label>Cost to Beneficiary Optical</Form.Label>
+                      <Form.Control type="number" />
+                    </Form.Group>
+                  </Col>
+                </Row>
                 <Form.Group controlId="dispensedOptical" key="dispensedOptical">
                   <Form.Label>Dispensed Optical</Form.Label>
                   <Form.Control as="select">
@@ -1168,14 +1174,20 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   <Form.Label>Dispensed Date NonOptical</Form.Label>
                   <Form.Control type="date" />
                 </Form.Group>
-                <Form.Group controlId="costNonOptical">
-                  <Form.Label>Cost NonOptical</Form.Label>
-                  <Form.Control type="number" />
-                </Form.Group>
-                <Form.Group controlId="costToBeneficiaryNonOptical">
-                  <Form.Label>Cost to Beneficiary NonOptical</Form.Label>
-                  <Form.Control type="number" />
-                </Form.Group>
+                <Row>
+                  <Col>
+                    <Form.Group controlId="costNonOptical">
+                      <Form.Label>Cost NonOptical</Form.Label>
+                      <Form.Control type="number" />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="costToBeneficiaryNonOptical">
+                      <Form.Label>Cost to Beneficiary NonOptical</Form.Label>
+                      <Form.Control type="number" />
+                    </Form.Group>
+                  </Col>
+                </Row>
                 <Form.Group controlId="dispensedNonOptical" key="dispensedNonOptical">
                   <Form.Label>Dispensed NonOptical</Form.Label>
                   <Form.Control as="select">
@@ -1197,14 +1209,20 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                   <Form.Label>Dispensed Date Electronic</Form.Label>
                   <Form.Control type="date" />
                 </Form.Group>
-                <Form.Group controlId="costElectronic">
-                  <Form.Label>Cost Electronic</Form.Label>
-                  <Form.Control type="number" />
-                </Form.Group>
-                <Form.Group controlId="costToBeneficiaryElectronic">
-                  <Form.Label>Cost to Beneficiary Electronic</Form.Label>
-                  <Form.Control type="number" />
-                </Form.Group>
+                <Row>
+                  <Col>
+                    <Form.Group controlId="costElectronic">
+                      <Form.Label>Cost Electronic</Form.Label>
+                      <Form.Control type="number" />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="costToBeneficiaryElectronic">
+                      <Form.Label>Cost to Beneficiary Electronic</Form.Label>
+                      <Form.Control type="number" />
+                    </Form.Group>
+                  </Col>
+                </Row>
                 <Form.Group controlId="dispensedElectronic" key="dispensedElectronic">
                   <Form.Label>Dispensed Electronic</Form.Label>
                   <Form.Control as="select">
