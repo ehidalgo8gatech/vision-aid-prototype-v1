@@ -1095,17 +1095,18 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                 <option>LogMAR</option>
                 </Form.Control>
             </Form.Group>
-          
+
+          <Row>
           {customFieldsDistance.map((field) => (
-            <Row key={field}>
-            <Col>
+            <Col key={field}>
             <Form.Group controlId={field} key={field}>
               <Form.Label>{field}</Form.Label>
               <Form.Control type="text" />
             </Form.Group>
             </Col>
-          </Row>
           ))}
+          </Row>
+
            <Form.Group controlId="unit-near">
                 <Form.Label>Select Near metric:</Form.Label>
                 <Form.Control as="select">
@@ -1117,16 +1118,16 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                 <option>LogMAR</option>
                 </Form.Control>
             </Form.Group>
+          <Row>
             {customFieldsNear.map((field) => (
-            <Row key={field}>
-            <Col>
+                <Col key={field}>
             <Form.Group controlId={field} key={field}>
               <Form.Label>{field}</Form.Label>
               <Form.Control type="text" />
             </Form.Group>
-            </Col>
-          </Row>
+                </Col>
           ))}
+          </Row>
           
           <Form.Group controlId="recommendationOptical">
             <Form.Label>Recommendation Optical</Form.Label>
