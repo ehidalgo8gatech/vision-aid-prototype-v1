@@ -29,6 +29,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
     }
     const newTraining = {
       diagnosis: diagnosis,
+      mdvi: e.target.mdvi.value,
       date: e.target.date.value,
       sessionNumber: e.target.sessionNumber.value,
       recommendationOptical: e.target.recommendationOptical == null ? null : e.target.recommendationOptical.value,
@@ -165,6 +166,38 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                           type="button"
                           className="btn btn-link btn-sm text-primary ms-2"
                           onClick={() => handleEditClick('diagnosis')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
+              {editableField === 'mdvi' ? (
+                  <div>
+                    <strong>MDVI:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'mdvi', index)} className="d-inline ms-2">
+                      <input id={title + index + 'mdvi'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='mdvi'
+                             value={training.mdvi}
+                             onChange={() => handleInputChange(index, 'mdvi', title + index + 'mdvi')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>MDVI:</strong>
+                    <span className="ms-2">
+          {training.mdvi}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('mdvi')}
                       >
            <Pencil/>
           </button>
@@ -1018,6 +1051,16 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                 </Form.Control>
               </Form.Group>
             </Col>
+            <Col>
+              <Form.Group controlId="mdvi">
+                <Form.Label>MDVI</Form.Label>
+                <Form.Control as="select">
+                  <option defaultValue></option>
+                  <option>Yes</option>
+                  <option>No</option>
+                </Form.Control>
+              </Form.Group>
+            </Col>
           </Row>
           {showDiagnosisOther && (
               <Row>
@@ -1047,10 +1090,8 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                 <Form.Label>Select Distance metric:</Form.Label>
                 <Form.Control as="select">
                 <option defaultValue></option>
-                <option>N-scale</option>
-                <option>M-units</option>
-                <option>Imperial</option>
-                <option>Metric</option>
+                <option>6m</option>
+                <option>20ft</option>
                 <option>LogMAR</option>
                 </Form.Control>
             </Form.Group>
