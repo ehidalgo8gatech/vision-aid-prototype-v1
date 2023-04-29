@@ -108,6 +108,7 @@ async function readData(req, res) {
                     Comprehensive_Low_Vision_Evaluation: true,
                     Counselling_Education: true,
                     Low_Vision_Evaluation: true,
+                    Training: true,
                 }
             })
             console.log(beneficiary)
@@ -127,6 +128,7 @@ async function readData(req, res) {
                     Comprehensive_Low_Vision_Evaluation: true,
                     Counselling_Education: true,
                     Low_Vision_Evaluation: true,
+                    Training: true,
                 }
             })
         } else {
@@ -140,6 +142,7 @@ async function readData(req, res) {
                     Comprehensive_Low_Vision_Evaluation: true,
                     Counselling_Education: true,
                     Low_Vision_Evaluation: true,
+                    Training: true,
             }
             })
         }
@@ -180,7 +183,8 @@ async function addData(req, res) {
             hospital: true,
             Computer_Training: true,
             Mobile_Training: true,
-            Orientation_Mobility_Training: true
+            Orientation_Mobility_Training: true,
+            Training: true
         },
     }
     try {

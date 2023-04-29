@@ -5,6 +5,7 @@ import { Pencil } from 'react-bootstrap-icons';
 import Navigation from './navigation/Navigation';
 import TrainingForm from './components/TrainingForm';
 import TrainingFormCLVE from './components/TrainingFormCLVE';
+import {getCounsellingType, getTrainingTypes} from "@/pages/api/trainingType";
 
 function UserPage(props) {
   const router = useRouter();
@@ -14,6 +15,7 @@ function UserPage(props) {
   const [editableField, setEditableField] = useState('');
 
   const [mobileTrainingData, setMobileTrainingData] = useState([]);
+    const [trainingData, setTrainingData] = useState([]);
   const [computerTrainingData, setComputerTrainingData] = useState([]);
   const [visionTrainingData, setVisionTrainingData] = useState([]);
   const [comprehensiveLowVisionEvaluationData, setComprehensiveLowVisionEvaluationData] = useState([]);
@@ -28,6 +30,9 @@ function UserPage(props) {
   useEffect(() => {
     setMobileTrainingData(props.user.Mobile_Training);
    }, []);
+    useEffect(() => {
+        setTrainingData(props.user.Training);
+    }, []);
    useEffect(() => {
       setComputerTrainingData(props.user.Computer_Training);
    }, []);
@@ -53,6 +58,10 @@ function UserPage(props) {
       // parse date
       data['date'] = new Date(data['date']);
       data['beneficiaryId'] = props.user.mrn;
+      console.log(data)
+      if (data['type'] == 'Other') {
+          data['type'] = data['typeOther']
+      }
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -66,7 +75,7 @@ function UserPage(props) {
         alert('Training data saved successfully!');
         setOpenMobile(false);
         // get data from response
-        data['date'] = data['date'].toISOString().split('T')[0];
+        data['date'] = data['date'] == null ? null : data['date'].toISOString().split('T')[0];
         setter([...cur_data, data]);
       } else {
         alert('An error occurred while saving data. Please try again.');
@@ -80,6 +89,12 @@ function UserPage(props) {
     const url = '/api/mobileTraining';
     callMe(data, url, setMobileTrainingData, mobileTrainingData);
   };
+
+    const handleSubmitTraining = async (data) => {
+        // Submit the MobileTraining data to the API
+        const url = '/api/training';
+        callMe(data, url, setTrainingData, trainingData);
+    };
   
   const handleSubmitComputerTraining = async (data) => {
     // Submit the ComputerTraining data to the API
@@ -268,7 +283,6 @@ function UserPage(props) {
               api='comprehensiveLowVisionEvaluation'
               allfields={true}
             />
-            <br/>
             <TrainingForm
               existingTrainings={visionTrainingData}
               addNewTraining={handleSubmitVisionTraining}
@@ -281,42 +295,28 @@ function UserPage(props) {
             <br/>
             <br/>
             <br/>
+                <br/>
+                <TrainingForm
+                    existingTrainings={counsellingEducationData}
+                    addNewTraining={handleSubmitCounsellingEducation}
+                    title="Counselling Education"
+                    customFields={[]}
+                    api='counsellingEducation'
+                    submitButtonTest='Add New Counselling'
+                    typeList={props.counsellingType}
+                />
+                <br/>
             <TrainingForm
-              existingTrainings={mobileTrainingData}
-              addNewTraining={handleSubmitMobileTraining}
-              title="Mobile Training"
-              customFields={['typeOfTraining']}
+              existingTrainings={trainingData}
+              addNewTraining={handleSubmitTraining}
+              title="Training"
+              customFields={[]}
               api='mobileTraining'
               submitButtonTest='Add New Training'
+              typeList={props.trainingType}
             />
             <br/>
-            <TrainingForm
-              existingTrainings={computerTrainingData}
-              addNewTraining={handleSubmitComputerTraining}
-              title="Computer Training"
-              customFields={['typeOfTraining']}
-              api='computerTraining'
-              submitButtonTest='Add New Training'
-            />
-            <br/>
-            <TrainingForm
-              existingTrainings={counsellingEducationData}
-              addNewTraining={handleSubmitCounsellingEducation}
-              title="Counselling Education"
-              customFields={['typeCounselling']}
-              api='counsellingEducation'
-              submitButtonTest='Add New Counselling'
-            />
-            <br/>
-             <TrainingForm
-              existingTrainings={orientationMobilityData}
-              addNewTraining={handleSubmitOrientationMobility}
-              title="Orientation & Mobility Training"
-              customFields={['typeOfTraining']}
-              api='orientationMobileTraining'
-              submitButtonTest='Add New Training'
-            />
-            
+
             </div>
         </div>
         </div>
@@ -353,7 +353,9 @@ export async function getServerSideProps({ query }) {
   return {
     props: {
         user: user,
-        beneficiaryMirror: benMirrorJson
+        beneficiaryMirror: benMirrorJson,
+        trainingType: await getTrainingTypes(),
+        counsellingType: await getCounsellingType(),
     },
   };
 }

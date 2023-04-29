@@ -17,7 +17,7 @@ export default async function handler(req, res) {
 async function updateData(req, res) {
     try {
         const { id, ...data } = req.body;
-        const updatedUser = await prisma.counselling_Education.update({
+        const updatedUser = await prisma.training.update({
             where: { id },
             data,
         });
@@ -29,7 +29,31 @@ async function updateData(req, res) {
 }
 
 async function readData(req, res) {
-
+    try {
+        var training
+        if (req.query.beneficiaryId != null) {
+            training = await prisma.training.findMany({
+                where: {
+                    beneficiaryId: {
+                        contains: req.query.beneficiaryId,
+                    }
+                },
+                include: {
+                    beneficiary: true
+                }
+            })
+        } else {
+            training = await prisma.training.findMany({
+                include: {
+                    beneficiary: true
+                }
+            })
+        }
+        return res.status(200).json(training, {success: true});
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({error: 'Error reading data' + error, success: false});
+    }
 }
 
 async function addData(req, res) {
@@ -39,9 +63,7 @@ async function addData(req, res) {
             beneficiaryId: body.beneficiaryId,
             date: body.date,
             sessionNumber: body.sessionNumber,
-            vision: body.vision,
-            typeCounselling: body.typeCounselling,
-            MDVI: body.MDVI,
+            typeOfTraining: body.typeOfTraining,
             type: body.type,
             extraInformation: body.extraInformation,
         },
@@ -50,8 +72,8 @@ async function addData(req, res) {
         },
     }
     try {
-        const counselling = await prisma.counselling_Education.create(create)
-        return res.status(200).json(counselling, {success: true});
+        const training = await prisma.training.create(create)
+        return res.status(200).json(training, {success: true});
     } catch (error) {
         console.log('Request error ' + error);
         res.status(500).json({error: 'Error adding user' + error, success: false});

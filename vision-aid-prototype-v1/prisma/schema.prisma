@@ -63,6 +63,7 @@ model Beneficiary {
   Counselling_Education               Counselling_Education[]
   Comprehensive_Low_Vision_Evaluation Comprehensive_Low_Vision_Evaluation[]
   Low_Vision_Evaluation               Low_Vision_Evaluation[]
+  Training                            Training[]
 }
 
 model Beneficiary_Mirror {
@@ -219,6 +220,26 @@ model Comprehensive_Low_Vision_Evaluation_Mirror {
   hospitalName             String?
 }
 
+model Training {
+  id               Int         @id @default(autoincrement())
+  beneficiary      Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
+  beneficiaryId    String
+  date             DateTime?
+  sessionNumber    Int?
+  type             String?
+  extraInformation String      @db.Text
+}
+
+model Training_Type {
+  id    Int    @id @default(autoincrement())
+  value String
+}
+
+model Counselling_Type {
+  id    Int    @id @default(autoincrement())
+  value String
+}
+
 model Counselling_Education {
   id               Int         @id @default(autoincrement())
   beneficiary      Beneficiary @relation(fields: [beneficiaryId], references: [mrn])
@@ -226,6 +247,7 @@ model Counselling_Education {
   date             DateTime?
   sessionNumber    Int?
   vision           String?
+  type             String?
   typeCounselling  String?
   MDVI             String?
   extraInformation String      @db.Text

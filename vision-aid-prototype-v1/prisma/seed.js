@@ -135,6 +135,36 @@ async function main() {
             extraInformationRequired: "[]"
         },
     })
+    await prisma.training_Type.create({
+        data: {
+            id: 1,
+            value: "Other"
+        },
+    })
+    await prisma.training_Type.create({
+        data: {
+            id: 2,
+            value: "Computer"
+        },
+    })
+    await prisma.training_Type.create({
+        data: {
+            id: 3,
+            value: "Orientation & Mobility Training"
+        },
+    })
+    await prisma.training_Type.create({
+        data: {
+            id: 4,
+            value: "Mobile"
+        },
+    })
+    await prisma.counselling_Type.create({
+        data: {
+            id: 1,
+            value: "Other"
+        },
+    })
 }
 
 main()

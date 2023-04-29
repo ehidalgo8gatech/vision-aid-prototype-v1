@@ -4,7 +4,7 @@ import {ChevronDown, ChevronRight, Pencil} from 'react-bootstrap-icons';
 import {v4 as uuidv4} from "uuid";
 import Router from "next/router";
 
-const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, title, api, submitButtonTest }) => {
+const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, title, api, submitButtonTest, typeList}) => {
   const [showForm, setShowForm] = useState(false);
 
   const handleToggle = () => {
@@ -20,6 +20,8 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
     const newTraining = {
       date: e.target.date.value,
       sessionNumber: e.target.sessionNumber.value,
+      type: e.target.type.value,
+      typeOther: e.target.typeOther == null ? null : e.target.typeOther.value,
       extraInformation: e.target.extraInformation.value,
       ...customData,
     };
@@ -71,6 +73,24 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
     Router.reload()
   };
 
+  let types = []
+  if (typeList != null) {
+    typeList.forEach(type => {
+      types.push((<option>{type}</option>))
+    })
+  }
+
+  const [showTypeOther, setShowTypeOther] = useState(true)
+  function typeOnChange(event) {
+    event.preventDefault()
+    if (event.target.value == "Other") {
+      console.log(event.target.value)
+      setShowTypeOther(true)
+    } else {
+      setShowTypeOther(false)
+    }
+  }
+
   return (
 <div className="col-12">
       <div className="d-flex justify-content-center align-items-center">
@@ -113,7 +133,7 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
                   <div>
                     <strong>Date:</strong>
                     <span className="ms-2">
-          {training.date.toString().split('T')[0]}
+          {training.date == null ? null : training.date.toString().split('T')[0]}
                       <button
                           type="button"
                           className="btn btn-link btn-sm text-primary ms-2"
@@ -150,6 +170,38 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
                           type="button"
                           className="btn btn-link btn-sm text-primary ms-2"
                           onClick={() => handleEditClick('sessionNumber')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
+              {editableField === 'type' ? (
+                  <div>
+                    <strong>Type:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'type', index)} className="d-inline ms-2">
+                      <input id={title + index + 'type'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='type'
+                             value={training.type}
+                             onChange={() => handleInputChange(index, 'type', title + index + 'type')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Type:</strong>
+                    <span className="ms-2">
+          {training.type}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('type')}
                       >
            <Pencil/>
           </button>
@@ -254,6 +306,17 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
               <Form.Control type="text" />
             </Form.Group>
           ))}
+          <Form.Group controlId="type">
+            <Form.Label>Type</Form.Label>
+            <Form.Control as="select" onChange={typeOnChange}>
+              {types}
+            </Form.Control>
+          </Form.Group>
+          {(showTypeOther && <Form.Group controlId="typeOther">
+            <Form.Label>Type Other</Form.Label>
+            <Form.Control as="textarea" rows={1}>
+            </Form.Control>
+          </Form.Group>)}
           <Form.Group controlId="extraInformation">
             <Form.Label>Extra Information</Form.Label>
             <Form.Control as="textarea" rows={3} />
