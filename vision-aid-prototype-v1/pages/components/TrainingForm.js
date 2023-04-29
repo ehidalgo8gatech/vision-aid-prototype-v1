@@ -4,7 +4,7 @@ import {ChevronDown, ChevronRight, Pencil} from 'react-bootstrap-icons';
 import {v4 as uuidv4} from "uuid";
 import Router from "next/router";
 
-const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, title, api, submitButtonTest, typeList}) => {
+const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, title, api, submitButtonTest, typeList, mdvi}) => {
   const [showForm, setShowForm] = useState(false);
 
   const handleToggle = () => {
@@ -20,8 +20,9 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
     const newTraining = {
       date: e.target.date.value,
       sessionNumber: e.target.sessionNumber.value,
-      type: e.target.type.value,
+      type: e.target.type == null ? null : e.target.type.value,
       typeOther: e.target.typeOther == null ? null : e.target.typeOther.value,
+      MDVI: e.target.MDVI == null ? null : e.target.MDVI.value,
       extraInformation: e.target.extraInformation.value,
       ...customData,
     };
@@ -177,7 +178,7 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
                   </div>
               )}
 
-              {editableField === 'type' ? (
+              {typeList != null && editableField === 'type' ? (
                   <div>
                     <strong>Type:</strong>
                     <form onSubmit={(e) => handleEditSubmit(e, api, 'type', index)} className="d-inline ms-2">
@@ -193,7 +194,7 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
                       </button>
                     </form>
                   </div>
-              ) : (
+              ) : typeList != null && (
                   <div>
                     <strong>Type:</strong>
                     <span className="ms-2">
@@ -202,6 +203,38 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
                           type="button"
                           className="btn btn-link btn-sm text-primary ms-2"
                           onClick={() => handleEditClick('type')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
+              {mdvi == true && editableField === 'MDVI' ? (
+                  <div>
+                    <strong>MDVI:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'MDVI', index)} className="d-inline ms-2">
+                      <input id={title + index + 'MDVI'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='MDVI'
+                             value={training.MDVI}
+                             onChange={() => handleInputChange(index, 'MDVI', title + index + 'MDVI')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : mdvi == true && (
+                  <div>
+                    <strong>MDVI:</strong>
+                    <span className="ms-2">
+          {training.MDVI}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('MDVI')}
                       >
            <Pencil/>
           </button>
@@ -306,13 +339,21 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
               <Form.Control type="text" />
             </Form.Group>
           ))}
-          <Form.Group controlId="type">
+          {mdvi == true && (<Form.Group controlId="MDVI">
+            <Form.Label>MDVI</Form.Label>
+            <Form.Control as="select">
+              <option defaultValue></option>
+              <option>Yes</option>
+              <option>No</option>
+            </Form.Control>
+          </Form.Group>)}
+          {typeList != null && (<Form.Group controlId="type">
             <Form.Label>Type</Form.Label>
             <Form.Control as="select" onChange={typeOnChange}>
               {types}
             </Form.Control>
-          </Form.Group>
-          {(showTypeOther && <Form.Group controlId="typeOther">
+          </Form.Group>)}
+          {(showTypeOther && typeList != null && <Form.Group controlId="typeOther">
             <Form.Label>Type Other</Form.Label>
             <Form.Control as="textarea" rows={1}>
             </Form.Control>

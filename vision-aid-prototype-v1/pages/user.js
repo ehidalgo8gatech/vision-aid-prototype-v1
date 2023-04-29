@@ -59,7 +59,6 @@ function UserPage(props) {
       // parse date
       data['date'] = new Date(data['date']);
       data['beneficiaryId'] = props.user.mrn;
-      console.log(data)
       if (data['type'] == 'Other') {
           data['type'] = data['typeOther']
       }
@@ -74,10 +73,6 @@ function UserPage(props) {
       // Handle response from the API
       if (response.ok) {
         alert('Training data saved successfully!');
-        setOpenMobile(false);
-        // get data from response
-        data['date'] = data['date'] == null ? null : data['date'].toISOString().split('T')[0];
-        setter([...cur_data, data]);
       } else {
         alert('An error occurred while saving data. Please try again.');
       }
@@ -291,6 +286,8 @@ function UserPage(props) {
               customFields={['Diagnosis']}
               api='visionEnhancement'
               submitButtonTest='Add New Vision Enhancement'
+              typeList={null}
+              mdvi={true}
             />
             <br/>
             <br/>
@@ -305,6 +302,7 @@ function UserPage(props) {
                     api='counsellingEducation'
                     submitButtonTest='Add New Counselling'
                     typeList={props.counsellingType}
+                    mdvi={false}
                 />
                 <br/>
             <TrainingForm
@@ -312,9 +310,10 @@ function UserPage(props) {
               addNewTraining={handleSubmitTraining}
               title="Training"
               customFields={[]}
-              api='mobileTraining'
+              api='training'
               submitButtonTest='Add New Training'
               typeList={props.trainingType}
+              mdvi={false}
             />
             <br/>
 
