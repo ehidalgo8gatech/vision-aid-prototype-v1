@@ -48,52 +48,7 @@ async function readData(req, res) {
                             },
                         },
                         {
-                            gender: {
-                                contains: req.query.beneficiaryName,
-                            },
-                        },
-                        {
                             phoneNumber: {
-                                contains: req.query.beneficiaryName,
-                            },
-                        },
-                        {
-                            education: {
-                                contains: req.query.beneficiaryName,
-                            },
-                        },
-                        {
-                            occupation: {
-                                contains: req.query.beneficiaryName,
-                            },
-                        },
-                        {
-                            districts: {
-                                contains: req.query.beneficiaryName,
-                            },
-                        },
-                        {
-                            state: {
-                                contains: req.query.beneficiaryName,
-                            },
-                        },
-                        {
-                            diagnosis: {
-                                contains: req.query.beneficiaryName,
-                            },
-                        },
-                        {
-                            vision: {
-                                contains: req.query.beneficiaryName,
-                            },
-                        },
-                        {
-                            mDVI: {
-                                contains: req.query.beneficiaryName,
-                            },
-                        },
-                        {
-                            extraInformation: {
                                 contains: req.query.beneficiaryName,
                             },
                         },
