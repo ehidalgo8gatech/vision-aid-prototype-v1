@@ -32,6 +32,11 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
       mdvi: e.target.mdvi.value,
       date: e.target.date.value,
       sessionNumber: e.target.sessionNumber.value,
+      recommendationSpectacle: e.target.recommendationSpectacle == null ? null : e.target.recommendationSpectacle.value,
+      dispensedDateSpectacle: e.target.dispensedDateSpectacle == null ? null : new Date(e.target.dispensedDateSpectacle.value),
+      costSpectacle: e.target.costSpectacle == null ? null : parseInt(e.target.costSpectacle.value),
+      costToBeneficiarySpectacle: e.target.costToBeneficiarySpectacle == null ? null : parseInt(e.target.costToBeneficiarySpectacle.value),
+      dispensedSpectacle: e.target.dispensedSpectacle == null ? null : e.target.dispensedSpectacle.value,
       recommendationOptical: e.target.recommendationOptical == null ? null : e.target.recommendationOptical.value,
       dispensedDateOptical: e.target.dispensedDateOptical == null ? null : new Date(e.target.dispensedDateOptical.value),
       costOptical: e.target.costOptical == null ? null : parseInt(e.target.costOptical.value),
@@ -81,9 +86,9 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
   const handleEditSubmit = async (e, api, field, index) => {
     e.preventDefault();
     var value
-    if (field == 'date' || field == 'dispensedDateOptical' || field == 'dispensedDateNonOptical' || field == 'dispensedDateElectronic') {
+    if (field == 'date' || field == 'dispensedDateSpectacle' || field == 'dispensedDateOptical' || field == 'dispensedDateNonOptical' || field == 'dispensedDateElectronic') {
       value = new Date(existingTrainings[index][field])
-    } else if(field == 'sessionNumber' || field == 'costOptical' || field == 'costToBeneficiaryOptical' || field == 'costNonOptical' || field == 'costToBeneficiaryNonOptical' || field == 'costElectronic' || field == 'costToBeneficiaryElectronic') {
+    } else if(field == 'sessionNumber'  || field == 'costSpectacle' || field == 'costToBeneficiarySpectacle' || field == 'costOptical' || field == 'costToBeneficiaryOptical' || field == 'costNonOptical' || field == 'costToBeneficiaryNonOptical' || field == 'costElectronic' || field == 'costToBeneficiaryElectronic') {
       value = parseInt(existingTrainings[index][field])
     } else {
       value = existingTrainings[index][field]
@@ -340,6 +345,162 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                     )}
                   </div>
               ))}
+
+              {editableField === 'recommendationSpectacle' ? (
+                  <div>
+                    <strong>Recommendation Spectacle:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'recommendationSpectacle', index)} className="d-inline ms-2">
+                      <input id={title + index + 'recommendationSpectacle'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='recommendationSpectacle'
+                             value={training.recommendationSpectacle}
+                             onChange={() => handleInputChange(index, 'recommendationSpectacle', title + index + 'recommendationSpectacle')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : (
+                  <div>
+                    <strong>Recommendation Spectacle:</strong>
+                    <span className="ms-2">
+          {training.recommendationSpectacle}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('recommendationSpectacle')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'dispensedDateSpectacle' ? (
+                  <div>
+                    <strong>Dispensed Date Spectacle:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'dispensedDateSpectacle', index)} className="d-inline ms-2">
+                      <input id={title + index + 'dispensedDateSpectacle'}
+                             type="date"
+                             className="form-control d-inline w-auto"
+                             name='dispensedDateSpectacle'
+                             value={training.dispensedDateSpectacle}
+                             onChange={() => handleInputChange(index, 'dispensedDateSpectacle', title + index + 'dispensedDateSpectacle')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : allfields && (
+                  <div>
+                    <strong>Dispensed Date Spectacle:</strong>
+                    <span className="ms-2">
+          {training.dispensedDateSpectacle}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('dispensedDateSpectacle')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'costSpectacle' ? (
+                  <div>
+                    <strong>Cost Spectacle:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'costSpectacle', index)} className="d-inline ms-2">
+                      <input id={title + index + 'costSpectacle'}
+                             type="number"
+                             className="form-control d-inline w-auto"
+                             name='costSpectacle'
+                             value={training.costSpectacle}
+                             onChange={() => handleInputChange(index, 'costSpectacle', title + index + 'costSpectacle')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : allfields && (
+                  <div>
+                    <strong>Cost Spectacle:</strong>
+                    <span className="ms-2">
+          {training.costSpectacle}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('costSpectacle')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'costToBeneficiarySpectacle' ? (
+                  <div>
+                    <strong>Cost To Beneficiary Spectacle:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'costToBeneficiarySpectacle', index)} className="d-inline ms-2">
+                      <input id={title + index + 'costToBeneficiarySpectacle'}
+                             type="number"
+                             className="form-control d-inline w-auto"
+                             name='costToBeneficiarySpectacle'
+                             value={training.costToBeneficiarySpectacle}
+                             onChange={() => handleInputChange(index, 'costToBeneficiarySpectacle', title + index + 'costToBeneficiarySpectacle')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : allfields && (
+                  <div>
+                    <strong>Cost To Beneficiary Spectacle:</strong>
+                    <span className="ms-2">
+          {training.costToBeneficiarySpectacle}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('costToBeneficiarySpectacle')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'dispensedSpectacle' ? (
+                  <div>
+                    <strong>Dispensed Spectacle:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'dispensedSpectacle', index)} className="d-inline ms-2">
+                      <input id={title + index + 'dispensedSpectacle'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='dispensedSpectacle'
+                             value={training.dispensedSpectacle}
+                             onChange={() => handleInputChange(index, 'dispensedSpectacle', title + index + 'dispensedSpectacle')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : allfields && (
+                  <div>
+                    <strong>Dispensed Spectacle:</strong>
+                    <span className="ms-2">
+          {training.dispensedSpectacle}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('dispensedSpectacle')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
 
               {editableField === 'recommendationOptical' ? (
                   <div>
@@ -1128,6 +1289,41 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                 </Col>
           ))}
           </Row>
+
+          <Form.Group controlId="recommendationSpectacle">
+            <Form.Label>Recommendation Spectacle</Form.Label>
+            <Form.Control as="textarea" rows={1} />
+          </Form.Group>
+          {allfields && (
+              <div>
+                <Form.Group controlId="dispensedDateSpectacle">
+                  <Form.Label>Dispensed Date Spectacle</Form.Label>
+                  <Form.Control type="date" />
+                </Form.Group>
+                <Row>
+                  <Col>
+                    <Form.Group controlId="costSpectacle">
+                      <Form.Label>Cost Spectacle</Form.Label>
+                      <Form.Control type="number" />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="costToBeneficiarySpectacle">
+                      <Form.Label>Cost to Beneficiary Spectacle</Form.Label>
+                      <Form.Control type="number" />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Form.Group controlId="dispensedSpectacle" key="dispensedSpectacle">
+                  <Form.Label>Dispensed Spectacle</Form.Label>
+                  <Form.Control as="select">
+                    <option defaultValue></option>
+                    <option>Yes</option>
+                    <option>No</option>
+                  </Form.Control>
+                </Form.Group>
+              </div>
+          )}
           
           <Form.Group controlId="recommendationOptical">
             <Form.Label>Recommendation Optical</Form.Label>

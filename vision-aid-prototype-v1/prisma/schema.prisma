@@ -170,6 +170,7 @@ model Low_Vision_Evaluation {
   nearVisualAcuityRE        String?
   nearVisualAcuityLE        String?
   nearBinocularVisionBE     String?
+  recommendationSpectacle   String?
   recommendationOptical     String?
   recommendationNonOptical  String?
   recommendationElectronic  String?
@@ -190,6 +191,11 @@ model Comprehensive_Low_Vision_Evaluation {
   nearVisualAcuityRE          String
   nearVisualAcuityLE          String
   nearBinocularVisionBE       String
+  recommendationSpectacle     String?
+  dispensedSpectacle          String?
+  dispensedDateSpectacle      DateTime?
+  costSpectacle               Int?
+  costToBeneficiarySpectacle  Int?
   recommendationOptical       String?
   dispensedOptical            String?
   dispensedDateOptical        DateTime?
