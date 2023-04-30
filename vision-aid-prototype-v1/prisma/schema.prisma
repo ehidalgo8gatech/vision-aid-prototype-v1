@@ -196,21 +196,25 @@ model Comprehensive_Low_Vision_Evaluation {
   dispensedDateSpectacle      DateTime?
   costSpectacle               Int?
   costToBeneficiarySpectacle  Int?
+  trainingGivenSpectacle      String?
   recommendationOptical       String?
   dispensedOptical            String?
   dispensedDateOptical        DateTime?
   costOptical                 Int?
   costToBeneficiaryOptical    Int?
+  trainingGivenOptical        String?
   recommendationNonOptical    String?
   dispensedNonOptical         String?
   dispensedDateNonOptical     DateTime?
   costNonOptical              Int?
   costToBeneficiaryNonOptical Int?
+  trainingGivenNonOptical     String?
   recommendationElectronic    String?
   dispensedElectronic         String?
   dispensedDateElectronic     DateTime?
   costElectronic              Int?
   costToBeneficiaryElectronic Int?
+  trainingGivenElectronic     String?
   colourVisionRE              String?
   colourVisionLE              String?
   contrastSensitivityRE       String?
