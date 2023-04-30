@@ -37,23 +37,25 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
       costSpectacle: e.target.costSpectacle == null ? null : parseInt(e.target.costSpectacle.value),
       costToBeneficiarySpectacle: e.target.costToBeneficiarySpectacle == null ? null : parseInt(e.target.costToBeneficiarySpectacle.value),
       dispensedSpectacle: e.target.dispensedSpectacle == null ? null : e.target.dispensedSpectacle.value,
+      trainingGivenSpectacle: e.target.trainingGivenSpectacle == null ? null : e.target.trainingGivenSpectacle.value,
       recommendationOptical: e.target.recommendationOptical == null ? null : e.target.recommendationOptical.value,
       dispensedDateOptical: e.target.dispensedDateOptical == null ? null : new Date(e.target.dispensedDateOptical.value),
       costOptical: e.target.costOptical == null ? null : parseInt(e.target.costOptical.value),
       costToBeneficiaryOptical: e.target.costToBeneficiaryOptical == null ? null : parseInt(e.target.costToBeneficiaryOptical.value),
       dispensedOptical: e.target.dispensedOptical == null ? null : e.target.dispensedOptical.value,
+      trainingGivenOptical: e.target.trainingGivenOptical == null ? null : e.target.trainingGivenOptical.value,
       recommendationNonOptical: e.target.recommendationNonOptical == null ? null : e.target.recommendationNonOptical.value,
-      dispensedDateOpticalNonOptical: e.target.dispensedDateOpticalNonOptical == null ? null : e.target.dispensedDateOpticalNonOptical.value,
       dispensedDateNonOptical: e.target.dispensedDateNonOptical == null ? null : new Date(e.target.dispensedDateNonOptical.value),
       costNonOptical: e.target.costNonOptical == null ? null : parseInt(e.target.costNonOptical.value),
       costToBeneficiaryNonOptical: e.target.costToBeneficiaryNonOptical == null ? null : parseInt(e.target.costToBeneficiaryNonOptical.value),
       dispensedNonOptical: e.target.dispensedNonOptical == null ? null : e.target.dispensedNonOptical.value,
+      trainingGivenNonOptical: e.target.trainingGivenNonOptical == null ? null : e.target.trainingGivenNonOptical.value,
       recommendationElectronic: e.target.recommendationElectronic == null ? null : e.target.recommendationElectronic.value,
-      dispensedDateOpticalElectronic: e.target.dispensedDateOpticalElectronic == null ? null : e.target.dispensedDateOpticalElectronic.value,
       dispensedDateElectronic: e.target.dispensedDateElectronic == null ? null : new Date(e.target.dispensedDateElectronic.value),
       costElectronic: e.target.costElectronic == null ? null : parseInt(e.target.costElectronic.value),
       costToBeneficiaryElectronic: e.target.costToBeneficiaryElectronic == null ? null : parseInt(e.target.costToBeneficiaryElectronic.value),
       dispensedElectronic: e.target.dispensedElectronic == null ? null : e.target.dispensedElectronic.value,
+      trainingGivenElectronic: e.target.trainingGivenElectronic == null ? null : e.target.trainingGivenElectronic.value,
       colourVisionRE: e.target.colourVisionRE == null ? null : e.target.colourVisionRE.value,
       colourVisionLE: e.target.colourVisionLE == null ? null : e.target.colourVisionLE.value,
       contrastSensitivityRE: e.target.contrastSensitivityRE == null ? null : e.target.contrastSensitivityRE.value,
@@ -501,6 +503,37 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
         </span>
                   </div>
               )}
+              {allfields && editableField === 'trainingGivenSpectacle' ? (
+                  <div>
+                    <strong>Training Given Spectacle:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'trainingGivenSpectacle', index)} className="d-inline ms-2">
+                      <input id={title + index + 'trainingGivenSpectacle'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='trainingGivenSpectacle'
+                             value={training.trainingGivenSpectacle}
+                             onChange={() => handleInputChange(index, 'trainingGivenSpectacle', title + index + 'trainingGivenSpectacle')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : allfields && (
+                  <div>
+                    <strong>Training Given Spectacle:</strong>
+                    <span className="ms-2">
+          {training.trainingGivenSpectacle}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('trainingGivenSpectacle')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
 
               {editableField === 'recommendationOptical' ? (
                   <div>
@@ -651,6 +684,37 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                           type="button"
                           className="btn btn-link btn-sm text-primary ms-2"
                           onClick={() => handleEditClick('dispensedOptical')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'trainingGivenOptical' ? (
+                  <div>
+                    <strong>Training Given Optical:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'trainingGivenOptical', index)} className="d-inline ms-2">
+                      <input id={title + index + 'trainingGivenOptical'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='trainingGivenOptical'
+                             value={training.trainingGivenOptical}
+                             onChange={() => handleInputChange(index, 'trainingGivenOptical', title + index + 'trainingGivenOptical')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : allfields && (
+                  <div>
+                    <strong>Training Given Optical:</strong>
+                    <span className="ms-2">
+          {training.trainingGivenOptical}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('trainingGivenOptical')}
                       >
            <Pencil/>
           </button>
@@ -813,6 +877,37 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
         </span>
                   </div>
               )}
+              {allfields && editableField === 'trainingGivenNonOptical' ? (
+                  <div>
+                    <strong>Training Given Non Optical:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'trainingGivenNonOptical', index)} className="d-inline ms-2">
+                      <input id={title + index + 'trainingGivenNonOptical'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='trainingGivenNonOptical'
+                             value={training.trainingGivenNonOptical}
+                             onChange={() => handleInputChange(index, 'trainingGivenNonOptical', title + index + 'trainingGivenNonOptical')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : allfields && (
+                  <div>
+                    <strong>Training Given Non Optical:</strong>
+                    <span className="ms-2">
+          {training.trainingGivenNonOptical}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('trainingGivenNonOptical')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
 
               {editableField === 'recommendationElectronic' ? (
                   <div>
@@ -963,6 +1058,37 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                           type="button"
                           className="btn btn-link btn-sm text-primary ms-2"
                           onClick={() => handleEditClick('dispensedElectronic')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+              {allfields && editableField === 'trainingGivenElectronic' ? (
+                  <div>
+                    <strong>Training Given Electronic:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'trainingGivenElectronic', index)} className="d-inline ms-2">
+                      <input id={title + index + 'trainingGivenElectronic'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='trainingGivenElectronic'
+                             value={training.trainingGivenElectronic}
+                             onChange={() => handleInputChange(index, 'trainingGivenElectronic', title + index + 'trainingGivenElectronic')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : allfields && (
+                  <div>
+                    <strong>Training Given Electronic:</strong>
+                    <span className="ms-2">
+          {training.trainingGivenElectronic}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('trainingGivenElectronic')}
                       >
            <Pencil/>
           </button>
@@ -1322,6 +1448,14 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                     <option>No</option>
                   </Form.Control>
                 </Form.Group>
+                <Form.Group controlId="trainingGivenSpectacle">
+                  <Form.Label>Training Given Spectacle</Form.Label>
+                  <Form.Control as="select">
+                    <option defaultValue></option>
+                    <option>Yes</option>
+                    <option>No</option>
+                  </Form.Control>
+                </Form.Group>
               </div>
           )}
           
@@ -1351,6 +1485,14 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                 </Row>
                 <Form.Group controlId="dispensedOptical" key="dispensedOptical">
                   <Form.Label>Dispensed Optical</Form.Label>
+                  <Form.Control as="select">
+                    <option defaultValue></option>
+                    <option>Yes</option>
+                    <option>No</option>
+                  </Form.Control>
+                </Form.Group>
+                <Form.Group controlId="trainingGivenOptical">
+                  <Form.Label>Training Given Optical</Form.Label>
                   <Form.Control as="select">
                     <option defaultValue></option>
                     <option>Yes</option>
@@ -1392,6 +1534,14 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                     <option>No</option>
                   </Form.Control>
                 </Form.Group>
+                <Form.Group controlId="trainingGivenNonOptical">
+                  <Form.Label>Training Given Non Optical</Form.Label>
+                  <Form.Control as="select">
+                    <option defaultValue></option>
+                    <option>Yes</option>
+                    <option>No</option>
+                  </Form.Control>
+                </Form.Group>
               </div>
           )}
 
@@ -1421,6 +1571,14 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                 </Row>
                 <Form.Group controlId="dispensedElectronic" key="dispensedElectronic">
                   <Form.Label>Dispensed Electronic</Form.Label>
+                  <Form.Control as="select">
+                    <option defaultValue></option>
+                    <option>Yes</option>
+                    <option>No</option>
+                  </Form.Control>
+                </Form.Group>
+                <Form.Group controlId="trainingGivenElectronic">
+                  <Form.Label>Training Given Electronic</Form.Label>
                   <Form.Control as="select">
                     <option defaultValue></option>
                     <option>Yes</option>
