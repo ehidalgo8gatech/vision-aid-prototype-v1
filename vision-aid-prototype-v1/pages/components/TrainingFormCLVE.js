@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import {ChevronDown, ChevronRight, Pencil} from 'react-bootstrap-icons';
 import {v4 as uuidv4} from "uuid";
@@ -21,12 +21,14 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
       acc[field] = e.target[field].value + ' ' + e.target[`unit-near`].value
       return acc;
     }, {});
-    var diagnosis
-    if (e.target.diagnosis.value == "Other") {
-      diagnosis = e.target.diagnosisOther.value
-    } else {
-      diagnosis = e.target.diagnosis.value
-    }
+    var diagnosis = ""
+    e.target.diagnosis.forEach(diagnosisValue => {
+      if (diagnosisValue.checked && diagnosisValue.value == 'Other') {
+        diagnosis = diagnosis + " " + e.target.diagnosisOther.value
+      } else if (diagnosisValue.checked) {
+        diagnosis = diagnosis + " " + diagnosisValue.value
+      }
+    })
     const newTraining = {
       diagnosis: diagnosis,
       mdvi: e.target.mdvi.value,
@@ -116,9 +118,7 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
 
   const [showDiagnosisOther, setShowDiagnosisOther] = useState(false)
   function diagnosisOnChange(event) {
-    event.preventDefault()
-    if (event.target.value == "Other") {
-      console.log(event.target.value)
+    if (event.target.checked == true) {
       setShowDiagnosisOther(true)
     } else {
       setShowDiagnosisOther(false)
@@ -1328,14 +1328,32 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
             <Col>
               <Form.Group controlId="diagnosis">
                 <Form.Label>Diagnosis</Form.Label>
-                <Form.Control as="select" onChange={(event) => diagnosisOnChange(event)}>
-                  <option defaultValue></option>
-                  <option>Anterior segment condition</option>
-                  <option>Posterior eye disease</option>
-                  <option>Hereditary eye disease</option>
-                  <option>Neuro-ophthalmic condition</option>
-                  <option>Other</option>
-                </Form.Control>
+                <Form.Check
+                    type='checkbox'
+                    label='Anterior segment condition'
+                    value='Anterior segment condition'
+                />
+                <Form.Check
+                    type='checkbox'
+                    label='Posterior eye disease'
+                    value='Posterior eye disease'
+                />
+                <Form.Check
+                    type='checkbox'
+                    label='Hereditary eye disease'
+                    value='Hereditary eye disease'
+                />
+                <Form.Check
+                    type='checkbox'
+                    label='Neuro-ophthalmic condition'
+                    value='Neuro-ophthalmic condition'
+                />
+                <Form.Check
+                    onChange={(event) => diagnosisOnChange(event)}
+                    type='checkbox'
+                    label='Other'
+                    value='Other'
+                />
               </Form.Group>
             </Col>
             <Col>
