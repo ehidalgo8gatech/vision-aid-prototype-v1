@@ -307,3 +307,11 @@ label {
     display: none;
 }
 
+#removeCounsellingTypeContainer{
+    display: none;
+}
+
+#removeTrainingTypeContainer {
+    display: none;
+}
+

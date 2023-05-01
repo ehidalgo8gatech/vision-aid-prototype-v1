@@ -15,6 +15,8 @@ import {readComprehensiveLowVisionEvaluationMirror} from "@/pages/api/comprehens
 import {readCounsellingEducationMirror} from "@/pages/api/counsellingEducationMirror";
 import {ChevronDown, ChevronRight} from "react-bootstrap-icons";
 import {useState} from "react";
+import {getCounsellingType} from "@/pages/api/counsellingType";
+import {getTrainingTypes} from "@/pages/api/trainingType";
 
 // http://localhost:3000/requiredfields
 export async function getServerSideProps(ctx) {
@@ -49,6 +51,8 @@ export async function getServerSideProps(ctx) {
             requiredComprehensiveLowVisionEvaluation: await readComprehensiveLowVisionEvaluationMirror(),
             requiredCounsellingEducation: await readCounsellingEducationMirror(),
             hospitals: await findAllHospital(),
+            counselingTypeList: await getCounsellingType(),
+            trainingTypeList: await getTrainingTypes(),
             error: null
         },
     }
@@ -304,6 +308,8 @@ function RequiredFields(props) {
         "orientationMobility": false,
         "addCounsellingType": false,
         "addTrainingType": false,
+        "removeCounsellingType": false,
+        "removeTrainingType": false,
     }
     function handleToggle(type) {
         var displayTrainingElement = document.getElementById(type + "TrainingRequiredFields");
@@ -366,6 +372,42 @@ function RequiredFields(props) {
         } else {
             alert('An error occurred while saving data. Please try again.');
         }
+        Router.reload()
+    }
+
+    let removeTypeCounseling = []
+    let foundTypeCounselingOther = false
+
+    for (const counselingType of props.counselingTypeList) {
+        if (foundTypeCounselingOther == false && counselingType == 'Other') {
+            foundTypeCounselingOther = true
+            console.log("Do not delete other option")
+            continue
+        }
+        removeTypeCounseling.push((<option value={counselingType}>{counselingType}</option>))
+    }
+
+    let removeTypeTraining = []
+    let foundTypeTrainingOther = false
+
+    for (const trainingType of props.trainingTypeList) {
+        if (foundTypeTrainingOther == false && trainingType == 'Other') {
+            foundTypeTrainingOther = true
+            console.log("Do not delete other option")
+            continue
+        }
+        removeTypeTraining.push((<option value={trainingType}>{trainingType}</option>))
+    }
+
+    async function removeTypesSubmit(e, api, html) {
+        e.preventDefault()
+        await fetch('/api/' + api, {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                value: e.target[html].value,
+            })
+        })
         Router.reload()
     }
 
@@ -707,7 +749,7 @@ function RequiredFields(props) {
                                 style={{ cursor: 'pointer' }}
                             />
                         )}
-                        <h2 className="text-center">Counseling Education</h2>
+                        <h2 className="text-center">Add Counseling Education</h2>
                     </div>
                     <div className='container' id="addCounsellingTypeContainer">
                         <form action="#" method="POST" onSubmit={(e) => addTypesSubmit(e, "counsellingType", "addCounsellingType")}>
@@ -743,6 +785,64 @@ function RequiredFields(props) {
                             <button type="submit" className="btn btn-primary">Submit</button>
                         </form>
                     </div>
+                    <br/>
+                    <h1 className="text-center mt-4 mb-4">Remove Types</h1>
+                    <br/>
+                    <div className="d-flex justify-content-center align-items-center">
+                        {showForm["removeCounsellingType"] ? (
+                            <ChevronDown
+                                className="ml-2"
+                                onClick={() => handleToggleByType("removeCounsellingTypeContainer")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        ) : (
+                            <ChevronRight
+                                className="ml-2"
+                                onClick={() => handleToggleByType("removeCounsellingTypeContainer")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        )}
+                        <h2 className="text-center">Remove Counseling Education</h2>
+                    </div>
+                    <div className='container' id="removeCounsellingTypeContainer">
+                        <form action="#" method="POST" onSubmit={(e) => removeTypesSubmit(e, "counsellingType", "removeCounselingTypeHTML")}>
+                            <label htmlFor="removeCounselingTypeHTML">Remove Counseling Type:</label>
+                            <select name="removeCounselingTypeHTML" id="removeCounselingTypeHTML">
+                                {removeTypeCounseling}
+                            </select>
+                            <br/>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+
+                    <br/>
+                    <div className="d-flex justify-content-center align-items-center">
+                        {showForm["removeTrainingType"] ? (
+                            <ChevronDown
+                                className="ml-2"
+                                onClick={() => handleToggleByType("removeTrainingTypeContainer")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        ) : (
+                            <ChevronRight
+                                className="ml-2"
+                                onClick={() => handleToggleByType("removeTrainingTypeContainer")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        )}
+                        <h2 className="text-center">Remove Training Type</h2>
+                    </div>
+                    <div className='container' id="removeTrainingTypeContainer">
+                        <form action="#" method="POST" onSubmit={(e) => removeTypesSubmit(e, "trainingType", "removeTrainingTypeHTML")}>
+                            <label htmlFor="removeTrainingTypeHTML">Remove Counseling Type:</label>
+                            <select name="removeTrainingTypeHTML" id="removeTrainingTypeHTML">
+                                {removeTypeTraining}
+                            </select>
+                            <br/>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </div>

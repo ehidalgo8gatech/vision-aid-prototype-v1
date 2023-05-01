@@ -242,12 +242,12 @@ model Training {
 
 model Training_Type {
   id    Int    @id @default(autoincrement())
-  value String
+  value String @unique
 }
 
 model Counselling_Type {
   id    Int    @id @default(autoincrement())
-  value String
+  value String @unique
 }
 
 model Counselling_Education {

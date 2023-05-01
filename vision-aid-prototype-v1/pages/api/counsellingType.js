@@ -18,9 +18,29 @@ export default async function handler(req, res) {
         return await readData(req, res);
     } else if (req.method == 'PATCH') {
         return await updateData(req, res);
+    } else if (req.method == 'DELETE') {
+        return await deleteData(req, res);
     } else {
         return res.status(405).json({message: 'Method not allowed', success: false});
     }
+}
+
+async function deleteData(req, res) {
+    var counseling = await prisma.counselling_Type.findMany({
+        where: {
+            value: req.body.value
+        },
+        orderBy: {
+            id: 'desc',
+        },
+        take: 1,
+    })
+    counseling = await prisma.counselling_Type.delete({
+        where: {
+            id: counseling[0].id
+        }
+    })
+    return res.status(200).json(counseling, {success: true})
 }
 
 async function updateData(req, res) {
