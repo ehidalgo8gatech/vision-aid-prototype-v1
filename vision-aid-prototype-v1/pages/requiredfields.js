@@ -417,10 +417,12 @@ function RequiredFields(props) {
             <div className="row">
                 <div className="col-md-6">
                     <form action="#" method="POST" onSubmit={(e) => addHospital(e)}>
-                        <h2 className="text-center mt-4 mb-4">Add A Hospital</h2>
-                        <input type="text" className="form-input" id="createHospitalName"/>
+                        <h2 className="text-center mt-4 mb-4">Add a Hospital</h2>
+                        <div className="col-md-6">
+                        <input type="text" className="form-control" id="createHospitalName" style={{marginLeft: '170px'}}/>
                         <label className="form-label" htmlFor="createHospitalName"
-                               style={{marginLeft: '10px'}}>Hospital Name</label>
+                               style={{marginLeft: '325px'}}>Hospital Name</label>
+                        </div>
                         <br/>
                         <button type="submit" className="btn btn-primary">Submit</button>
                     </form>
