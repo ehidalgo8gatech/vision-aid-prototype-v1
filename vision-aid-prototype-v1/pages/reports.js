@@ -88,6 +88,7 @@ export async function getServerSideProps(ctx) {
     const extraFields = flatFields(beneficiary.extraInformation, 'BeneficiaryExtraField')
     let flat = {
       mrn: beneficiary.mrn.replaceAll(';', ' '),
+      hospitalName: beneficiary.hospital == null ? "" : beneficiary.hospital.name.replaceAll(';', ' '),
       beneficiaryName: beneficiary.beneficiaryName ==  null ? "" : beneficiary.beneficiaryName.replaceAll(';', ' '),
       dateOfBirth: beneficiary.dateOfBirth ==  null ? "" :  beneficiary.dateOfBirth.toString().replaceAll(';', ' '),
       gender: beneficiary.gender ==  null ? "" :  beneficiary.gender.replaceAll(';', ' '),
