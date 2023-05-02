@@ -164,3 +164,17 @@ async function updateData(req, res) {
         res.status(400).json({ error: 'Failed to update user data.' });
     }
 }
+
+export async function findAllBeneficiary() {
+    return prisma.
+    beneficiary.findMany({
+        include: {
+            hospital: true,
+            Vision_Enhancement: true,
+            Counselling_Education: true,
+            Comprehensive_Low_Vision_Evaluation: true,
+            Low_Vision_Evaluation: true,
+            Training: true,
+        }
+    });
+}

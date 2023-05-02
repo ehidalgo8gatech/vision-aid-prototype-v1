@@ -10,6 +10,8 @@ import { Table } from 'react-bootstrap';
 import Link from "next/link";
 import moment from 'moment';
 import { useState, useEffect } from 'react';
+import {findAllBeneficiary} from "@/pages/api/beneficiary";
+import CsvDownloadButton from 'react-json-to-csv'
 
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx)
@@ -33,12 +35,93 @@ export async function getServerSideProps(ctx) {
       },
     }
   }
+
+  const beneficiaryList = await findAllBeneficiary()
+  let flatList = []
+
+  function flatFields(extraInformation, key) {
+    let flat = {
+
+    }
+    try {
+      const ex = JSON.parse(extraInformation)
+      for (let i = 0; i < ex.length; i++){
+        const e = ex[i];
+        flat[(key+"."+i+"."+e.name).replaceAll(';', ' ')] = (e.value).replaceAll(';', ' ')
+      }
+    } catch (e) {
+      return {}
+    }
+    return flat
+  }
+
+  function flatChildArray(childArray, key) {
+    let flat = {
+
+    }
+    try {
+      for (let i1 = 0; i1 < childArray.length; i1++){
+        const child = childArray[i1];
+        for (let i = 0; i < Object.keys(child).length; i++){
+          const jsonKey = Object.keys(child)[i];
+          flat[(key+"."+i1+"."+jsonKey).replaceAll(';', ' ')] = child[jsonKey] == null ? "" : child[jsonKey].toString().replaceAll(';', ' ')
+        }
+      }
+    } catch (e) {
+      return {}
+    }
+    return flat
+  }
+
+  function appendFlat(appendFrom, appendTo) {
+    Object.keys(appendFrom).forEach(append => {
+      appendTo[append] = appendFrom[append]
+    })
+  }
+
+  for (const beneficiary of beneficiaryList) {
+    const visionEnhancementFlat = flatChildArray(beneficiary.Vision_Enhancement, 'visionEnhancement')
+    const counselingEducationFlat = flatChildArray(beneficiary.Counselling_Education, 'counselingEducation')
+    const comprehensiveLowVisionEvaluationFlat = flatChildArray(beneficiary.Comprehensive_Low_Vision_Evaluation, 'comprehensiveLowVisionEvaluation')
+    const lowVisionEvaluationFlat = flatChildArray(beneficiary.Low_Vision_Evaluation, 'lowVisionEvaluation')
+    const trainingFlat = flatChildArray(beneficiary.Training, 'training')
+    const extraFields = flatFields(beneficiary.extraInformation, 'BeneficiaryExtraField')
+    let flat = {
+      mrn: beneficiary.mrn.replaceAll(';', ' '),
+      beneficiaryName: beneficiary.beneficiaryName ==  null ? "" : beneficiary.beneficiaryName.replaceAll(';', ' '),
+      dateOfBirth: beneficiary.dateOfBirth ==  null ? "" :  beneficiary.dateOfBirth.toString().replaceAll(';', ' '),
+      gender: beneficiary.gender ==  null ? "" :  beneficiary.gender.replaceAll(';', ' '),
+      phoneNumber: beneficiary.phoneNumber ==  null ? "" :  beneficiary.phoneNumber.replaceAll(';', ' '),
+      education: beneficiary.education ==  null ? "" :  beneficiary.education.replaceAll(';', ' '),
+      occupation: beneficiary.occupation ==  null ? "" :  beneficiary.occupation.replaceAll(';', ' '),
+      districts: beneficiary.districts ==  null ? "" :  beneficiary.districts.replaceAll(';', ' '),
+      state: beneficiary.state ==  null ? "" :  beneficiary.state.replaceAll(';', ' '),
+      diagnosis: beneficiary.diagnosis ==  null ? "" :  beneficiary.diagnosis.replaceAll(';', ' '),
+      vision: beneficiary.vision ==  null ? "" :  beneficiary.vision.replaceAll(';', ' '),
+      mDVI: beneficiary.mDVI ==  null ? "" :  beneficiary.mDVI.replaceAll(';', ' '),
+      rawExtraFields: beneficiary.extraInformation ==  null ? "" :  beneficiary.extraInformation.replaceAll(';', ' '),
+      rawVisionEnhancement: JSON.stringify(beneficiary.Vision_Enhancement).replaceAll(';', ' '),
+      rawCounselingEducation: JSON.stringify(beneficiary.Counselling_Education).replaceAll(';', ' '),
+      rawComprehensiveLowVisionEvaluation: JSON.stringify(beneficiary.Comprehensive_Low_Vision_Evaluation).replaceAll(';', ' '),
+      rawLowVisionEvaluation: JSON.stringify(beneficiary.Low_Vision_Evaluation).replaceAll(';', ' '),
+      rawTraining: JSON.stringify(beneficiary.Training).replaceAll(';', ' '),
+    }
+    appendFlat(extraFields, flat)
+    appendFlat(visionEnhancementFlat, flat)
+    appendFlat(counselingEducationFlat, flat)
+    appendFlat(comprehensiveLowVisionEvaluationFlat, flat)
+    appendFlat(lowVisionEvaluationFlat, flat)
+    appendFlat(trainingFlat, flat)
+    flatList.push(flat)
+  }
+
   if (user.admin != null) {
     const summary = await getSummaryForAllHospitals();
     return {
       props: {
         user: user,
         summary: JSON.parse(JSON.stringify(summary)),
+        beneficiaryFlatList: flatList,
         error: null
       },
     }
@@ -102,7 +185,7 @@ function filterTrainingSummaryByDateRange(startDate, endDate, summary) {
 }
 
 
-export default function Summary({ user, summary }) {
+export default function Summary({ user, summary, beneficiaryFlatList }) {
   // create start date and end data states, start date is set to one year ago, end date is set to today
   const [startDate, setStartDate] = useState(moment().subtract(1, 'year').toDate());
   const [endDate, setEndDate] = useState(moment().toDate());
@@ -248,6 +331,10 @@ export default function Summary({ user, summary }) {
           </div>
         </div>
       </Container>
+      <br/>
+      <h1>Download All Beneficiary Data</h1>
+      <p>Not this is ; seperated if you separate by other delimiter it will not work</p>
+      <CsvDownloadButton data={beneficiaryFlatList} />
     </div>
 
   );
