@@ -417,7 +417,7 @@ function RequiredFields(props) {
             <div className="row">
                 <div className="col-md-6">
                     <form action="#" method="POST" onSubmit={(e) => addHospital(e)}>
-                        <h2 className="text-center mt-4 mb-4">Add a Hospital</h2>
+                        <h2 className="text-center mt-4 mb-4"><strong>Add A Hospital</strong></h2>
                         <div className="col-md-6">
                         <input type="text" className="form-control" id="createHospitalName" style={{marginLeft: '170px'}}/>
                         <label className="form-label" htmlFor="createHospitalName"
@@ -427,7 +427,7 @@ function RequiredFields(props) {
                         <button type="submit" className="btn btn-primary">Submit</button>
                     </form>
                     <form action="#" method="POST" onSubmit={(e) => addFieldsSubmit(e)}>
-                        <h2 className="text-center mt-4 mb-4">Required Beneficiary Fields</h2>
+                        <h2 className="text-center mt-4 mb-4"><strong>Required Beneficiary Fields</strong></h2>
 
                         <p>MRN, Beneficiary Name, And Hospital Name Will Always Be Required</p>
 
@@ -510,7 +510,7 @@ function RequiredFields(props) {
                 </div>
 
                 <div className="col-md-6">
-                    <h1 className="text-center mt-4 mb-4">Other Form Required Fields</h1>
+                    <h2 className="text-center mt-4 mb-4"><strong>Other Form Required Fields</strong></h2>
                     <br/>
                     <div className="d-flex justify-content-center align-items-center">
                     {showForm["comprehensiveLowVisionEvaluation"] ? (
@@ -735,7 +735,7 @@ function RequiredFields(props) {
                     </div>
                     <br/>
 
-                    <h1 className="text-center mt-4 mb-4">Add Types</h1>
+                    <h2 className="text-center mt-4 mb-4"><strong>Add Types</strong></h2>
                     <br/>
                     <div className="d-flex justify-content-center align-items-center">
                         {showForm["addCounsellingType"] ? (
@@ -788,7 +788,7 @@ function RequiredFields(props) {
                         </form>
                     </div>
                     <br/>
-                    <h1 className="text-center mt-4 mb-4">Remove Types</h1>
+                    <h2 className="text-center mt-4 mb-4"><strong>Remove Types</strong></h2>
                     <br/>
                     <div className="d-flex justify-content-center align-items-center">
                         {showForm["removeCounsellingType"] ? (
