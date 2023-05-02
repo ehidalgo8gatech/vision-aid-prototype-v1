@@ -3,6 +3,7 @@ import {getSession} from "next-auth/react";
 import {allUsers, readUser} from "@/pages/api/user";
 import {findAllHospital} from "@/pages/api/hospital";
 import Router from "next/router";
+import { Table } from 'react-bootstrap';
 
 export async function getServerSideProps(ctx) {
     const session = await getSession(ctx)
@@ -161,8 +162,8 @@ function Users(props) {
     return(
         <div>
             <Navigation />
-            <h1 className="text-center mt-4 mb-4">List Of Users</h1>
-            <table className="table">
+            <h2 className="text-center mt-4 mb-4"><strong>List Of Users</strong></h2>
+            <Table striped bordered hover responsive>
                 <thead>
                 <tr>
                     <th>User Id</th>
@@ -175,8 +176,9 @@ function Users(props) {
                 <tbody>
                 {usersList}
                 </tbody>
-            </table>
-            <h1 className="text-center mt-4 mb-4">Hospital Information</h1>
+                </Table>
+            <br/>
+            <h2 className="text-center mt-4 mb-4"><strong>Hospital Information</strong></h2>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <label htmlFor="hospitalSelect" style={{ marginRight: '10px' }}>Select a hospital</label>
                 <select id="hospitalSelect"
