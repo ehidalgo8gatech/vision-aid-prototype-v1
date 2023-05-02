@@ -166,11 +166,11 @@ function Users(props) {
             <Table striped bordered hover responsive>
                 <thead>
                 <tr>
-                    <th>User Id</th>
-                    <th>User Email</th>
-                    <th>Admin</th>
-                    <th>Manager</th>
-                    <th>Hospital</th>
+                    <th><i>User Id</i></th>
+                    <th><i>User Email</i></th>
+                    <th><i>Admin</i></th>
+                    <th><i>Manager</i></th>
+                    <th><i>Hospital</i></th>
                 </tr>
                 </thead>
                 <tbody>
