@@ -178,7 +178,7 @@ function Users(props) {
                 </tbody>
                 </Table>
             <br/>
-            <h2 className="text-center mt-4 mb-4"><strong>Hospital Information</strong></h2>
+            <h2 className="text-center mt-4 mb-4"><strong>Add User To Hospital</strong></h2>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <label htmlFor="hospitalSelect" style={{ marginRight: '10px' }}>Select a hospital</label>
                 <select id="hospitalSelect"
