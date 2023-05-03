@@ -314,9 +314,6 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
           ))}
                 {showForm && (
         <Form onSubmit={handleSubmit} className="mt-3">
-          <Button variant="primary" type="submit">
-            {submitButtonTest}
-          </Button>
           <br/>
           <br/>
           <Row>
@@ -363,6 +360,9 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
             <Form.Control as="textarea" rows={3} />
           </Form.Group>
           <br/>
+          <Button variant="primary" type="submit">
+            {submitButtonTest}
+          </Button>
         </Form>
       )}
         </>

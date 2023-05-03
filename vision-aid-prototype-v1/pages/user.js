@@ -359,10 +359,10 @@ function UserPage(props) {
                 <TrainingForm
                     existingTrainings={counsellingEducationData}
                     addNewTraining={handleSubmitCounsellingEducation}
-                    title="Counselling Education"
+                    title="Counseling"
                     customFields={[]}
                     api='counsellingEducation'
-                    submitButtonTest='Add New Counselling'
+                    submitButtonTest='Add New Counseling'
                     typeList={props.counsellingType}
                     mdvi={false}
                 />
