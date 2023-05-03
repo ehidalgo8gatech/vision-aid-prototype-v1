@@ -11,7 +11,7 @@ import Link from "next/link";
 import moment from 'moment';
 import { useState, useEffect } from 'react';
 import {findAllBeneficiary} from "@/pages/api/beneficiary";
-import CsvDownloadButton from 'react-json-to-csv'
+import { CSVLink, CSVDownload } from "react-csv";
 
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx)
@@ -47,7 +47,7 @@ export async function getServerSideProps(ctx) {
       const ex = JSON.parse(extraInformation)
       for (let i = 0; i < ex.length; i++){
         const e = ex[i];
-        flat[(key+"."+i+"."+e.name).replaceAll(';', ' ')] = (e.value).replaceAll(';', ' ')
+        flat[(key+"."+i+"."+e.name).replaceAll(',', ' ')] = (e.value).replaceAll(',', ' ')
       }
     } catch (e) {
       return {}
@@ -64,7 +64,7 @@ export async function getServerSideProps(ctx) {
         const child = childArray[i1];
         for (let i = 0; i < Object.keys(child).length; i++){
           const jsonKey = Object.keys(child)[i];
-          flat[(key+"."+i1+"."+jsonKey).replaceAll(';', ' ')] = child[jsonKey] == null ? "" : child[jsonKey].toString().replaceAll(';', ' ')
+          flat[(key+"."+i1+"."+jsonKey).replaceAll(',', ' ')] = child[jsonKey] == null ? "" : child[jsonKey].toString().replaceAll(',', ' ')
         }
       }
     } catch (e) {
@@ -87,25 +87,25 @@ export async function getServerSideProps(ctx) {
     const trainingFlat = flatChildArray(beneficiary.Training, 'training')
     const extraFields = flatFields(beneficiary.extraInformation, 'BeneficiaryExtraField')
     let flat = {
-      mrn: beneficiary.mrn.replaceAll(';', ' '),
-      hospitalName: beneficiary.hospital == null ? "" : beneficiary.hospital.name.replaceAll(';', ' '),
-      beneficiaryName: beneficiary.beneficiaryName ==  null ? "" : beneficiary.beneficiaryName.replaceAll(';', ' '),
-      dateOfBirth: beneficiary.dateOfBirth ==  null ? "" :  beneficiary.dateOfBirth.toString().replaceAll(';', ' '),
-      gender: beneficiary.gender ==  null ? "" :  beneficiary.gender.replaceAll(';', ' '),
-      phoneNumber: beneficiary.phoneNumber ==  null ? "" :  beneficiary.phoneNumber.replaceAll(';', ' '),
-      education: beneficiary.education ==  null ? "" :  beneficiary.education.replaceAll(';', ' '),
-      occupation: beneficiary.occupation ==  null ? "" :  beneficiary.occupation.replaceAll(';', ' '),
-      districts: beneficiary.districts ==  null ? "" :  beneficiary.districts.replaceAll(';', ' '),
-      state: beneficiary.state ==  null ? "" :  beneficiary.state.replaceAll(';', ' '),
-      diagnosis: beneficiary.diagnosis ==  null ? "" :  beneficiary.diagnosis.replaceAll(';', ' '),
-      vision: beneficiary.vision ==  null ? "" :  beneficiary.vision.replaceAll(';', ' '),
-      mDVI: beneficiary.mDVI ==  null ? "" :  beneficiary.mDVI.replaceAll(';', ' '),
-      rawExtraFields: beneficiary.extraInformation ==  null ? "" :  beneficiary.extraInformation.replaceAll(';', ' '),
-      rawVisionEnhancement: JSON.stringify(beneficiary.Vision_Enhancement).replaceAll(';', ' '),
-      rawCounselingEducation: JSON.stringify(beneficiary.Counselling_Education).replaceAll(';', ' '),
-      rawComprehensiveLowVisionEvaluation: JSON.stringify(beneficiary.Comprehensive_Low_Vision_Evaluation).replaceAll(';', ' '),
-      rawLowVisionEvaluation: JSON.stringify(beneficiary.Low_Vision_Evaluation).replaceAll(';', ' '),
-      rawTraining: JSON.stringify(beneficiary.Training).replaceAll(';', ' '),
+      mrn: beneficiary.mrn.replaceAll(',', ' '),
+      hospitalName: beneficiary.hospital == null ? "" : beneficiary.hospital.name.replaceAll(',', ' '),
+      beneficiaryName: beneficiary.beneficiaryName ==  null ? "" : beneficiary.beneficiaryName.replaceAll(',', ' '),
+      dateOfBirth: beneficiary.dateOfBirth ==  null ? "" :  beneficiary.dateOfBirth.toString().replaceAll(',', ' '),
+      gender: beneficiary.gender ==  null ? "" :  beneficiary.gender.replaceAll(',', ' '),
+      phoneNumber: beneficiary.phoneNumber ==  null ? "" :  beneficiary.phoneNumber.replaceAll(',', ' '),
+      education: beneficiary.education ==  null ? "" :  beneficiary.education.replaceAll(',', ' '),
+      occupation: beneficiary.occupation ==  null ? "" :  beneficiary.occupation.replaceAll(',', ' '),
+      districts: beneficiary.districts ==  null ? "" :  beneficiary.districts.replaceAll(',', ' '),
+      state: beneficiary.state ==  null ? "" :  beneficiary.state.replaceAll(',', ' '),
+      diagnosis: beneficiary.diagnosis ==  null ? "" :  beneficiary.diagnosis.replaceAll(',', ' '),
+      vision: beneficiary.vision ==  null ? "" :  beneficiary.vision.replaceAll(',', ' '),
+      mDVI: beneficiary.mDVI ==  null ? "" :  beneficiary.mDVI.replaceAll(',', ' '),
+      rawExtraFields: beneficiary.extraInformation ==  null ? "" :  beneficiary.extraInformation.replaceAll(',', ' '),
+      rawVisionEnhancement: JSON.stringify(beneficiary.Vision_Enhancement).replaceAll(',', ' '),
+      rawCounselingEducation: JSON.stringify(beneficiary.Counselling_Education).replaceAll(',', ' '),
+      rawComprehensiveLowVisionEvaluation: JSON.stringify(beneficiary.Comprehensive_Low_Vision_Evaluation).replaceAll(',', ' '),
+      rawLowVisionEvaluation: JSON.stringify(beneficiary.Low_Vision_Evaluation).replaceAll(',', ' '),
+      rawTraining: JSON.stringify(beneficiary.Training).replaceAll(',', ' '),
     }
     appendFlat(extraFields, flat)
     appendFlat(visionEnhancementFlat, flat)
@@ -334,8 +334,8 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
       </Container>
       <br/>
       <h1>Download All Beneficiary Data</h1>
-      <p>Not this is ; seperated if you separate by other delimiter it will not work</p>
-      <CsvDownloadButton data={beneficiaryFlatList} />
+      <p>Note this is , seperated if you separate by other delimiter it will not work</p>
+      <CSVLink data={beneficiaryFlatList} separator={","}>Download me</CSVLink>
     </div>
 
   );
