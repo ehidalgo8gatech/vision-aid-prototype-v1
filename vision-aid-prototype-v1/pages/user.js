@@ -345,7 +345,7 @@ function UserPage(props) {
               existingTrainings={visionTrainingData}
               addNewTraining={handleSubmitVisionTraining}
               title="Vision Enhancement"
-              customFields={['Diagnosis']}
+              customFields={[]}
               api='visionEnhancement'
               submitButtonTest='Add New Vision Enhancement'
               typeList={null}

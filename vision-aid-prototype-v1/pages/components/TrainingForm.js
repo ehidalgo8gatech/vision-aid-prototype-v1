@@ -23,6 +23,7 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
       type: e.target.type == null ? null : e.target.type.value,
       typeOther: e.target.typeOther == null ? null : e.target.typeOther.value,
       MDVI: e.target.MDVI == null ? null : e.target.MDVI.value,
+      Diagnosis: e.target.Diagnosis == null ? null : e.target.Diagnosis.value,
       extraInformation: e.target.extraInformation.value,
       ...customData,
     };
@@ -242,6 +243,38 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
                   </div>
               )}
 
+              {mdvi == true && editableField === 'Diagnosis' ? (
+                  <div>
+                    <strong>Diagnosis:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'Diagnosis', index)} className="d-inline ms-2">
+                      <input id={title + index + 'Diagnosis'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='Diagnosis'
+                             value={training.Diagnosis}
+                             onChange={() => handleInputChange(index, 'Diagnosis', title + index + 'Diagnosis')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : mdvi == true && (
+                  <div>
+                    <strong>Diagnosis:</strong>
+                    <span className="ms-2">
+          {training.Diagnosis}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('Diagnosis')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
               {customFields.map((field) => (
                   <div key={field}>
                     {editableField === field ? (
@@ -336,14 +369,25 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
               <Form.Control type="text" />
             </Form.Group>
           ))}
-          {mdvi == true && (<Form.Group controlId="MDVI">
-            <Form.Label>MDVI</Form.Label>
-            <Form.Control as="select">
-              <option defaultValue></option>
-              <option>Yes</option>
-              <option>No</option>
-            </Form.Control>
-          </Form.Group>)}
+          {mdvi == true && (
+              <Row>
+                <Col>
+                  <Form.Group controlId="MDVI">
+                    <Form.Label>MDVI</Form.Label>
+                    <Form.Control as="select">
+                      <option defaultValue></option>
+                      <option>Yes</option>
+                      <option>No</option>
+                    </Form.Control>
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group controlId="Diagnosis">
+                    <Form.Label>Diagnosis</Form.Label>
+                    <Form.Control as="textarea" rows={1} />
+                  </Form.Group>
+                </Col>
+              </Row>)}
           {typeList != null && (<Form.Group controlId="type">
             <Form.Label>Type</Form.Label>
             <Form.Control as="select" onChange={typeOnChange}>
