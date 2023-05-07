@@ -1458,22 +1458,28 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                     </Form.Group>
                   </Col>
                 </Row>
-                <Form.Group controlId="dispensedSpectacle" key="dispensedSpectacle">
-                  <Form.Label>Dispensed Spectacle</Form.Label>
-                  <Form.Control as="select">
-                    <option defaultValue></option>
-                    <option>Yes</option>
-                    <option>No</option>
-                  </Form.Control>
-                </Form.Group>
-                <Form.Group controlId="trainingGivenSpectacle">
-                  <Form.Label>Training Given Spectacle</Form.Label>
-                  <Form.Control as="select">
-                    <option defaultValue></option>
-                    <option>Yes</option>
-                    <option>No</option>
-                  </Form.Control>
-                </Form.Group>
+                <Row>
+                  <Col>
+                    <Form.Group controlId="dispensedSpectacle" key="dispensedSpectacle">
+                      <Form.Label>Dispensed Spectacle</Form.Label>
+                      <Form.Control as="select">
+                        <option defaultValue></option>
+                        <option>Yes</option>
+                        <option>No</option>
+                      </Form.Control>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="trainingGivenSpectacle">
+                      <Form.Label>Training Given Spectacle</Form.Label>
+                      <Form.Control as="select">
+                        <option defaultValue></option>
+                        <option>Yes</option>
+                        <option>No</option>
+                      </Form.Control>
+                    </Form.Group>
+                  </Col>
+                </Row>
               </div>
           )}
           
@@ -1501,22 +1507,28 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                     </Form.Group>
                   </Col>
                 </Row>
-                <Form.Group controlId="dispensedOptical" key="dispensedOptical">
-                  <Form.Label>Dispensed Optical</Form.Label>
-                  <Form.Control as="select">
-                    <option defaultValue></option>
-                    <option>Yes</option>
-                    <option>No</option>
-                  </Form.Control>
-                </Form.Group>
-                <Form.Group controlId="trainingGivenOptical">
-                  <Form.Label>Training Given Optical</Form.Label>
-                  <Form.Control as="select">
-                    <option defaultValue></option>
-                    <option>Yes</option>
-                    <option>No</option>
-                  </Form.Control>
-                </Form.Group>
+                <Row>
+                  <Col>
+                    <Form.Group controlId="dispensedOptical" key="dispensedOptical">
+                      <Form.Label>Dispensed Optical</Form.Label>
+                      <Form.Control as="select">
+                        <option defaultValue></option>
+                        <option>Yes</option>
+                        <option>No</option>
+                      </Form.Control>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="trainingGivenOptical">
+                      <Form.Label>Training Given Optical</Form.Label>
+                      <Form.Control as="select">
+                        <option defaultValue></option>
+                        <option>Yes</option>
+                        <option>No</option>
+                      </Form.Control>
+                    </Form.Group>
+                  </Col>
+                </Row>
               </div>
           )}
 
@@ -1544,22 +1556,28 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                     </Form.Group>
                   </Col>
                 </Row>
-                <Form.Group controlId="dispensedNonOptical" key="dispensedNonOptical">
-                  <Form.Label>Dispensed NonOptical</Form.Label>
-                  <Form.Control as="select">
-                    <option defaultValue></option>
-                    <option>Yes</option>
-                    <option>No</option>
-                  </Form.Control>
-                </Form.Group>
-                <Form.Group controlId="trainingGivenNonOptical">
-                  <Form.Label>Training Given Non Optical</Form.Label>
-                  <Form.Control as="select">
-                    <option defaultValue></option>
-                    <option>Yes</option>
-                    <option>No</option>
-                  </Form.Control>
-                </Form.Group>
+                <Row>
+                  <Col>
+                    <Form.Group controlId="dispensedNonOptical" key="dispensedNonOptical">
+                      <Form.Label>Dispensed NonOptical</Form.Label>
+                      <Form.Control as="select">
+                        <option defaultValue></option>
+                        <option>Yes</option>
+                        <option>No</option>
+                      </Form.Control>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="trainingGivenNonOptical">
+                      <Form.Label>Training Given Non Optical</Form.Label>
+                      <Form.Control as="select">
+                        <option defaultValue></option>
+                        <option>Yes</option>
+                        <option>No</option>
+                      </Form.Control>
+                    </Form.Group>
+                  </Col>
+                </Row>
               </div>
           )}
 
@@ -1587,22 +1605,28 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
                     </Form.Group>
                   </Col>
                 </Row>
-                <Form.Group controlId="dispensedElectronic" key="dispensedElectronic">
-                  <Form.Label>Dispensed Electronic</Form.Label>
-                  <Form.Control as="select">
-                    <option defaultValue></option>
-                    <option>Yes</option>
-                    <option>No</option>
-                  </Form.Control>
-                </Form.Group>
-                <Form.Group controlId="trainingGivenElectronic">
-                  <Form.Label>Training Given Electronic</Form.Label>
-                  <Form.Control as="select">
-                    <option defaultValue></option>
-                    <option>Yes</option>
-                    <option>No</option>
-                  </Form.Control>
-                </Form.Group>
+                <Row>
+                  <Col>
+                    <Form.Group controlId="dispensedElectronic" key="dispensedElectronic">
+                      <Form.Label>Dispensed Electronic</Form.Label>
+                      <Form.Control as="select">
+                        <option defaultValue></option>
+                        <option>Yes</option>
+                        <option>No</option>
+                      </Form.Control>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group controlId="trainingGivenElectronic">
+                      <Form.Label>Training Given Electronic</Form.Label>
+                      <Form.Control as="select">
+                        <option defaultValue></option>
+                        <option>Yes</option>
+                        <option>No</option>
+                      </Form.Control>
+                    </Form.Group>
+                  </Col>
+                </Row>
               </div>
           )}
           
