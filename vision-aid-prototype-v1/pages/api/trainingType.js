@@ -25,6 +25,7 @@ export default async function handler(req, res) {
 }
 
 async function deleteData(req, res) {
+    console.log(req.body.value)
     var training = await prisma.training_Type.findMany({
         where: {
             value: req.body.value
@@ -34,7 +35,7 @@ async function deleteData(req, res) {
         },
         take: 1,
     })
-    training = prisma.training_Type.delete({
+    training = await prisma.training_Type.delete({
         where: {
             id: training[0].id
         }
