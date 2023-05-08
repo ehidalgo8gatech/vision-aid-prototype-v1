@@ -241,13 +241,18 @@ model Training {
 }
 
 model Training_Type {
-  id    Int    @id @default(autoincrement())
-  value String @unique
+  id                Int                 @id @default(autoincrement())
+  value             String              @unique
+  Training_Sub_Type Training_Sub_Type[]
 }
 
 model Training_Sub_Type {
-  id    Int    @id @default(autoincrement())
-  value String @unique
+  id             Int           @id @default(autoincrement())
+  trainingType   Training_Type @relation(fields: [trainingTypeId], references: [id])
+  trainingTypeId Int
+  value          String
+
+  @@unique([trainingTypeId, value])
 }
 
 model Counselling_Type {

@@ -168,6 +168,7 @@ async function main() {
     await prisma.training_Sub_Type.create({
         data: {
             id: 1,
+            trainingTypeId: 1,
             value: "Other"
         },
     })
