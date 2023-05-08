@@ -245,6 +245,11 @@ model Training_Type {
   value String @unique
 }
 
+model Training_Sub_Type {
+  id    Int    @id @default(autoincrement())
+  value String @unique
+}
+
 model Counselling_Type {
   id    Int    @id @default(autoincrement())
   value String @unique

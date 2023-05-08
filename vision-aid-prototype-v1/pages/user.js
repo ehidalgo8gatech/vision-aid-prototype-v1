@@ -7,6 +7,7 @@ import TrainingForm from './components/TrainingForm';
 import TrainingFormCLVE from './components/TrainingFormCLVE';
 import {getTrainingTypes} from "@/pages/api/trainingType";
 import {getCounsellingType} from "@/pages/api/counsellingType";
+import {getTrainingSubTypes} from "@/pages/api/trainingSubType";
 
 function UserPage(props) {
   const router = useRouter();
@@ -350,6 +351,7 @@ function UserPage(props) {
               submitButtonTest='Add New Vision Enhancement'
               typeList={null}
               mdvi={true}
+              subTypeList={null}
             />
             <br/>
             <br/>
@@ -365,6 +367,7 @@ function UserPage(props) {
                     submitButtonTest='Add New Counseling'
                     typeList={props.counsellingType}
                     mdvi={false}
+                    subTypeList={null}
                 />
                 <br/>
             <TrainingForm
@@ -376,6 +379,7 @@ function UserPage(props) {
               submitButtonTest='Add New Training'
               typeList={props.trainingType}
               mdvi={false}
+              subTypeList={props.trainingSubType}
             />
             <br/>
 
@@ -418,6 +422,7 @@ export async function getServerSideProps({ query }) {
         beneficiaryMirror: benMirrorJson,
         trainingType: await getTrainingTypes(),
         counsellingType: await getCounsellingType(),
+        trainingSubType: await getTrainingSubTypes(),
     },
   };
 }

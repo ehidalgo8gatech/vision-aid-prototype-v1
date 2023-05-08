@@ -165,6 +165,12 @@ async function main() {
             value: "Other"
         },
     })
+    await prisma.training_Sub_Type.create({
+        data: {
+            id: 1,
+            value: "Other"
+        },
+    })
 }
 
 main()

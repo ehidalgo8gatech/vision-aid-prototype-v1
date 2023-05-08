@@ -4,7 +4,7 @@ import {ChevronDown, ChevronRight, Pencil} from 'react-bootstrap-icons';
 import {v4 as uuidv4} from "uuid";
 import Router from "next/router";
 
-const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, title, api, submitButtonTest, typeList, mdvi}) => {
+const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, title, api, submitButtonTest, typeList, mdvi, subTypeList}) => {
   const [showForm, setShowForm] = useState(false);
 
   const handleToggle = () => {
