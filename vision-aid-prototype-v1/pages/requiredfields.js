@@ -18,6 +18,7 @@ import {ChevronDown, ChevronRight, Trash} from "react-bootstrap-icons";
 import {useState} from "react";
 import {getCounsellingType} from "@/pages/api/counsellingType";
 import {getTrainingTypes} from "@/pages/api/trainingType";
+import {getTrainingSubTypes} from "@/pages/api/trainingSubType";
 
 // http://localhost:3000/requiredfields
 export async function getServerSideProps(ctx) {
@@ -54,6 +55,7 @@ export async function getServerSideProps(ctx) {
             hospitals: await findAllHospital(),
             counselingTypeList: await getCounsellingType(),
             trainingTypeList: await getTrainingTypes(),
+            trainingSubTypeList: await getTrainingSubTypes(),
             error: null
         },
     }
@@ -311,6 +313,7 @@ function RequiredFields(props) {
         "addTrainingType": false,
         "removeCounsellingType": false,
         "removeTrainingType": false,
+        "addTrainingSubType": false,
     }
     function handleToggle(type) {
         var displayTrainingElement = document.getElementById(type + "TrainingRequiredFields");
@@ -395,6 +398,7 @@ function RequiredFields(props) {
 
     let removeTypeTraining = []
     let foundTypeTrainingOther = false
+    let trainingTypesOption = []
 
     async function deleteTraining(api, trainingType) {
         await fetch('/api/' + api, {
@@ -408,6 +412,7 @@ function RequiredFields(props) {
     }
 
     for (const trainingType of props.trainingTypeList) {
+        trainingTypesOption.push(<option value={trainingType}>{trainingType}</option>)
         if (foundTypeTrainingOther == false && trainingType == 'Other') {
             foundTypeTrainingOther = true
             console.log("Do not delete other option")
@@ -430,6 +435,56 @@ function RequiredFields(props) {
                 value: e.target[html].value,
             })
         })
+        Router.reload()
+    }
+
+    let removeSubTypeTraining = []
+    let foundSubTypeTrainingOther = false
+
+    async function deleteTrainingSubType(id) {
+        await fetch('/api/' + "trainingSubType", {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                id: id,
+            })
+        })
+        Router.reload()
+    }
+
+    for (const trainingSubType of props.trainingSubTypeList) {
+        if (foundSubTypeTrainingOther == false && trainingSubType.value == 'Other') {
+            foundSubTypeTrainingOther = true
+            console.log("Do not delete other option")
+            continue
+        }
+        removeSubTypeTraining.push((
+            <div>
+                <span>Delete Training Type: {trainingSubType.trainingType.value} Training Sub Type: {trainingSubType.value}</span>
+                <Trash onClick={() => deleteTrainingSubType(trainingSubType.id)}/>
+            </div>
+        ))
+    }
+
+    async function addSubTypesSubmit(e) {
+        e.preventDefault()
+        const response = await fetch("api/" + "trainingSubType", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                value: e.target["addTrainingSubType"].value,
+                trainingTypeId: e.target["training"].value,
+            }),
+        });
+
+        // Handle response from the API
+        if (response.ok) {
+            alert('Type data saved successfully!');
+        } else {
+            alert('An error occurred while saving data. Please try again.');
+        }
         Router.reload()
     }
 
@@ -807,6 +862,37 @@ function RequiredFields(props) {
                         <form action="#" method="POST" onSubmit={(e) => addTypesSubmit(e, "trainingType", "addTrainingType")}>
                             <label htmlFor="addTrainingType">Add Training Type:</label>
                             <input type="text" id="addTrainingType" name="addTrainingType"/>
+                            <br/>
+                            <button type="submit" className="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <br/>
+
+                    <div className="d-flex justify-content-center align-items-center">
+                        {showForm["addTrainingSubType"] ? (
+                            <ChevronDown
+                                className="ml-2"
+                                onClick={() => handleToggleByType("addTrainingSubTypeContainer")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        ) : (
+                            <ChevronRight
+                                className="ml-2"
+                                onClick={() => handleToggleByType("addTrainingSubTypeContainer")}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        )}
+                        <h2 className="text-center">Add/Delete Training Sub Type</h2>
+                    </div>
+                    <div className='container' id="addTrainingSubTypeContainer">
+                        {removeSubTypeTraining}
+                        <form action="#" method="POST" onSubmit={(e) => addSubTypesSubmit(e)}>
+                            <label htmlFor="addTrainingSubType">Add Training Sub Type:</label>
+
+                            <select name="training" id="training">
+                                {trainingTypesOption}
+                            </select>
+                            <input type="text" id="addTrainingSubType" name="addTrainingSubType"/>
                             <br/>
                             <button type="submit" className="btn btn-primary">Submit</button>
                         </form>

@@ -2,12 +2,12 @@ import {PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient();
 export async function getTrainingSubTypes(){
-    var trainings = []
-    const tt = await prisma.training_Sub_Type.findMany({})
-    tt.forEach(t => {
-        trainings.push(t.value)
+    const tt = await prisma.training_Sub_Type.findMany({
+        include: {
+            trainingType: true
+        }
     })
-    return trainings
+    return tt
 }
 
 export default async function handler(req, res) {
@@ -25,19 +25,9 @@ export default async function handler(req, res) {
 }
 
 async function deleteData(req, res) {
-    console.log(req.body.value)
-    var training = await prisma.training_Sub_Type.findMany({
+    const training = await prisma.training_Sub_Type.delete({
         where: {
-            value: req.body.value
-        },
-        orderBy: {
-            id: 'desc',
-        },
-        take: 1,
-    })
-    training = await prisma.training_Sub_Type.delete({
-        where: {
-            id: training[0].id
+            id: req.body.id
         }
     })
     return res.status(200).json(training, {success: true})
@@ -53,9 +43,15 @@ async function readData(req, res) {
 
 async function addData(req, res) {
     const body = req.body;
+    const  trainingType = await prisma.training_Type.findFirst({
+        where: {
+            value : body.trainingTypeId
+        },
+    })
     const create = {
         data: {
             value: body.value,
+            trainingTypeId: trainingType.id,
         },
     }
     try {
