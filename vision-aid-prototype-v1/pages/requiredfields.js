@@ -439,7 +439,7 @@ function RequiredFields(props) {
     }
 
     let removeSubTypeTraining = []
-    let foundSubTypeTrainingOther = false
+    let foundSubTypeTrainingOther = {}
 
     async function deleteTrainingSubType(id) {
         await fetch('/api/' + "trainingSubType", {
@@ -453,8 +453,8 @@ function RequiredFields(props) {
     }
 
     for (const trainingSubType of props.trainingSubTypeList) {
-        if (foundSubTypeTrainingOther == false && trainingSubType.value == 'Other') {
-            foundSubTypeTrainingOther = true
+        if (foundSubTypeTrainingOther[trainingSubType.trainingType.id] != null && trainingSubType.value == 'Other') {
+            foundSubTypeTrainingOther[trainingSubType.trainingType.id] = true
             console.log("Do not delete other option")
             continue
         }
