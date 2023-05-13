@@ -2,12 +2,28 @@ import {PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient();
 export async function getTrainingSubTypes(){
-    const tt = await prisma.training_Sub_Type.findMany({
+    let ttOther = await prisma.training_Sub_Type.findMany({
         include: {
             trainingType: true
-        }
+        },
+        where: {
+            value: "Other"
+        },
     })
-    return tt
+    const ttNotOther = await prisma.training_Sub_Type.findMany({
+        include: {
+            trainingType: true
+        },
+        where: {
+            NOT: {
+                value: "Other"
+            },
+        },
+    })
+    ttNotOther.forEach(o => {
+        ttOther.push(o)
+    })
+    return ttOther
 }
 
 export default async function handler(req, res) {

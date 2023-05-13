@@ -22,6 +22,8 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
       sessionNumber: e.target.sessionNumber.value,
       type: e.target.type == null ? null : e.target.type.value,
       typeOther: e.target.typeOther == null ? null : e.target.typeOther.value,
+      subType: e.target.subTypeSelect == null ? null : e.target.subTypeSelect.value,
+      subTypeOther: e.target.subTypeOther == null ? null : e.target.subTypeOther.value,
       MDVI: e.target.MDVI == null ? null : e.target.MDVI.value,
       Diagnosis: e.target.Diagnosis == null ? null : e.target.Diagnosis.value,
       extraInformation: e.target.extraInformation.value,
@@ -82,14 +84,46 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
     })
   }
 
+  let subTypeInitial = []
+  if (subTypeList != null) {
+    subTypeList.forEach(st => {
+      if (st.trainingType.value == "Other") {
+        subTypeInitial.push(<option value={st.value}>{st.value}</option>)
+      }
+    })
+  }
+
+  const [subType, setSubType] = useState([subTypeInitial])
   const [showTypeOther, setShowTypeOther] = useState(true)
+  const [showTypeOtherSub, setShowTypeOtherSub] = useState(true)
   function typeOnChange(event) {
     event.preventDefault()
     if (event.target.value == "Other") {
-      console.log(event.target.value)
       setShowTypeOther(true)
     } else {
       setShowTypeOther(false)
+    }
+    if (subTypeList != null) {
+      let stTemp = []
+      subTypeList.forEach(st => {
+        if (st.trainingType.value == event.target.value && st.value == 'Other') {
+          stTemp.push(<option value={st.value} selected>{st.value}</option>)
+        } else if (st.trainingType.value == event.target.value) {
+          stTemp.push(<option value={st.value}>{st.value}</option>)
+        }
+      })
+      setSubType(stTemp)
+      document.getElementById("subTypeSelect").value = 'Other'
+      setShowTypeOtherSub(true)
+    }
+  }
+
+  function subTypeOnChange(event) {
+    event.preventDefault()
+    if (event.target.value == "Other") {
+      setShowTypeOtherSub(true)
+    } else {
+      setShowTypeOtherSub(false)
     }
   }
 
@@ -204,6 +238,38 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
                           type="button"
                           className="btn btn-link btn-sm text-primary ms-2"
                           onClick={() => handleEditClick('type')}
+                      >
+           <Pencil/>
+          </button>
+        </span>
+                  </div>
+              )}
+
+              {typeList != null && subTypeList != null && editableField === 'subType' ? (
+                  <div>
+                    <strong>Sub Type:</strong>
+                    <form onSubmit={(e) => handleEditSubmit(e, api, 'subType', index)} className="d-inline ms-2">
+                      <input id={title + index + 'subType'}
+                             type="text"
+                             className="form-control d-inline w-auto"
+                             name='subType'
+                             value={training.subType}
+                             onChange={() => handleInputChange(index, 'subType', title + index + 'subType')}
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm ms-2">
+                        Save
+                      </button>
+                    </form>
+                  </div>
+              ) : typeList != null && subTypeList != null && (
+                  <div>
+                    <strong>Sub Type:</strong>
+                    <span className="ms-2">
+          {training.subType}
+                      <button
+                          type="button"
+                          className="btn btn-link btn-sm text-primary ms-2"
+                          onClick={() => handleEditClick('subType')}
                       >
            <Pencil/>
           </button>
@@ -394,8 +460,19 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
               {types}
             </Form.Control>
           </Form.Group>)}
-          {(showTypeOther && typeList != null && <Form.Group controlId="typeOther">
+          {(showTypeOther && typeList != null && subTypeList == null && <Form.Group controlId="typeOther">
             <Form.Label>Type Other</Form.Label>
+            <Form.Control as="textarea" rows={1}>
+            </Form.Control>
+          </Form.Group>)}
+          {(typeList != null && subTypeList != null && <Form.Group controlId="subType">
+            <Form.Label>Sub Type</Form.Label>
+            <Form.Control id="subTypeSelect" as="select" onChange={subTypeOnChange}>
+              {subType}
+            </Form.Control>
+          </Form.Group>)}
+          {(showTypeOtherSub && typeList != null && subTypeList != null && <Form.Group controlId="subTypeOther">
+            <Form.Label>Type Sub Other</Form.Label>
             <Form.Control as="textarea" rows={1}>
             </Form.Control>
           </Form.Group>)}

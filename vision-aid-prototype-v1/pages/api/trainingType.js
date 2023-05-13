@@ -3,10 +3,14 @@ import {PrismaClient} from '@prisma/client';
 const prisma = new PrismaClient();
 export async function getTrainingTypes(){
     var trainings = []
+    trainings.push("Other")
      const tt = await prisma.training_Type.findMany({})
-         tt.forEach(t => {
-        trainings.push(t.value)
-    })
+         for (const t of tt) {
+             if (t.value == "Other") {
+                 continue
+             }
+            trainings.push(t.value)
+        }
     return trainings
 }
 

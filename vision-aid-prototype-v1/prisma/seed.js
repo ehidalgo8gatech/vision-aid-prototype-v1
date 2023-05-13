@@ -172,6 +172,55 @@ async function main() {
             value: "Other"
         },
     })
+    await prisma.training_Sub_Type.create({
+        data: {
+            id: 2,
+            trainingTypeId: 2,
+            value: "Other"
+        },
+    })
+    await prisma.training_Sub_Type.create({
+        data: {
+            id: 3,
+            trainingTypeId: 3,
+            value: "Other"
+        },
+    })
+    await prisma.training_Sub_Type.create({
+        data: {
+            id: 4,
+            trainingTypeId: 4,
+            value: "Other"
+        },
+    })
+    await prisma.training_Sub_Type.create({
+        data: {
+            id: 5,
+            trainingTypeId: 1,
+            value: "Braille training"
+        },
+    })
+    await prisma.training_Sub_Type.create({
+        data: {
+            id: 6,
+            trainingTypeId: 2,
+            value: "Certificate course in Computer Applications – CCA"
+        },
+    })
+    await prisma.training_Sub_Type.create({
+        data: {
+            id: 7,
+            trainingTypeId: 3,
+            value: "Training for Eye-hand coordination"
+        },
+    })
+    await prisma.training_Sub_Type.create({
+        data: {
+            id: 8,
+            trainingTypeId: 4,
+            value: "Certificate course in Mobile technology - MT"
+        },
+    })
 }
 
 main()

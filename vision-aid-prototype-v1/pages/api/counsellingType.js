@@ -4,10 +4,14 @@ const prisma = new PrismaClient();
 
 export async function getCounsellingType() {
     var trainings = []
+    trainings.push("Other")
     const  ct = await prisma.counselling_Type.findMany({})
-    ct.forEach(t => {
+    for (const t of ct) {
+        if (t.value == "Other") {
+            continue
+        }
         trainings.push(t.value)
-    })
+    }
     return trainings
 }
 

@@ -237,6 +237,7 @@ model Training {
   date             DateTime?
   sessionNumber    Int?
   type             String?
+  subType          String?
   extraInformation String      @db.Text
 }
 

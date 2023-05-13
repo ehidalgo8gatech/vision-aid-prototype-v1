@@ -65,6 +65,7 @@ async function addData(req, res) {
             sessionNumber: body.sessionNumber,
             typeOfTraining: body.typeOfTraining,
             type: body.type,
+            subType: body.subType,
             extraInformation: body.extraInformation,
         },
         include: {

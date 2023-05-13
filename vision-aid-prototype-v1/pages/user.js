@@ -60,8 +60,10 @@ function UserPage(props) {
       // parse date
       data['date'] = new Date(data['date']);
       data['beneficiaryId'] = props.user.mrn;
-      if (data['type'] == 'Other') {
+      if (data['type'] == 'Other' && data['subType'] == null) {
           data['type'] = data['typeOther']
+      } else if (data['subType'] == 'Other') {
+          data['subType'] = data['subTypeOther']
       }
       const response = await fetch(url, {
         method: 'POST',
