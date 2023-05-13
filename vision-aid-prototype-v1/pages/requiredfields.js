@@ -453,7 +453,7 @@ function RequiredFields(props) {
     }
 
     for (const trainingSubType of props.trainingSubTypeList) {
-        if (foundSubTypeTrainingOther[trainingSubType.trainingType.id] != null && trainingSubType.value == 'Other') {
+        if (foundSubTypeTrainingOther[trainingSubType.trainingType.id] == null && trainingSubType.value == 'Other') {
             foundSubTypeTrainingOther[trainingSubType.trainingType.id] = true
             console.log("Do not delete other option")
             continue
