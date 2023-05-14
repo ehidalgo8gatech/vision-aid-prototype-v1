@@ -187,6 +187,30 @@ function filterTrainingSummaryByDateRange(startDate, endDate, summary) {
   return filteredSummary
 }
 
+const graphOptions = {
+  backgroundColor: [
+    "rgba(255, 99, 132, 0.2)",
+    "rgba(54, 162, 235, 0.2)",
+    "rgba(255, 206, 86, 0.2)",
+    "rgba(75, 192, 192, 0.2)",
+    "rgba(153, 102, 255, 0.2)",
+    "rgba(255, 159, 64, 0.2)",
+    "rgba(255, 99, 132, 0.2)",
+    "rgba(119, 221, 119, 0.2)"
+  ],
+  borderColor: [
+    "rgba(255, 99, 132, 1)",
+    "rgba(54, 162, 235, 1)",
+    "rgba(255, 206, 86, 1)",
+    "rgba(75, 192, 192, 1)",
+    "rgba(153, 102, 255, 1)",
+    "rgba(255, 159, 64, 1)",
+    "rgba(255, 99, 132, 1)",
+    "rgba(119, 221, 119, 1)"
+  ],
+  borderWidth: 1,
+}
+
 function buildBeneficiaryGraph(data) {
   // data is an array of hopital objects
   const simplifiedData = data.map((hospital) => {
@@ -203,31 +227,54 @@ function buildBeneficiaryGraph(data) {
       {
         label: 'Beneficiaries',
         data: simplifiedData.map((hospital) => hospital.value),
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(119, 221, 119, 0.2)"
-        ],
-        borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-          "rgba(255, 99, 132, 1)",
-          "rgba(119, 221, 119, 1)"
-        ],
-        borderWidth: 1,
+        ...graphOptions,
       },
     ],
   }
   return graphData;
+}
+
+function buildActivitiesGraph(data){
+  //First get the evaluations
+  const lowVisionEvaluationCount = data.reduce((sum, item) => sum + item.lowVisionEvaluation.length, 0);
+  const comprehensiveLowVisionEvaluationCount = data.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.length, 0);
+  const visionEnhancementCount = data.reduce((sum, item) => sum + item.visionEnhancement.length, 0);
+
+  // Then the trainings
+  const mobileTrainingCount = data.reduce((sum, item) => sum + item.mobileTraining.length, 0);
+  const computerTrainingCount = data.reduce((sum, item) => sum + item.computerTraining.length, 0);
+  const orientationMobilityTrainingCount = data.reduce((sum, item) => sum + item.orientationMobilityTraining.length, 0);
+  const trainingCount = data.reduce((sum, item) => sum + item.training.length, 0) + mobileTrainingCount + computerTrainingCount + orientationMobilityTrainingCount;
+
+  // Then the counselling
+  const counsellingCount = data.reduce((sum, item) => sum + item.counsellingEducation.length, 0);
+
+
+  const chartData = {
+    labels: [
+      `Low Vision Evaluation (${lowVisionEvaluationCount})`,
+      `Comprehensive Low Vision Evaluation (${comprehensiveLowVisionEvaluationCount})`,
+      `Vision Enhancement (${visionEnhancementCount})`,
+      `All Training (${trainingCount})`,
+      `All Counselling (${counsellingCount})`,
+    ],
+    datasets: [
+      {
+        label: "Cumulative Counts",
+        data: [
+          lowVisionEvaluationCount,
+          comprehensiveLowVisionEvaluationCount,
+          visionEnhancementCount,
+          trainingCount,
+          counsellingCount,
+        ],
+        ...graphOptions,
+      },
+    ],
+  };
+
+  return chartData;
+
 }
 
 export default function Summary({ user, summary, beneficiaryFlatList }) {
@@ -261,67 +308,14 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
   const filteredSummary = dateFilteredSummary.filter((item) => selectedHospitals.includes(item.id));
 
   const beneficiaryGraphData = buildBeneficiaryGraph(filteredSummary);
+  const activitiesGraphData = buildActivitiesGraph(filteredSummary);
 
   console.log(filteredSummary);
 
-  //First get the evaluations
-  const lowVisionEvaluationCount = filteredSummary.reduce((sum, item) => sum + item.lowVisionEvaluation.length, 0);
-  const comprehensiveLowVisionEvaluationCount = filteredSummary.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.length, 0);
-  const visionEnhancementCount = filteredSummary.reduce((sum, item) => sum + item.visionEnhancement.length, 0);
-
-  // Then the trainings
-  const mobileTrainingCount = filteredSummary.reduce((sum, item) => sum + item.mobileTraining.length, 0);
-  const computerTrainingCount = filteredSummary.reduce((sum, item) => sum + item.computerTraining.length, 0);
-  const counsellingEducationCount = filteredSummary.reduce((sum, item) => sum + item.counsellingEducation.length, 0);
-  const orientationMobilityTrainingCount = filteredSummary.reduce((sum, item) => sum + item.orientationMobilityTraining.length, 0);
 
 
-  const chartData = {
-    labels: [
-      `Low Vision Evaluation (${lowVisionEvaluationCount})`,
-      `Comprehensive Low Vision Evaluation (${comprehensiveLowVisionEvaluationCount})`,
-      `Vision Enhancement (${visionEnhancementCount})`,
-      `Mobile Training (${mobileTrainingCount})`,
-      `Computer Training (${computerTrainingCount})`,
-      `Counselling/Education (${counsellingEducationCount})`,
-      `Orientation/Mobility Training (${orientationMobilityTrainingCount})`,
-    ],
-    datasets: [
-      {
-        label: "Cumulative Counts",
-        data: [
-          lowVisionEvaluationCount,
-          comprehensiveLowVisionEvaluationCount,
-          visionEnhancementCount,
-          mobileTrainingCount,
-          computerTrainingCount,
-          counsellingEducationCount,
-          orientationMobilityTrainingCount
-        ],
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(119, 221, 119, 0.2)"
-        ],
-        borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-          "rgba(255, 99, 132, 1)",
-          "rgba(119, 221, 119, 1)"
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
+
+
 
   const handleStartDateChange = (e) => {
     setStartDate(moment(e.target.value).toDate());
@@ -343,7 +337,7 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
         return <Bar data={beneficiaryGraphData} />;
       // return <Graph1 data={props.data} />;
       case 1:
-        return <Bar data={chartData} />;
+        return <Bar data={activitiesGraphData} />;
       // return <Graph2 data={props.data} />;
       case 2:
         return <Bar data={chartData} />;
