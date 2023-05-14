@@ -10,7 +10,7 @@ import { Table } from 'react-bootstrap';
 import Link from "next/link";
 import moment from 'moment';
 import { useState, useEffect } from 'react';
-import {findAllBeneficiary} from "@/pages/api/beneficiary";
+import { findAllBeneficiary } from "@/pages/api/beneficiary";
 import { CSVLink, CSVDownload } from "react-csv";
 import GraphCustomizer from './components/GraphCustomizer';
 import { Tab, Tabs, Paper } from '@mui/material';
@@ -47,9 +47,9 @@ export async function getServerSideProps(ctx) {
     }
     try {
       const ex = JSON.parse(extraInformation)
-      for (let i = 0; i < ex.length; i++){
+      for (let i = 0; i < ex.length; i++) {
         const e = ex[i];
-        flat[(key+"."+i+"."+e.name).replaceAll(',', ' ')] = (e.value).replaceAll(',', ' ')
+        flat[(key + "." + i + "." + e.name).replaceAll(',', ' ')] = (e.value).replaceAll(',', ' ')
       }
     } catch (e) {
       return {}
@@ -62,11 +62,11 @@ export async function getServerSideProps(ctx) {
 
     }
     try {
-      for (let i1 = 0; i1 < childArray.length; i1++){
+      for (let i1 = 0; i1 < childArray.length; i1++) {
         const child = childArray[i1];
-        for (let i = 0; i < Object.keys(child).length; i++){
+        for (let i = 0; i < Object.keys(child).length; i++) {
           const jsonKey = Object.keys(child)[i];
-          flat[(key+"."+i1+"."+jsonKey).replaceAll(',', ' ')] = child[jsonKey] == null ? "" : child[jsonKey].toString().replaceAll(',', ' ')
+          flat[(key + "." + i1 + "." + jsonKey).replaceAll(',', ' ')] = child[jsonKey] == null ? "" : child[jsonKey].toString().replaceAll(',', ' ')
         }
       }
     } catch (e) {
@@ -91,18 +91,18 @@ export async function getServerSideProps(ctx) {
     let flat = {
       mrn: beneficiary.mrn.replaceAll(',', ' '),
       hospitalName: beneficiary.hospital == null ? "" : beneficiary.hospital.name.replaceAll(',', ' '),
-      beneficiaryName: beneficiary.beneficiaryName ==  null ? "" : beneficiary.beneficiaryName.replaceAll(',', ' '),
-      dateOfBirth: beneficiary.dateOfBirth ==  null ? "" :  beneficiary.dateOfBirth.toString().replaceAll(',', ' '),
-      gender: beneficiary.gender ==  null ? "" :  beneficiary.gender.replaceAll(',', ' '),
-      phoneNumber: beneficiary.phoneNumber ==  null ? "" :  beneficiary.phoneNumber.replaceAll(',', ' '),
-      education: beneficiary.education ==  null ? "" :  beneficiary.education.replaceAll(',', ' '),
-      occupation: beneficiary.occupation ==  null ? "" :  beneficiary.occupation.replaceAll(',', ' '),
-      districts: beneficiary.districts ==  null ? "" :  beneficiary.districts.replaceAll(',', ' '),
-      state: beneficiary.state ==  null ? "" :  beneficiary.state.replaceAll(',', ' '),
-      diagnosis: beneficiary.diagnosis ==  null ? "" :  beneficiary.diagnosis.replaceAll(',', ' '),
-      vision: beneficiary.vision ==  null ? "" :  beneficiary.vision.replaceAll(',', ' '),
-      mDVI: beneficiary.mDVI ==  null ? "" :  beneficiary.mDVI.replaceAll(',', ' '),
-      rawExtraFields: beneficiary.extraInformation ==  null ? "" :  beneficiary.extraInformation.replaceAll(',', ' '),
+      beneficiaryName: beneficiary.beneficiaryName == null ? "" : beneficiary.beneficiaryName.replaceAll(',', ' '),
+      dateOfBirth: beneficiary.dateOfBirth == null ? "" : beneficiary.dateOfBirth.toString().replaceAll(',', ' '),
+      gender: beneficiary.gender == null ? "" : beneficiary.gender.replaceAll(',', ' '),
+      phoneNumber: beneficiary.phoneNumber == null ? "" : beneficiary.phoneNumber.replaceAll(',', ' '),
+      education: beneficiary.education == null ? "" : beneficiary.education.replaceAll(',', ' '),
+      occupation: beneficiary.occupation == null ? "" : beneficiary.occupation.replaceAll(',', ' '),
+      districts: beneficiary.districts == null ? "" : beneficiary.districts.replaceAll(',', ' '),
+      state: beneficiary.state == null ? "" : beneficiary.state.replaceAll(',', ' '),
+      diagnosis: beneficiary.diagnosis == null ? "" : beneficiary.diagnosis.replaceAll(',', ' '),
+      vision: beneficiary.vision == null ? "" : beneficiary.vision.replaceAll(',', ' '),
+      mDVI: beneficiary.mDVI == null ? "" : beneficiary.mDVI.replaceAll(',', ' '),
+      rawExtraFields: beneficiary.extraInformation == null ? "" : beneficiary.extraInformation.replaceAll(',', ' '),
       rawVisionEnhancement: JSON.stringify(beneficiary.Vision_Enhancement).replaceAll(',', ' '),
       rawCounselingEducation: JSON.stringify(beneficiary.Counselling_Education).replaceAll(',', ' '),
       rawComprehensiveLowVisionEvaluation: JSON.stringify(beneficiary.Comprehensive_Low_Vision_Evaluation).replaceAll(',', ' '),
@@ -187,6 +187,48 @@ function filterTrainingSummaryByDateRange(startDate, endDate, summary) {
   return filteredSummary
 }
 
+function buildBeneficiaryGraph(data) {
+  // data is an array of hopital objects
+  const simplifiedData = data.map((hospital) => {
+    return {
+      name: hospital.name,
+      value: hospital.beneficiary.length,
+    }
+  })
+
+  // create a bar graph with graphData
+  const graphData = {
+    labels: simplifiedData.map((hospital) => hospital.name),
+    datasets: [
+      {
+        label: 'Beneficiaries',
+        data: simplifiedData.map((hospital) => hospital.value),
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+          "rgba(75, 192, 192, 0.2)",
+          "rgba(153, 102, 255, 0.2)",
+          "rgba(255, 159, 64, 0.2)",
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(119, 221, 119, 0.2)"
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+          "rgba(255, 99, 132, 1)",
+          "rgba(119, 221, 119, 1)"
+        ],
+        borderWidth: 1,
+      },
+    ],
+  }
+  return graphData;
+}
 
 export default function Summary({ user, summary, beneficiaryFlatList }) {
   // create start date and end data states, start date is set to one year ago, end date is set to today
@@ -218,6 +260,9 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
   const dateFilteredSummary = filterTrainingSummaryByDateRange(startDate, endDate, summary);
   const filteredSummary = dateFilteredSummary.filter((item) => selectedHospitals.includes(item.id));
 
+  const beneficiaryGraphData = buildBeneficiaryGraph(filteredSummary);
+
+  console.log(filteredSummary);
 
   //First get the evaluations
   const lowVisionEvaluationCount = filteredSummary.reduce((sum, item) => sum + item.lowVisionEvaluation.length, 0);
@@ -295,20 +340,20 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
     switch (activeTab) {
       case 0:
         // return h1 with h1 
-        return <Bar data={chartData} />;
-        // return <Graph1 data={props.data} />;
+        return <Bar data={beneficiaryGraphData} />;
+      // return <Graph1 data={props.data} />;
       case 1:
         return <Bar data={chartData} />;
-        // return <Graph2 data={props.data} />;
+      // return <Graph2 data={props.data} />;
       case 2:
         return <Bar data={chartData} />;
-        // return <Graph3 data={props.data} />;
+      // return <Graph3 data={props.data} />;
       case 3:
         return <Bar data={chartData} />;
-        // return <Graph4 data={props.data} />;
+      // return <Graph4 data={props.data} />;
       case 4:
         return <Bar data={chartData} />;
-        // return <Graph5 data={props.data} />;
+      // return <Graph5 data={props.data} />;
       default:
         return null;
     }
@@ -321,25 +366,25 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
         <div className="row">
           {user.admin != null && (<GraphCustomizer summary={summary} selectedHospitals={selectedHospitals} handleHospitalSelection={handleHospitalSelection} handleSelectAll={handleSelectAll} startDate={startDate} handleStartDateChange={handleStartDateChange} endDate={endDate} handleEndDateChange={handleEndDateChange} />)}
           <div className="col-md-10">
-          <Paper>
-            <Tabs
-              value={activeGraphTab}
-              onChange={handleGraphTabChange}
-              indicatorColor="primary"
-              textColor="primary"
-              centered
-            >
-              <Tab label="Beneficiaries" />
-              <Tab label="All Activities" />
-              <Tab label="Training Activities Breakdown" />
-              <Tab label="Devices" />
-            </Tabs>
-            {renderGraph(activeGraphTab)}
-          </Paper>
+            <Paper>
+              <Tabs
+                value={activeGraphTab}
+                onChange={handleGraphTabChange}
+                indicatorColor="primary"
+                textColor="primary"
+                centered
+              >
+                <Tab label="Beneficiaries" />
+                <Tab label="All Activities" />
+                <Tab label="Training Activities Breakdown" />
+                <Tab label="Devices" />
+              </Tabs>
+              {renderGraph(activeGraphTab)}
+            </Paper>
           </div>
         </div>
       </Container>
-      <br/>
+      <br />
       <h1>Download All Beneficiary Data</h1>
       <p>Note this is , seperated if you separate by other delimiter it will not work</p>
       <CSVLink data={beneficiaryFlatList} separator={","}>Download me</CSVLink>
