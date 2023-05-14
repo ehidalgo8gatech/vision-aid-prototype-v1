@@ -13,6 +13,7 @@ import { useState, useEffect } from 'react';
 import {findAllBeneficiary} from "@/pages/api/beneficiary";
 import { CSVLink, CSVDownload } from "react-csv";
 import GraphCustomizer from './components/GraphCustomizer';
+import { Tab, Tabs, Paper } from '@mui/material';
 
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx)
@@ -285,15 +286,56 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
     setEndDate(moment(e.target.value).toDate());
   };
 
+  const [activeGraphTab, setActiveGraphTab] = useState(0);
+  const handleGraphTabChange = (event, newValue) => {
+    setActiveGraphTab(newValue);
+  };
+
+  const renderGraph = (activeTab) => {
+    switch (activeTab) {
+      case 0:
+        // return h1 with h1 
+        return <Bar data={chartData} />;
+        // return <Graph1 data={props.data} />;
+      case 1:
+        return <Bar data={chartData} />;
+        // return <Graph2 data={props.data} />;
+      case 2:
+        return <Bar data={chartData} />;
+        // return <Graph3 data={props.data} />;
+      case 3:
+        return <Bar data={chartData} />;
+        // return <Graph4 data={props.data} />;
+      case 4:
+        return <Bar data={chartData} />;
+        // return <Graph5 data={props.data} />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div>
       <Navigation />
       <Container>
-        <h1>Trainings Summary</h1>
         <div className="row">
           {user.admin != null && (<GraphCustomizer summary={summary} selectedHospitals={selectedHospitals} handleHospitalSelection={handleHospitalSelection} handleSelectAll={handleSelectAll} startDate={startDate} handleStartDateChange={handleStartDateChange} endDate={endDate} handleEndDateChange={handleEndDateChange} />)}
           <div className="col-md-10">
-            <Bar data={chartData} />
+          <Paper>
+            <Tabs
+              value={activeGraphTab}
+              onChange={handleGraphTabChange}
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+            >
+              <Tab label="Beneficiaries" />
+              <Tab label="All Activities" />
+              <Tab label="Training Activities Breakdown" />
+              <Tab label="Devices" />
+            </Tabs>
+            {renderGraph(activeGraphTab)}
+          </Paper>
           </div>
         </div>
       </Container>
