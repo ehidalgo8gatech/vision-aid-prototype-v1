@@ -15,6 +15,7 @@ import { CSVLink, CSVDownload } from "react-csv";
 import GraphCustomizer from './components/GraphCustomizer';
 import { Tab, Tabs, Paper } from '@mui/material';
 
+// This function is called to load data from the server side.
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx)
   if (session == null) {
@@ -26,6 +27,8 @@ export async function getServerSideProps(ctx) {
       },
     }
   }
+
+  // If it's a non admin user, we only want to show the summary for their hospital
   const user = await readUser(session.user.email)
   if (user.admin == null) {
     const hospitalSummary = await getSummaryForHospitalFromID(user.hospitalRole.hospitalId);
@@ -38,6 +41,9 @@ export async function getServerSideProps(ctx) {
     }
   }
 
+  // The user is an admin, so we want to show the summary for all hospitals
+
+  // The following is code to download summary data as a CSV file
   const beneficiaryList = await findAllBeneficiary()
   let flatList = []
 
@@ -118,6 +124,7 @@ export async function getServerSideProps(ctx) {
     flatList.push(flat)
   }
 
+  // We finally return all the data to the page
   if (user.admin != null) {
     const summary = await getSummaryForAllHospitals();
     return {
@@ -131,12 +138,14 @@ export async function getServerSideProps(ctx) {
   }
 }
 
+// This function is used to filter a given training by date range
 function filterByDate(training, start, end) {
   // increment end date by one day to include the end date
   start = moment(start).subtract(1, 'day');
   return moment(training.date).isBetween(moment(start).startOf('day'), moment(end).startOf('day'), null, '[]');
 }
 
+// This function is used to filter the entire summary data by date range
 function filterTrainingSummaryByDateRange(startDate, endDate, summary) {
   const filteredSummary = summary.map((hospital) => {
     const mobileTraining = hospital.mobileTraining.filter((training) => {
@@ -187,6 +196,7 @@ function filterTrainingSummaryByDateRange(startDate, endDate, summary) {
   return filteredSummary
 }
 
+// Graph Options that are constant for all graphs
 const graphOptions = {
   backgroundColor: [
     "rgba(255, 99, 132, 0.2)",
@@ -211,6 +221,7 @@ const graphOptions = {
   borderWidth: 1,
 }
 
+// Function that builds a bar graph to show number of beneficiaries per hospital
 function buildBeneficiaryGraph(data) {
   // data is an array of hopital objects
   const simplifiedData = data.map((hospital) => {
@@ -234,6 +245,7 @@ function buildBeneficiaryGraph(data) {
   return graphData;
 }
 
+// Function that builds a bar graph to show all the activities involved
 function buildActivitiesGraph(data){
   //First get the evaluations
   const lowVisionEvaluationCount = data.reduce((sum, item) => sum + item.lowVisionEvaluation.length, 0);
@@ -277,6 +289,8 @@ function buildActivitiesGraph(data){
 
 }
 
+// Function that builds a bar graph at a sublevel. This function is called 
+// with both "training" and "counselling" as the breakdownType
 function buildBreakdownGraph(data, breakdownType){
   const types = data.reduce((types, hospital) => {
     const hospitalTypes = hospital[breakdownType].map((item) => item.type);
@@ -307,6 +321,7 @@ function buildBreakdownGraph(data, breakdownType){
   return chartData;
 }
 
+// Function that builds a bar graph to show the number of devices dispensed
 function buildDevicesGraph(data){
   // The device information is stored inside the comprehensiveLowVisionEvaluation array 
   // Inside the array, there are fields dispensedSpectacle, dispensedElectronic, dispensedOptical, dispensedNonOptical which is either "Yes" or "No"
@@ -368,15 +383,15 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
 
   // filter summary data based on start and end date of the training
   const dateFilteredSummary = filterTrainingSummaryByDateRange(startDate, endDate, summary);
+  // filter summary data based on selected hospitals
   const filteredSummary = dateFilteredSummary.filter((item) => selectedHospitals.includes(item.id));
 
+  // generate all the data for required graphs
   const beneficiaryGraphData = buildBeneficiaryGraph(filteredSummary);
   const activitiesGraphData = buildActivitiesGraph(filteredSummary);
   const trainingBreakdownGraphData = buildBreakdownGraph(filteredSummary, "training");
   const counsellingBreakdownGraphData = buildBreakdownGraph(filteredSummary, "counsellingEducation");
   const devicesGraphData = buildDevicesGraph(filteredSummary);
-
-  console.log(filteredSummary);
 
   const handleStartDateChange = (e) => {
     setStartDate(moment(e.target.value).toDate());
@@ -394,21 +409,15 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
   const renderGraph = (activeTab) => {
     switch (activeTab) {
       case 0:
-        // return h1 with h1 
         return <Bar data={beneficiaryGraphData} />;
-      // return <Graph1 data={props.data} />;
       case 1:
         return <Bar data={activitiesGraphData} />;
-      // return <Graph2 data={props.data} />;
       case 2:
         return <Bar data={trainingBreakdownGraphData} />;
-      // return <Graph3 data={props.data} />;
       case 3:
         return <Bar data={counsellingBreakdownGraphData} />;
-      // return <Graph4 data={props.data} />;
       case 4:
         return <Bar data={devicesGraphData} />;
-      // return <Graph5 data={props.data} />;
       default:
         return null;
     }
