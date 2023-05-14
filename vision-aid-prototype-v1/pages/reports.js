@@ -277,6 +277,69 @@ function buildActivitiesGraph(data){
 
 }
 
+function buildBreakdownGraph(data, breakdownType){
+  const types = data.reduce((types, hospital) => {
+    const hospitalTypes = hospital[breakdownType].map((item) => item.type);
+    return [...types, ...hospitalTypes];
+  }
+  , []);
+
+  const typeCounts = types.reduce((counts, type) => {
+    const count = counts[type] || 0;
+    return {
+      ...counts,
+      [type]: count + 1,
+    }
+  } 
+  , {});
+
+  const chartData = {
+    labels: Object.keys(typeCounts),
+    datasets: [
+      {
+        label: "Cumulative Counts",
+        data: Object.values(typeCounts),
+        ...graphOptions,
+      },
+    ],
+  };
+
+  return chartData;
+}
+
+function buildDevicesGraph(data){
+  // The device information is stored inside the comprehensiveLowVisionEvaluation array 
+  // Inside the array, there are fields dispensedSpectacle, dispensedElectronic, dispensedOptical, dispensedNonOptical which is either "Yes" or "No"
+  // We want to count the number of "Yes" for each field
+  const dispensedSpectacleCount = data.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.filter((evaluation) => evaluation.dispensedSpectacle === "Yes").length, 0);
+  const dispensedElectronicCount = data.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.filter((evaluation) => evaluation.dispensedElectronic === "Yes").length, 0);
+  const dispensedOpticalCount = data.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.filter((evaluation) => evaluation.dispensedOptical === "Yes").length, 0);
+  const dispensedNonOpticalCount = data.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.filter((evaluation) => evaluation.dispensedNonOptical === "Yes").length, 0);
+
+  const chartData = {
+    labels: [
+      `Spectacle (${dispensedSpectacleCount})`,
+      `Electronic (${dispensedElectronicCount})`,
+      `Optical (${dispensedOpticalCount})`,
+      `Non-Optical (${dispensedNonOpticalCount})`,
+    ],
+    datasets: [
+      {
+        label: "Cumulative Counts",
+        data: [
+          dispensedSpectacleCount,
+          dispensedElectronicCount,
+          dispensedOpticalCount,
+          dispensedNonOpticalCount,
+        ],
+        ...graphOptions,
+      },
+    ],
+  };
+
+  return chartData;
+}
+
 export default function Summary({ user, summary, beneficiaryFlatList }) {
   // create start date and end data states, start date is set to one year ago, end date is set to today
   const [startDate, setStartDate] = useState(moment().subtract(1, 'year').toDate());
@@ -309,13 +372,11 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
 
   const beneficiaryGraphData = buildBeneficiaryGraph(filteredSummary);
   const activitiesGraphData = buildActivitiesGraph(filteredSummary);
+  const trainingBreakdownGraphData = buildBreakdownGraph(filteredSummary, "training");
+  const counsellingBreakdownGraphData = buildBreakdownGraph(filteredSummary, "counsellingEducation");
+  const devicesGraphData = buildDevicesGraph(filteredSummary);
 
   console.log(filteredSummary);
-
-
-
-
-
 
   const handleStartDateChange = (e) => {
     setStartDate(moment(e.target.value).toDate());
@@ -340,13 +401,13 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
         return <Bar data={activitiesGraphData} />;
       // return <Graph2 data={props.data} />;
       case 2:
-        return <Bar data={chartData} />;
+        return <Bar data={trainingBreakdownGraphData} />;
       // return <Graph3 data={props.data} />;
       case 3:
-        return <Bar data={chartData} />;
+        return <Bar data={counsellingBreakdownGraphData} />;
       // return <Graph4 data={props.data} />;
       case 4:
-        return <Bar data={chartData} />;
+        return <Bar data={devicesGraphData} />;
       // return <Graph5 data={props.data} />;
       default:
         return null;
@@ -371,6 +432,7 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
                 <Tab label="Beneficiaries" />
                 <Tab label="All Activities" />
                 <Tab label="Training Activities Breakdown" />
+                <Tab label="Counselling Activities Breakdown" />
                 <Tab label="Devices" />
               </Tabs>
               {renderGraph(activeGraphTab)}
