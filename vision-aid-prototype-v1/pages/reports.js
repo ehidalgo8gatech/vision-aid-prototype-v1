@@ -429,7 +429,8 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
       <Container>
         <div className="row">
           {user.admin != null && (<GraphCustomizer summary={summary} selectedHospitals={selectedHospitals} handleHospitalSelection={handleHospitalSelection} handleSelectAll={handleSelectAll} startDate={startDate} handleStartDateChange={handleStartDateChange} endDate={endDate} handleEndDateChange={handleEndDateChange} />)}
-          <div className="col-md-10">
+          <div className='col-md-1'></div>
+          <div className="col-md-9">
             <Paper>
               <Tabs
                 value={activeGraphTab}
@@ -440,8 +441,8 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
               >
                 <Tab label="Beneficiaries" />
                 <Tab label="All Activities" />
-                <Tab label="Training Activities Breakdown" />
-                <Tab label="Counselling Activities Breakdown" />
+                <Tab label="Training Activities" />
+                <Tab label="Counselling Activities" />
                 <Tab label="Devices" />
               </Tabs>
               {renderGraph(activeGraphTab)}
