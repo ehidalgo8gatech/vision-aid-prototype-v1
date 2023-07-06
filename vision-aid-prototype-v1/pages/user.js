@@ -345,7 +345,7 @@ const renderExtraInformation = () => {
             <br/>
             <br/>
                 <br/>
-               <TrainingForm
+                <TrainingForm
                     existingTrainings={counsellingEducationData}
                     addNewTraining={handleSubmitCounsellingEducation}
                     title="Counseling"
