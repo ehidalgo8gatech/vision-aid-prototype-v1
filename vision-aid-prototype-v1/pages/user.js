@@ -175,7 +175,6 @@ function UserPage(props) {
     <div className="mb-3">
       {canEdit && editableField === field ? (
               <div>
-                  {/* <strong>{label}:</strong> */}
         <form onSubmit={(e) => handleSubmit(e, field)} className="d-inline ms-2">
           <input
             type={type}
@@ -191,7 +190,6 @@ function UserPage(props) {
               </div>
       ) : type == 'hidden' ? (<div></div>) : (
           <div>
-              {/* <strong>{label}:</strong> */}
         <span className="ms-2">
           {formData[field]}
           <button
