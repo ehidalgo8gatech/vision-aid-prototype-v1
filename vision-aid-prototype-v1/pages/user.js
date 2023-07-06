@@ -291,117 +291,24 @@ const renderExtraInformation = () => {
           extraInformation={renderExtraInformation()}
           name={formData['beneficiaryName']}
           />
-            {/* <div className="mb-3">
-                {renderField('MRN', 'mrn', 'text', true)}
-            </div>
-            <div className="mb-3">
-                {renderField('Beneficiary Name', 'beneficiaryName', 'text', true)}
-            </div>
-            <div className="mb-3">
-                {renderField('Hospital Name', 'hospitalName', 'text', false)}
-            </div>
-            <div className="mb-3">
-                      {editableField === "dateOfBirth" ? (
-                        <div>
-                            <strong>Date of Birth:</strong>
-                            <form onSubmit={(e) => handleSubmit(e, "dateOfBirth")} className="d-inline ms-2">
-                              <input
-                                type="date"
-                                className="form-control d-inline w-auto"
-                                name="dateOfBirth"
-                                value={formData["dateOfBirth"]}
-                                onChange={handleInputChange}
-                              />
-                              <button type="submit" className="btn btn-primary btn-sm ms-2">
-                                Save
-                              </button>
-                            </form>
-                        </div>
-                        ) : "date" == 'hidden' ? (<div></div>) : (
-                        <div>
-                            <strong>Date of Birth:</strong>
-                            <span className="ms-2">
-                              {formData["dateOfBirth"].toString().split('T')[0]}
-                              <button
-                                type="button"
-                                className="btn btn-link btn-sm text-primary ms-2"
-                                onClick={() => handleEditClick("dateOfBirth")}
-                              >
-                                  {(<Pencil />)}
-                              </button>
-                            </span>
-                        </div>
-                )}
-            </div>
-            <div className="mb-3">
-                {renderField('Gender', 'gender', 'text', true)}
-            </div>
-            <div className="mb-3">
-                {renderField('Phone Number', 'phoneNumber', ((props.beneficiaryMirror.phoneNumberRequired) ? 'text' : (props.beneficiaryMirror)), true)}
-            </div>
-            <div className="mb-3">
-                {renderField('Education', 'education', ((props.beneficiaryMirror.educationRequired) ? 'text' : (props.beneficiaryMirror)), true)}
-            </div>
-            <div className="mb-3">
-                {renderField('Occupation', 'occupation', ((props.beneficiaryMirror.occupationRequired) ? 'text' : (props.beneficiaryMirror)), true)}
-            </div>
-            <div className="mb-3">
-                {renderField('Districts', 'districts', ((props.beneficiaryMirror.districtsRequired) ? 'text' : (props.beneficiaryMirror)), true)}
-            </div>
-            <div className="mb-3">
-                {renderField('State', 'state', ((props.beneficiaryMirror.stateRequired) ? 'text' : (props.beneficiaryMirror)), true)}
-            </div>
-            <div className="mb-3">
-            {editableField === "extraInformation" ? (
-                        <div>
-                            <strong>Extra Information:</strong>
-                            <form onSubmit={(e) => handleSubmit(e, "extraInformation")} className="d-inline ms-2">
-                              <input
-                                type="text"
-                                className="form-control d-inline w-auto"
-                                name="extraInformation"
-                                value={formData["extraInformation"]}
-                                onChange={handleInputChange}
-                              />
-                              <button type="submit" className="btn btn-primary btn-sm ms-2">
-                                Save
-                              </button>
-                            </form>
-                        </div>
-                        ) : "text" == 'hidden' ? (<div></div>) : (
-                        <div>
-                            <strong>Extra Information:</strong>
-                            <span className="ms-2">
-                            {formData["extraInformation"].toString().split(':')[1].split('"')[1]}:  {formData["extraInformation"].toString().split(':')[2].split('"')[1]}
-                              <button
-                                type="button"
-                                className="btn btn-link btn-sm text-primary ms-2"
-                                onClick={() => handleEditClick("extraInformation")}
-                              >
-                                  {(<Pencil />)}
-                              </button>
-                            </span>
-                        </div>
-                )}
-            </div> */}
             </div>
             <div className="col-md-6">
-                <TrainingFormCLVE
-                    existingTrainings={lowVisionEvaluationData}
-                    addNewTraining={handleSubmitLowVisionEvaluation}
-                    title="Low Vision Screening"
-                    customFieldsDistance={[
-                        'distanceVisualAcuityRE',
-                        'distanceVisualAcuityLE',
-                        'distanceBinocularVisionBE',
-                    ]}
-                    customFieldsNear={[
-                        'nearVisualAcuityRE',
-                        'nearVisualAcuityLE',
-                        'nearBinocularVisionBE',
-                    ]}
-                    api='lowVisionEvaluation'
-                    allfields={false}
+              <TrainingFormCLVE
+                  existingTrainings={lowVisionEvaluationData}
+                  addNewTraining={handleSubmitLowVisionEvaluation}
+                  title="Low Vision Screening"
+                  customFieldsDistance={[
+                      'distanceVisualAcuityRE',
+                      'distanceVisualAcuityLE',
+                      'distanceBinocularVisionBE',
+                  ]}
+                  customFieldsNear={[
+                      'nearVisualAcuityRE',
+                      'nearVisualAcuityLE',
+                      'nearBinocularVisionBE',
+                  ]}
+                  api='lowVisionEvaluation'
+                  allfields={false}
                 />
                 <br/>
               <TrainingFormCLVE
@@ -438,7 +345,7 @@ const renderExtraInformation = () => {
               <br/>
               <br/>
                   <br/>
-                  <TrainingForm
+                <TrainingForm
                       existingTrainings={counsellingEducationData}
                       addNewTraining={handleSubmitCounsellingEducation}
                       title="Counseling"
