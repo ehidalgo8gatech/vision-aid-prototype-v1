@@ -293,22 +293,22 @@ const renderExtraInformation = () => {
           />
             </div>
             <div className="col-md-6">
-               <TrainingFormCLVE
-                   existingTrainings={lowVisionEvaluationData}
-                   addNewTraining={handleSubmitLowVisionEvaluation}
-                   title="Low Vision Screening"
-                   customFieldsDistance={[
-                       'distanceVisualAcuityRE',
-                       'distanceVisualAcuityLE',
-                       'distanceBinocularVisionBE',
-                   ]}
-                   customFieldsNear={[
-                       'nearVisualAcuityRE',
-                       'nearVisualAcuityLE',
-                       'nearBinocularVisionBE',
-                   ]}
-                   api='lowVisionEvaluation'
-                   allfields={false}
+                <TrainingFormCLVE
+                    existingTrainings={lowVisionEvaluationData}
+                    addNewTraining={handleSubmitLowVisionEvaluation}
+                    title="Low Vision Screening"
+                    customFieldsDistance={[
+                        'distanceVisualAcuityRE',
+                        'distanceVisualAcuityLE',
+                        'distanceBinocularVisionBE',
+                    ]}
+                    customFieldsNear={[
+                        'nearVisualAcuityRE',
+                        'nearVisualAcuityLE',
+                        'nearBinocularVisionBE',
+                    ]}
+                    api='lowVisionEvaluation'
+                    allfields={false}
                 />
                 <br/>
             <TrainingFormCLVE
@@ -345,7 +345,7 @@ const renderExtraInformation = () => {
             <br/>
             <br/>
                 <br/>
-              <TrainingForm
+               <TrainingForm
                     existingTrainings={counsellingEducationData}
                     addNewTraining={handleSubmitCounsellingEducation}
                     title="Counseling"
