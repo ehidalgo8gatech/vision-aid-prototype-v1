@@ -16,8 +16,10 @@ function SearchBar({ onSearch }) {
     };
 
     const openUserPage = async (mrn = null) => {
-      if (mrn)
+      if (mrn){
+        console.log("mrn: ", mrn);
         router.push(`/user?mrn=${mrn}`);
+      }
       else
         router.push(`/beneficiaryinformation`);
     };

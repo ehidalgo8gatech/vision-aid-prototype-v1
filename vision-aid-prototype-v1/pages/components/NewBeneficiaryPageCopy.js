@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import Router, { useRouter } from 'next/router';
 import { Pencil } from 'react-bootstrap-icons';
 import Navigation from './navigation/Navigation';
-import TrainingForm from './components/TrainingForm';
+import BeneficiaryTable from './components/BeneficiaryTable';
 import UserProfileCard from './components/UserProfileCard';
+import TrainingForm from './components/TrainingForm';
 import TrainingFormCLVE from './components/TrainingFormCLVE';
 import {getTrainingTypes} from "@/pages/api/trainingType";
 import {getCounsellingType} from "@/pages/api/counsellingType";
@@ -175,7 +176,7 @@ function UserPage(props) {
     <div className="mb-3">
       {canEdit && editableField === field ? (
               <div>
-                  {/* <strong>{label}:</strong> */}
+                  
         <form onSubmit={(e) => handleSubmit(e, field)} className="d-inline ms-2">
           <input
             type={type}
@@ -191,7 +192,7 @@ function UserPage(props) {
               </div>
       ) : type == 'hidden' ? (<div></div>) : (
           <div>
-              {/* <strong>{label}:</strong> */}
+              
         <span className="ms-2">
           {formData[field]}
           <button
@@ -267,18 +268,18 @@ const renderExtraInformation = () => {
           </button>
         </span>
     </div>
-)}
+)
+
+}
+
 
   return (
     <div>
         <Navigation />
-
-        <div className="container">
-        <h2 class="benficiary-heading">Beneficiary Details</h2>
-        <hr class="horizontal-line"/>
-        <div className="row">
-            <div className="col-md-6">
-            <UserProfileCard 
+        <div class="new-beneficiary-page">
+          <h2 class="benficiary-heading">Beneficiary Details</h2>
+          <hr class="horizontal-line"/>
+          <UserProfileCard 
           gender={renderField('gender', 'text', true)} 
           phoneNumber={renderField('phoneNumber', 'text', true)}
           MRN={renderField('mrn', 'text', true)}
@@ -292,101 +293,114 @@ const renderExtraInformation = () => {
           extraInformation={renderExtraInformation()}
           name={formData['beneficiaryName']}
           />
-            {/* <div className="mb-3">
-                {renderField('MRN', 'mrn', 'text', true)}
-            </div>
-            <div className="mb-3">
-                {renderField('Beneficiary Name', 'beneficiaryName', 'text', true)}
-            </div>
-            <div className="mb-3">
-                {renderField('Hospital Name', 'hospitalName', 'text', false)}
-            </div>
-            <div className="mb-3">
-                      {editableField === "dateOfBirth" ? (
-                        <div>
-                            <strong>Date of Birth:</strong>
-                            <form onSubmit={(e) => handleSubmit(e, "dateOfBirth")} className="d-inline ms-2">
-                              <input
-                                type="date"
-                                className="form-control d-inline w-auto"
-                                name="dateOfBirth"
-                                value={formData["dateOfBirth"]}
-                                onChange={handleInputChange}
-                              />
-                              <button type="submit" className="btn btn-primary btn-sm ms-2">
-                                Save
-                              </button>
-                            </form>
-                        </div>
-                        ) : "date" == 'hidden' ? (<div></div>) : (
-                        <div>
-                            <strong>Date of Birth:</strong>
-                            <span className="ms-2">
-                              {formData["dateOfBirth"].toString().split('T')[0]}
-                              <button
-                                type="button"
-                                className="btn btn-link btn-sm text-primary ms-2"
-                                onClick={() => handleEditClick("dateOfBirth")}
-                              >
-                                  {(<Pencil />)}
-                              </button>
-                            </span>
-                        </div>
-                )}
-            </div>
-            <div className="mb-3">
-                {renderField('Gender', 'gender', 'text', true)}
-            </div>
-            <div className="mb-3">
-                {renderField('Phone Number', 'phoneNumber', ((props.beneficiaryMirror.phoneNumberRequired) ? 'text' : (props.beneficiaryMirror)), true)}
-            </div>
-            <div className="mb-3">
-                {renderField('Education', 'education', ((props.beneficiaryMirror.educationRequired) ? 'text' : (props.beneficiaryMirror)), true)}
-            </div>
-            <div className="mb-3">
-                {renderField('Occupation', 'occupation', ((props.beneficiaryMirror.occupationRequired) ? 'text' : (props.beneficiaryMirror)), true)}
-            </div>
-            <div className="mb-3">
-                {renderField('Districts', 'districts', ((props.beneficiaryMirror.districtsRequired) ? 'text' : (props.beneficiaryMirror)), true)}
-            </div>
-            <div className="mb-3">
-                {renderField('State', 'state', ((props.beneficiaryMirror.stateRequired) ? 'text' : (props.beneficiaryMirror)), true)}
-            </div>
-            <div className="mb-3">
-            {editableField === "extraInformation" ? (
-                        <div>
-                            <strong>Extra Information:</strong>
-                            <form onSubmit={(e) => handleSubmit(e, "extraInformation")} className="d-inline ms-2">
-                              <input
-                                type="text"
-                                className="form-control d-inline w-auto"
-                                name="extraInformation"
-                                value={formData["extraInformation"]}
-                                onChange={handleInputChange}
-                              />
-                              <button type="submit" className="btn btn-primary btn-sm ms-2">
-                                Save
-                              </button>
-                            </form>
-                        </div>
-                        ) : "text" == 'hidden' ? (<div></div>) : (
-                        <div>
-                            <strong>Extra Information:</strong>
-                            <span className="ms-2">
-                            {formData["extraInformation"].toString().split(':')[1].split('"')[1]}:  {formData["extraInformation"].toString().split(':')[2].split('"')[1]}
-                              <button
-                                type="button"
-                                className="btn btn-link btn-sm text-primary ms-2"
-                                onClick={() => handleEditClick("extraInformation")}
-                              >
-                                  {(<Pencil />)}
-                              </button>
-                            </span>
-                        </div>
-                )}
-            </div> */}
-            </div>
+          {/* <BeneficiaryTable/> */}
+        </div>
+        
 
+          {/* <div className="container"> */}
+          {/* <h2 className="text-center mt-4 mb-4"><strong>Beneficiary Details</strong></h2>
+          <br/>
+          <div className="row">
+              <div className="col-md-6">
+              <div className="mb-3">
+                  {renderField('MRN', 'mrn', 'text', true)}
+              </div>
+              <div className="mb-3">
+                  {renderField('Beneficiary Name', 'beneficiaryName', 'text', true)}
+              </div>
+              <div className="mb-3">
+                  {renderField('Hospital Name', 'hospitalName', 'text', false)}
+              </div>
+              <div className="mb-3">
+                        {editableField === "dateOfBirth" ? (
+                          <div>
+                              <strong>Date of Birth:</strong>
+                              <form onSubmit={(e) => handleSubmit(e, "dateOfBirth")} className="d-inline ms-2">
+                                <input
+                                  type="date"
+                                  className="form-control d-inline w-auto"
+                                  name="dateOfBirth"
+                                  value={formData["dateOfBirth"]}
+                                  onChange={handleInputChange}
+                                />
+                                <button type="submit" className="btn btn-primary btn-sm ms-2">
+                                  Save
+                                </button>
+                              </form>
+                          </div>
+                          ) : "date" == 'hidden' ? (<div></div>) : (
+                          <div>
+                              <strong>Date of Birth:</strong>
+                              <span className="ms-2">
+                                {formData["dateOfBirth"].toString().split('T')[0]}
+                                <button
+                                  type="button"
+                                  className="btn btn-link btn-sm text-primary ms-2"
+                                  onClick={() => handleEditClick("dateOfBirth")}
+                                >
+                                    {(<Pencil />)}
+                                </button>
+                              </span>
+                          </div>
+                  )}
+              </div>
+              <div className="mb-3">
+                  {renderField('Gender', 'gender', 'text', true)}
+              </div>
+              <div className="mb-3">
+                  {renderField('Phone Number', 'phoneNumber', ((props.beneficiaryMirror.phoneNumberRequired) ? 'text' : (props.beneficiaryMirror)), true)}
+              </div>
+              <div className="mb-3">
+                  {renderField('Education', 'education', ((props.beneficiaryMirror.educationRequired) ? 'text' : (props.beneficiaryMirror)), true)}
+              </div>
+              <div className="mb-3">
+                  {renderField('Occupation', 'occupation', ((props.beneficiaryMirror.occupationRequired) ? 'text' : (props.beneficiaryMirror)), true)}
+              </div>
+              <div className="mb-3">
+                  {renderField('Districts', 'districts', ((props.beneficiaryMirror.districtsRequired) ? 'text' : (props.beneficiaryMirror)), true)}
+              </div>
+              <div className="mb-3">
+                  {renderField('State', 'state', ((props.beneficiaryMirror.stateRequired) ? 'text' : (props.beneficiaryMirror)), true)}
+              </div>
+              <div className="mb-3">
+              {editableField === "extraInformation" ? (
+                          <div>
+                              <strong>Extra Information:</strong>
+                              <form onSubmit={(e) => handleSubmit(e, "extraInformation")} className="d-inline ms-2">
+                                <input
+                                  type="text"
+                                  className="form-control d-inline w-auto"
+                                  name="extraInformation"
+                                  value={formData["extraInformation"]}
+                                  onChange={handleInputChange}
+                                />
+                                <button type="submit" className="btn btn-primary btn-sm ms-2">
+                                  Save
+                                </button>
+                              </form>
+                          </div>
+                          ) : "text" == 'hidden' ? (<div></div>) : (
+                          <div>
+                              <strong>Extra Information:</strong>
+                              <span className="ms-2">
+                              {formData["extraInformation"].toString().split(':')[1].split('"')[1]}:  {formData["extraInformation"].toString().split(':')[2].split('"')[1]}
+                                <button
+                                  type="button"
+                                  className="btn btn-link btn-sm text-primary ms-2"
+                                  onClick={() => handleEditClick("extraInformation")}
+                                >
+                                    {(<Pencil />)}
+                                </button>
+                              </span>
+                          </div>
+                  )}
+              </div>
+
+                          
+*/}
+
+
+            {/* </div> */}
 
             <div className="col-md-6">
                 <TrainingFormCLVE
@@ -407,68 +421,66 @@ const renderExtraInformation = () => {
                     allfields={false}
                 />
                 <br/>
-              <TrainingFormCLVE
-                existingTrainings={comprehensiveLowVisionEvaluationData}
-                addNewTraining={handleSubmitComprehensiveLowVisionEvaluation}
-                title="Comprehensive Low Vision Evaluation"
-                customFieldsDistance={[
-                  'distanceVisualAcuityRE', 
-                  'distanceVisualAcuityLE', 
-                  'distanceBinocularVisionBE',
-                ]}
-                customFieldsNear={[
-                  'nearVisualAcuityRE', 
-                  'nearVisualAcuityLE',
-                  'nearBinocularVisionBE',
-                ]}
-                api='comprehensiveLowVisionEvaluation'
-                allfields={true}
-              />
-              <br/>
-              <TrainingForm
-                existingTrainings={visionTrainingData}
-                addNewTraining={handleSubmitVisionTraining}
-                title="Vision Enhancement"
-                customFields={[]}
-                api='visionEnhancement'
-                submitButtonTest='Add New Vision Enhancement'
-                typeList={null}
-                mdvi={true}
-                subTypeList={null}
-              />
-              <br/>
-              <br/>
-              <br/>
-              <br/>
-                  <br/>
-                  <TrainingForm
-                      existingTrainings={counsellingEducationData}
-                      addNewTraining={handleSubmitCounsellingEducation}
-                      title="Counseling"
-                      customFields={[]}
-                      api='counsellingEducation'
-                      submitButtonTest='Add New Counseling'
-                      typeList={props.counsellingType}
-                      mdvi={false}
-                      subTypeList={null}
-                  />
-                  <br/>
-              <TrainingForm
-                existingTrainings={trainingData}
-                addNewTraining={handleSubmitTraining}
-                title="Training"
-                customFields={[]}
-                api='training'
-                submitButtonTest='Add New Training'
-                typeList={props.trainingType}
-                mdvi={false}
-                subTypeList={props.trainingSubType}
-              />
-              <br/>
+            <TrainingFormCLVE
+              existingTrainings={comprehensiveLowVisionEvaluationData}
+              addNewTraining={handleSubmitComprehensiveLowVisionEvaluation}
+              title="Comprehensive Low Vision Evaluation"
+              customFieldsDistance={[
+                'distanceVisualAcuityRE', 
+                'distanceVisualAcuityLE', 
+                'distanceBinocularVisionBE',
+              ]}
+              customFieldsNear={[
+                'nearVisualAcuityRE', 
+                'nearVisualAcuityLE',
+                'nearBinocularVisionBE',
+              ]}
+              api='comprehensiveLowVisionEvaluation'
+              allfields={true}
+            />
+            <br/>
+            <TrainingForm
+              existingTrainings={visionTrainingData}
+              addNewTraining={handleSubmitVisionTraining}
+              title="Vision Enhancement"
+              customFields={[]}
+              api='visionEnhancement'
+              submitButtonTest='Add New Vision Enhancement'
+              typeList={null}
+              mdvi={true}
+              subTypeList={null}
+            />
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+                <br/>
+                <TrainingForm
+                    existingTrainings={counsellingEducationData}
+                    addNewTraining={handleSubmitCounsellingEducation}
+                    title="Counseling"
+                    customFields={[]}
+                    api='counsellingEducation'
+                    submitButtonTest='Add New Counseling'
+                    typeList={props.counsellingType}
+                    mdvi={false}
+                    subTypeList={null}
+                />
+                <br/>
+            <TrainingForm
+              existingTrainings={trainingData}
+              addNewTraining={handleSubmitTraining}
+              title="Training"
+              customFields={[]}
+              api='training'
+              submitButtonTest='Add New Training'
+              typeList={props.trainingType}
+              mdvi={false}
+              subTypeList={props.trainingSubType}
+            />
+            <br/>
 
             </div>
-        </div>
-        </div>
     </div>
   );
 }
