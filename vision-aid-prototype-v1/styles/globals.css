@@ -109,6 +109,14 @@ a {
 }
 */
 
+html,
+      body,
+      body > div:first-child,
+      div#__next,
+      div#__next > div {
+        height: 100%;
+      }
+
 
 :root {
   --max-width: 1100px;
@@ -117,9 +125,9 @@ a {
     'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
     'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
 
-  --foreground-rgb: 0, 0, 0;
+  --foreground-rgb: 238, 240, 241;
   --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background-end-rgb: rgba(235,235,235,255);
 
   --primary-glow: conic-gradient(
     from 180deg at 50% 50%,
@@ -218,9 +226,9 @@ body {
   background: linear-gradient(
       to bottom,
       transparent,
-      rgb(var(--background-end-rgb))
+      rgba(235,235,235,255)
     )
-    rgb(var(--background-start-rgb));
+    rgba(235,235,235,255);
 }
 
 a {
@@ -319,3 +327,101 @@ label {
     display: none;
 }
 
+.user-profile-card {
+  width: 450px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  margin-left: 10px;
+  margin-bottom: 80px!important;
+  text-align: left;
+  block-size: fit-content;
+  float: left;
+}
+
+.user-name {
+  font-weight: bold;
+  font-size: 23px!important;
+}
+
+.profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: block;
+  object-fit: cover;
+  margin-left: 0px;
+}
+
+.profile-info {
+  text-align: left;
+}
+
+.user-profile-card h2 {
+  font-size: 15px;
+  text-align: left;
+  margin-top: 0px;
+}
+
+.profile-info p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #777;
+  text-align: left;
+}
+
+.profile-info table {
+  margin: 10px auto;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.profile-info table tr td {
+  padding: 5px;
+  width: 50%;
+}
+
+.profile-info table tr td:first-child {
+  text-align: left;
+  color: #777;
+}
+
+.new-beneficiary-page {
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 50px;
+}
+
+.horizontal-line {
+  width: 100%;
+  height: 1px;
+  background: grey;
+}
+
+h2  {
+  text-align: left;
+}
+
+
+.beneficiary-card {
+  block-size: fit-content;
+}
+
+.beneficiary-table {
+  float: right;
+  text-align: left;
+  width: 63%!important;
+}
+
+.thead-dark{
+  background-color: #b8d1ba;
+}
+
+.divider{
+  width:5px;
+  height:auto;
+  display:inline-block;
+}

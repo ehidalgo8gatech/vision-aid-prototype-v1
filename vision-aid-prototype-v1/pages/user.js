@@ -4,6 +4,7 @@ import Router, { useRouter } from 'next/router';
 import { Pencil } from 'react-bootstrap-icons';
 import Navigation from './navigation/Navigation';
 import TrainingForm from './components/TrainingForm';
+import UserProfileCard from './components/UserProfileCard';
 import TrainingFormCLVE from './components/TrainingFormCLVE';
 import {getTrainingTypes} from "@/pages/api/trainingType";
 import {getCounsellingType} from "@/pages/api/counsellingType";
@@ -170,11 +171,11 @@ function UserPage(props) {
     return <div>Loading...</div>;
   }
 
-  const renderField = (label, field, type, canEdit) => (
+  const renderField = (field, type, canEdit) => (
     <div className="mb-3">
       {canEdit && editableField === field ? (
               <div>
-                  <strong>{label}:</strong>
+                  {/* <strong>{label}:</strong> */}
         <form onSubmit={(e) => handleSubmit(e, field)} className="d-inline ms-2">
           <input
             type={type}
@@ -190,7 +191,7 @@ function UserPage(props) {
               </div>
       ) : type == 'hidden' ? (<div></div>) : (
           <div>
-              <strong>{label}:</strong>
+              {/* <strong>{label}:</strong> */}
         <span className="ms-2">
           {formData[field]}
           <button
@@ -205,15 +206,92 @@ function UserPage(props) {
       )}
     </div>
   );
+
+  const renderDOB = () => {
+    return editableField === "dateOfBirth" ? (
+    <div>
+        <form onSubmit={(e) => handleSubmit(e, "dateOfBirth")} className="d-inline ms-2">
+          <input
+            type="date"
+            className="form-control d-inline w-auto"
+            name="dateOfBirth"
+            value={formData["dateOfBirth"]}
+            onChange={handleInputChange}
+          />
+          <button type="submit" className="btn btn-primary btn-sm ms-2">
+            Save
+          </button>
+        </form>
+    </div>
+    ) : "date" == 'hidden' ? (<div></div>) : (
+    <div>
+        <span className="ms-2">
+          {formData["dateOfBirth"].toString().split('T')[0]}
+          <button
+            type="button"
+            className="btn btn-link btn-sm text-primary ms-2"
+            onClick={() => handleEditClick("dateOfBirth")}
+          >
+              {(<Pencil />)}
+          </button>
+        </span>
+    </div>
+)}
+
+const renderExtraInformation = () => {
+  return editableField === "extraInformation" ? (
+    <div>
+        <form onSubmit={(e) => handleSubmit(e, "extraInformation")} className="d-inline ms-2">
+          <input
+            type="text"
+            className="form-control d-inline w-auto"
+            name="extraInformation"
+            value={formData["extraInformation"]}
+            onChange={handleInputChange}
+          />
+          <button type="submit" className="btn btn-primary btn-sm ms-2">
+            Save
+          </button>
+        </form>
+    </div>
+    ) : "text" == 'hidden' ? (<div></div>) : (
+    <div>
+        <span className="ms-2">
+        {formData["extraInformation"].toString().split(':')[1].split('"')[1]}:  {formData["extraInformation"].toString().split(':')[2].split('"')[1]}
+          <button
+            type="button"
+            className="btn btn-link btn-sm text-primary ms-2"
+            onClick={() => handleEditClick("extraInformation")}
+          >
+              {(<Pencil />)}
+          </button>
+        </span>
+    </div>
+)}
+
   return (
     <div>
         <Navigation />
         <div className="container">
-        <h2 className="text-center mt-4 mb-4"><strong>Beneficiary Details</strong></h2>
-        <br/>
+        <h2 class="benficiary-heading">Beneficiary Details</h2>
+        <hr class="horizontal-line"/>
         <div className="row">
             <div className="col-md-6">
-            <div className="mb-3">
+            <UserProfileCard 
+          gender={renderField('gender', 'text', true)} 
+          phoneNumber={renderField('phoneNumber', 'text', true)}
+          MRN={renderField('mrn', 'text', true)}
+          dob={renderDOB()}
+          hospitalName={renderField('hospitalName', 'text', true)}
+          education={renderField('education', ((props.beneficiaryMirror.educationRequired) ? 'text' : (props.beneficiaryMirror)), true)}
+          districts={renderField('districts', ((props.beneficiaryMirror.occupationRequired) ? 'text' : (props.beneficiaryMirror)), true)}
+          state={renderField('state', ((props.beneficiaryMirror.stateRequired) ? 'text' : (props.beneficiaryMirror)), true)}
+          beneficiaryName={renderField('beneficiaryName', 'text', true)}
+          occupation={renderField('occupation', ((props.beneficiaryMirror.occupationRequired) ? 'text' : (props.beneficiaryMirror)), true)}
+          extraInformation={renderExtraInformation()}
+          name={formData['beneficiaryName']}
+          />
+            {/* <div className="mb-3">
                 {renderField('MRN', 'mrn', 'text', true)}
             </div>
             <div className="mb-3">
@@ -305,7 +383,7 @@ function UserPage(props) {
                             </span>
                         </div>
                 )}
-            </div>
+            </div> */}
             </div>
             <div className="col-md-6">
                 <TrainingFormCLVE
@@ -326,64 +404,64 @@ function UserPage(props) {
                     allfields={false}
                 />
                 <br/>
-            <TrainingFormCLVE
-              existingTrainings={comprehensiveLowVisionEvaluationData}
-              addNewTraining={handleSubmitComprehensiveLowVisionEvaluation}
-              title="Comprehensive Low Vision Evaluation"
-              customFieldsDistance={[
-                'distanceVisualAcuityRE', 
-                'distanceVisualAcuityLE', 
-                'distanceBinocularVisionBE',
-              ]}
-              customFieldsNear={[
-                'nearVisualAcuityRE', 
-                'nearVisualAcuityLE',
-                'nearBinocularVisionBE',
-              ]}
-              api='comprehensiveLowVisionEvaluation'
-              allfields={true}
-            />
-            <br/>
-            <TrainingForm
-              existingTrainings={visionTrainingData}
-              addNewTraining={handleSubmitVisionTraining}
-              title="Vision Enhancement"
-              customFields={[]}
-              api='visionEnhancement'
-              submitButtonTest='Add New Vision Enhancement'
-              typeList={null}
-              mdvi={true}
-              subTypeList={null}
-            />
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-                <br/>
-                <TrainingForm
-                    existingTrainings={counsellingEducationData}
-                    addNewTraining={handleSubmitCounsellingEducation}
-                    title="Counseling"
-                    customFields={[]}
-                    api='counsellingEducation'
-                    submitButtonTest='Add New Counseling'
-                    typeList={props.counsellingType}
-                    mdvi={false}
-                    subTypeList={null}
-                />
-                <br/>
-            <TrainingForm
-              existingTrainings={trainingData}
-              addNewTraining={handleSubmitTraining}
-              title="Training"
-              customFields={[]}
-              api='training'
-              submitButtonTest='Add New Training'
-              typeList={props.trainingType}
-              mdvi={false}
-              subTypeList={props.trainingSubType}
-            />
-            <br/>
+              <TrainingFormCLVE
+                existingTrainings={comprehensiveLowVisionEvaluationData}
+                addNewTraining={handleSubmitComprehensiveLowVisionEvaluation}
+                title="Comprehensive Low Vision Evaluation"
+                customFieldsDistance={[
+                  'distanceVisualAcuityRE', 
+                  'distanceVisualAcuityLE', 
+                  'distanceBinocularVisionBE',
+                ]}
+                customFieldsNear={[
+                  'nearVisualAcuityRE', 
+                  'nearVisualAcuityLE',
+                  'nearBinocularVisionBE',
+                ]}
+                api='comprehensiveLowVisionEvaluation'
+                allfields={true}
+              />
+              <br/>
+              <TrainingForm
+                existingTrainings={visionTrainingData}
+                addNewTraining={handleSubmitVisionTraining}
+                title="Vision Enhancement"
+                customFields={[]}
+                api='visionEnhancement'
+                submitButtonTest='Add New Vision Enhancement'
+                typeList={null}
+                mdvi={true}
+                subTypeList={null}
+              />
+              <br/>
+              <br/>
+              <br/>
+              <br/>
+                  <br/>
+                  <TrainingForm
+                      existingTrainings={counsellingEducationData}
+                      addNewTraining={handleSubmitCounsellingEducation}
+                      title="Counseling"
+                      customFields={[]}
+                      api='counsellingEducation'
+                      submitButtonTest='Add New Counseling'
+                      typeList={props.counsellingType}
+                      mdvi={false}
+                      subTypeList={null}
+                  />
+                  <br/>
+              <TrainingForm
+                existingTrainings={trainingData}
+                addNewTraining={handleSubmitTraining}
+                title="Training"
+                customFields={[]}
+                api='training'
+                submitButtonTest='Add New Training'
+                typeList={props.trainingType}
+                mdvi={false}
+                subTypeList={props.trainingSubType}
+              />
+              <br/>
 
             </div>
         </div>
