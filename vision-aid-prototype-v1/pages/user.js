@@ -293,82 +293,82 @@ const renderExtraInformation = () => {
           />
             </div>
             <div className="col-md-6">
-              <TrainingFormCLVE
-                  existingTrainings={lowVisionEvaluationData}
-                  addNewTraining={handleSubmitLowVisionEvaluation}
-                  title="Low Vision Screening"
-                  customFieldsDistance={[
-                      'distanceVisualAcuityRE',
-                      'distanceVisualAcuityLE',
-                      'distanceBinocularVisionBE',
-                  ]}
-                  customFieldsNear={[
-                      'nearVisualAcuityRE',
-                      'nearVisualAcuityLE',
-                      'nearBinocularVisionBE',
-                  ]}
-                  api='lowVisionEvaluation'
-                  allfields={false}
+               <TrainingFormCLVE
+                   existingTrainings={lowVisionEvaluationData}
+                   addNewTraining={handleSubmitLowVisionEvaluation}
+                   title="Low Vision Screening"
+                   customFieldsDistance={[
+                       'distanceVisualAcuityRE',
+                       'distanceVisualAcuityLE',
+                       'distanceBinocularVisionBE',
+                   ]}
+                   customFieldsNear={[
+                       'nearVisualAcuityRE',
+                       'nearVisualAcuityLE',
+                       'nearBinocularVisionBE',
+                   ]}
+                   api='lowVisionEvaluation'
+                   allfields={false}
                 />
                 <br/>
-              <TrainingFormCLVE
-                existingTrainings={comprehensiveLowVisionEvaluationData}
-                addNewTraining={handleSubmitComprehensiveLowVisionEvaluation}
-                title="Comprehensive Low Vision Evaluation"
-                customFieldsDistance={[
-                  'distanceVisualAcuityRE', 
-                  'distanceVisualAcuityLE', 
-                  'distanceBinocularVisionBE',
-                ]}
-                customFieldsNear={[
-                  'nearVisualAcuityRE', 
-                  'nearVisualAcuityLE',
-                  'nearBinocularVisionBE',
-                ]}
-                api='comprehensiveLowVisionEvaluation'
-                allfields={true}
-              />
-              <br/>
+            <TrainingFormCLVE
+              existingTrainings={comprehensiveLowVisionEvaluationData}
+              addNewTraining={handleSubmitComprehensiveLowVisionEvaluation}
+              title="Comprehensive Low Vision Evaluation"
+              customFieldsDistance={[
+                'distanceVisualAcuityRE', 
+                'distanceVisualAcuityLE', 
+                'distanceBinocularVisionBE',
+              ]}
+              customFieldsNear={[
+                'nearVisualAcuityRE', 
+                'nearVisualAcuityLE',
+                'nearBinocularVisionBE',
+              ]}
+              api='comprehensiveLowVisionEvaluation'
+              allfields={true}
+            />
+            <br/>
+            <TrainingForm
+              existingTrainings={visionTrainingData}
+              addNewTraining={handleSubmitVisionTraining}
+              title="Vision Enhancement"
+              customFields={[]}
+              api='visionEnhancement'
+              submitButtonTest='Add New Vision Enhancement'
+              typeList={null}
+              mdvi={true}
+              subTypeList={null}
+            />
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+                <br/>
               <TrainingForm
-                existingTrainings={visionTrainingData}
-                addNewTraining={handleSubmitVisionTraining}
-                title="Vision Enhancement"
-                customFields={[]}
-                api='visionEnhancement'
-                submitButtonTest='Add New Vision Enhancement'
-                typeList={null}
-                mdvi={true}
-                subTypeList={null}
-              />
-              <br/>
-              <br/>
-              <br/>
-              <br/>
-                  <br/>
-                <TrainingForm
-                      existingTrainings={counsellingEducationData}
-                      addNewTraining={handleSubmitCounsellingEducation}
-                      title="Counseling"
-                      customFields={[]}
-                      api='counsellingEducation'
-                      submitButtonTest='Add New Counseling'
-                      typeList={props.counsellingType}
-                      mdvi={false}
-                      subTypeList={null}
-                  />
-                  <br/>
-              <TrainingForm
-                existingTrainings={trainingData}
-                addNewTraining={handleSubmitTraining}
-                title="Training"
-                customFields={[]}
-                api='training'
-                submitButtonTest='Add New Training'
-                typeList={props.trainingType}
-                mdvi={false}
-                subTypeList={props.trainingSubType}
-              />
-              <br/>
+                    existingTrainings={counsellingEducationData}
+                    addNewTraining={handleSubmitCounsellingEducation}
+                    title="Counseling"
+                    customFields={[]}
+                    api='counsellingEducation'
+                    submitButtonTest='Add New Counseling'
+                    typeList={props.counsellingType}
+                    mdvi={false}
+                    subTypeList={null}
+                />
+                <br/>
+            <TrainingForm
+              existingTrainings={trainingData}
+              addNewTraining={handleSubmitTraining}
+              title="Training"
+              customFields={[]}
+              api='training'
+              submitButtonTest='Add New Training'
+              typeList={props.trainingType}
+              mdvi={false}
+              subTypeList={props.trainingSubType}
+            />
+            <br/>
 
             </div>
         </div>
