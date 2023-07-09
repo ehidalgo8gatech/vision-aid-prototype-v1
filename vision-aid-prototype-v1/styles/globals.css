@@ -360,6 +360,11 @@ label {
   text-align: left;
 }
 
+.text-align-left {
+  text-align: left;
+}
+
+
 .user-profile-card h2 {
   font-size: 15px;
   text-align: left;
@@ -411,9 +416,8 @@ h2  {
 }
 
 .beneficiary-table {
-  float: right;
   text-align: left;
-  width: 63%!important;
+  border:#00000010
 }
 
 .thead-dark{
@@ -425,3 +429,4 @@ h2  {
   height:auto;
   display:inline-block;
 }
+
