@@ -292,8 +292,7 @@ const renderExtraInformation = () => {
           />
             </div>
             <div className="col-md-6">
-               <BeneficiaryServicesTable user={props.user}/>
-
+              <BeneficiaryServicesTable user={props.user}/>
             </div>
         </div>
         </div>

@@ -51,7 +51,7 @@ export default function BeneficiaryServicesTable(props) {
             </tr>
             <tr>
             <th scope="row">Training</th>
-            <td><button type="button" class="btn btn-primary" onClick={() => openUserHistoricalEvaluationPage(props.user.mrn, "Computer_Training")}>History</button><div class="divider"/>
+            <td><button type="button" class="btn btn-primary" onClick={() => openUserHistoricalEvaluationPage(props.user.mrn, "Training")}>History</button><div class="divider"/>
             <button type="button" class="btn btn-primary">New</button></td>
             </tr>
         </tbody>

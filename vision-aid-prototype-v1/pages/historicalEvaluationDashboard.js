@@ -10,7 +10,8 @@ import UserProfileCard from './components/UserProfileCard';
 import HistoricalLowVisionScreeningForm from './components/HistoricalLowVisionScreeningForm';
 import HistoricalCLVForm from './components/HistoricalCLVForm';
 import HistoricalVisionEnhancementForm from './components/HistoricalVisionEnhancementForm';
-
+import HistoricalCounselingForm from './components/HistoricalCounselingForm';
+import HistoricalTrainingForm from './components/HistoricalTrainingForm';
 
 
 
@@ -37,24 +38,30 @@ export default function HistoricalEvaluationPage(props) {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value});
+        handleServiceChange(formatDate(formatDate['historyDate']), service);
     };
 
     var historicalDashboard;
-    
-    if(formData['historyDate']==undefined || filterData(formData['historyDate'], service)==undefined){
-        historicalDashboard = <div className="text-align-left">No historical data is present for this date!</div>;
-    } else {
-        if(props.service == "Low_Vision_Evaluation"){
-            historicalDashboard = <HistoricalLowVisionScreeningForm evaluationData={filterData(formData['historyDate'], service)}/>;
-        } else if(props.service == "Comprehensive_Low_Vision_Evaluation"){
-            historicalDashboard = <HistoricalCLVForm evaluationData={filterData(formData['historyDate'], service)}/>
-        } else if(props.service == "Vision_Enhancement"){
-            historicalDashboard = <HistoricalVisionEnhancementForm evaluationData={filterData(formData['historyDate'], service)}/>
-        } else if(props.service == "Counselling_Education"){
-            historicalDashboard = <Counselling_Education evaluationData={filterData(formData['historyDate'], service)}/>
-        } else if(props.service == "Computer_Training"){
-            historicalDashboard = <HistoricalTrainingForm evaluationData={filterData(formData['historyDate'], service)}/>
+
+    const handleServiceChange = (date, services) => {
+        if(date==undefined || filterData(date, services)==undefined){
+            historicalDashboard = <div className="text-align-left">No historical data is present for this date!</div>;
+        } else {
+            if(props.service == "Low_Vision_Evaluation"){
+                historicalDashboard = <HistoricalLowVisionScreeningForm evaluationData={filterData(date, services)}/>;
+            } else if(props.service == "Comprehensive_Low_Vision_Evaluation"){
+                historicalDashboard = <HistoricalCLVForm evaluationData={filterData(date, services)}/>
+            } else if(props.service == "Vision_Enhancement"){
+                historicalDashboard = <HistoricalVisionEnhancementForm evaluationData={filterData(date, services)}/>
+            } else if(props.service == "Counselling_Education"){
+                historicalDashboard = <HistoricalCounselingForm evaluationData={filterData(date, services)}/>
+            } else if(props.service == "Training"){
+                historicalDashboard = <HistoricalTrainingForm evaluationData={filterData(date, services)}/>
+            }
         }
+
+        return historicalDashboard;
+
     }
    
 
@@ -88,7 +95,7 @@ export default function HistoricalEvaluationPage(props) {
                   </div>
                   </div>
                   <div className="row">
-                    {historicalDashboard}
+                    {handleServiceChange(formatDate(formData['historyDate']), service)}
                   </div>
               </div>
           </div>
@@ -96,11 +103,6 @@ export default function HistoricalEvaluationPage(props) {
     </div>
 )
 }
-
-
-
-
-
 
 export async function getServerSideProps({query}){
     var user;
