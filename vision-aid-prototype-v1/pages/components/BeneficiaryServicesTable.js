@@ -9,11 +9,10 @@ import {useSession, signIn, signOut, getSession} from "next-auth/react";
 
 export default function BeneficiaryServicesTable(props) {
     const router = useRouter();
-    console.log("props inside bene table: ", props.user.mrn);
+
     const openUserHistoricalEvaluationPage = async (mrn = null, service=null) => {
-        console.log("props.mrn, service: ", mrn, service);
         if (mrn)
-          router.push(`/historicalEvaluation?mrn=${mrn}&service=${service}`);
+          router.push(`/historicalEvaluationDashboard?mrn=${mrn}&service=${service}`);
         else
         {
             router.push(`/beneficiaryinformation`, undefined, {shallow:true});

@@ -7,8 +7,7 @@ import { Inter } from '@next/font/google'
 import {useSession, signIn, signOut, getSession} from "next-auth/react";
 
 
-export default function HistoricalEvaluationForm(props) {
-    console.log("props inside history form: ", props);
+export default function HistoricalLowVisionScreeningForm(props) {
     const data = props.evaluationData;
     return(
         <table class="table beneficiary-table table-bordered">

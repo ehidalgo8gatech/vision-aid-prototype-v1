@@ -7,7 +7,10 @@ import { Inter } from '@next/font/google'
 import {useSession, signIn, signOut, getSession} from "next-auth/react";
 import Navigation from './navigation/Navigation';
 import UserProfileCard from './components/UserProfileCard';
-import HistoricalEvaluationForm from './components/HistoricalEvaluationForm';
+import HistoricalLowVisionScreeningForm from './components/HistoricalLowVisionScreeningForm';
+import HistoricalCLVForm from './components/HistoricalCLVForm';
+import HistoricalVisionEnhancementForm from './components/HistoricalVisionEnhancementForm';
+
 
 
 
@@ -36,7 +39,24 @@ export default function HistoricalEvaluationPage(props) {
         setFormData({ ...formData, [e.target.name]: e.target.value});
     };
 
-    console.log(props.user);
+    var historicalDashboard;
+    
+    if(formData['historyDate']==undefined || filterData(formData['historyDate'], service)==undefined){
+        historicalDashboard = <div className="text-align-left">No historical data is present for this date!</div>;
+    } else {
+        if(props.service == "Low_Vision_Evaluation"){
+            historicalDashboard = <HistoricalLowVisionScreeningForm evaluationData={filterData(formData['historyDate'], service)}/>;
+        } else if(props.service == "Comprehensive_Low_Vision_Evaluation"){
+            historicalDashboard = <HistoricalCLVForm evaluationData={filterData(formData['historyDate'], service)}/>
+        } else if(props.service == "Vision_Enhancement"){
+            historicalDashboard = <HistoricalVisionEnhancementForm evaluationData={filterData(formData['historyDate'], service)}/>
+        } else if(props.service == "Counselling_Education"){
+            historicalDashboard = <Counselling_Education evaluationData={filterData(formData['historyDate'], service)}/>
+        } else if(props.service == "Computer_Training"){
+            historicalDashboard = <HistoricalTrainingForm evaluationData={filterData(formData['historyDate'], service)}/>
+        }
+    }
+   
 
     return (
     <div>
@@ -68,8 +88,7 @@ export default function HistoricalEvaluationPage(props) {
                   </div>
                   </div>
                   <div className="row">
-                  {filterData(formData['historyDate'], service)!==undefined ?
-                 <HistoricalEvaluationForm evaluationData={filterData(formData['historyDate'], service)}/> : <div className="text-align-left">No historical data is present for this date!</div>}
+                    {historicalDashboard}
                   </div>
               </div>
           </div>
