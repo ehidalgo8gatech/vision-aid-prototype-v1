@@ -4,6 +4,7 @@ import Router, { useRouter } from 'next/router';
 import { Pencil } from 'react-bootstrap-icons';
 import Navigation from './navigation/Navigation';
 import TrainingForm from './components/TrainingForm';
+import BeneficiaryServicesTable from './components/BeneficiaryServicesTable';
 import UserProfileCard from './components/UserProfileCard';
 import TrainingFormCLVE from './components/TrainingFormCLVE';
 import {getTrainingTypes} from "@/pages/api/trainingType";
@@ -224,7 +225,7 @@ function UserPage(props) {
     ) : "date" == 'hidden' ? (<div></div>) : (
     <div>
         <span className="ms-2">
-          {formData["dateOfBirth"].toString().split('T')[0]}
+        {formData["dateOfBirth"].toString().split('T')[0]}
           <button
             type="button"
             className="btn btn-link btn-sm text-primary ms-2"
@@ -236,7 +237,7 @@ function UserPage(props) {
     </div>
 )}
 
-const renderExtraInformation = () => {
+const renderExtraInformation = () => { 
   return editableField === "extraInformation" ? (
     <div>
         <form onSubmit={(e) => handleSubmit(e, "extraInformation")} className="d-inline ms-2">
@@ -291,83 +292,7 @@ const renderExtraInformation = () => {
           />
             </div>
             <div className="col-md-6">
-                <TrainingFormCLVE
-                    existingTrainings={lowVisionEvaluationData}
-                    addNewTraining={handleSubmitLowVisionEvaluation}
-                    title="Low Vision Screening"
-                    customFieldsDistance={[
-                        'distanceVisualAcuityRE',
-                        'distanceVisualAcuityLE',
-                        'distanceBinocularVisionBE',
-                    ]}
-                    customFieldsNear={[
-                        'nearVisualAcuityRE',
-                        'nearVisualAcuityLE',
-                        'nearBinocularVisionBE',
-                    ]}
-                    api='lowVisionEvaluation'
-                    allfields={false}
-                />
-                <br/>
-            <TrainingFormCLVE
-              existingTrainings={comprehensiveLowVisionEvaluationData}
-              addNewTraining={handleSubmitComprehensiveLowVisionEvaluation}
-              title="Comprehensive Low Vision Evaluation"
-              customFieldsDistance={[
-                'distanceVisualAcuityRE', 
-                'distanceVisualAcuityLE', 
-                'distanceBinocularVisionBE',
-              ]}
-              customFieldsNear={[
-                'nearVisualAcuityRE', 
-                'nearVisualAcuityLE',
-                'nearBinocularVisionBE',
-              ]}
-              api='comprehensiveLowVisionEvaluation'
-              allfields={true}
-            />
-            <br/>
-            <TrainingForm
-              existingTrainings={visionTrainingData}
-              addNewTraining={handleSubmitVisionTraining}
-              title="Vision Enhancement"
-              customFields={[]}
-              api='visionEnhancement'
-              submitButtonTest='Add New Vision Enhancement'
-              typeList={null}
-              mdvi={true}
-              subTypeList={null}
-            />
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-                <br/>
-                <TrainingForm
-                    existingTrainings={counsellingEducationData}
-                    addNewTraining={handleSubmitCounsellingEducation}
-                    title="Counseling"
-                    customFields={[]}
-                    api='counsellingEducation'
-                    submitButtonTest='Add New Counseling'
-                    typeList={props.counsellingType}
-                    mdvi={false}
-                    subTypeList={null}
-                />
-                <br/>
-            <TrainingForm
-              existingTrainings={trainingData}
-              addNewTraining={handleSubmitTraining}
-              title="Training"
-              customFields={[]}
-              api='training'
-              submitButtonTest='Add New Training'
-              typeList={props.trainingType}
-              mdvi={false}
-              subTypeList={props.trainingSubType}
-            />
-            <br/>
-
+              <BeneficiaryServicesTable user={props.user}/>
             </div>
         </div>
         </div>
