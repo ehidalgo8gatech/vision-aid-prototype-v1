@@ -10,6 +10,7 @@ import {useSession, signIn, signOut, getSession} from "next-auth/react";
 export default function HistoricalLowVisionScreeningForm(props) {
     const data = props.evaluationData;
     return(
+        data == undefined ? <div className="text-align-left">No historical data is present for this date!</div>:
         <table class="table beneficiary-table table-bordered">
         <thead class="thead-dark">
             <tr>
