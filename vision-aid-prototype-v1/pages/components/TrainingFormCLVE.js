@@ -5,7 +5,7 @@ import {v4 as uuidv4} from "uuid";
 import Router from "next/router";
 
 const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFieldsDistance, customFieldsNear,title,api, allfields }) => {
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(true);
 
   const handleToggle = () => {
     setShowForm(!showForm);
@@ -128,22 +128,9 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
   return (
 <div className="col-12">
       <div className="d-flex justify-content-center align-items-center">
-        {showForm ? (
-          <ChevronDown
-            className="ml-2"
-            onClick={handleToggle}
-            style={{ cursor: 'pointer' }}
-          />
-        ) : (
-          <ChevronRight
-            className="ml-2"
-            onClick={handleToggle}
-            style={{ cursor: 'pointer' }}
-          />
-        )}
-        <h2>{title}</h2>
+      <h3>New Evaluation Form</h3>
       </div>
-      {showForm && (
+      {/*{showForm && (
         <>
           {existingTrainings.map((training, index) => (
             <div key={index}>
@@ -1321,8 +1308,13 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
               )}
               <hr />
             </div>
-          ))}
-                {showForm && (
+          ))} */}
+                
+                
+      
+      
+      
+      {showForm && (
         <Form onSubmit={handleSubmit} className="mt-3">
           <Row>
             <Col>
@@ -1686,8 +1678,8 @@ const TrainingFormCLVE = ({ existingTrainings = [], addNewTraining, customFields
           </Button>
         </Form>
       )}
-        </>
-      )}
+        {/* </> */}
+      {/* )} */}
     </div>
   );
 };

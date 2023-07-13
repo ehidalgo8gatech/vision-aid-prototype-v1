@@ -5,7 +5,7 @@ import {v4 as uuidv4} from "uuid";
 import Router from "next/router";
 
 const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, title, api, submitButtonTest, typeList, mdvi, subTypeList}) => {
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(true);
 
   const handleToggle = () => {
     setShowForm(!showForm);
@@ -130,24 +130,11 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
   return (
 <div className="col-12">
       <div className="d-flex justify-content-center align-items-center">
-        {showForm ? (
-          <ChevronDown
-            className="ml-2"
-            onClick={handleToggle}
-            style={{ cursor: 'pointer' }}
-          />
-        ) : (
-          <ChevronRight
-            className="ml-2"
-            onClick={handleToggle}
-            style={{ cursor: 'pointer' }}
-          />
-        )}
-        <h2>{title}</h2>
+        <h3>New Evaluation Form</h3>
       </div>
       {showForm && (
         <>
-          {existingTrainings.map((training, index) => (
+          {/* {existingTrainings.map((training, index) => (
             <div key={index}>
               {editableField === 'date' ? (
                   <div>
@@ -410,8 +397,12 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
               )}
               <hr />
             </div>
-          ))}
-                {showForm && (
+          ))} */}
+        
+        
+        
+        {showForm && (
+        
         <Form onSubmit={handleSubmit} className="mt-3">
           <br/>
           <br/>
