@@ -25,7 +25,7 @@ export default function HistoricalVisionEnhancementForm(props) {
             </tr>
             <tr>
             <th scope="row">MDVI</th>
-            <td>{data.mdvi}</td>
+            <td>{data.MDVI}</td>
             </tr>
             <tr>
             <th scope="row">Session Number</th>
@@ -33,7 +33,7 @@ export default function HistoricalVisionEnhancementForm(props) {
             </tr>
             <tr>
             <th scope="row">Diagnosis</th>
-            <td>{data.diagnosis}</td>
+            <td>{data.Diagnosis}</td>
             </tr>
             <tr>
             <th scope="row">Extra Information</th>

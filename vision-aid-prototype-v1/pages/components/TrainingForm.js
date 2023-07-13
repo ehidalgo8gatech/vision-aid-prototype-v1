@@ -5,11 +5,6 @@ import {v4 as uuidv4} from "uuid";
 import Router from "next/router";
 
 const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, title, api, submitButtonTest, typeList, mdvi, subTypeList}) => {
-  const [showForm, setShowForm] = useState(false);
-
-  const handleToggle = () => {
-    setShowForm(!showForm);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -130,288 +125,9 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
   return (
 <div className="col-12">
       <div className="d-flex justify-content-center align-items-center">
-        {showForm ? (
-          <ChevronDown
-            className="ml-2"
-            onClick={handleToggle}
-            style={{ cursor: 'pointer' }}
-          />
-        ) : (
-          <ChevronRight
-            className="ml-2"
-            onClick={handleToggle}
-            style={{ cursor: 'pointer' }}
-          />
-        )}
-        <h2>{title}</h2>
+        <h3>New Evaluation Form</h3>
       </div>
-      {showForm && (
         <>
-          {existingTrainings.map((training, index) => (
-            <div key={index}>
-              {editableField === 'date' ? (
-                  <div>
-                    <strong>Date:</strong>
-                    <form onSubmit={(e) => handleEditSubmit(e, api, 'date', index)} className="d-inline ms-2">
-                      <input id={title + index + 'date'}
-                             type="date"
-                             className="form-control d-inline w-auto"
-                             name='date'
-                             value={training.date}
-                             onChange={() => handleInputChange(index, 'date', title + index + 'date')}
-                      />
-                      <button type="submit" className="btn btn-primary btn-sm ms-2">
-                        Save
-                      </button>
-                    </form>
-                  </div>
-              ) : (
-                  <div>
-                    <strong>Date:</strong>
-                    <span className="ms-2">
-          {training.date == null ? null : training.date.toString().split('T')[0]}
-                      <button
-                          type="button"
-                          className="btn btn-link btn-sm text-primary ms-2"
-                          onClick={() => handleEditClick('date')}
-                      >
-           <Pencil />
-          </button>
-        </span>
-                  </div>
-              )}
-
-              {editableField === 'sessionNumber' ? (
-                  <div>
-                    <strong>Session Number:</strong>
-                    <form onSubmit={(e) => handleEditSubmit(e, api, 'sessionNumber', index)} className="d-inline ms-2">
-                      <input id={title + index + 'sessionNumber'}
-                             type="number"
-                             className="form-control d-inline w-auto"
-                             name='sessionNumber'
-                             value={training.sessionNumber}
-                             onChange={() => handleInputChange(index, 'sessionNumber', title + index + 'sessionNumber')}
-                      />
-                      <button type="submit" className="btn btn-primary btn-sm ms-2">
-                        Save
-                      </button>
-                    </form>
-                  </div>
-              ) : (
-                  <div>
-                    <strong>Session Number:</strong>
-                    <span className="ms-2">
-          {training.sessionNumber}
-                      <button
-                          type="button"
-                          className="btn btn-link btn-sm text-primary ms-2"
-                          onClick={() => handleEditClick('sessionNumber')}
-                      >
-           <Pencil/>
-          </button>
-        </span>
-                  </div>
-              )}
-
-              {typeList != null && editableField === 'type' ? (
-                  <div>
-                    <strong>Type:</strong>
-                    <form onSubmit={(e) => handleEditSubmit(e, api, 'type', index)} className="d-inline ms-2">
-                      <input id={title + index + 'type'}
-                             type="text"
-                             className="form-control d-inline w-auto"
-                             name='type'
-                             value={training.type}
-                             onChange={() => handleInputChange(index, 'type', title + index + 'type')}
-                      />
-                      <button type="submit" className="btn btn-primary btn-sm ms-2">
-                        Save
-                      </button>
-                    </form>
-                  </div>
-              ) : typeList != null && (
-                  <div>
-                    <strong>Type:</strong>
-                    <span className="ms-2">
-          {training.type}
-                      <button
-                          type="button"
-                          className="btn btn-link btn-sm text-primary ms-2"
-                          onClick={() => handleEditClick('type')}
-                      >
-           <Pencil/>
-          </button>
-        </span>
-                  </div>
-              )}
-
-              {typeList != null && subTypeList != null && editableField === 'subType' ? (
-                  <div>
-                    <strong>Sub Type:</strong>
-                    <form onSubmit={(e) => handleEditSubmit(e, api, 'subType', index)} className="d-inline ms-2">
-                      <input id={title + index + 'subType'}
-                             type="text"
-                             className="form-control d-inline w-auto"
-                             name='subType'
-                             value={training.subType}
-                             onChange={() => handleInputChange(index, 'subType', title + index + 'subType')}
-                      />
-                      <button type="submit" className="btn btn-primary btn-sm ms-2">
-                        Save
-                      </button>
-                    </form>
-                  </div>
-              ) : typeList != null && subTypeList != null && (
-                  <div>
-                    <strong>Sub Type:</strong>
-                    <span className="ms-2">
-          {training.subType}
-                      <button
-                          type="button"
-                          className="btn btn-link btn-sm text-primary ms-2"
-                          onClick={() => handleEditClick('subType')}
-                      >
-           <Pencil/>
-          </button>
-        </span>
-                  </div>
-              )}
-
-              {mdvi == true && editableField === 'MDVI' ? (
-                  <div>
-                    <strong>MDVI:</strong>
-                    <form onSubmit={(e) => handleEditSubmit(e, api, 'MDVI', index)} className="d-inline ms-2">
-                      <input id={title + index + 'MDVI'}
-                             type="text"
-                             className="form-control d-inline w-auto"
-                             name='MDVI'
-                             value={training.MDVI}
-                             onChange={() => handleInputChange(index, 'MDVI', title + index + 'MDVI')}
-                      />
-                      <button type="submit" className="btn btn-primary btn-sm ms-2">
-                        Save
-                      </button>
-                    </form>
-                  </div>
-              ) : mdvi == true && (
-                  <div>
-                    <strong>MDVI:</strong>
-                    <span className="ms-2">
-          {training.MDVI}
-                      <button
-                          type="button"
-                          className="btn btn-link btn-sm text-primary ms-2"
-                          onClick={() => handleEditClick('MDVI')}
-                      >
-           <Pencil/>
-          </button>
-        </span>
-                  </div>
-              )}
-
-              {mdvi == true && editableField === 'Diagnosis' ? (
-                  <div>
-                    <strong>Diagnosis:</strong>
-                    <form onSubmit={(e) => handleEditSubmit(e, api, 'Diagnosis', index)} className="d-inline ms-2">
-                      <input id={title + index + 'Diagnosis'}
-                             type="text"
-                             className="form-control d-inline w-auto"
-                             name='Diagnosis'
-                             value={training.Diagnosis}
-                             onChange={() => handleInputChange(index, 'Diagnosis', title + index + 'Diagnosis')}
-                      />
-                      <button type="submit" className="btn btn-primary btn-sm ms-2">
-                        Save
-                      </button>
-                    </form>
-                  </div>
-              ) : mdvi == true && (
-                  <div>
-                    <strong>Diagnosis:</strong>
-                    <span className="ms-2">
-          {training.Diagnosis}
-                      <button
-                          type="button"
-                          className="btn btn-link btn-sm text-primary ms-2"
-                          onClick={() => handleEditClick('Diagnosis')}
-                      >
-           <Pencil/>
-          </button>
-        </span>
-                  </div>
-              )}
-
-              {customFields.map((field) => (
-                  <div key={field}>
-                    {editableField === field ? (
-                        <div>
-                          <strong>{field}:</strong>
-                          <form onSubmit={(e) => handleEditSubmit(e, api, field, index)} className="d-inline ms-2">
-                            <input id={title + index + field}
-                                   type="text"
-                                   className="form-control d-inline w-auto"
-                                   name={field}
-                                   value={training[field]}
-                                   onChange={() => handleInputChange(index, field, title + index + field)}
-                            />
-                            <button type="submit" className="btn btn-primary btn-sm ms-2">
-                              Save
-                            </button>
-                          </form>
-                        </div>
-                    ) : (
-                        <div>
-                          <strong>{field}: </strong>
-                          <span className="ms-2">
-          {training[field]}
-                            <button
-                                type="button"
-                                className="btn btn-link btn-sm text-primary ms-2"
-                                onClick={() => handleEditClick(field)}
-                            >
-           <Pencil/>
-          </button>
-        </span>
-                        </div>
-                    )}
-                  </div>
-              ))}
-
-              {editableField === 'extraInformation' ? (
-                  <div>
-                    <strong>extraInformation:</strong>
-                    <form onSubmit={(e) => handleEditSubmit(e, api, 'extraInformation', index)} className="d-inline ms-2">
-                      <input id={title + index + 'extraInformation'}
-                             type="text"
-                             className="form-control d-inline w-auto"
-                             name='extraInformation'
-                             value={training.extraInformation}
-                             onChange={() => handleInputChange(index, 'extraInformation', title + index + 'extraInformation')}
-                      />
-                      <button type="submit" className="btn btn-primary btn-sm ms-2">
-                        Save
-                      </button>
-                    </form>
-                  </div>
-              ) : (
-                  <div>
-                    <strong>extraInformation:</strong>
-                    <span className="ms-2">
-          {training.extraInformation}
-                      <button
-                          type="button"
-                          className="btn btn-link btn-sm text-primary ms-2"
-                          onClick={() => handleEditClick('extraInformation')}
-                      >
-           <Pencil/>
-          </button>
-        </span>
-                  </div>
-              )}
-              <hr />
-            </div>
-          ))}
-                {showForm && (
         <Form onSubmit={handleSubmit} className="mt-3">
           <br/>
           <br/>
@@ -429,7 +145,7 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
               </Form.Group>
             </Col>
           </Row>
-          {customFields.map((field) => (
+          {customFields && customFields.map((field) => (
             <Form.Group controlId={field} key={field}>
               <Form.Label>{field}</Form.Label>
               <Form.Control type="text" />
@@ -485,9 +201,7 @@ const TrainingForm = ({ existingTrainings = [], addNewTraining, customFields, ti
             {submitButtonTest}
           </Button>
         </Form>
-      )}
         </>
-      )}
     </div>
   );
 };
