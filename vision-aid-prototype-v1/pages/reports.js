@@ -14,6 +14,7 @@ import { findAllBeneficiary } from "@/pages/api/beneficiary";
 import { CSVLink, CSVDownload } from "react-csv";
 import GraphCustomizer from './components/GraphCustomizer';
 import { Tab, Tabs, Paper } from '@mui/material';
+import * as XLSX from 'xlsx';
 
 // This function is called to load data from the server side.
 export async function getServerSideProps(ctx) {
@@ -393,6 +394,65 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
   const counsellingBreakdownGraphData = buildBreakdownGraph(filteredSummary, "counsellingEducation");
   const devicesGraphData = buildDevicesGraph(filteredSummary);
 
+  let beneficiaryData = [];
+  let visionEnhancementData = [];
+  let lowVisionEvaluationData = [];
+  let comprehensiveLowVisionEvaluationData = [];
+  let computerTrainingData = [];
+  let mobileTrainingData = [];
+  let orientationMobilityTrainingData = [];
+  let trainingData = [];
+  let counsellingEducationData = [];
+
+  for(let data of filteredSummary){
+    const beneficiary = data["beneficiary"];
+    const visionEnhancement = data["visionEnhancement"];
+    const lowVisionEvaluation = data["lowVisionEvaluation"];
+    const CLVE = data["comprehensiveLowVisionEvaluation"];
+    const computerTraining = data["computerTraining"];
+    const mobileTraining = data["mobileTraining"];
+    const orientationMobilityTraining = data["orientationMobilityTraining"];
+    const training = data["training"];
+    const counsellingEducation = data["counsellingEducation"];
+
+    beneficiaryData = beneficiaryData.concat(beneficiary);
+    visionEnhancementData = visionEnhancementData.concat(visionEnhancement);
+    lowVisionEvaluationData = lowVisionEvaluationData.concat(lowVisionEvaluation);
+    comprehensiveLowVisionEvaluationData = comprehensiveLowVisionEvaluationData.concat(CLVE);
+    computerTrainingData = computerTrainingData.concat(computerTraining);
+    mobileTrainingData = mobileTrainingData.concat(mobileTraining);
+    orientationMobilityTrainingData = orientationMobilityTrainingData.concat(orientationMobilityTraining);
+    trainingData = trainingData.concat(training);
+    counsellingEducationData = counsellingEducationData.concat(counsellingEducation);
+  }
+
+  const downloadFilteredReport = () => {
+    const wb = XLSX.utils.book_new();
+
+    const wben = XLSX.utils.json_to_sheet(beneficiaryData);
+    const wved = XLSX.utils.json_to_sheet(visionEnhancementData);    
+    const wlved = XLSX.utils.json_to_sheet(lowVisionEvaluationData);    
+    const wclve = XLSX.utils.json_to_sheet(comprehensiveLowVisionEvaluationData);
+    const wctd = XLSX.utils.json_to_sheet(computerTrainingData);
+    const wmtd = XLSX.utils.json_to_sheet(mobileTrainingData);
+    const womtd = XLSX.utils.json_to_sheet(orientationMobilityTrainingData);
+    const wtd = XLSX.utils.json_to_sheet(trainingData);
+    const wced = XLSX.utils.json_to_sheet(counsellingEducationData);
+
+    XLSX.utils.book_append_sheet(wb, wben, "Beneficiary Sheet");
+    XLSX.utils.book_append_sheet(wb, wved, "Vision Enhancement Sheet");
+    XLSX.utils.book_append_sheet(wb, wlved, "Low Vision Evaluation Sheet");
+    XLSX.utils.book_append_sheet(wb, wclve, "CLVE Sheet");
+    XLSX.utils.book_append_sheet(wb, wctd, "Computer Training Sheet");
+    XLSX.utils.book_append_sheet(wb, wmtd, "Mobile Training Sheet");
+    XLSX.utils.book_append_sheet(wb, womtd, "Orientation Mobile Sheet");
+    XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
+    XLSX.utils.book_append_sheet(wb, wced, "Counselling Education Sheet");
+
+    XLSX.writeFile(wb, "filtered_report.xlsx");
+  }
+
+
   const handleStartDateChange = (e) => {
     setStartDate(moment(e.target.value).toDate());
   };
@@ -453,7 +513,9 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
       <br />
       <h1>Download All Beneficiary Data</h1>
       <p>Note this is , seperated if you separate by other delimiter it will not work</p>
-      <CSVLink data={beneficiaryFlatList} separator={","}>Download me</CSVLink>
+      <button className='primary' onClick={downloadFilteredReport}>
+        Download Filtered Report
+      </button>
     </div>
 
   );
