@@ -47,7 +47,7 @@ export async function getServerSideProps(ctx) {
   // The following is code to download summary data as a CSV file
   const beneficiaryList = await findAllBeneficiary()
   let flatList = []
-
+  console.log("here");
   function flatFields(extraInformation, key) {
     let flat = {
 
