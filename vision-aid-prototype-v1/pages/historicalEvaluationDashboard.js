@@ -25,9 +25,8 @@ export default function HistoricalEvaluationPage(props) {
     }
 
     const formatDate = (date) => {
-        var newDate = new Date(date);
-        const formattedDate = newDate.getFullYear()+"-"+("0" + (newDate.getMonth() + 1)).slice(-2)+"-"+("0" + newDate.getDate()).slice(-2);
-        return formattedDate;
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(date).toLocaleDateString(undefined, options);
     }
 
     const filterData = (date, services) => {
@@ -38,14 +37,14 @@ export default function HistoricalEvaluationPage(props) {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value});
-        handleServiceChange(formatDate(formatDate['historyDate']), service);
+        handleServiceChange(formatDate['historyDate'], service);
     };
 
     var historicalDashboard;
 
     const handleServiceChange = (date, services) => {
         if(date==undefined || filterData(date, services)==undefined){
-            historicalDashboard = <div className="text-align-left">No historical data is present for this date!</div>;
+            historicalDashboard = <div className="text-align-left">Select a historical evaluation date from the drop-down menu!</div>;
         } else {
             if(props.service == "Low_Vision_Evaluation"){
                 historicalDashboard = <HistoricalLowVisionScreeningForm evaluationData={filterData(date, services)}/>;
@@ -64,6 +63,7 @@ export default function HistoricalEvaluationPage(props) {
 
     }
    
+   const historicalDates = service.map(item => formatDate(item.date));
 
     return (
     <div>
@@ -91,11 +91,19 @@ export default function HistoricalEvaluationPage(props) {
               <div className="col-md-6">
                   <div className="row">
                   <div className="text-align-left">
-                      Select a date: <input className="mb-3" type="date" name="historyDate" id="historyDate" onChange={handleChange}></input>
+                      Select a date:
+                      <select className="mb-3" name="historyDate" id="historyDate" onChange={handleChange} style={{ width: '200px' }}>
+                      <option value="">Date Picker</option>
+                      {historicalDates.map((date, idx) => (
+                        <option key={idx} value={formatDate(date)}>
+                        {formatDate(date)}
+                        </option>
+                    ))}
+                    </select>
                   </div>
                   </div>
                   <div className="row">
-                    {handleServiceChange(formatDate(formData['historyDate']), service)}
+                    {handleServiceChange(formData['historyDate'], service)}
                   </div>
               </div>
           </div>
