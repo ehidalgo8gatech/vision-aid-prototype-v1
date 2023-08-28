@@ -68,11 +68,9 @@ async function readData(req, res) {
             })
             console.log(beneficiary)
         } else if (req.query.mrn != null) {
-            beneficiary = await prisma.beneficiary.findFirst({
+            beneficiary = await prisma.beneficiary.findUnique({
                 where: {
-                    mrn: {
-                        contains: req.query.mrn,
-                    }
+                    mrn: req.query.mrn
                 },
                 include: {
                     hospital: true,
