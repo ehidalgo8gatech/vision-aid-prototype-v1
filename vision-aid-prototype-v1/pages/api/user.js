@@ -7,9 +7,11 @@ export default async function handler(req, res) {
         return await addData(req, res);
     } else if (req.method == 'GET') {
         return await readData(req, res);
+    } else if (req.method == 'DELETE') {
+        return await deleteData(req, res);
     } else {
         return res.status(405).json({message: 'Method not allowed', success: false});
-    }
+    } 
 }
 
 async function readData(req, res) {
@@ -96,4 +98,13 @@ async function addData(req, res) {
         console.log('Request error ' + error);
         res.status(500).json({error: 'Error adding user' + error, success: false});
     }
+}
+
+async function deleteData(req, res) {
+    const deleteConfirmation = await prisma.user.delete({
+        where: {
+            id: req.body.id
+        }
+    })
+    return res.status(200).json(deleteConfirmation, {success: true})
 }
