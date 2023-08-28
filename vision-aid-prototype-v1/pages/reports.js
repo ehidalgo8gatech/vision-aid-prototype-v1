@@ -42,6 +42,20 @@ export async function getServerSideProps(ctx) {
     }
   }
 
+  // const hospitalResult = {
+  //   id: hospital.id,
+  //   name: hospital.name,
+  //   mobileTraining: mobileTraining,
+  //   computerTraining: computerTraining,
+  //   orientationMobilityTraining: orientationMobilityTraining,
+  //   visionEnhancement: visionEnhancement,
+  //   counsellingEducation: counsellingEducation,
+  //   comprehensiveLowVisionEvaluation: comprehensiveLowVisionEvaluation,
+  //   lowVisionEvaluation: lowVisionEvaluation,
+  //   beneficiary: beneficiary,
+  //   training: training,
+  // };
+
   // The user is an admin, so we want to show the summary for all hospitals
 
   // The following is code to download summary data as a CSV file
@@ -249,7 +263,7 @@ function buildBeneficiaryGraph(data) {
 // Function that builds a bar graph to show all the activities involved
 function buildActivitiesGraph(data){
   //First get the evaluations
-  const lowVisionEvaluationCount = data.reduce((sum, item) => sum + item.lowVisionEvaluation.length, 0);
+  const lowVisionScreeningCount = data.reduce((sum, item) => sum + item.lowVisionEvaluation.length, 0);
   const comprehensiveLowVisionEvaluationCount = data.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.length, 0);
   const visionEnhancementCount = data.reduce((sum, item) => sum + item.visionEnhancement.length, 0);
 
@@ -265,7 +279,7 @@ function buildActivitiesGraph(data){
 
   const chartData = {
     labels: [
-      `Low Vision Evaluation (${lowVisionEvaluationCount})`,
+      `Low Vision Screening (${lowVisionScreeningCount})`,
       `Comprehensive Low Vision Evaluation (${comprehensiveLowVisionEvaluationCount})`,
       `Vision Enhancement (${visionEnhancementCount})`,
       `All Training (${trainingCount})`,
@@ -275,7 +289,7 @@ function buildActivitiesGraph(data){
       {
         label: "Cumulative Counts",
         data: [
-          lowVisionEvaluationCount,
+          lowVisionScreeningCount,
           comprehensiveLowVisionEvaluationCount,
           visionEnhancementCount,
           trainingCount,
@@ -441,7 +455,7 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
 
     XLSX.utils.book_append_sheet(wb, wben, "Beneficiary Sheet");
     XLSX.utils.book_append_sheet(wb, wved, "Vision Enhancement Sheet");
-    XLSX.utils.book_append_sheet(wb, wlved, "Low Vision Evaluation Sheet");
+    XLSX.utils.book_append_sheet(wb, wlved, "Low Vision Screening");
     XLSX.utils.book_append_sheet(wb, wclve, "CLVE Sheet");
     XLSX.utils.book_append_sheet(wb, wctd, "Computer Training Sheet");
     XLSX.utils.book_append_sheet(wb, wmtd, "Mobile Training Sheet");
