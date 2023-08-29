@@ -1,142 +1,192 @@
-import { readUser } from './api/user'
+import { readUser } from "./api/user";
 import { getSession } from "next-auth/react";
-import { Chart as ChartJS } from 'chart.js/auto'
-import { Chart } from 'react-chartjs-2'
+import { Chart as ChartJS } from "chart.js/auto";
+import { Chart } from "react-chartjs-2";
 import { Bar } from "react-chartjs-2";
-import { getSummaryForAllHospitals, getSummaryForHospitalFromID } from "@/pages/api/hospital";
+import {
+  getSummaryForAllHospitals,
+  getSummaryForHospitalFromID,
+} from "@/pages/api/hospital";
 import { Container } from "react-bootstrap";
-import Navigation from './navigation/Navigation';
-import { Table } from 'react-bootstrap';
+import Navigation from "./navigation/Navigation";
+import { Table } from "react-bootstrap";
 import Link from "next/link";
-import moment from 'moment';
-import { useState, useEffect } from 'react';
+import moment from "moment";
+import { useState, useEffect } from "react";
 import { findAllBeneficiary } from "@/pages/api/beneficiary";
 import { CSVLink, CSVDownload } from "react-csv";
-import GraphCustomizer from './components/GraphCustomizer';
-import { Tab, Tabs, Paper } from '@mui/material';
-import * as XLSX from 'xlsx';
+import GraphCustomizer from "./components/GraphCustomizer";
+import { Tab, Tabs, Paper } from "@mui/material";
+import * as XLSX from "xlsx";
 
 // This function is called to load data from the server side.
 export async function getServerSideProps(ctx) {
-  const session = await getSession(ctx)
+  const session = await getSession(ctx);
   if (session == null) {
-    console.log("session is null")
+    console.log("session is null");
     return {
       redirect: {
-        destination: '/',
+        destination: "/",
         permanent: false,
       },
-    }
+    };
   }
 
   // If it's a non admin user, we only want to show the summary for their hospital
-  const user = await readUser(session.user.email)
+  const user = await readUser(session.user.email);
   if (user.admin == null) {
-    const hospitalSummary = await getSummaryForHospitalFromID(user.hospitalRole.hospitalId);
+    const hospitalSummary = await getSummaryForHospitalFromID(
+      user.hospitalRole.hospitalId
+    );
     return {
       props: {
         user: user,
         summary: JSON.parse(JSON.stringify([hospitalSummary])),
-        error: null
+        error: null,
       },
-    }
+    };
   }
 
-  // const hospitalResult = {
-  //   id: hospital.id,
-  //   name: hospital.name,
-  //   mobileTraining: mobileTraining,
-  //   computerTraining: computerTraining,
-  //   orientationMobilityTraining: orientationMobilityTraining,
-  //   visionEnhancement: visionEnhancement,
-  //   counsellingEducation: counsellingEducation,
-  //   comprehensiveLowVisionEvaluation: comprehensiveLowVisionEvaluation,
-  //   lowVisionEvaluation: lowVisionEvaluation,
-  //   beneficiary: beneficiary,
-  //   training: training,
-  // };
 
   // The user is an admin, so we want to show the summary for all hospitals
 
   // The following is code to download summary data as a CSV file
-  const beneficiaryList = await findAllBeneficiary()
-  let flatList = []
+  const beneficiaryList = await findAllBeneficiary();
+  let flatList = [];
   console.log("here");
   function flatFields(extraInformation, key) {
-    let flat = {
-
-    }
+    let flat = {};
     try {
-      const ex = JSON.parse(extraInformation)
+      const ex = JSON.parse(extraInformation);
       for (let i = 0; i < ex.length; i++) {
         const e = ex[i];
-        flat[(key + "." + i + "." + e.name).replaceAll(',', ' ')] = (e.value).replaceAll(',', ' ')
+        flat[(key + "." + i + "." + e.name).replaceAll(",", " ")] =
+          e.value.replaceAll(",", " ");
       }
     } catch (e) {
-      return {}
+      return {};
     }
-    return flat
+    return flat;
   }
 
   function flatChildArray(childArray, key) {
-    let flat = {
-
-    }
+    let flat = {};
     try {
       for (let i1 = 0; i1 < childArray.length; i1++) {
         const child = childArray[i1];
         for (let i = 0; i < Object.keys(child).length; i++) {
           const jsonKey = Object.keys(child)[i];
-          flat[(key + "." + i1 + "." + jsonKey).replaceAll(',', ' ')] = child[jsonKey] == null ? "" : child[jsonKey].toString().replaceAll(',', ' ')
+          flat[(key + "." + i1 + "." + jsonKey).replaceAll(",", " ")] =
+            child[jsonKey] == null
+              ? ""
+              : child[jsonKey].toString().replaceAll(",", " ");
         }
       }
     } catch (e) {
-      return {}
+      return {};
     }
-    return flat
+    return flat;
   }
 
   function appendFlat(appendFrom, appendTo) {
-    Object.keys(appendFrom).forEach(append => {
-      appendTo[append] = appendFrom[append]
-    })
+    Object.keys(appendFrom).forEach((append) => {
+      appendTo[append] = appendFrom[append];
+    });
   }
 
   for (const beneficiary of beneficiaryList) {
-    const visionEnhancementFlat = flatChildArray(beneficiary.Vision_Enhancement, 'visionEnhancement')
-    const counselingEducationFlat = flatChildArray(beneficiary.Counselling_Education, 'counselingEducation')
-    const comprehensiveLowVisionEvaluationFlat = flatChildArray(beneficiary.Comprehensive_Low_Vision_Evaluation, 'comprehensiveLowVisionEvaluation')
-    const lowVisionEvaluationFlat = flatChildArray(beneficiary.Low_Vision_Evaluation, 'lowVisionEvaluation')
-    const trainingFlat = flatChildArray(beneficiary.Training, 'training')
-    const extraFields = flatFields(beneficiary.extraInformation, 'BeneficiaryExtraField')
+    const visionEnhancementFlat = flatChildArray(
+      beneficiary.Vision_Enhancement,
+      "visionEnhancement"
+    );
+    const counselingEducationFlat = flatChildArray(
+      beneficiary.Counselling_Education,
+      "counselingEducation"
+    );
+    const comprehensiveLowVisionEvaluationFlat = flatChildArray(
+      beneficiary.Comprehensive_Low_Vision_Evaluation,
+      "comprehensiveLowVisionEvaluation"
+    );
+    const lowVisionEvaluationFlat = flatChildArray(
+      beneficiary.Low_Vision_Evaluation,
+      "lowVisionEvaluation"
+    );
+    const trainingFlat = flatChildArray(beneficiary.Training, "training");
+    const extraFields = flatFields(
+      beneficiary.extraInformation,
+      "BeneficiaryExtraField"
+    );
     let flat = {
-      mrn: beneficiary.mrn.replaceAll(',', ' '),
-      hospitalName: beneficiary.hospital == null ? "" : beneficiary.hospital.name.replaceAll(',', ' '),
-      beneficiaryName: beneficiary.beneficiaryName == null ? "" : beneficiary.beneficiaryName.replaceAll(',', ' '),
-      dateOfBirth: beneficiary.dateOfBirth == null ? "" : beneficiary.dateOfBirth.toString().replaceAll(',', ' '),
-      gender: beneficiary.gender == null ? "" : beneficiary.gender.replaceAll(',', ' '),
-      phoneNumber: beneficiary.phoneNumber == null ? "" : beneficiary.phoneNumber.replaceAll(',', ' '),
-      education: beneficiary.education == null ? "" : beneficiary.education.replaceAll(',', ' '),
-      occupation: beneficiary.occupation == null ? "" : beneficiary.occupation.replaceAll(',', ' '),
-      districts: beneficiary.districts == null ? "" : beneficiary.districts.replaceAll(',', ' '),
-      state: beneficiary.state == null ? "" : beneficiary.state.replaceAll(',', ' '),
-      diagnosis: beneficiary.diagnosis == null ? "" : beneficiary.diagnosis.replaceAll(',', ' '),
-      vision: beneficiary.vision == null ? "" : beneficiary.vision.replaceAll(',', ' '),
-      mDVI: beneficiary.mDVI == null ? "" : beneficiary.mDVI.replaceAll(',', ' '),
-      rawExtraFields: beneficiary.extraInformation == null ? "" : beneficiary.extraInformation.replaceAll(',', ' '),
-      rawVisionEnhancement: JSON.stringify(beneficiary.Vision_Enhancement).replaceAll(',', ' '),
-      rawCounselingEducation: JSON.stringify(beneficiary.Counselling_Education).replaceAll(',', ' '),
-      rawComprehensiveLowVisionEvaluation: JSON.stringify(beneficiary.Comprehensive_Low_Vision_Evaluation).replaceAll(',', ' '),
-      rawLowVisionEvaluation: JSON.stringify(beneficiary.Low_Vision_Evaluation).replaceAll(',', ' '),
-      rawTraining: JSON.stringify(beneficiary.Training).replaceAll(',', ' '),
-    }
-    appendFlat(extraFields, flat)
-    appendFlat(visionEnhancementFlat, flat)
-    appendFlat(counselingEducationFlat, flat)
-    appendFlat(comprehensiveLowVisionEvaluationFlat, flat)
-    appendFlat(lowVisionEvaluationFlat, flat)
-    appendFlat(trainingFlat, flat)
-    flatList.push(flat)
+      mrn: beneficiary.mrn.replaceAll(",", " "),
+      hospitalName:
+        beneficiary.hospital == null
+          ? ""
+          : beneficiary.hospital.name.replaceAll(",", " "),
+      beneficiaryName:
+        beneficiary.beneficiaryName == null
+          ? ""
+          : beneficiary.beneficiaryName.replaceAll(",", " "),
+      dateOfBirth:
+        beneficiary.dateOfBirth == null
+          ? ""
+          : beneficiary.dateOfBirth.toString().replaceAll(",", " "),
+      gender:
+        beneficiary.gender == null
+          ? ""
+          : beneficiary.gender.replaceAll(",", " "),
+      phoneNumber:
+        beneficiary.phoneNumber == null
+          ? ""
+          : beneficiary.phoneNumber.replaceAll(",", " "),
+      education:
+        beneficiary.education == null
+          ? ""
+          : beneficiary.education.replaceAll(",", " "),
+      occupation:
+        beneficiary.occupation == null
+          ? ""
+          : beneficiary.occupation.replaceAll(",", " "),
+      districts:
+        beneficiary.districts == null
+          ? ""
+          : beneficiary.districts.replaceAll(",", " "),
+      state:
+        beneficiary.state == null ? "" : beneficiary.state.replaceAll(",", " "),
+      diagnosis:
+        beneficiary.diagnosis == null
+          ? ""
+          : beneficiary.diagnosis.replaceAll(",", " "),
+      vision:
+        beneficiary.vision == null
+          ? ""
+          : beneficiary.vision.replaceAll(",", " "),
+      mDVI:
+        beneficiary.mDVI == null ? "" : beneficiary.mDVI.replaceAll(",", " "),
+      rawExtraFields:
+        beneficiary.extraInformation == null
+          ? ""
+          : beneficiary.extraInformation.replaceAll(",", " "),
+      rawVisionEnhancement: JSON.stringify(
+        beneficiary.Vision_Enhancement
+      ).replaceAll(",", " "),
+      rawCounselingEducation: JSON.stringify(
+        beneficiary.Counselling_Education
+      ).replaceAll(",", " "),
+      rawComprehensiveLowVisionEvaluation: JSON.stringify(
+        beneficiary.Comprehensive_Low_Vision_Evaluation
+      ),
+      rawLowVisionEvaluation: JSON.stringify(
+        beneficiary.Low_Vision_Evaluation
+      ).replaceAll(",", " "),
+      rawTraining: JSON.stringify(beneficiary.Training).replaceAll(",", " "),
+    };
+    appendFlat(extraFields, flat);
+    appendFlat(visionEnhancementFlat, flat);
+    appendFlat(counselingEducationFlat, flat);
+    appendFlat(comprehensiveLowVisionEvaluationFlat, flat);
+    appendFlat(lowVisionEvaluationFlat, flat);
+    appendFlat(trainingFlat, flat);
+    flatList.push(flat);
   }
 
   // We finally return all the data to the page
@@ -147,17 +197,22 @@ export async function getServerSideProps(ctx) {
         user: user,
         summary: JSON.parse(JSON.stringify(summary)),
         beneficiaryFlatList: flatList,
-        error: null
+        error: null,
       },
-    }
+    };
   }
 }
 
 // This function is used to filter a given training by date range
 function filterByDate(training, start, end) {
   // increment end date by one day to include the end date
-  start = moment(start).subtract(1, 'day');
-  return moment(training.date).isBetween(moment(start).startOf('day'), moment(end).startOf('day'), null, '[]');
+  start = moment(start).subtract(1, "day");
+  return moment(training.date).isBetween(
+    moment(start).startOf("day"),
+    moment(end).startOf("day"),
+    null,
+    "[]"
+  );
 }
 
 // This function is used to filter the entire summary data by date range
@@ -166,34 +221,40 @@ function filterTrainingSummaryByDateRange(startDate, endDate, summary) {
     const mobileTraining = hospital.mobileTraining.filter((training) => {
       // log data of each training
       return filterByDate(training, startDate, endDate);
-    })
+    });
     // log the difference in length before and after filter
 
     const computerTraining = hospital.computerTraining.filter((training) => {
       return filterByDate(training, startDate, endDate);
-    })
+    });
 
-    const orientationMobilityTraining = hospital.orientationMobilityTraining.filter((training) => {
-      return filterByDate(training, startDate, endDate);
-    })
+    const orientationMobilityTraining =
+      hospital.orientationMobilityTraining.filter((training) => {
+        return filterByDate(training, startDate, endDate);
+      });
 
     const visionEnhancement = hospital.visionEnhancement.filter((training) => {
       return filterByDate(training, startDate, endDate);
-    })
+    });
 
-    const counsellingEducation = hospital.counsellingEducation.filter((training) => {
-      return filterByDate(training, startDate, endDate);
-    })
+    const counsellingEducation = hospital.counsellingEducation.filter(
+      (training) => {
+        return filterByDate(training, startDate, endDate);
+      }
+    );
 
-    const comprehensiveLowVisionEvaluation = hospital.comprehensiveLowVisionEvaluation.filter((training) => {
-      return filterByDate(training, startDate, endDate);
-    })
+    const comprehensiveLowVisionEvaluation =
+      hospital.comprehensiveLowVisionEvaluation.filter((training) => {
+        return filterByDate(training, startDate, endDate);
+      });
 
-    const lowVisionEvaluation = hospital.lowVisionEvaluation.filter((training) => {
-      return filterByDate(training, startDate, endDate);
-    })
+    const lowVisionEvaluation = hospital.lowVisionEvaluation.filter(
+      (training) => {
+        return filterByDate(training, startDate, endDate);
+      }
+    );
 
-    const beneficiary = hospital.beneficiary
+    const beneficiary = hospital.beneficiary;
 
     return {
       ...hospital,
@@ -205,10 +266,10 @@ function filterTrainingSummaryByDateRange(startDate, endDate, summary) {
       comprehensiveLowVisionEvaluation,
       lowVisionEvaluation,
       beneficiary,
-    }
-  })
+    };
+  });
 
-  return filteredSummary
+  return filteredSummary;
 }
 
 // Graph Options that are constant for all graphs
@@ -221,7 +282,7 @@ const graphOptions = {
     "rgba(153, 102, 255, 0.2)",
     "rgba(255, 159, 64, 0.2)",
     "rgba(255, 99, 132, 0.2)",
-    "rgba(119, 221, 119, 0.2)"
+    "rgba(119, 221, 119, 0.2)",
   ],
   borderColor: [
     "rgba(255, 99, 132, 1)",
@@ -231,10 +292,10 @@ const graphOptions = {
     "rgba(153, 102, 255, 1)",
     "rgba(255, 159, 64, 1)",
     "rgba(255, 99, 132, 1)",
-    "rgba(119, 221, 119, 1)"
+    "rgba(119, 221, 119, 1)",
   ],
   borderWidth: 1,
-}
+};
 
 // Function that builds a bar graph to show number of beneficiaries per hospital
 function buildBeneficiaryGraph(data) {
@@ -243,39 +304,63 @@ function buildBeneficiaryGraph(data) {
     return {
       name: hospital.name,
       value: hospital.beneficiary.length,
-    }
-  })
+    };
+  });
 
   // create a bar graph with graphData
   const graphData = {
     labels: simplifiedData.map((hospital) => hospital.name),
     datasets: [
       {
-        label: 'Beneficiaries',
+        label: "Beneficiaries",
         data: simplifiedData.map((hospital) => hospital.value),
         ...graphOptions,
       },
     ],
-  }
+  };
   return graphData;
 }
 
 // Function that builds a bar graph to show all the activities involved
-function buildActivitiesGraph(data){
+function buildActivitiesGraph(data) {
   //First get the evaluations
-  const lowVisionScreeningCount = data.reduce((sum, item) => sum + item.lowVisionEvaluation.length, 0);
-  const comprehensiveLowVisionEvaluationCount = data.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.length, 0);
-  const visionEnhancementCount = data.reduce((sum, item) => sum + item.visionEnhancement.length, 0);
+  const lowVisionScreeningCount = data.reduce(
+    (sum, item) => sum + item.lowVisionEvaluation.length,
+    0
+  );
+  const comprehensiveLowVisionEvaluationCount = data.reduce(
+    (sum, item) => sum + item.comprehensiveLowVisionEvaluation.length,
+    0
+  );
+  const visionEnhancementCount = data.reduce(
+    (sum, item) => sum + item.visionEnhancement.length,
+    0
+  );
 
   // Then the trainings
-  const mobileTrainingCount = data.reduce((sum, item) => sum + item.mobileTraining.length, 0);
-  const computerTrainingCount = data.reduce((sum, item) => sum + item.computerTraining.length, 0);
-  const orientationMobilityTrainingCount = data.reduce((sum, item) => sum + item.orientationMobilityTraining.length, 0);
-  const trainingCount = data.reduce((sum, item) => sum + item.training.length, 0) + mobileTrainingCount + computerTrainingCount + orientationMobilityTrainingCount;
+  const mobileTrainingCount = data.reduce(
+    (sum, item) => sum + item.mobileTraining.length,
+    0
+  );
+  const computerTrainingCount = data.reduce(
+    (sum, item) => sum + item.computerTraining.length,
+    0
+  );
+  const orientationMobilityTrainingCount = data.reduce(
+    (sum, item) => sum + item.orientationMobilityTraining.length,
+    0
+  );
+  const trainingCount =
+    data.reduce((sum, item) => sum + item.training.length, 0) +
+    mobileTrainingCount +
+    computerTrainingCount +
+    orientationMobilityTrainingCount;
 
   // Then the counselling
-  const counsellingCount = data.reduce((sum, item) => sum + item.counsellingEducation.length, 0);
-
+  const counsellingCount = data.reduce(
+    (sum, item) => sum + item.counsellingEducation.length,
+    0
+  );
 
   const chartData = {
     labels: [
@@ -301,26 +386,23 @@ function buildActivitiesGraph(data){
   };
 
   return chartData;
-
 }
 
-// Function that builds a bar graph at a sublevel. This function is called 
+// Function that builds a bar graph at a sublevel. This function is called
 // with both "training" and "counselling" as the breakdownType
-function buildBreakdownGraph(data, breakdownType){
+function buildBreakdownGraph(data, breakdownType) {
   const types = data.reduce((types, hospital) => {
     const hospitalTypes = hospital[breakdownType].map((item) => item.type);
     return [...types, ...hospitalTypes];
-  }
-  , []);
+  }, []);
 
   const typeCounts = types.reduce((counts, type) => {
     const count = counts[type] || 0;
     return {
       ...counts,
       [type]: count + 1,
-    }
-  } 
-  , {});
+    };
+  }, {});
 
   const chartData = {
     labels: Object.keys(typeCounts),
@@ -337,14 +419,42 @@ function buildBreakdownGraph(data, breakdownType){
 }
 
 // Function that builds a bar graph to show the number of devices dispensed
-function buildDevicesGraph(data){
-  // The device information is stored inside the comprehensiveLowVisionEvaluation array 
+function buildDevicesGraph(data) {
+  // The device information is stored inside the comprehensiveLowVisionEvaluation array
   // Inside the array, there are fields dispensedSpectacle, dispensedElectronic, dispensedOptical, dispensedNonOptical which is either "Yes" or "No"
   // We want to count the number of "Yes" for each field
-  const dispensedSpectacleCount = data.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.filter((evaluation) => evaluation.dispensedSpectacle === "Yes").length, 0);
-  const dispensedElectronicCount = data.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.filter((evaluation) => evaluation.dispensedElectronic === "Yes").length, 0);
-  const dispensedOpticalCount = data.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.filter((evaluation) => evaluation.dispensedOptical === "Yes").length, 0);
-  const dispensedNonOpticalCount = data.reduce((sum, item) => sum + item.comprehensiveLowVisionEvaluation.filter((evaluation) => evaluation.dispensedNonOptical === "Yes").length, 0);
+  const dispensedSpectacleCount = data.reduce(
+    (sum, item) =>
+      sum +
+      item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => evaluation.dispensedSpectacle === "Yes"
+      ).length,
+    0
+  );
+  const dispensedElectronicCount = data.reduce(
+    (sum, item) =>
+      sum +
+      item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => evaluation.dispensedElectronic === "Yes"
+      ).length,
+    0
+  );
+  const dispensedOpticalCount = data.reduce(
+    (sum, item) =>
+      sum +
+      item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => evaluation.dispensedOptical === "Yes"
+      ).length,
+    0
+  );
+  const dispensedNonOpticalCount = data.reduce(
+    (sum, item) =>
+      sum +
+      item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => evaluation.dispensedNonOptical === "Yes"
+      ).length,
+    0
+  );
 
   const chartData = {
     labels: [
@@ -372,7 +482,9 @@ function buildDevicesGraph(data){
 
 export default function Summary({ user, summary, beneficiaryFlatList }) {
   // create start date and end data states, start date is set to one year ago, end date is set to today
-  const [startDate, setStartDate] = useState(moment().subtract(1, 'year').toDate());
+  const [startDate, setStartDate] = useState(
+    moment().subtract(1, "year").toDate()
+  );
   const [endDate, setEndDate] = useState(moment().toDate());
 
   const [selectedHospitals, setSelectedHospitals] = useState([]);
@@ -388,7 +500,7 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
     if (isChecked) {
       setSelectedHospitals([...selectedHospitals, hospitalId]);
     } else {
-      setSelectedHospitals(selectedHospitals.filter(id => id !== hospitalId));
+      setSelectedHospitals(selectedHospitals.filter((id) => id !== hospitalId));
     }
   };
 
@@ -396,16 +508,39 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
     setSelectedHospitals(summary.map((item) => item.id));
   };
 
+  const getAge = (dateString) => {
+    let today = new Date();
+    let birthDate = new Date(dateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    let m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age -= 1;
+    }
+    return age;
+  };
+
   // filter summary data based on start and end date of the training
-  const dateFilteredSummary = filterTrainingSummaryByDateRange(startDate, endDate, summary);
+  const dateFilteredSummary = filterTrainingSummaryByDateRange(
+    startDate,
+    endDate,
+    summary
+  );
   // filter summary data based on selected hospitals
-  const filteredSummary = dateFilteredSummary.filter((item) => selectedHospitals.includes(item.id));
+  const filteredSummary = dateFilteredSummary.filter((item) =>
+    selectedHospitals.includes(item.id)
+  );
 
   // generate all the data for required graphs
   const beneficiaryGraphData = buildBeneficiaryGraph(filteredSummary);
   const activitiesGraphData = buildActivitiesGraph(filteredSummary);
-  const trainingBreakdownGraphData = buildBreakdownGraph(filteredSummary, "training");
-  const counsellingBreakdownGraphData = buildBreakdownGraph(filteredSummary, "counsellingEducation");
+  const trainingBreakdownGraphData = buildBreakdownGraph(
+    filteredSummary,
+    "training"
+  );
+  const counsellingBreakdownGraphData = buildBreakdownGraph(
+    filteredSummary,
+    "counsellingEducation"
+  );
   const devicesGraphData = buildDevicesGraph(filteredSummary);
 
   let beneficiaryData = [];
@@ -418,7 +553,7 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
   let trainingData = [];
   let counsellingEducationData = [];
 
-  for(let data of filteredSummary){
+  for (let data of filteredSummary) {
     const beneficiary = data["beneficiary"];
     const visionEnhancement = data["visionEnhancement"];
     const lowVisionEvaluation = data["lowVisionEvaluation"];
@@ -431,22 +566,102 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
 
     beneficiaryData = beneficiaryData.concat(beneficiary);
     visionEnhancementData = visionEnhancementData.concat(visionEnhancement);
-    lowVisionEvaluationData = lowVisionEvaluationData.concat(lowVisionEvaluation);
-    comprehensiveLowVisionEvaluationData = comprehensiveLowVisionEvaluationData.concat(CLVE);
+    lowVisionEvaluationData =
+      lowVisionEvaluationData.concat(lowVisionEvaluation);
+    comprehensiveLowVisionEvaluationData =
+      comprehensiveLowVisionEvaluationData.concat(CLVE);
     computerTrainingData = computerTrainingData.concat(computerTraining);
     mobileTrainingData = mobileTrainingData.concat(mobileTraining);
-    orientationMobilityTrainingData = orientationMobilityTrainingData.concat(orientationMobilityTraining);
+    orientationMobilityTrainingData = orientationMobilityTrainingData.concat(
+      orientationMobilityTraining
+    );
     trainingData = trainingData.concat(training);
-    counsellingEducationData = counsellingEducationData.concat(counsellingEducation);
+    counsellingEducationData =
+      counsellingEducationData.concat(counsellingEducation);
+  }
+
+  let idx = 1;
+  comprehensiveLowVisionEvaluationData = [];
+
+  // trying out for CLVE sheet
+  for (let beneficiary of beneficiaryFlatList) {
+    let commonData = {
+      Index: idx,
+      Date: new Date(beneficiary["dateOfBirth"])
+        .toLocaleDateString()
+        .split(",")[0],
+      MRN: beneficiary["mrn"],
+      "Name of the Patient": beneficiary["beneficiaryName"],
+      Age: getAge(beneficiary["dateOfBirth"]),
+      Gender: beneficiary["gender"],
+      Education: beneficiary["education"],
+      Occupation: beneficiary["occupation"],
+      Diagnosis: beneficiary["diagnosis"],
+      District: beneficiary["districts"],
+      State: beneficiary["state"],
+    };
+
+    let clveData = JSON.parse(
+      beneficiary["rawComprehensiveLowVisionEvaluation"]
+    )[0];
+    if (clveData !== null && clveData !== [] && clveData !== undefined) {
+      let clveJson = commonData;
+      clveJson["Date"] = new Date(clveData["date"])
+        .toLocaleDateString()
+        .split(",")[0];
+      clveJson["Diagnosis"] = clveData["diagnosis"];
+      clveJson["Acuity Notation"] = clveData["distanceVisualAcuityRE"].split(" ")[1]; // insert check for if [1] exists
+      clveJson["RE Acuity"] = clveData["distanceVisualAcuityRE"].split(" ")[0];
+      clveJson["LE Acuity"] = clveData["distanceVisualAcuityLE"].split(" ")[0];
+      clveJson["BE Acuity"] =
+        clveData["distanceBinocularVisionBE"].split(" ")[0];
+      clveJson["Near Visual Acuity Notation"] = clveData["nearVisualAcuityRE"].split(" ")[1]; // insert check for if [1] exists
+      clveJson["RE Near Visual Acuity"] =
+        clveData["nearVisualAcuityRE"].split(" ")[0];
+      clveJson["LE Near Visual Acuity"] =
+        clveData["nearVisualAcuityLE"].split(" ")[0];
+      clveJson["BE Near Visual Acuity"] =
+        clveData["nearBinocularVisionBE"].split(" ")[0];
+      clveJson["Recommended Optical Aid"] = clveData["recommendationOptical"];
+      clveJson["Recommended Non-Optical Aid"] =
+        clveData["recommendationNonOptical"];
+      clveJson["Recommended Electronic Aid"] =
+        clveData["recommendationElectronic"];
+      clveJson["Spectacles (Refractive Error Only)"] =
+        clveData["recommendationSpectacle"]; // check correctness?
+      clveJson["Dispensed Optical Aid"] = clveData["dispensedOptical"];
+      clveJson["Dispensed Non-Optical Aid"] = clveData["dispensedNonOptical"];
+      clveJson["Dispensed Electronic Aid"] = clveData["dispensedElectronic"];
+      clveJson["Dispensed Spectacles (Refractive Error Only)"] =
+        clveData["dispensedSpectacle"];
+      clveJson["Cost of all the aids dispensed"] =
+        clveData["costOptical"] +
+        clveData["costNonOptical"] +
+        clveData["costElectronic"] +
+        clveData["costSpectacle"];
+      clveJson["Cost to the Beneficiary"] =
+        clveData["costToBeneficiaryOptical"] +
+        clveData["costToBeneficiaryNonOptical"] +
+        clveData["costToBeneficiaryElectronic"] +
+        clveData["costToBeneficiarySpectacle"];
+
+      comprehensiveLowVisionEvaluationData.push(clveJson);
+    }
+
+    idx += 1;
   }
 
   const downloadFilteredReport = () => {
     const wb = XLSX.utils.book_new();
 
     const wben = XLSX.utils.json_to_sheet(beneficiaryData);
-    const wved = XLSX.utils.json_to_sheet(visionEnhancementData);    
-    const wlved = XLSX.utils.json_to_sheet(lowVisionEvaluationData);    
-    const wclve = XLSX.utils.json_to_sheet(comprehensiveLowVisionEvaluationData);
+    const wved = XLSX.utils.json_to_sheet(visionEnhancementData);
+    const wlved = XLSX.utils.json_to_sheet(lowVisionEvaluationData);
+
+    const wclve = XLSX.utils.json_to_sheet(
+      comprehensiveLowVisionEvaluationData
+    );
+
     const wctd = XLSX.utils.json_to_sheet(computerTrainingData);
     const wmtd = XLSX.utils.json_to_sheet(mobileTrainingData);
     const womtd = XLSX.utils.json_to_sheet(orientationMobilityTrainingData);
@@ -464,8 +679,7 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
     XLSX.utils.book_append_sheet(wb, wced, "Counselling Education Sheet");
 
     XLSX.writeFile(wb, "filtered_report.xlsx");
-  }
-
+  };
 
   const handleStartDateChange = (e) => {
     setStartDate(moment(e.target.value).toDate());
@@ -502,8 +716,19 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
       <Navigation />
       <Container>
         <div className="row">
-          {user.admin != null && (<GraphCustomizer summary={summary} selectedHospitals={selectedHospitals} handleHospitalSelection={handleHospitalSelection} handleSelectAll={handleSelectAll} startDate={startDate} handleStartDateChange={handleStartDateChange} endDate={endDate} handleEndDateChange={handleEndDateChange} />)}
-          <div className='col-md-1'></div>
+          {user.admin != null && (
+            <GraphCustomizer
+              summary={summary}
+              selectedHospitals={selectedHospitals}
+              handleHospitalSelection={handleHospitalSelection}
+              handleSelectAll={handleSelectAll}
+              startDate={startDate}
+              handleStartDateChange={handleStartDateChange}
+              endDate={endDate}
+              handleEndDateChange={handleEndDateChange}
+            />
+          )}
+          <div className="col-md-1"></div>
           <div className="col-md-9">
             <Paper>
               <Tabs
@@ -526,12 +751,13 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
       </Container>
       <br />
       <h1>Download All Beneficiary Data</h1>
-      <p>Note this is , seperated if you separate by other delimiter it will not work</p>
-      <button className='primary' onClick={downloadFilteredReport}>
+      <p>
+        Note this is , seperated if you separate by other delimiter it will not
+        work
+      </p>
+      <button className="primary" onClick={downloadFilteredReport}>
         Download Filtered Report
       </button>
     </div>
-
   );
 }
-
