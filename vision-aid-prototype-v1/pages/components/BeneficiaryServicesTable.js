@@ -39,16 +39,16 @@ export default function BeneficiaryServicesTable(props) {
         <tbody>
             <tr>
             <th scope="row">Low Vision Screening</th>
-            <td><button type="button" class="btn btn-primary" onClick={() => openUserHistoricalEvaluationPage(props.user.mrn, "Low_Vision_Evaluation")}>History</button><div class="divider"/>
-            <button type="button" class="btn btn-primary" onClick={() => openNewEvalutaionPage(props.user.mrn, "Low_Vision_Evaluation")}>New Evaluation</button></td>
+            <td><button type="button" class="btn btn-primary" onClick={() => openUserHistoricalEvaluationPage(props.user.mrn, "Low_Vision_Screening")}>History</button><div class="divider"/>
+            <button type="button" class="btn btn-primary" onClick={() => openNewEvalutaionPage(props.user.mrn, "Low_Vision_Screening")}>New Evaluation</button></td>
             </tr>
             <tr>
-            <th scope="row">Comprehensive Low Vision Screening</th>
+            <th scope="row">Comprehensive Low Vision Evaluation</th>
             <td><button type="button" class="btn btn-primary" onClick={() => openUserHistoricalEvaluationPage(props.user.mrn, "Comprehensive_Low_Vision_Evaluation")}>History</button><div class="divider"/>
             <button type="button" class="btn btn-primary" onClick={() => openNewEvalutaionPage(props.user.mrn, "Comprehensive_Low_Vision_Evaluation")}>New Evaluation</button></td>
             </tr>
             <tr>
-            <th scope="row">Low Enhancement</th>
+            <th scope="row">Vision Enhancement</th>
             <td><button type="button" class="btn btn-primary" onClick={() => openUserHistoricalEvaluationPage(props.user.mrn, "Vision_Enhancement")}>History</button><div class="divider"/>
             <button type="button" class="btn btn-primary" onClick={() => openNewEvalutaionPage(props.user.mrn, "Vision_Enhancement")}>New Evaluation</button></td>
             </tr>

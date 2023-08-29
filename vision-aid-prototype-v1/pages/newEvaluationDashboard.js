@@ -217,7 +217,7 @@ export default function NewEvaluationDashboard(props) {
                 api='comprehensiveLowVisionEvaluation'
                 allfields={true}
                 />}
-                {props.service === "Low_Vision_Evaluation" && <TrainingFormCLVE
+                {props.service === "Low_Vision_Screening" && <TrainingFormCLVE
                     existingTrainings={lowVisionEvaluationData}
                     addNewTraining={handleSubmitLowVisionEvaluation}
                     title="Low Vision Screening"
