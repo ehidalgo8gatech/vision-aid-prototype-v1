@@ -646,9 +646,8 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
         clveData["costToBeneficiarySpectacle"];
 
       comprehensiveLowVisionEvaluationData.push(clveJson);
+      idx += 1;
     }
-
-    idx += 1;
   }
 
   const downloadFilteredReport = () => {
