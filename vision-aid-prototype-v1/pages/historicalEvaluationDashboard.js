@@ -46,7 +46,7 @@ export default function HistoricalEvaluationPage(props) {
         if(date==undefined || filterData(date, services)==undefined){
             historicalDashboard = <div className="text-align-left">Select a historical evaluation date from the drop-down menu!</div>;
         } else {
-            if(props.service == "Low_Vision_Evaluation"){
+            if(props.service == "Low_Vision_Screening"){
                 historicalDashboard = <HistoricalLowVisionScreeningForm evaluationData={filterData(date, services)}/>;
             } else if(props.service == "Comprehensive_Low_Vision_Evaluation"){
                 historicalDashboard = <HistoricalCLVForm evaluationData={filterData(date, services)}/>
