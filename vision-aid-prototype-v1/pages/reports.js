@@ -18,6 +18,7 @@ import { CSVLink, CSVDownload } from "react-csv";
 import GraphCustomizer from "./components/GraphCustomizer";
 import { Tab, Tabs, Paper } from "@mui/material";
 import * as XLSX from "xlsx";
+import { Orienta } from "@next/font/google";
 
 // This function is called to load data from the server side.
 export async function getServerSideProps(ctx) {
@@ -47,11 +48,38 @@ export async function getServerSideProps(ctx) {
     };
   }
 
-
   // The user is an admin, so we want to show the summary for all hospitals
 
   // The following is code to download summary data as a CSV file
-  const beneficiaryList = await findAllBeneficiary();
+  const beneficiaryListFromAPI = await findAllBeneficiary();
+
+  let beneficiaryList = beneficiaryListFromAPI.map((beneficiary) => ({
+    mrn: beneficiary.mrn,
+    beneficiaryName: beneficiary.beneficiaryName,
+    hospitalId: beneficiary.hospitalId,
+    dateOfBirth: beneficiary.dateOfBirth,
+    gender: beneficiary.gender,
+    phoneNumber: beneficiary.phoneNumber,
+    education: beneficiary.education,
+    occupation: beneficiary.occupation,
+    districts: beneficiary.districts,
+    state: beneficiary.state,
+    diagnosis: beneficiary.diagnosis,
+    vision: beneficiary.vision,
+    mDVI: beneficiary.mDVI,
+    extraInformation: beneficiary.extraInformation,
+    hospital: beneficiary.hospital,
+    visionEnhancement: beneficiary.Vision_Enhancement,
+    counsellingEducation: beneficiary.Counselling_Education,
+    comprehensiveLowVisionEvaluation:
+      beneficiary.Comprehensive_Low_Vision_Evaluation,
+    lowVisionEvaluation: beneficiary.Low_Vision_Evaluation,
+    training: beneficiary.Training,
+    computerTraining: beneficiary.Computer_Training,
+    mobileTraining: beneficiary.Mobile_Training,
+    orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
+  }));
+
   let flatList = [];
   console.log("here");
   function flatFields(extraInformation, key) {
@@ -94,7 +122,7 @@ export async function getServerSideProps(ctx) {
     });
   }
 
-  for (const beneficiary of beneficiaryList) {
+  for (const beneficiary of beneficiaryListFromAPI) {
     const visionEnhancementFlat = flatChildArray(
       beneficiary.Vision_Enhancement,
       "visionEnhancement"
@@ -112,6 +140,18 @@ export async function getServerSideProps(ctx) {
       "lowVisionEvaluation"
     );
     const trainingFlat = flatChildArray(beneficiary.Training, "training");
+    const computerTrainingFlat = flatChildArray(
+      beneficiary.Computer_Training,
+      "computerTraining"
+    );
+    const mobileTrainingFlat = flatChildArray(
+      beneficiary.Mobile_Training,
+      "mobileTraining"
+    );
+    const orientationMobilityTrainingFlat = flatChildArray(
+      beneficiary.Orientation_Mobility_Training,
+      "orientationMobilityTraining"
+    );
     const extraFields = flatFields(
       beneficiary.extraInformation,
       "BeneficiaryExtraField"
@@ -166,19 +206,18 @@ export async function getServerSideProps(ctx) {
         beneficiary.extraInformation == null
           ? ""
           : beneficiary.extraInformation.replaceAll(",", " "),
-      rawVisionEnhancement: JSON.stringify(
-        beneficiary.Vision_Enhancement
-      ).replaceAll(",", " "),
-      rawCounselingEducation: JSON.stringify(
-        beneficiary.Counselling_Education
-      ).replaceAll(",", " "),
-      rawComprehensiveLowVisionEvaluation: JSON.stringify(
+      visionEnhancement: JSON.stringify(beneficiary.Vision_Enhancement),
+      counsellingEducation: JSON.stringify(beneficiary.Counselling_Education),
+      comprehensiveLowVisionEvaluation: JSON.stringify(
         beneficiary.Comprehensive_Low_Vision_Evaluation
       ),
-      rawLowVisionEvaluation: JSON.stringify(
-        beneficiary.Low_Vision_Evaluation
-      ).replaceAll(",", " "),
-      rawTraining: JSON.stringify(beneficiary.Training).replaceAll(",", " "),
+      lowVisionEvaluation: JSON.stringify(beneficiary.Low_Vision_Evaluation),
+      training: JSON.stringify(beneficiary.Training),
+      computerTraining: JSON.stringify(beneficiary.Computer_Training),
+      mobileTraining: JSON.stringify(beneficiary.Mobile_Training),
+      orientationMobilityTraining: JSON.stringify(
+        beneficiary.Orientation_Mobility_Training
+      ),
     };
     appendFlat(extraFields, flat);
     appendFlat(visionEnhancementFlat, flat);
@@ -186,16 +225,21 @@ export async function getServerSideProps(ctx) {
     appendFlat(comprehensiveLowVisionEvaluationFlat, flat);
     appendFlat(lowVisionEvaluationFlat, flat);
     appendFlat(trainingFlat, flat);
+    appendFlat(computerTrainingFlat, flat);
+    appendFlat(mobileTrainingFlat, flat);
+    appendFlat(orientationMobilityTrainingFlat, flat);
     flatList.push(flat);
   }
 
   // We finally return all the data to the page
   if (user.admin != null) {
     const summary = await getSummaryForAllHospitals();
+
     return {
       props: {
         user: user,
         summary: JSON.parse(JSON.stringify(summary)),
+        beneficiaryList: JSON.parse(JSON.stringify(beneficiaryList)),
         beneficiaryFlatList: flatList,
         error: null,
       },
@@ -216,48 +260,51 @@ function filterByDate(training, start, end) {
 }
 
 // This function is used to filter the entire summary data by date range
-function filterTrainingSummaryByDateRange(startDate, endDate, summary) {
-  const filteredSummary = summary.map((hospital) => {
-    const mobileTraining = hospital.mobileTraining.filter((training) => {
+function filterTrainingSummaryByDateRange(
+  startDate,
+  endDate,
+  summary,
+  summaryType
+) {
+  const filteredSummary = summary.map((element) => {
+    const mobileTraining = element.mobileTraining.filter((training) => {
       // log data of each training
       return filterByDate(training, startDate, endDate);
     });
     // log the difference in length before and after filter
 
-    const computerTraining = hospital.computerTraining.filter((training) => {
+    const computerTraining = element.computerTraining.filter((training) => {
       return filterByDate(training, startDate, endDate);
     });
 
     const orientationMobilityTraining =
-      hospital.orientationMobilityTraining.filter((training) => {
+      element.orientationMobilityTraining.filter((training) => {
         return filterByDate(training, startDate, endDate);
       });
 
-    const visionEnhancement = hospital.visionEnhancement.filter((training) => {
+    const visionEnhancement = element.visionEnhancement.filter((training) => {
       return filterByDate(training, startDate, endDate);
     });
 
-    const counsellingEducation = hospital.counsellingEducation.filter(
+    const counsellingEducation = element.counsellingEducation.filter(
       (training) => {
         return filterByDate(training, startDate, endDate);
       }
     );
 
     const comprehensiveLowVisionEvaluation =
-      hospital.comprehensiveLowVisionEvaluation.filter((training) => {
+      element.comprehensiveLowVisionEvaluation.filter((training) => {
         return filterByDate(training, startDate, endDate);
       });
 
-    const lowVisionEvaluation = hospital.lowVisionEvaluation.filter(
+    const lowVisionEvaluation = element.lowVisionEvaluation.filter(
       (training) => {
         return filterByDate(training, startDate, endDate);
       }
     );
 
-    const beneficiary = hospital.beneficiary;
-
-    return {
-      ...hospital,
+    let filteredElement = {
+      ...element,
       mobileTraining,
       computerTraining,
       orientationMobilityTraining,
@@ -265,8 +312,25 @@ function filterTrainingSummaryByDateRange(startDate, endDate, summary) {
       counsellingEducation,
       comprehensiveLowVisionEvaluation,
       lowVisionEvaluation,
-      beneficiary,
     };
+
+    if (summaryType === "hospital") {
+      const beneficiary = element.beneficiary;
+
+      return {
+        ...filteredElement,
+        beneficiary,
+      };
+    } else if (summaryType === "beneficiary") {
+      const training = element.training.filter((tr) => {
+        return filterByDate(tr, startDate, endDate);
+      });
+
+      return {
+        ...filteredElement,
+        training,
+      };
+    }
   });
 
   return filteredSummary;
@@ -480,7 +544,13 @@ function buildDevicesGraph(data) {
   return chartData;
 }
 
-export default function Summary({ user, summary, beneficiaryFlatList }) {
+export default function Summary({
+  user,
+  summary,
+  beneficiaryList,
+  beneficiaryFlatList,
+  error,
+}) {
   // create start date and end data states, start date is set to one year ago, end date is set to today
   const [startDate, setStartDate] = useState(
     moment().subtract(1, "year").toDate()
@@ -491,6 +561,9 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
 
   useEffect(() => {
     setSelectedHospitals(summary.map((item) => item.id));
+    // setSelectedHospitals(
+    //   summary.map((item) => ({ id: item.id, name: item.name }))
+    // );
   }, []);
 
   const handleHospitalSelection = (event) => {
@@ -523,11 +596,23 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
   const dateFilteredSummary = filterTrainingSummaryByDateRange(
     startDate,
     endDate,
-    summary
+    summary,
+    "hospital"
   );
   // filter summary data based on selected hospitals
   const filteredSummary = dateFilteredSummary.filter((item) =>
     selectedHospitals.includes(item.id)
+  );
+
+  const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
+    startDate,
+    endDate,
+    JSON.parse(JSON.stringify(beneficiaryList)),
+    "beneficiary"
+  );
+
+  const filteredBeneficiaryData = dateFilteredBeneficiaryData.filter((item) =>
+    selectedHospitals.includes(item.hospital.id)
   );
 
   // generate all the data for required graphs
@@ -553,40 +638,21 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
   let trainingData = [];
   let counsellingEducationData = [];
 
-  for (let data of filteredSummary) {
-    const beneficiary = data["beneficiary"];
-    const visionEnhancement = data["visionEnhancement"];
-    const lowVisionEvaluation = data["lowVisionEvaluation"];
-    const CLVE = data["comprehensiveLowVisionEvaluation"];
-    const computerTraining = data["computerTraining"];
-    const mobileTraining = data["mobileTraining"];
-    const orientationMobilityTraining = data["orientationMobilityTraining"];
-    const training = data["training"];
-    const counsellingEducation = data["counsellingEducation"];
+  let beneficiaryIdx = 1;
+  let clveIdx = 1;
+  let veIdx = 1;
+  let lveIdx = 1;
+  let ctIdx = 1;
+  let mtIdx = 1;
+  let omtIdx = 1;
+  let tIdx = 1;
+  let ceIdx = 1;
 
-    beneficiaryData = beneficiaryData.concat(beneficiary);
-    visionEnhancementData = visionEnhancementData.concat(visionEnhancement);
-    lowVisionEvaluationData =
-      lowVisionEvaluationData.concat(lowVisionEvaluation);
-    comprehensiveLowVisionEvaluationData =
-      comprehensiveLowVisionEvaluationData.concat(CLVE);
-    computerTrainingData = computerTrainingData.concat(computerTraining);
-    mobileTrainingData = mobileTrainingData.concat(mobileTraining);
-    orientationMobilityTrainingData = orientationMobilityTrainingData.concat(
-      orientationMobilityTraining
-    );
-    trainingData = trainingData.concat(training);
-    counsellingEducationData =
-      counsellingEducationData.concat(counsellingEducation);
-  }
-
-  let idx = 1;
-  comprehensiveLowVisionEvaluationData = [];
-
-  // trying out for CLVE sheet
-  for (let beneficiary of beneficiaryFlatList) {
+  // Filtered Report Download
+  for (let beneficiary of filteredBeneficiaryData) {
+    // Commmon preceding columns for all sheets
     let commonData = {
-      Index: idx,
+      Index: beneficiaryIdx,
       Date: new Date(beneficiary["dateOfBirth"])
         .toLocaleDateString()
         .split(",")[0],
@@ -601,21 +667,39 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
       State: beneficiary["state"],
     };
 
-    let clveData = JSON.parse(
-      beneficiary["rawComprehensiveLowVisionEvaluation"]
-    )[0];
-    if (clveData !== null && clveData !== [] && clveData !== undefined) {
-      let clveJson = commonData;
+    // Beneficiary Data Sheet:
+    let beneficiaryJson = { ...commonData };
+    beneficiaryJson["Phone Number"] = beneficiary["phoneNumber"];
+    beneficiaryJson["Hospital Name"] = beneficiary["hospital"]["name"];
+    beneficiaryJson["Vision"] = beneficiary["vision"];
+    beneficiaryJson["MDVI"] = beneficiary["mDVI"];
+    beneficiaryJson["Extra Information"] = beneficiary["rawExtraFields"];
+    beneficiaryData.push(beneficiaryJson);
+    beneficiaryIdx += 1;
+
+    // CLVE sheet:
+    let beneficiaryCLVE = beneficiary["comprehensiveLowVisionEvaluation"];
+    for (let clveData of beneficiaryCLVE) {
+      let clveJson = { ...commonData };
+      clveJson["Index"] = clveIdx;
       clveJson["Date"] = new Date(clveData["date"])
         .toLocaleDateString()
         .split(",")[0];
       clveJson["Diagnosis"] = clveData["diagnosis"];
-      clveJson["Acuity Notation"] = clveData["distanceVisualAcuityRE"].split(" ")[1]; // insert check for if [1] exists
+      // clveJson["Acuity"] = {
+      //   "Notation": clveData["distanceVisualAcuityRE"].split(" ")[1], // insert check for if [1] exists
+      //   "RE": clveData["distanceVisualAcuityRE"].split(" ")[0],
+      //   "LE": clveData["distanceVisualAcuityLE"].split(" ")[0],
+      //   "BE": clveData["distanceBinocularVisionBE"].split(" ")[0],
+      // }
+      clveJson["Acuity Notation"] =
+        clveData["distanceVisualAcuityRE"].split(" ")[1]; // insert check for if [1] exists
       clveJson["RE Acuity"] = clveData["distanceVisualAcuityRE"].split(" ")[0];
       clveJson["LE Acuity"] = clveData["distanceVisualAcuityLE"].split(" ")[0];
       clveJson["BE Acuity"] =
         clveData["distanceBinocularVisionBE"].split(" ")[0];
-      clveJson["Near Visual Acuity Notation"] = clveData["nearVisualAcuityRE"].split(" ")[1]; // insert check for if [1] exists
+      clveJson["Near Visual Acuity Notation"] =
+        clveData["nearVisualAcuityRE"].split(" ")[1]; // insert check for if [1] exists
       clveJson["RE Near Visual Acuity"] =
         clveData["nearVisualAcuityRE"].split(" ")[0];
       clveJson["LE Near Visual Acuity"] =
@@ -646,7 +730,155 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
         clveData["costToBeneficiarySpectacle"];
 
       comprehensiveLowVisionEvaluationData.push(clveJson);
-      idx += 1;
+      clveIdx += 1;
+    }
+
+    // Vision Enhancement Sheet
+    let beneficiaryVE = beneficiary["visionEnhancement"];
+
+    for (let veData of beneficiaryVE) {
+      let veJson = { ...commonData };
+      veJson["Index"] = veIdx;
+      veJson["Date"] = new Date(veData["date"])
+        .toLocaleDateString()
+        .split(",")[0];
+      veJson["Diagnosis"] = veData["Diagnosis"];
+      veJson["Session Number"] = veData["sessionNumber"];
+      veJson["MDVI"] = veData["MDVI"];
+      veJson["Extra Information"] = veData["extraInformation"];
+
+      visionEnhancementData.push(veJson);
+      veIdx += 1;
+    }
+
+    // Low Vision Enhancement Sheet
+    let beneficiaryLVE = beneficiary["lowVisionEvaluation"];
+
+    for (let lveData of beneficiaryLVE) {
+      let lveJson = { ...commonData };
+      lveJson["Index"] = lveIdx;
+      lveJson["Date"] = new Date(lveData["date"])
+        .toLocaleDateString()
+        .split(",")[0];
+      lveJson["Diagnosis"] = lveData["diagnosis"];
+      lveJson["Session Number"] = lveData["sessionNumber"];
+      lveJson["MDVI"] = lveData["mdvi"];
+      lveJson["Extra Information"] = lveData["extraInformation"];
+      lveJson["Acuity Notation"] =
+        lveData["distanceVisualAcuityRE"].split(" ")[1]; // insert check for if [1] exists
+      lveJson["RE Acuity"] = lveData["distanceVisualAcuityRE"].split(" ")[0];
+      lveJson["LE Acuity"] = lveData["distanceVisualAcuityLE"].split(" ")[0];
+      lveJson["BE Acuity"] = lveData["distanceBinocularVisionBE"].split(" ")[0];
+      lveJson["Near Visual Acuity Notation"] =
+        lveData["nearVisualAcuityRE"].split(" ")[1]; // insert check for if [1] exists
+      lveJson["RE Near Visual Acuity"] =
+        lveData["nearVisualAcuityRE"].split(" ")[0];
+      lveJson["LE Near Visual Acuity"] =
+        lveData["nearVisualAcuityLE"].split(" ")[0];
+      lveJson["BE Near Visual Acuity"] =
+        lveData["nearBinocularVisionBE"].split(" ")[0];
+      lveJson["Recommended Optical Aid"] = lveData["recommendationOptical"];
+      lveJson["Recommended Non-Optical Aid"] =
+        lveData["recommendationNonOptical"];
+      lveJson["Recommended Electronic Aid"] =
+        lveData["recommendationElectronic"];
+      lveJson["Spectacles (Refractive Error Only)"] =
+        lveData["recommendationSpectacle"];
+
+      lowVisionEvaluationData.push(lveJson);
+      lveIdx += 1;
+    }
+
+    // Computer Training Sheet
+    let beneficiaryCT = beneficiary["computerTraining"];
+
+    for (let ctData of beneficiaryCT) {
+      let ctJson = { ...commonData };
+      ctJson["Index"] = ctIdx;
+      ctJson["Date"] = new Date(ctData["date"])
+        .toLocaleDateString()
+        .split(",")[0];
+      ctJson["Session Number"] = ctData["sessionNumber"];
+      ctJson["Vision Type"] = ctData["visionType"];
+      ctJson["Type of Training"] = ctData["typeOfTraining"];
+      ctJson["Extra Information"] = ctData["extraInformation"];
+
+      computerTrainingData.push(ctJson);
+      ctIdx += 1;
+    }
+
+    // Mobile Training Sheet
+    let beneficiaryMT = beneficiary["mobileTraining"];
+
+    for (let mtData of beneficiaryMT) {
+      let mtJson = { ...commonData };
+      mtJson["Index"] = mtIdx;
+      mtJson["Date"] = new Date(mtData["date"])
+        .toLocaleDateString()
+        .split(",")[0];
+      mtJson["Session Number"] = mtData["sessionNumber"];
+      mtJson["Vision Type"] = mtData["vision"];
+      mtJson["Type of Training"] = mtData["typeOfTraining"];
+      mtJson["Extra Information"] = mtData["extraInformation"];
+
+      mobileTrainingData.push(mtJson);
+      mtIdx += 1;
+    }
+
+    // Orientation Mobility Training Sheet
+    let beneficiaryOMT = beneficiary["orientationMobilityTraining"];
+
+    for (let omtData of beneficiaryOMT) {
+      let omtJson = { ...commonData };
+      omtJson["Index"] = omtIdx;
+      omtJson["Date"] = new Date(omtData["date"])
+        .toLocaleDateString()
+        .split(",")[0];
+      omtJson["Session Number"] = omtData["sessionNumber"];
+      omtJson["Vision Type"] = omtData["vision"];
+      omtJson["Type of Training"] = omtData["typeOfTraining"];
+      omtJson["Extra Information"] = omtData["extraInformation"];
+
+      orientationMobilityTrainingData.push(omtJson);
+      omtIdx += 1;
+    }
+
+    // Training Sheet
+    let beneficiaryT = beneficiary["training"];
+
+    for (let tData of beneficiaryT) {
+      let tJson = { ...commonData };
+      tJson["Index"] = tIdx;
+      tJson["Date"] = new Date(tData["date"])
+        .toLocaleDateString()
+        .split(",")[0];
+      tJson["Session Number"] = tData["sessionNumber"];
+      tJson["Type of Training"] = tData["type"];
+      tJson["Sub Type"] = tData["subType"];
+      tJson["Extra Information"] = tData["extraInformation"];
+
+      trainingData.push(tJson);
+      tIdx += 1;
+    }
+
+    // Counseling Education Sheet
+    let beneficiaryCE = beneficiary["counsellingEducation"];
+
+    for (let ceData of beneficiaryCE) {
+      let ceJson = { ...commonData };
+      ceJson["Index"] = ceIdx;
+      ceJson["Date"] = new Date(ceData["date"])
+        .toLocaleDateString()
+        .split(",")[0];
+      ceJson["Session Number"] = ceData["sessionNumber"];
+      ceJson["MDVI"] = ceData["MDVI"];
+      ceJson["Vision Type"] = ceData["vision"];
+      ceJson["Type"] = ceData["type"];
+      ceJson["Type of Counselling"] = ceData["typeCounselling"];
+      ceJson["Extra Information"] = ceData["extraInformation"];
+
+      counsellingEducationData.push(ceJson);
+      ceIdx += 1;
     }
   }
 
@@ -656,11 +888,9 @@ export default function Summary({ user, summary, beneficiaryFlatList }) {
     const wben = XLSX.utils.json_to_sheet(beneficiaryData);
     const wved = XLSX.utils.json_to_sheet(visionEnhancementData);
     const wlved = XLSX.utils.json_to_sheet(lowVisionEvaluationData);
-
     const wclve = XLSX.utils.json_to_sheet(
       comprehensiveLowVisionEvaluationData
     );
-
     const wctd = XLSX.utils.json_to_sheet(computerTrainingData);
     const wmtd = XLSX.utils.json_to_sheet(mobileTrainingData);
     const womtd = XLSX.utils.json_to_sheet(orientationMobilityTrainingData);
