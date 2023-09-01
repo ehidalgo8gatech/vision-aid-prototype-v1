@@ -173,6 +173,9 @@ export async function findAllBeneficiary() {
             Comprehensive_Low_Vision_Evaluation: true,
             Low_Vision_Evaluation: true,
             Training: true,
+            Computer_Training: true,
+            Mobile_Training: true,
+            Orientation_Mobility_Training: true,
         }
     });
 }
