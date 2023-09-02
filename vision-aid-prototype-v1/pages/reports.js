@@ -17,7 +17,8 @@ import { findAllBeneficiary } from "@/pages/api/beneficiary";
 import { CSVLink, CSVDownload } from "react-csv";
 import GraphCustomizer from "./components/GraphCustomizer";
 import { Tab, Tabs, Paper } from "@mui/material";
-import * as XLSX from "xlsx";
+// import * as XLSX from "xlsx";
+import XLSX from "xlsx-js-style";
 import { Orienta } from "@next/font/google";
 
 // This function is called to load data from the server side.
@@ -81,7 +82,6 @@ export async function getServerSideProps(ctx) {
   }));
 
   let flatList = [];
-  console.log("here");
   function flatFields(extraInformation, key) {
     let flat = {};
     try {
@@ -592,6 +592,16 @@ export default function Summary({
     return age;
   };
 
+  const mergeRowsForColumn = (column) => {
+    return {s: {r: 0, c: column}, e: {r: 1, c: column}};
+  }
+
+  const addEmptyElements = (array, element, count) => {
+    for (let i = 0; i < count; i++) {
+      array.push(element);
+    }
+  }
+
   // filter summary data based on start and end date of the training
   const dateFilteredSummary = filterTrainingSummaryByDateRange(
     startDate,
@@ -648,6 +658,50 @@ export default function Summary({
   let tIdx = 1;
   let ceIdx = 1;
 
+  const clveMainHeader = [
+    "Index",
+    "Date",
+    "MRN",
+    "Name of the Patient",
+    "Age",
+    "Gender",
+    "Education",
+    "Occupation",
+    "Diagnosis",
+    "Districts",
+    "State",
+    "Acuity",
+    "",
+    "",
+    "",
+    "Near Visual Acuity",
+    "",
+    "",
+    "",
+    "Recommended Optical Aid",
+    "Recommended Non-Optical Aid",
+    "Recommended Electronic Aid",
+    "Spectacles (Refractive Error Only)",
+    "Dispensed Optical Aid",
+    "Dispensed Non-Optical Aid",
+    "Dispensed Electronic Aid",
+    "Dispensed Spectacles (Refractive Error Only)",
+    "Cost of all the aids dispensed",
+    "Cost to the Beneficiary",
+  ];
+
+  let clveSubHeader = [];
+  addEmptyElements(clveSubHeader, "", 11);
+  clveSubHeader.push("Notation");
+  clveSubHeader.push("RE");
+  clveSubHeader.push("LE");
+  clveSubHeader.push("BE");
+  clveSubHeader.push("Notation");
+  clveSubHeader.push("RE");
+  clveSubHeader.push("LE");
+  clveSubHeader.push("BE");
+  addEmptyElements(clveSubHeader, "", 10);
+
   // Filtered Report Download
   for (let beneficiary of filteredBeneficiaryData) {
     // Commmon preceding columns for all sheets
@@ -686,25 +740,19 @@ export default function Summary({
         .toLocaleDateString()
         .split(",")[0];
       clveJson["Diagnosis"] = clveData["diagnosis"];
-      // clveJson["Acuity"] = {
-      //   "Notation": clveData["distanceVisualAcuityRE"].split(" ")[1], // insert check for if [1] exists
-      //   "RE": clveData["distanceVisualAcuityRE"].split(" ")[0],
-      //   "LE": clveData["distanceVisualAcuityLE"].split(" ")[0],
-      //   "BE": clveData["distanceBinocularVisionBE"].split(" ")[0],
-      // }
       clveJson["Acuity Notation"] =
         clveData["distanceVisualAcuityRE"].split(" ")[1]; // insert check for if [1] exists
-      clveJson["RE Acuity"] = clveData["distanceVisualAcuityRE"].split(" ")[0];
-      clveJson["LE Acuity"] = clveData["distanceVisualAcuityLE"].split(" ")[0];
-      clveJson["BE Acuity"] =
+      clveJson["Acuity RE"] = clveData["distanceVisualAcuityRE"].split(" ")[0];
+      clveJson["Acuity LE"] = clveData["distanceVisualAcuityLE"].split(" ")[0];
+      clveJson["Acuity BE"] =
         clveData["distanceBinocularVisionBE"].split(" ")[0];
       clveJson["Near Visual Acuity Notation"] =
         clveData["nearVisualAcuityRE"].split(" ")[1]; // insert check for if [1] exists
-      clveJson["RE Near Visual Acuity"] =
+      clveJson["Near Visual Acuity RE"] =
         clveData["nearVisualAcuityRE"].split(" ")[0];
-      clveJson["LE Near Visual Acuity"] =
+      clveJson["Near Visual Acuity LE"] =
         clveData["nearVisualAcuityLE"].split(" ")[0];
-      clveJson["BE Near Visual Acuity"] =
+      clveJson["Near Visual Acuity BE"] =
         clveData["nearBinocularVisionBE"].split(" ")[0];
       clveJson["Recommended Optical Aid"] = clveData["recommendationOptical"];
       clveJson["Recommended Non-Optical Aid"] =
@@ -888,9 +936,9 @@ export default function Summary({
     const wben = XLSX.utils.json_to_sheet(beneficiaryData);
     const wved = XLSX.utils.json_to_sheet(visionEnhancementData);
     const wlved = XLSX.utils.json_to_sheet(lowVisionEvaluationData);
-    const wclve = XLSX.utils.json_to_sheet(
-      comprehensiveLowVisionEvaluationData
-    );
+
+    const wclve = XLSX.utils.json_to_sheet([]);
+
     const wctd = XLSX.utils.json_to_sheet(computerTrainingData);
     const wmtd = XLSX.utils.json_to_sheet(mobileTrainingData);
     const womtd = XLSX.utils.json_to_sheet(orientationMobilityTrainingData);
@@ -906,6 +954,37 @@ export default function Summary({
     XLSX.utils.book_append_sheet(wb, womtd, "Orientation Mobile Sheet");
     XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
     XLSX.utils.book_append_sheet(wb, wced, "Counselling Education Sheet");
+
+    XLSX.utils.sheet_add_aoa(wclve, [clveMainHeader, clveSubHeader]);
+    XLSX.utils.sheet_add_json(wclve, comprehensiveLowVisionEvaluationData, {
+      skipHeader: true,
+      origin: -1,
+    });
+    wclve["!merges"] = [
+      mergeRowsForColumn(0), // {s: {r: 0, c: 0}, e: {r: 1, c: 0}},
+      mergeRowsForColumn(1),
+      mergeRowsForColumn(2),
+      mergeRowsForColumn(3),
+      mergeRowsForColumn(4),
+      mergeRowsForColumn(5),
+      mergeRowsForColumn(6),
+      mergeRowsForColumn(7),
+      mergeRowsForColumn(8),
+      mergeRowsForColumn(9),
+      mergeRowsForColumn(10),
+      { s: { r: 0, c: 11 }, e: { r: 0, c: 14 } },
+      { s: { r: 0, c: 15 }, e: { r: 0, c: 18 } },
+      mergeRowsForColumn(19),
+      mergeRowsForColumn(20),
+      mergeRowsForColumn(21),
+      mergeRowsForColumn(22),
+      mergeRowsForColumn(23),
+      mergeRowsForColumn(24),
+      mergeRowsForColumn(25),
+      mergeRowsForColumn(26),
+      mergeRowsForColumn(27),
+      mergeRowsForColumn(28),
+    ];
 
     XLSX.writeFile(wb, "filtered_report.xlsx");
   };
