@@ -206,9 +206,7 @@ function UserPage(props) {
         </option>
       );
     }
-    return (
-      <div className="mb-3">
-        {canEdit && editableField === field ? (
+    return canEdit && editableField === field ? (
           <div>
             <form
               onSubmit={(e) => handleSubmit(e, field)}
@@ -228,8 +226,8 @@ function UserPage(props) {
         ) : type == "hidden" ? (
           <div></div>
         ) : (
-          <div>
-            <span className="ms-2">
+          <div className="text-align-left">
+            <div className="flex-container">
               {formData[field]}
               <button
                 type="button"
@@ -238,16 +236,12 @@ function UserPage(props) {
               >
                 {canEdit && <Pencil />}
               </button>
-            </span>
+            </div>
           </div>
-        )}
-      </div>
-    );
-  };
+        )};
   
-  const renderField = (field, type, canEdit) => (
-    <div className="mb-3">
-      {canEdit && editableField === field ? (
+  const renderField = (field, type, canEdit) => {
+    return canEdit && editableField === field ? (
         <div>
           <form
             onSubmit={(e) => handleSubmit(e, field)}
@@ -268,21 +262,20 @@ function UserPage(props) {
       ) : type == "hidden" ? (
         <div></div>
       ) : (
-        <div>
-          <span className="ms-2">
+        <div className="text-align-left">
+          <div className="flex-container">
             {formData[field]}
             <button
               type="button"
-              className="btn btn-link btn-sm text-primary ms-2"
+              className="btn btn-link btn-sm text-primary ms-2 text-align-right"
               onClick={() => handleEditClick(field)}
             >
               {canEdit && <Pencil />}
             </button>
-          </span>
+          </div>
         </div>
-      )}
-    </div>
-  );
+      )
+    };
 
   const renderDOB = () => {
     return editableField === "dateOfBirth" ? (
@@ -306,17 +299,17 @@ function UserPage(props) {
     ) : "date" == "hidden" ? (
       <div></div>
     ) : (
-      <div>
-        <span className="ms-2">
+      <div className="text-align-left">
+        <div className="flex-container">
           {formData["dateOfBirth"].toString().split("T")[0]}
           <button
             type="button"
-            className="btn btn-link btn-sm text-primary ms-2"
+            className="btn btn-link btn-sm text-primary ms-2 text-align-right"
             onClick={() => handleEditClick("dateOfBirth")}
           >
             {<Pencil />}
           </button>
-        </span>
+        </div>
       </div>
     );
   };
@@ -343,8 +336,8 @@ function UserPage(props) {
     ) : "text" == "hidden" ? (
       <div></div>
     ) : (
-      <div>
-        <span className="ms-2">
+      <div className="text-align-left">
+        <div className="flex-container">
           {formData["extraInformation"].toString().split(":")[1].split('"')[1]}:{" "}
           {formData["extraInformation"].toString().split(":")[2].split('"')[1]}
           <button
@@ -354,7 +347,7 @@ function UserPage(props) {
           >
             {<Pencil />}
           </button>
-        </span>
+        </div>
       </div>
     );
   };
