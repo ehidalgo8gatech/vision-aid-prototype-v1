@@ -9,7 +9,7 @@ export default function ReportsHospitalSelection(props) {
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <th>List of Hospitals</th>
+                        <th>List of All Hospitals</th>
                         <th>
                             <button type='button' className='btn btn-light' onClick={handleSelectAll}>Select All</button>
                         </th>
