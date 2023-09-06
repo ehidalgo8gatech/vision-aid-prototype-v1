@@ -702,6 +702,47 @@ export default function Summary({
   clveSubHeader.push("BE");
   addEmptyElements(clveSubHeader, "", 10);
 
+  const lveMainHeader = [
+    "Index",
+    "Date",
+    "MRN",
+    "Name of the Patient",
+    "Age",
+    "Gender",
+    "Education",
+    "Occupation",
+    "Diagnosis",
+    "Districts",
+    "State",
+    "Session Number",
+    "MDVI",
+    "Acuity",
+    "",
+    "",
+    "",
+    "Near Visual Acuity",
+    "",
+    "",
+    "",
+    "Recommended Optical Aid",
+    "Recommended Non-Optical Aid",
+    "Recommended Electronic Aid",
+    "Spectacles (Refractive Error Only)",
+    "Extra Information"
+  ];
+
+  let lveSubHeader = [];
+  addEmptyElements(lveSubHeader, "", 13);
+  lveSubHeader.push("Notation");
+  lveSubHeader.push("RE");
+  lveSubHeader.push("LE");
+  lveSubHeader.push("BE");
+  lveSubHeader.push("Notation");
+  lveSubHeader.push("RE");
+  lveSubHeader.push("LE");
+  lveSubHeader.push("BE");
+  addEmptyElements(lveSubHeader, "", 5);
+
   // Filtered Report Download
   for (let beneficiary of filteredBeneficiaryData) {
     // Commmon preceding columns for all sheets
@@ -811,7 +852,6 @@ export default function Summary({
       lveJson["Diagnosis"] = lveData["diagnosis"];
       lveJson["Session Number"] = lveData["sessionNumber"];
       lveJson["MDVI"] = lveData["mdvi"];
-      lveJson["Extra Information"] = lveData["extraInformation"];
       lveJson["Acuity Notation"] =
         lveData["distanceVisualAcuityRE"].split(" ")[1]; // insert check for if [1] exists
       lveJson["RE Acuity"] = lveData["distanceVisualAcuityRE"].split(" ")[0];
@@ -832,6 +872,7 @@ export default function Summary({
         lveData["recommendationElectronic"];
       lveJson["Spectacles (Refractive Error Only)"] =
         lveData["recommendationSpectacle"];
+      lveJson["Extra Information"] = lveData["extraInformation"];
 
       lowVisionEvaluationData.push(lveJson);
       lveIdx += 1;
@@ -935,8 +976,8 @@ export default function Summary({
 
     const wben = XLSX.utils.json_to_sheet(beneficiaryData);
     const wved = XLSX.utils.json_to_sheet(visionEnhancementData);
-    const wlved = XLSX.utils.json_to_sheet(lowVisionEvaluationData);
 
+    const wlved = XLSX.utils.json_to_sheet([]);
     const wclve = XLSX.utils.json_to_sheet([]);
 
     const wctd = XLSX.utils.json_to_sheet(computerTrainingData);
@@ -984,6 +1025,34 @@ export default function Summary({
       mergeRowsForColumn(26),
       mergeRowsForColumn(27),
       mergeRowsForColumn(28),
+    ];
+
+    XLSX.utils.sheet_add_aoa(wlved, [lveMainHeader, lveSubHeader]);
+    XLSX.utils.sheet_add_json(wlved, lowVisionEvaluationData, {
+      skipHeader: true,
+      origin: -1,
+    });
+    wlved["!merges"] = [
+      mergeRowsForColumn(0), // {s: {r: 0, c: 0}, e: {r: 1, c: 0}},
+      mergeRowsForColumn(1),
+      mergeRowsForColumn(2),
+      mergeRowsForColumn(3),
+      mergeRowsForColumn(4),
+      mergeRowsForColumn(5),
+      mergeRowsForColumn(6),
+      mergeRowsForColumn(7),
+      mergeRowsForColumn(8),
+      mergeRowsForColumn(9),
+      mergeRowsForColumn(10),
+      mergeRowsForColumn(11),
+      mergeRowsForColumn(12),
+      { s: { r: 0, c: 13 }, e: { r: 0, c: 16 } },
+      { s: { r: 0, c: 17 }, e: { r: 0, c: 20 } },
+      mergeRowsForColumn(21),
+      mergeRowsForColumn(22),
+      mergeRowsForColumn(23),
+      mergeRowsForColumn(24),
+      mergeRowsForColumn(25),
     ];
 
     XLSX.writeFile(wb, "filtered_report.xlsx");
