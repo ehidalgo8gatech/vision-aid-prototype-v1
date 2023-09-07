@@ -52,7 +52,8 @@ async function updateData(req, res) {
 }
 
 async function readData(req, res) {
-
+    const training = await prisma.training_Type.findMany({});
+    return res.status(200).json(training, {success: true});
 }
 
 async function addData(req, res) {

@@ -16,6 +16,9 @@ export default function NewEvaluationDashboard(props) {
     // State variable for form fields
   const [formData, setFormData] = useState(props.user);
   const service = props.user[props.service];
+  const counsellingTypeList = props.counsellingTypeList;
+  const trainingTypeList = props.trainingTypeList;
+  const trainingSubTypeList = props.trainingSubTypeList;
   const [editableField, setEditableField] = useState('');
 
   const [mobileTrainingData, setMobileTrainingData] = useState([]);
@@ -255,7 +258,7 @@ export default function NewEvaluationDashboard(props) {
                     customFields={[]}
                     api='counsellingEducation'
                     submitButtonTest='Add New Counseling'
-                    typeList={props.counsellingType}
+                    typeList={counsellingTypeList}
                     mdvi={false}
                     subTypeList={null}
                 />
@@ -268,9 +271,9 @@ export default function NewEvaluationDashboard(props) {
                   customFields={[]}
                   api='training'
                   submitButtonTest='Add New Training'
-                  typeList={props.trainingType}
+                  typeList={trainingTypeList}
                   mdvi={false}
-                  subTypeList={props.trainingSubType}
+                  subTypeList={trainingSubTypeList}
                 />
                 }
                 </div>
@@ -300,12 +303,49 @@ export async function getServerSideProps({ query }) {
     };
   }
 
+  let counsellingTypeList = [];
+  let trainingTypeList = [];
+  let trainingSubTypeList = [];
+  if(service === "Counselling_Education") {
+    try {
+        const counsellingType = await await fetch(`${process.env.NEXTAUTH_URL}/api/counsellingType`, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        });
+        counsellingTypeList = await counsellingType.json();
+      }
+      catch (error) {
+        console.error('Error fetching counselling type:', error);
+      }
+    } else if(service === "Training") {
+        try {
+            const trainingType = await await fetch(`${process.env.NEXTAUTH_URL}/api/trainingType`, {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json'},
+            });
+            const trainingSubType = await await fetch(`${process.env.NEXTAUTH_URL}/api/trainingSubType`, {  
+                method: 'GET',
+                headers: {'Content-Type': 'application/json'},
+            });
+            trainingTypeList = await trainingType.json();
+            trainingSubTypeList = await trainingSubType.json();
+          }
+          catch (error) {
+            console.error('Error fetching training type:', error);
+          }
+    }
+
+
+  
   user.hospitalName = user.hospital.name
 
   return {
     props: {
         user: user,
-        service: service
+        service: service,
+        counsellingTypeList: counsellingTypeList,
+        trainingTypeList: trainingTypeList,
+        trainingSubTypeList: trainingSubTypeList,
     },
   };
 }

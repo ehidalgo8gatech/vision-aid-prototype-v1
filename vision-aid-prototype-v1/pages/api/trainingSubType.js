@@ -54,7 +54,12 @@ async function updateData(req, res) {
 }
 
 async function readData(req, res) {
-
+    const training = await prisma.training_Sub_Type.findMany({
+        include: {
+            trainingType: true
+        }
+    });
+    return res.status(200).json(training, {success: true});
 }
 
 async function addData(req, res) {
