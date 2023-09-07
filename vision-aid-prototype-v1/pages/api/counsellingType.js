@@ -50,9 +50,10 @@ async function deleteData(req, res) {
 async function updateData(req, res) {
 
 }
-
+g
 async function readData(req, res) {
-
+    const counseling = await prisma.counselling_Type.findMany({});
+    return res.status(200).json(counseling, {success: true});
 }
 
 async function addData(req, res) {
