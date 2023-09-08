@@ -12,7 +12,7 @@ import {
   mUnitsValues,
   snellenImperialValues,
   snellenMetricValues,
-} from "./acuityConstants";
+} from "../../constants/acuityConstants";
 
 const TrainingFormCLVE = ({
   existingTrainings = [],
