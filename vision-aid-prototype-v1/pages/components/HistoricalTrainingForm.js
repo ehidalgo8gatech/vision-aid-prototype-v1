@@ -8,7 +8,7 @@ import { useSession, signIn, signOut, getSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import moment from "moment";
 
-export default function HistoricalTrainingForm(props) {
+export default function HistoricalTrainingForm(props={evaluationData:{service:{}, editable: false}}) {
   // const data = props.evaluationData.service;
   const [data, setData] = useState({});
   useEffect(() => {

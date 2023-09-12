@@ -8,7 +8,7 @@ import { useSession, signIn, signOut, getSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import moment from "moment";
 
-export default function HistoricalCLVForm(props) {
+export default function HistoricalCLVForm(props={evaluationData:{service:{}, editable: false}}) {
   // let data = props.evaluationData.service;
   const [data, setData] = useState({});
   useEffect(() => {
