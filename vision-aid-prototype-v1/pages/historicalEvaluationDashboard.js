@@ -8,11 +8,11 @@ import { useSession, signIn, signOut, getSession } from "next-auth/react";
 import { readUser } from "./api/user";
 import Navigation from "./navigation/Navigation";
 import UserProfileCard from "./components/UserProfileCard";
-import HistoricalLowVisionScreeningForm from "./components/HistoricalLowVisionScreeningForm";
-import HistoricalCLVForm from "./components/HistoricalCLVForm";
-import HistoricalVisionEnhancementForm from "./components/HistoricalVisionEnhancementForm";
-import HistoricalCounselingForm from "./components/HistoricalCounselingForm";
-import HistoricalTrainingForm from "./components/HistoricalTrainingForm";
+import HistoricalLowVisionScreeningForm from "../comps/HistoricalLowVisionScreeningForm";
+import HistoricalCLVForm from "../comps/HistoricalCLVForm";
+import HistoricalVisionEnhancementForm from "../comps/HistoricalVisionEnhancementForm";
+import HistoricalCounselingForm from "../comps/HistoricalCounselingForm";
+import HistoricalTrainingForm from "../comps/HistoricalTrainingForm";
 
 export default function HistoricalEvaluationPage(props) {
   let serviceToFetch = props.service;

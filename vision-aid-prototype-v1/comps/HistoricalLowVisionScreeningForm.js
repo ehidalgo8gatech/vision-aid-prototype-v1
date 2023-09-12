@@ -7,7 +7,7 @@ import { Inter } from "@next/font/google";
 import { useSession, signIn, signOut, getSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 
-export default function HistoricalLowVisionScreeningForm(props={evaluationData:{service:{}, editable: false}}) {
+export default function HistoricalLowVisionScreeningForm(props) {
   // let data = props.evaluationData.service;
 
   const [data, setData] = useState({});

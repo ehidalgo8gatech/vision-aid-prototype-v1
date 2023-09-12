@@ -8,8 +8,8 @@ import { useSession, signIn, signOut, getSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import moment from "moment";
 
-export default function HistoricalCounselingForm(props={evaluationData:{service:{}, editable: false}}) {
-  // const data = props.evaluationData;
+export default function HistoricalTrainingForm(props) {
+  // const data = props.evaluationData.service;
   const [data, setData] = useState({});
   useEffect(() => {
     setData(props.evaluationData.service);
@@ -26,7 +26,6 @@ export default function HistoricalCounselingForm(props={evaluationData:{service:
         ...data,
         [e.target.name]: new Date(Date.parse(e.target.value)),
       });
-      // add reload to include this new date in drop-down
     } else if (e.target.type === "number") {
       setData({ ...data, [e.target.name]: parseInt(e.target.value) });
     } else {
@@ -34,8 +33,8 @@ export default function HistoricalCounselingForm(props={evaluationData:{service:
     }
   };
 
-  const saveCounselingData = async () => {
-    const res = await fetch("/api/counsellingEducation", {
+  const saveTrainingData = async () => {
+    const res = await fetch("/api/training", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +65,7 @@ export default function HistoricalCounselingForm(props={evaluationData:{service:
           <tr>
             <th scope="row">Date</th>
             <td>
-            {!editMode && data.date !== null && moment(data.date).format("YYYY-MM-DD")}
+              {!editMode && data.date !== null && moment(data.date).format("YYYY-MM-DD")}
               {!editMode && data.date !== null && ""}
               {editMode && (
                 <input
@@ -106,10 +105,34 @@ export default function HistoricalCounselingForm(props={evaluationData:{service:
               )}
             </td>
           </tr>
+          <tr>
+            <th scope="row">Sub Type</th>
+            <td>
+              {!editMode && data.subType}
+              {editMode && (
+                <input
+                  type="text"
+                  name="subType"
+                  value={data.subType}
+                  onChange={(e) => handleChange(e)}
+                />
+              )}
+            </td>
+          </tr>
           {/* <tr>
-            <th scope="row">Other Type</th>
-            <td>{data.typeOther}</td>
-            </tr> */}
+            <th scope="row">Other Sub Type</th>
+            <td>
+              {!editMode && data.subTypeOther}
+              {editMode && (
+                <input
+                  type="text"
+                  name="subTypeOther"
+                  value={data.subTypeOther}
+                  onChange={(e) => handleChange(e)}
+                />
+              )}
+            </td>
+          </tr> */}
           <tr>
             <th scope="row">Extra Information</th>
             <td>
@@ -129,7 +152,7 @@ export default function HistoricalCounselingForm(props={evaluationData:{service:
       {props.evaluationData.editable && !editMode && (
         <button onClick={handleClick}>Edit</button>
       )}
-      {editMode && <button onClick={saveCounselingData}>Save</button>}
+      {editMode && <button onClick={saveTrainingData}>Save</button>}
     </div>
   );
 }
