@@ -13,7 +13,7 @@ import { Table } from "react-bootstrap";
 import Link from "next/link";
 import moment from "moment";
 import { useState, useEffect } from "react";
-import { findAllBeneficiary } from "@/pages/api/beneficiary";
+import { findAllBeneficiary, findAllBeneficiaryForHospitalId } from "@/pages/api/beneficiary";
 import { CSVLink, CSVDownload } from "react-csv";
 import GraphCustomizer from "./components/GraphCustomizer";
 import { Tab, Tabs, Paper } from "@mui/material";
@@ -40,10 +40,44 @@ export async function getServerSideProps(ctx) {
     const hospitalSummary = await getSummaryForHospitalFromID(
       user.hospitalRole.hospitalId
     );
+
+    let hospitalBeneficiaryListFromAPI = [];
+    hospitalBeneficiaryListFromAPI = await findAllBeneficiaryForHospitalId(user.hospitalRole.hospitalId);
+
+    let hospitalBeneficiaryList = [];
+
+    hospitalBeneficiaryList = hospitalBeneficiaryListFromAPI.map((beneficiary) => ({
+      mrn: beneficiary.mrn,
+      beneficiaryName: beneficiary.beneficiaryName,
+      hospitalId: beneficiary.hospitalId,
+      dateOfBirth: beneficiary.dateOfBirth,
+      gender: beneficiary.gender,
+      phoneNumber: beneficiary.phoneNumber,
+      education: beneficiary.education,
+      occupation: beneficiary.occupation,
+      districts: beneficiary.districts,
+      state: beneficiary.state,
+      diagnosis: beneficiary.diagnosis,
+      vision: beneficiary.vision,
+      mDVI: beneficiary.mDVI,
+      extraInformation: beneficiary.extraInformation,
+      hospital: beneficiary.hospital,
+      visionEnhancement: beneficiary.Vision_Enhancement,
+      counsellingEducation: beneficiary.Counselling_Education,
+      comprehensiveLowVisionEvaluation:
+        beneficiary.Comprehensive_Low_Vision_Evaluation,
+      lowVisionEvaluation: beneficiary.Low_Vision_Evaluation,
+      training: beneficiary.Training,
+      computerTraining: beneficiary.Computer_Training,
+      mobileTraining: beneficiary.Mobile_Training,
+      orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
+    }));
+
     return {
       props: {
         user: user,
         summary: JSON.parse(JSON.stringify([hospitalSummary])),
+        beneficiaryList: JSON.parse(JSON.stringify(hospitalBeneficiaryList)),
         error: null,
       },
     };
@@ -54,7 +88,9 @@ export async function getServerSideProps(ctx) {
   // The following is code to download summary data as a CSV file
   const beneficiaryListFromAPI = await findAllBeneficiary();
 
-  let beneficiaryList = beneficiaryListFromAPI.map((beneficiary) => ({
+  let beneficiaryList = [];
+
+  beneficiaryList = beneficiaryListFromAPI.map((beneficiary) => ({
     mrn: beneficiary.mrn,
     beneficiaryName: beneficiary.beneficiaryName,
     hospitalId: beneficiary.hospitalId,
@@ -561,9 +597,6 @@ export default function Summary({
 
   useEffect(() => {
     setSelectedHospitals(summary.map((item) => item.id));
-    // setSelectedHospitals(
-    //   summary.map((item) => ({ id: item.id, name: item.name }))
-    // );
   }, []);
 
   const handleHospitalSelection = (event) => {
