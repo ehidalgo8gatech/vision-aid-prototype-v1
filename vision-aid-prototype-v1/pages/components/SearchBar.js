@@ -34,7 +34,7 @@ function SearchBar({ onSearch }) {
         />
         <br/>
         <div>
-        <button type="submit" className="btn btn-primary">Submit</button>
+        <button type="submit" className="btn btn-primary">Search</button>
         <button type="button" onClick={() => openUserPage()} class="btn btn-success border-0 btn-block" style={{ marginLeft: '10px' }}>Register new beneficiary</button>
         </div>
         </div>
