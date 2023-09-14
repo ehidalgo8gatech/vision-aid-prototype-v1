@@ -1,9 +1,9 @@
 -- AlterTable
-ALTER TABLE `Comprehensive_Low_Vision_Evaluation` ADD COLUMN `costSpectical` INTEGER NULL,
-    ADD COLUMN `costToBeneficiarySpectical` INTEGER NULL,
-    ADD COLUMN `dispensedDateSpectical` DATETIME(3) NULL,
-    ADD COLUMN `dispensedSpectical` VARCHAR(191) NULL,
-    ADD COLUMN `recommendationSpectical` VARCHAR(191) NULL;
+ALTER TABLE `Comprehensive_Low_Vision_Evaluation` ADD COLUMN `costSpectacle` INTEGER NULL,
+    ADD COLUMN `costToBeneficiarySpectacle` INTEGER NULL,
+    ADD COLUMN `dispensedDateSpectacle` DATETIME(3) NULL,
+    ADD COLUMN `dispensedSpectacle` VARCHAR(191) NULL,
+    ADD COLUMN `recommendationSpectacle` VARCHAR(191) NULL;
 
 -- AlterTable
-ALTER TABLE `Low_Vision_Evaluation` ADD COLUMN `recommendationSpectical` VARCHAR(191) NULL;
+ALTER TABLE `Low_Vision_Evaluation` ADD COLUMN `recommendationSpectacle` VARCHAR(191) NULL;

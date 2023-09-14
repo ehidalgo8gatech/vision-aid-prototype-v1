@@ -47,7 +47,7 @@ async function addData(req, res) {
             nearVisualAcuityRE: body.nearVisualAcuityRE,
             nearVisualAcuityLE: body.nearVisualAcuityLE,
             nearBinocularVisionBE: body.nearBinocularVisionBE,
-            recommendationSpectical: body.recommendationSpectical,
+            recommendationSpectacle: body.recommendationSpectacle,
             recommendationOptical: body.recommendationOptical,
             recommendationNonOptical: body.recommendationNonOptical,
             recommendationElectronic: body.recommendationElectronic,
