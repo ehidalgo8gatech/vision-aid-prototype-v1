@@ -65,7 +65,7 @@ export default function HistoricalTrainingForm(props) {
           <tr>
             <th scope="row">Date</th>
             <td>
-              {!editMode && data.date !== null && moment(data.date).format("YYYY-MM-DD")}
+              {!editMode && data.date !== null && moment(data.date).format("DD MMMM YYYY")}
               {!editMode && data.date !== null && ""}
               {editMode && (
                 <input
