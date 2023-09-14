@@ -107,7 +107,7 @@ export default function HistoricalCLVForm(props) {
             </td>
           </tr>
           <tr>
-            <th scope="row">distanceVisualAcuityRE</th>
+            <th scope="row">Distance Visual Acuity RE</th>
             <td>
               {!editMode && data.distanceVisualAcuityRE}
               {editMode && (
@@ -121,7 +121,7 @@ export default function HistoricalCLVForm(props) {
             </td>
           </tr>
           <tr>
-            <th scope="row">distanceVisualAcuityLE</th>
+            <th scope="row">Distance Visual Acuity LE</th>
             <td>
               {!editMode && data.distanceVisualAcuityLE}
               {editMode && (
@@ -135,7 +135,7 @@ export default function HistoricalCLVForm(props) {
             </td>
           </tr>
           <tr>
-            <th scope="row">distanceBinocularVisionBE</th>
+            <th scope="row">Distance Binocular Vision BE</th>
             <td>
               {!editMode && data.distanceBinocularVisionBE}
               {editMode && (
@@ -149,7 +149,7 @@ export default function HistoricalCLVForm(props) {
             </td>
           </tr>
           <tr>
-            <th scope="row">nearVisualAcuityRE</th>
+            <th scope="row">Near Visual Acuity RE</th>
             <td>
               {!editMode && data.nearVisualAcuityRE}
               {editMode && (
@@ -163,7 +163,7 @@ export default function HistoricalCLVForm(props) {
             </td>
           </tr>
           <tr>
-            <th scope="row">nearVisualAcuityLE</th>
+            <th scope="row">Near Visual Acuity LE</th>
             <td>
               {!editMode && data.nearVisualAcuityLE}
               {editMode && (
@@ -177,7 +177,7 @@ export default function HistoricalCLVForm(props) {
             </td>
           </tr>
           <tr>
-            <th scope="row">nearBinocularVisionBE</th>
+            <th scope="row">Near Binocular Vision BE</th>
             <td>
               {!editMode && data.nearBinocularVisionBE}
               {editMode && (
@@ -207,7 +207,7 @@ export default function HistoricalCLVForm(props) {
           <tr>
             <th scope="row">Dispensed Date Spectacle</th>
             <td>
-            {!editMode && data.dispensedDateSpectacle !== null && moment(data.dispensedDateSpectacle).format("YYYY-MM-DD")}
+            {!editMode && data.dispensedDateSpectacle !== null && moment(data.dispensedDateSpectacle).format("DD MMMM YYYY")}
               {!editMode && data.dispensedDateSpectacle !== null && ""}
               {editMode && (
                 <input
@@ -294,7 +294,7 @@ export default function HistoricalCLVForm(props) {
           <tr>
             <th scope="row">Dispensed Date Optical</th>
             <td>
-            {!editMode && data.dispensedDateOptical !== null && moment(data.dispensedDateOptical).format("YYYY-MM-DD")}
+            {!editMode && data.dispensedDateOptical !== null && moment(data.dispensedDateOptical).format("DD MMMM YYYY")}
               {!editMode && data.dispensedDateOptical !== null && ""}
               {editMode && (
                 <input
@@ -377,9 +377,9 @@ export default function HistoricalCLVForm(props) {
             </td>
           </tr>
           <tr>
-            <th scope="row">Dispensed Date NonOptical</th>
+            <th scope="row">Dispensed Date Non-Optical</th>
             <td>
-            {!editMode && data.dispensedDateNonOptical !== null && moment(data.dispensedDateNonOptical).format("YYYY-MM-DD")}
+            {!editMode && data.dispensedDateNonOptical !== null && moment(data.dispensedDateNonOptical).format("DD MMMM YYYY")}
               {!editMode && data.dispensedDateNonOptical !== null && ""}
               {editMode && (
                 <input
@@ -394,7 +394,7 @@ export default function HistoricalCLVForm(props) {
             </td>
           </tr>
           <tr>
-            <th scope="row">Cost NonOptical</th>
+            <th scope="row">Cost Non-Optical</th>
             <td>
               {!editMode && data.costNonOptical}
               {editMode && (
@@ -422,7 +422,7 @@ export default function HistoricalCLVForm(props) {
             </td>
           </tr>
           <tr>
-            <th scope="row">Dispensed NonOptical</th>
+            <th scope="row">Dispensed Non-Optical</th>
             <td>
               {!editMode && data.dispensedNonOptical}
               {editMode && (
@@ -436,7 +436,7 @@ export default function HistoricalCLVForm(props) {
             </td>
           </tr>
           <tr>
-            <th scope="row">Training Given Non Optical</th>
+            <th scope="row">Training Given Non-Optical</th>
             <td>
               {!editMode && data.trainingGivenNonOptical}
               {editMode && (
@@ -466,7 +466,7 @@ export default function HistoricalCLVForm(props) {
           <tr>
             <th scope="row">Dispensed Date Electronic</th>
             <td>
-            {!editMode && data.dispensedDateElectronic !== null && moment(data.dispensedDateElectronic).format("YYYY-MM-DD")}
+            {!editMode && data.dispensedDateElectronic !== null && moment(data.dispensedDateElectronic).format("DD MMMM YYYY")}
               {!editMode && data.dispensedDateElectronic !== null && ""}
               {editMode && (
                 <input
