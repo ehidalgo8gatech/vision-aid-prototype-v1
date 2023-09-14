@@ -13,6 +13,16 @@ import {
   snellenImperialValues,
   snellenMetricValues,
 } from "../../constants/acuityConstants";
+import {
+  spectacleDevices,
+  opticalDevices,
+  nonOpticalDevices,
+  nonOpticalDevicesSubheadings,
+  nonOpticalDevicesIndices,
+  electronicDevices,
+  electronicDevicesSubheadings,
+  electronicDevicesIndices,
+} from "@/constants/devicesConstants";
 
 const TrainingFormCLVE = ({
   existingTrainings = [],
@@ -50,7 +60,9 @@ const TrainingFormCLVE = ({
       recommendationSpectacle:
         e.target.recommendationSpectacle == null
           ? null
-          : e.target.recommendationSpectacle.value,
+          : (e.target.recommendationSpectacle.value === "other"
+          ? e.target.recommendationSpectacleOther.value
+          : e.target.recommendationSpectacle.value),
       dispensedDateSpectacle:
         e.target.dispensedDateSpectacle == null
           ? null
@@ -66,7 +78,9 @@ const TrainingFormCLVE = ({
       dispensedSpectacle:
         e.target.dispensedSpectacle == null
           ? null
-          : e.target.dispensedSpectacle.value,
+          : (e.target.dispensedSpectacle.value === "other"
+          ? e.target.dispensedSpectacleOther.value
+          : e.target.dispensedSpectacle.value),
       trainingGivenSpectacle:
         e.target.trainingGivenSpectacle == null
           ? null
@@ -74,7 +88,9 @@ const TrainingFormCLVE = ({
       recommendationOptical:
         e.target.recommendationOptical == null
           ? null
-          : e.target.recommendationOptical.value,
+          : (e.target.recommendationOptical.value === "other"
+          ? e.target.recommendationOpticalOther.value
+          : e.target.recommendationOptical.value),
       dispensedDateOptical:
         e.target.dispensedDateOptical == null
           ? null
@@ -90,7 +106,9 @@ const TrainingFormCLVE = ({
       dispensedOptical:
         e.target.dispensedOptical == null
           ? null
-          : e.target.dispensedOptical.value,
+          : (e.target.dispensedOptical.value === "other"
+          ? e.target.dispensedOpticalOther.value
+          : e.target.dispensedOptical.value),
       trainingGivenOptical:
         e.target.trainingGivenOptical == null
           ? null
@@ -98,7 +116,9 @@ const TrainingFormCLVE = ({
       recommendationNonOptical:
         e.target.recommendationNonOptical == null
           ? null
-          : e.target.recommendationNonOptical.value,
+          : (e.target.recommendationNonOptical.value === "other"
+          ? e.target.recommendationNonOpticalOther.value
+          : e.target.recommendationNonOptical.value),
       dispensedDateNonOptical:
         e.target.dispensedDateNonOptical == null
           ? null
@@ -114,7 +134,9 @@ const TrainingFormCLVE = ({
       dispensedNonOptical:
         e.target.dispensedNonOptical == null
           ? null
-          : e.target.dispensedNonOptical.value,
+          : (e.target.dispensedNonOptical.value === "other"
+          ? e.target.dispensedNonOpticalOther.value
+          : e.target.dispensedNonOptical.value),
       trainingGivenNonOptical:
         e.target.trainingGivenNonOptical == null
           ? null
@@ -122,7 +144,9 @@ const TrainingFormCLVE = ({
       recommendationElectronic:
         e.target.recommendationElectronic == null
           ? null
-          : e.target.recommendationElectronic.value,
+          : (e.target.recommendationElectronic.value === "other"
+          ? e.target.recommendationElectronicOther.value
+          : e.target.recommendationElectronic.value),
       dispensedDateElectronic:
         e.target.dispensedDateElectronic == null
           ? null
@@ -138,7 +162,9 @@ const TrainingFormCLVE = ({
       dispensedElectronic:
         e.target.dispensedElectronic == null
           ? null
-          : e.target.dispensedElectronic.value,
+          : (e.target.dispensedElectronic.value === "other"
+          ? e.target.dispensedElectronicOther.value
+          : e.target.dispensedElectronic.value),
       trainingGivenElectronic:
         e.target.trainingGivenElectronic == null
           ? null
@@ -168,11 +194,20 @@ const TrainingFormCLVE = ({
   };
 
   const createOptionList = (values) => {
-    return values.map((value) => (
-      <option key={value}>
-        {value}
-      </option>
-    ));
+    return values.map((value) => <option key={value}>{value}</option>);
+  };
+
+  const createOptionGroupList = (values, subheadings, indices) => {
+    const allOptions = createOptionList(values);
+    const optionGroups = [];
+    for (var i = 0; i < subheadings.length; i++) {
+      optionGroups.push(
+        <optgroup key={subheadings[i]} label={subheadings[i]}>
+          {allOptions.slice(indices[i], indices[i + 1])}
+        </optgroup>
+      );
+    }
+    return optionGroups;
   };
 
   const changeDvValues = (e) => {
@@ -199,9 +234,45 @@ const TrainingFormCLVE = ({
     }
   };
 
-  const [dvAcuityValues, setDvAcuityValues] = useState(createOptionList(logMARValues));
-  const [nvAcuityValues, setNvAcuityValues] = useState(createOptionList(logMARNVValues));
+  const [dvAcuityValues, setDvAcuityValues] = useState(
+    createOptionList(logMARValues)
+  );
+  const [nvAcuityValues, setNvAcuityValues] = useState(
+    createOptionList(logMARNVValues)
+  );
+  const spectacleOptions = createOptionList(spectacleDevices);
+  const opticalOptions = createOptionList(opticalDevices);
+  const nonOpticalOptions = createOptionGroupList(
+    nonOpticalDevices,
+    nonOpticalDevicesSubheadings,
+    nonOpticalDevicesIndices
+  );
+  const electronicOptions = createOptionGroupList(
+    electronicDevices,
+    electronicDevicesSubheadings,
+    electronicDevicesIndices
+  );
+
+  const [showOther, setShowOther] = useState({
+    recommendationSpectacle: false,
+    recommendationOptical: false,
+    recommendationNonOptical: false,
+    recommendationElectronic: false,
+    dispensedSpectacle: false,
+    dispensedOptical: false,
+    dispensedNonOptical: false,
+    dispensedElectronic: false,
+  });
   const [editableField, setEditableField] = useState("");
+
+  const handleSelectChange = (e) => {
+    if (e.target.value == "other") {
+      setShowOther({ ...showOther, [e.target.id]: true });
+    } else {
+      setShowOther({ ...showOther, [e.target.id]: false });
+    }
+  };
+
   // Handle edit icon click
   const handleEditClick = (field) => {
     setEditableField(field);
@@ -353,26 +424,13 @@ const TrainingFormCLVE = ({
           </Form.Control>
         </Form.Group>
 
-        {/* <Row>
-          {customFieldsDistance && customFieldsDistance.map((field) => (
-            <Col key={field}>
-            <Form.Group controlId={field} key={field}>
-              <Form.Label>{field}</Form.Label>
-              <Form.Control type="text" />
-            </Form.Group>
-            </Col>
-          ))}
-          </Row> */}
-
         <Row>
           {customFieldsDistance &&
             customFieldsDistance.map((field) => (
               <Col key={field}>
                 <Form.Group controlId={field} key={field}>
                   <Form.Label>{field}</Form.Label>
-                  <Form.Control as="select">
-                    {dvAcuityValues}
-                  </Form.Control>
+                  <Form.Control as="select">{dvAcuityValues}</Form.Control>
                 </Form.Group>
               </Col>
             ))}
@@ -381,7 +439,6 @@ const TrainingFormCLVE = ({
         <Form.Group controlId="unit-near">
           <Form.Label>Select Near metric:</Form.Label>
           <Form.Control as="select" onChange={changeNvValues}>
-            {/* <option defaultValue></option> */}
             <option>LogMAR</option>
             <option>N-scale</option>
             <option>M-units</option>
@@ -395,9 +452,7 @@ const TrainingFormCLVE = ({
               <Col key={field}>
                 <Form.Group controlId={field} key={field}>
                   <Form.Label>{field}</Form.Label>
-                  <Form.Control as="select">
-                    {nvAcuityValues}
-                  </Form.Control>
+                  <Form.Control as="select">{nvAcuityValues}</Form.Control>
                 </Form.Group>
               </Col>
             ))}
@@ -405,8 +460,24 @@ const TrainingFormCLVE = ({
 
         <Form.Group controlId="recommendationSpectacle">
           <Form.Label>Recommendation Spectacle</Form.Label>
-          <Form.Control as="textarea" rows={1} />
+          <Form.Control
+            as="select"
+            onChange={handleSelectChange}
+            id="recommendationSpectacle"
+          >
+            <option defaultValue></option>
+            {spectacleOptions}
+            <option value="other">Other</option>
+          </Form.Control>
         </Form.Group>
+
+        {showOther.recommendationSpectacle && (
+          <Form.Group controlId="recommendationSpectacleOther">
+            <Form.Label>Other Recommendation Spectacle</Form.Label>
+            <Form.Control as="input" />
+          </Form.Group>
+        )}
+
         {allfields && (
           <div>
             <Form.Group controlId="dispensedDateSpectacle">
@@ -429,15 +500,16 @@ const TrainingFormCLVE = ({
             </Row>
             <Row>
               <Col>
-                <Form.Group
-                  controlId="dispensedSpectacle"
-                  key="dispensedSpectacle"
-                >
+                <Form.Group controlId="dispensedSpectacle">
                   <Form.Label>Dispensed Spectacle</Form.Label>
-                  <Form.Control as="select">
+                  <Form.Control
+                    as="select"
+                    onChange={handleSelectChange}
+                    id="dispensedSpectacle"
+                  >
                     <option defaultValue></option>
-                    <option>Yes</option>
-                    <option>No</option>
+                    {spectacleOptions}
+                    <option value="other">Other</option>
                   </Form.Control>
                 </Form.Group>
               </Col>
@@ -452,13 +524,35 @@ const TrainingFormCLVE = ({
                 </Form.Group>
               </Col>
             </Row>
+            {showOther.dispensedSpectacle && (
+              <Form.Group controlId="dispensedSpectacleOther">
+                <Form.Label>Other Dispensed Spectacle</Form.Label>
+                <Form.Control as="input" />
+              </Form.Group>
+            )}
           </div>
         )}
 
         <Form.Group controlId="recommendationOptical">
           <Form.Label>Recommendation Optical</Form.Label>
-          <Form.Control as="textarea" rows={1} />
+          <Form.Control
+            as="select"
+            onChange={handleSelectChange}
+            id="recommendationOptical"
+          >
+            <option defaultValue></option>
+            {opticalOptions}
+            <option value="other">Other</option>
+          </Form.Control>
         </Form.Group>
+
+        {showOther.recommendationOptical && (
+          <Form.Group controlId="recommendationOpticalOther">
+            <Form.Label>Other Recommendation Optical</Form.Label>
+            <Form.Control as="input" />
+          </Form.Group>
+        )}
+
         {allfields && (
           <div>
             <Form.Group controlId="dispensedDateOptical">
@@ -481,12 +575,16 @@ const TrainingFormCLVE = ({
             </Row>
             <Row>
               <Col>
-                <Form.Group controlId="dispensedOptical" key="dispensedOptical">
+                <Form.Group controlId="dispensedOptical">
                   <Form.Label>Dispensed Optical</Form.Label>
-                  <Form.Control as="select">
+                  <Form.Control
+                    as="select"
+                    onChange={handleSelectChange}
+                    id="dispensedOptical"
+                  >
                     <option defaultValue></option>
-                    <option>Yes</option>
-                    <option>No</option>
+                    {opticalOptions}
+                    <option value="other">Other</option>
                   </Form.Control>
                 </Form.Group>
               </Col>
@@ -501,13 +599,35 @@ const TrainingFormCLVE = ({
                 </Form.Group>
               </Col>
             </Row>
+            {showOther.dispensedOptical && (
+              <Form.Group controlId="dispensedOpticalOther">
+                <Form.Label>Other Dispensed Optical</Form.Label>
+                <Form.Control as="input" />
+              </Form.Group>
+            )}
           </div>
         )}
 
         <Form.Group controlId="recommendationNonOptical">
-          <Form.Label>Recommendation NonOptical</Form.Label>
-          <Form.Control as="textarea" rows={1} />
+          <Form.Label>Recommendation Non-Optical</Form.Label>
+          <Form.Control
+            as="select"
+            onChange={handleSelectChange}
+            id="recommendationNonOptical"
+          >
+            <option defaultValue></option>
+            {nonOpticalOptions}
+            <option value="other">Other</option>
+          </Form.Control>
         </Form.Group>
+
+        {showOther.recommendationNonOptical && (
+          <Form.Group controlId="recommendationNonOpticalOther">
+            <Form.Label>Other Recommendation NonOptical</Form.Label>
+            <Form.Control as="input" />
+          </Form.Group>
+        )}
+
         {allfields && (
           <div>
             <Form.Group controlId="dispensedDateNonOptical">
@@ -530,15 +650,16 @@ const TrainingFormCLVE = ({
             </Row>
             <Row>
               <Col>
-                <Form.Group
-                  controlId="dispensedNonOptical"
-                  key="dispensedNonOptical"
-                >
-                  <Form.Label>Dispensed NonOptical</Form.Label>
-                  <Form.Control as="select">
+                <Form.Group controlId="dispensedNonOptical">
+                  <Form.Label>Dispensed Non-Optical</Form.Label>
+                  <Form.Control
+                    as="select"
+                    onChange={handleSelectChange}
+                    id="dispensedNonOptical"
+                  >
                     <option defaultValue></option>
-                    <option>Yes</option>
-                    <option>No</option>
+                    {nonOpticalOptions}
+                    <option value="other">Other</option>
                   </Form.Control>
                 </Form.Group>
               </Col>
@@ -553,13 +674,35 @@ const TrainingFormCLVE = ({
                 </Form.Group>
               </Col>
             </Row>
+            {showOther.dispensedNonOptical && (
+              <Form.Group controlId="dispensedNonOpticalOther">
+                <Form.Label>Other Dispensed NonOptical</Form.Label>
+                <Form.Control as="input" />
+              </Form.Group>
+            )}
           </div>
         )}
 
         <Form.Group controlId="recommendationElectronic">
           <Form.Label>Recommendation Electronic</Form.Label>
-          <Form.Control as="textarea" rows={1} />
+          <Form.Control
+            as="select"
+            onChange={handleSelectChange}
+            id="recommendationElectronic"
+          >
+            <option defaultValue></option>
+            {electronicOptions}
+            <option value="other">Other</option>
+          </Form.Control>
         </Form.Group>
+
+        {showOther.recommendationElectronic && (
+          <Form.Group controlId="recommendationElectronicOther">
+            <Form.Label>Other Recommendation Electronic</Form.Label>
+            <Form.Control as="input" />
+          </Form.Group>
+        )}
+
         {allfields && (
           <div>
             <Form.Group controlId="dispensedDateElectronic">
@@ -582,18 +725,20 @@ const TrainingFormCLVE = ({
             </Row>
             <Row>
               <Col>
-                <Form.Group
-                  controlId="dispensedElectronic"
-                  key="dispensedElectronic"
-                >
+                <Form.Group controlId="dispensedElectronic">
                   <Form.Label>Dispensed Electronic</Form.Label>
-                  <Form.Control as="select">
+                  <Form.Control
+                    as="select"
+                    onChange={handleSelectChange}
+                    id="dispensedElectronic"
+                  >
                     <option defaultValue></option>
-                    <option>Yes</option>
-                    <option>No</option>
+                    {electronicOptions}
+                    <option value="other">Other</option>
                   </Form.Control>
                 </Form.Group>
               </Col>
+
               <Col>
                 <Form.Group controlId="trainingGivenElectronic">
                   <Form.Label>Training Given Electronic</Form.Label>
@@ -605,6 +750,12 @@ const TrainingFormCLVE = ({
                 </Form.Group>
               </Col>
             </Row>
+            {showOther.dispensedElectronic && (
+              <Form.Group controlId="dispensedElectronicOther">
+                <Form.Label>Other Dispensed Electronic</Form.Label>
+                <Form.Control as="input" />
+              </Form.Group>
+            )}
           </div>
         )}
 
