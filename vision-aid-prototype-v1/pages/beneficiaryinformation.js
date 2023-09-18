@@ -54,7 +54,7 @@ function RequiredFields(props) {
         ? document.getElementById("beneficiaryName").value
         : null;
     let hospitalId =
-      document.getElementById("hospitalName") != null
+      (document.getElementById("hospitalName") != null && document.getElementById("hospitalName").value != "")
         ? parseInt(document.getElementById("hospitalName").value)
         : null;
     let dateOfBirth =
@@ -62,7 +62,7 @@ function RequiredFields(props) {
         ? new Date(Date.parse(document.getElementById("dateOfBirth").value))
         : null;
     let gender =
-      document.getElementById("gender") != null
+      (document.getElementById("gender") != null && document.getElementById("gender").value != "")
         ? document.getElementById("gender").value
         : null;
     let phoneNumber =
@@ -167,14 +167,24 @@ function RequiredFields(props) {
   const mrn = (
     <div>
       <label htmlFor="mrn">MRN</label>
-      <input type="text" className="form-control" id="mrn" />
+      <input
+        type="text"
+        className="form-control"
+        id="mrn"
+        placeholder="Enter beneficiary's MRN"
+      />
     </div>
   );
 
   const beneficiaryName = (
     <div>
       <label htmlFor="beneficiaryName">Beneficiary Name</label>
-      <input type="text" className="form-control" id="beneficiaryName" />
+      <input
+        type="text"
+        className="form-control"
+        id="beneficiaryName"
+        placeholder="Enter beneficiary's full name"
+      />
     </div>
   );
 
@@ -196,25 +206,30 @@ function RequiredFields(props) {
         </label>
 
         <select className="form-select" id="hospitalName">
-          <option selected key="" value="">
-            Select Hospital
-          </option>
+          <option value="">Select Hospital</option>
           {hospitalOptions}
         </select>
       </div>
     );
   } else {
-    hospitalName = (<div className="form-group">
-    <label className="form-check-label" htmlFor="hospitalName">
-      Hospital Name
-    </label>
+    hospitalName = (
+      <div className="form-group">
+        <label className="form-check-label" htmlFor="hospitalName">
+          Hospital Name
+        </label>
 
-    <select className="form-select" id="hospitalName" disabled>
-      <option selected key="" value="">
-        {props.hospitals.find(hospital => hospital.id == props.user.hospitalRole.hospitalId).name} (ID {props.user.hospitalRole.hospitalId})
-      </option>
-    </select>
-  </div>)
+        <select className="form-select" id="hospitalName" disabled>
+          <option selected key="" value="">
+            {
+              props.hospitals.find(
+                (hospital) => hospital.id == props.user.hospitalRole.hospitalId
+              ).name
+            }{" "}
+            (ID {props.user.hospitalRole.hospitalId})
+          </option>
+        </select>
+      </div>
+    );
     // <div></div>;
   }
 
@@ -228,7 +243,18 @@ function RequiredFields(props) {
   const gender = (
     <div>
       <label htmlFor="gender">Gender</label>
-      <input type="text" className="form-control" id="gender" />
+      <select className="form-select" id="gender">
+        <option value="">Select Gender</option>
+        <option key="M" value="M">
+          Male
+        </option>
+        <option key="F" value="F">
+          Female
+        </option>
+        <option key="O" value="Other">
+          Other
+        </option>
+      </select>
     </div>
   );
 
@@ -239,7 +265,12 @@ function RequiredFields(props) {
     phoneNumber = (
       <div>
         <label htmlFor="phoneNumber">Phone Number</label>
-        <input type="text" className="form-control" id="phoneNumber" />
+        <input
+          type="text"
+          className="form-control"
+          id="phoneNumber"
+          placeholder="Enter beneficiary's phone number"
+        />
       </div>
     );
   }
@@ -251,7 +282,12 @@ function RequiredFields(props) {
     education = (
       <div>
         <label htmlFor="education">Education</label>
-        <input type="text" className="form-control" id="education" />
+        <input
+          type="text"
+          className="form-control"
+          id="education"
+          placeholder="Enter beneficiary's educational qualifications"
+        />
       </div>
     );
   }
@@ -263,7 +299,12 @@ function RequiredFields(props) {
     occupation = (
       <div>
         <label htmlFor="occupation">Occupation</label>
-        <input type="text" className="form-control" id="occupation" />
+        <input
+          type="text"
+          className="form-control"
+          id="occupation"
+          placeholder="Enter beneficiary's occupation"
+        />
       </div>
     );
   }
@@ -274,8 +315,13 @@ function RequiredFields(props) {
   } else {
     districts = (
       <div>
-        <label htmlFor="districts">Districts</label>
-        <input type="text" className="form-control" id="districts" />
+        <label htmlFor="districts">District</label>
+        <input
+          type="text"
+          className="form-control"
+          id="districts"
+          placeholder="Enter beneficiary's district (location)"
+        />
       </div>
     );
   }
@@ -287,7 +333,12 @@ function RequiredFields(props) {
     state = (
       <div>
         <label htmlFor="state">State</label>
-        <input type="text" className="form-control" id="state" />
+        <input
+          type="text"
+          className="form-control"
+          id="state"
+          placeholder="Enter beneficiary's state (location)"
+        />
       </div>
     );
   }
@@ -298,10 +349,15 @@ function RequiredFields(props) {
   } else {
     diagnosis = (
       <div className="form-group">
-        <input type="text" id="diagnosis" />
         <label className="form-check-label" htmlFor="diagnosis">
           Diagnosis
         </label>
+        <input
+          type="text"
+          className="form-control"
+          id="diagnosis"
+          placeholder="Enter beneficiary's diagnosis"
+        />
       </div>
     );
   }
@@ -312,10 +368,15 @@ function RequiredFields(props) {
   } else {
     vision = (
       <div className="form-group">
-        <input type="text" id="vision" />
         <label className="form-check-label" htmlFor="vision">
           Vision
         </label>
+        <input
+          type="text"
+          className="form-control"
+          id="vision"
+          placeholder="Enter beneficiary's vision details"
+        />
       </div>
     );
   }
@@ -326,10 +387,15 @@ function RequiredFields(props) {
   } else {
     mDVI = (
       <div className="form-group">
-        <input type="text" id="mDVI" />
         <label className="form-check-label" htmlFor="mDVI">
           MDVI
         </label>
+        <input
+          type="text"
+          className="form-control"
+          id="mDVI"
+          placeholder="Enter beneficiary's MDVI"
+        />
       </div>
     );
   }
@@ -391,36 +457,38 @@ function RequiredFields(props) {
       <Navigation />
       <div className="container">
         <h1 className="text-center mt-4 mb-4">Add Beneficiary</h1>
-        <form action="#" method="POST" onSubmit={(e) => submitInfo(e)}>
-          <div className="row">
-            <div className="col-md-6">
-              <div className="mb-3">{mrn}</div>
-              <div className="mb-3">{beneficiaryName}</div>
-              <div className="mb-3">{hospitalName}</div>
-              <div className="mb-3">{dateOfBirth}</div>
-              <div className="mb-3">{gender}</div>
+        <div className="beneficiary-child-container">
+          <form action="#" method="POST" onSubmit={(e) => submitInfo(e)}>
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">{mrn}</div>
+                <div className="mb-3">{beneficiaryName}</div>
+                <div className="mb-3">{hospitalName}</div>
+                <div className="mb-3">{dateOfBirth}</div>
+                <div className="mb-3">{gender}</div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">{phoneNumber}</div>
+                <div className="mb-3">{education}</div>
+                <div className="mb-3">{occupation}</div>
+                <div className="mb-3">{districts}</div>
+                <div className="mb-3">{state}</div>
+              </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">{phoneNumber}</div>
-              <div className="mb-3">{education}</div>
-              <div className="mb-3">{occupation}</div>
-              <div className="mb-3">{districts}</div>
-              <div className="mb-3">{state}</div>
+            {diagnosis}
+            {vision}
+            {mDVI}
+            <br />
+            <div id="extraFields">
+              <p>Additional Fields</p>
+              {exInfo}
             </div>
-          </div>
-          {diagnosis}
-          {vision}
-          {mDVI}
-          <br />
-          <div id="extraFields">
-            <p>Additional Fields</p>
-            {exInfo}
-          </div>
-          <br />
-          <button type="submit" className="btn btn-primary">
-            Submit
-          </button>
-        </form>
+            <br />
+            <button type="submit" className="btn btn-primary">
+              Submit
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
