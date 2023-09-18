@@ -1125,6 +1125,7 @@ export default function Summary({
     <div>
       <Navigation />
       <Container>
+      <h1 className="text-center mt-4 mb-4">Visualization and Reports</h1>
         <div className="row">
           {user.admin != null && (
             <GraphCustomizer
@@ -1136,9 +1137,10 @@ export default function Summary({
               handleStartDateChange={handleStartDateChange}
               endDate={endDate}
               handleEndDateChange={handleEndDateChange}
+              downloadReportFn={downloadFilteredReport}
             />
           )}
-          <div className="col-md-1"></div>
+          {/* <div className="col-md-1"></div> */}
           <div className="col-md-9">
             <Paper>
               <Tabs
@@ -1160,14 +1162,6 @@ export default function Summary({
         </div>
       </Container>
       <br />
-      <h1>Download All Beneficiary Data</h1>
-      <p>
-        Note this is , seperated if you separate by other delimiter it will not
-        work
-      </p>
-      <button className="primary" onClick={downloadFilteredReport}>
-        Download Filtered Report
-      </button>
     </div>
   );
 }

@@ -30,7 +30,7 @@ function SearchBar({ onSearch }) {
           value={searchTerm}
           onChange={handleChange}
           className="form-control"
-          placeholder="Type user name here..."
+          placeholder="Type beneficiary information to search..."
         />
         <br/>
         <div>
