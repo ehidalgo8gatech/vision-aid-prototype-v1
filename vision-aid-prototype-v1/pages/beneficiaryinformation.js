@@ -8,6 +8,7 @@ import Router from "next/router";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Navigation from "./navigation/Navigation";
+import moment from "moment";
 
 // http://localhost:3000/beneficiaryinformation
 export async function getServerSideProps(ctx) {
@@ -45,6 +46,8 @@ function RequiredFields(props) {
   const router = useRouter();
 
   const [phone, setPhone] = useState("");
+  const today = moment(new Date()).format("YYYY-MM-DD");
+  
   const checkInput = (e) => {
     const onlyDigits = e.target.value.replace(/\D/g, "");
     setPhone(onlyDigits);
@@ -243,7 +246,7 @@ function RequiredFields(props) {
   const dateOfBirth = (
     <div>
       <label htmlFor="dateOfBirth">Date Of Birth</label>
-      <input type="date" className="form-control" id="dateOfBirth" />
+      <input type="date" className="form-control" id="dateOfBirth" max={today}/>
     </div>
   );
 
