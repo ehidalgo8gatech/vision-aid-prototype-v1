@@ -47,7 +47,7 @@ function RequiredFields(props) {
 
   const [phone, setPhone] = useState("");
   const today = moment(new Date()).format("YYYY-MM-DD");
-  
+
   const checkInput = (e) => {
     const onlyDigits = e.target.value.replace(/\D/g, "");
     setPhone(onlyDigits);
@@ -469,7 +469,7 @@ function RequiredFields(props) {
     <div>
       <Navigation />
       <div className="container">
-        <h1 className="text-center mt-4 mb-4">Add Beneficiary</h1>
+        <h1 className="text-center mt-4 mb-4">Register Beneficiary</h1>
         <div className="beneficiary-child-container">
           <form action="#" method="POST" onSubmit={(e) => submitInfo(e)}>
             <div className="row">
