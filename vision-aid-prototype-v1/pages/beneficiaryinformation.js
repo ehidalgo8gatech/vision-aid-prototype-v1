@@ -43,6 +43,13 @@ export async function getServerSideProps(ctx) {
 
 function RequiredFields(props) {
   const router = useRouter();
+
+  const [phone, setPhone] = useState("");
+  const checkInput = (e) => {
+    const onlyDigits = e.target.value.replace(/\D/g, "");
+    setPhone(onlyDigits);
+  };
+
   async function submitInfo(e) {
     e.preventDefault();
     let mrn =
@@ -266,10 +273,13 @@ function RequiredFields(props) {
       <div>
         <label htmlFor="phoneNumber">Phone Number</label>
         <input
-          type="text"
+          type="tel"
           className="form-control"
           id="phoneNumber"
           placeholder="Enter beneficiary's phone number"
+          maxLength={10}
+          onChange={(e) => checkInput(e)}
+          value={phone}
         />
       </div>
     );
