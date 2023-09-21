@@ -14,6 +14,9 @@ export default function ReportsHospitalSelection(props) {
     handleEndDateChange,
     downloadReportFn,
   } = props;
+
+  const today = moment(new Date()).format("YYYY-MM-DD");
+
   return (
     <div className="col-md-3">
       <div>
@@ -64,6 +67,7 @@ export default function ReportsHospitalSelection(props) {
               name="startDate"
               value={moment(startDate).format("YYYY-MM-DD")}
               onChange={handleStartDateChange}
+              max={today}
             />
           </div>
         </div>
@@ -79,6 +83,8 @@ export default function ReportsHospitalSelection(props) {
               name="endDate"
               value={moment(endDate).format("YYYY-MM-DD")}
               onChange={handleEndDateChange}
+              min={moment(startDate).format("YYYY-MM-DD")}
+              max={today}
             />
           </div>
         </div>
