@@ -13,7 +13,10 @@ import { Table } from "react-bootstrap";
 import Link from "next/link";
 import moment from "moment";
 import { useState, useEffect } from "react";
-import { findAllBeneficiary, findAllBeneficiaryForHospitalId } from "@/pages/api/beneficiary";
+import {
+  findAllBeneficiary,
+  findAllBeneficiaryForHospitalId,
+} from "@/pages/api/beneficiary";
 import { CSVLink, CSVDownload } from "react-csv";
 import GraphCustomizer from "./components/GraphCustomizer";
 import { Tab, Tabs, Paper } from "@mui/material";
@@ -42,36 +45,40 @@ export async function getServerSideProps(ctx) {
     );
 
     let hospitalBeneficiaryListFromAPI = [];
-    hospitalBeneficiaryListFromAPI = await findAllBeneficiaryForHospitalId(user.hospitalRole.hospitalId);
+    hospitalBeneficiaryListFromAPI = await findAllBeneficiaryForHospitalId(
+      user.hospitalRole.hospitalId
+    );
 
     let hospitalBeneficiaryList = [];
 
-    hospitalBeneficiaryList = hospitalBeneficiaryListFromAPI.map((beneficiary) => ({
-      mrn: beneficiary.mrn,
-      beneficiaryName: beneficiary.beneficiaryName,
-      hospitalId: beneficiary.hospitalId,
-      dateOfBirth: beneficiary.dateOfBirth,
-      gender: beneficiary.gender,
-      phoneNumber: beneficiary.phoneNumber,
-      education: beneficiary.education,
-      occupation: beneficiary.occupation,
-      districts: beneficiary.districts,
-      state: beneficiary.state,
-      diagnosis: beneficiary.diagnosis,
-      vision: beneficiary.vision,
-      mDVI: beneficiary.mDVI,
-      extraInformation: beneficiary.extraInformation,
-      hospital: beneficiary.hospital,
-      visionEnhancement: beneficiary.Vision_Enhancement,
-      counsellingEducation: beneficiary.Counselling_Education,
-      comprehensiveLowVisionEvaluation:
-        beneficiary.Comprehensive_Low_Vision_Evaluation,
-      lowVisionEvaluation: beneficiary.Low_Vision_Evaluation,
-      training: beneficiary.Training,
-      computerTraining: beneficiary.Computer_Training,
-      mobileTraining: beneficiary.Mobile_Training,
-      orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
-    }));
+    hospitalBeneficiaryList = hospitalBeneficiaryListFromAPI.map(
+      (beneficiary) => ({
+        mrn: beneficiary.mrn,
+        beneficiaryName: beneficiary.beneficiaryName,
+        hospitalId: beneficiary.hospitalId,
+        dateOfBirth: beneficiary.dateOfBirth,
+        gender: beneficiary.gender,
+        phoneNumber: beneficiary.phoneNumber,
+        education: beneficiary.education,
+        occupation: beneficiary.occupation,
+        districts: beneficiary.districts,
+        state: beneficiary.state,
+        diagnosis: beneficiary.diagnosis,
+        vision: beneficiary.vision,
+        mDVI: beneficiary.mDVI,
+        extraInformation: beneficiary.extraInformation,
+        hospital: beneficiary.hospital,
+        visionEnhancement: beneficiary.Vision_Enhancement,
+        counsellingEducation: beneficiary.Counselling_Education,
+        comprehensiveLowVisionEvaluation:
+          beneficiary.Comprehensive_Low_Vision_Evaluation,
+        lowVisionEvaluation: beneficiary.Low_Vision_Evaluation,
+        training: beneficiary.Training,
+        computerTraining: beneficiary.Computer_Training,
+        mobileTraining: beneficiary.Mobile_Training,
+        orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
+      })
+    );
 
     return {
       props: {
@@ -521,13 +528,13 @@ function buildBreakdownGraph(data, breakdownType) {
 // Function that builds a bar graph to show the number of devices dispensed
 function buildDevicesGraph(data) {
   // The device information is stored inside the comprehensiveLowVisionEvaluation array
-  // Inside the array, there are fields dispensedSpectacle, dispensedElectronic, dispensedOptical, dispensedNonOptical which is either "Yes" or "No"
-  // We want to count the number of "Yes" for each field
+  // Inside the array, there are fields dispensedSpectacle, dispensedElectronic, dispensedOptical, dispensedNonOptical
+  // We want to count the number of entries in which these fields are not empty
   const dispensedSpectacleCount = data.reduce(
     (sum, item) =>
       sum +
       item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedSpectacle === "Yes"
+        (evaluation) => evaluation.dispensedSpectacle !== ""
       ).length,
     0
   );
@@ -535,7 +542,7 @@ function buildDevicesGraph(data) {
     (sum, item) =>
       sum +
       item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedElectronic === "Yes"
+        (evaluation) => evaluation.dispensedElectronic !== ""
       ).length,
     0
   );
@@ -543,7 +550,7 @@ function buildDevicesGraph(data) {
     (sum, item) =>
       sum +
       item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedOptical === "Yes"
+        (evaluation) => evaluation.dispensedOptical !== ""
       ).length,
     0
   );
@@ -551,7 +558,7 @@ function buildDevicesGraph(data) {
     (sum, item) =>
       sum +
       item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedNonOptical === "Yes"
+        (evaluation) => evaluation.dispensedNonOptical !== ""
       ).length,
     0
   );
@@ -626,14 +633,14 @@ export default function Summary({
   };
 
   const mergeRowsForColumn = (column) => {
-    return {s: {r: 0, c: column}, e: {r: 1, c: column}};
-  }
+    return { s: { r: 0, c: column }, e: { r: 1, c: column } };
+  };
 
   const addEmptyElements = (array, element, count) => {
     for (let i = 0; i < count; i++) {
       array.push(element);
     }
-  }
+  };
 
   // filter summary data based on start and end date of the training
   const dateFilteredSummary = filterTrainingSummaryByDateRange(
@@ -761,7 +768,7 @@ export default function Summary({
     "Recommended Non-Optical Aid",
     "Recommended Electronic Aid",
     "Spectacles (Refractive Error Only)",
-    "Extra Information"
+    "Extra Information",
   ];
 
   let lveSubHeader = [];
@@ -1125,41 +1132,68 @@ export default function Summary({
     <div>
       <Navigation />
       <Container>
-      <h1 className="text-center mt-4 mb-4">Visualization and Reports</h1>
-        <div className="row">
-          {user.admin != null && (
-            <GraphCustomizer
-              summary={summary}
-              selectedHospitals={selectedHospitals}
-              handleHospitalSelection={handleHospitalSelection}
-              handleSelectAll={handleSelectAll}
-              startDate={startDate}
-              handleStartDateChange={handleStartDateChange}
-              endDate={endDate}
-              handleEndDateChange={handleEndDateChange}
-              downloadReportFn={downloadFilteredReport}
-            />
-          )}
-          {/* <div className="col-md-1"></div> */}
-          <div className="col-md-9">
-            <Paper>
-              <Tabs
-                value={activeGraphTab}
-                onChange={handleGraphTabChange}
-                indicatorColor="primary"
-                textColor="primary"
-                centered
-              >
-                <Tab label="Beneficiaries" />
-                <Tab label="All Activities" />
-                <Tab label="Training Activities" />
-                <Tab label="Counselling Activities" />
-                <Tab label="Devices" />
-              </Tabs>
-              {renderGraph(activeGraphTab)}
-            </Paper>
+        <h1 className="text-center mt-4 mb-4">Visualization and Reports</h1>
+        {/* <div className="row">
+          <button
+            className="btn btn-success border-0 btn-block"
+            onClick={downloadFilteredReport}
+          >
+            Download Filtered Report
+          </button>
+        </div> */}
+        {user.admin != null && (
+          <div className="row">
+            <div className="col-md-3">
+              <GraphCustomizer
+                summary={summary}
+                selectedHospitals={selectedHospitals}
+                handleHospitalSelection={handleHospitalSelection}
+                handleSelectAll={handleSelectAll}
+                startDate={startDate}
+                handleStartDateChange={handleStartDateChange}
+                endDate={endDate}
+                handleEndDateChange={handleEndDateChange}
+                downloadReportFn={downloadFilteredReport}
+              />
+            </div>
+            <div className="col-md-9">
+              <Paper>
+                <Tabs
+                  value={activeGraphTab}
+                  onChange={handleGraphTabChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
+                  <Tab label="Beneficiaries" />
+                  <Tab label="All Activities" />
+                  <Tab label="Training Activities" />
+                  <Tab label="Counselling Activities" />
+                  <Tab label="Devices" />
+                </Tabs>
+                {renderGraph(activeGraphTab)}
+              </Paper>
+            </div>
           </div>
-        </div>
+        )}
+        {user.admin == null && (
+          <Paper>
+            <Tabs
+              value={activeGraphTab}
+              onChange={handleGraphTabChange}
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+            >
+              <Tab label="Beneficiaries" />
+              <Tab label="All Activities" />
+              <Tab label="Training Activities" />
+              <Tab label="Counselling Activities" />
+              <Tab label="Devices" />
+            </Tabs>
+            {renderGraph(activeGraphTab)}
+          </Paper>
+        )}
       </Container>
       <br />
     </div>
