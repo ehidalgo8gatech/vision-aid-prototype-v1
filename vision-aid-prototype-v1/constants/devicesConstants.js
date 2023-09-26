@@ -4,7 +4,8 @@ export const spectacleDevices = [
     "Single Vision Glasses (Intermediate)",
     "Bifocals (Distance - near)",
     "Bifocals (Intermediate - near)",
-    "Progressive Glasses"
+    "Progressive Glasses",
+    "Other"
 ];
 
 export const opticalDevices = [
@@ -26,7 +27,8 @@ export const opticalDevices = [
     "Illuminated Stand Magnifier with Handle [LED 5x, 7x]",
     "Dome Magnifier 4x-50mm",
     "Dome Magnifier 5x-65mm, 80mm",
-    "Bar Magnifier (2x and 5x - 120mm, 150mm, 200mm, 250mm)"
+    "Bar Magnifier (2x and 5x - 120mm, 150mm, 200mm, 250mm)",
+    "Other"
 ];
 
 export const nonOpticalDevices = [
@@ -87,7 +89,10 @@ export const nonOpticalDevices = [
     "Playing Cards Braille",
     "Audible Cricket Ball (Plastic)",
     "Scrable Board with Coins",
-    "Raised line foundation tactile books"
+    "Raised line foundation tactile books",
+
+    // Other other
+    "Other"
 ];
 
 // Subheadings to be used in optgroup
@@ -95,7 +100,8 @@ export const nonOpticalDevicesSubheadings = [
     "General",
     "Orientation, Mobility and Education",
     "Personal Care",
-    "Other Devices"
+    "Other Devices",
+    "Other"
 ];
 
 // Indices of the subheadings in the nonOpticalDevices array
@@ -104,7 +110,8 @@ export const nonOpticalDevicesIndices = [
     16,
     29,
     36,
-    51
+    51,
+    52
 ];
 
 export const electronicDevices = [
@@ -131,16 +138,21 @@ export const electronicDevices = [
     "Fusion (JAWS + ZoomText)",
     "Kurtzweil",
     "Openbook OCR Scanning & Reading Software",
-    "Kibo Scanner"
+    "Kibo Scanner",
+
+    // Other
+    "Other"
 ];
 
 export const electronicDevicesSubheadings = [
     "Electronic Devices",
-    "Softwares"
+    "Softwares",
+    "Other"
 ];
 
 export const electronicDevicesIndices = [
     0,
     15,
-    21
+    21,
+    22
 ];

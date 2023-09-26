@@ -3,6 +3,7 @@ import { Form, Row, Col, Button } from "react-bootstrap";
 import { ChevronDown, ChevronRight, Pencil } from "react-bootstrap-icons";
 import { v4 as uuidv4 } from "uuid";
 import Router from "next/router";
+import { Select, MenuItem, Checkbox, ListItemText, ListSubheader, FormControl, Typography } from "@mui/material";
 import {
   logMARValues,
   sixmValues,
@@ -33,6 +34,17 @@ const TrainingFormCLVE = ({
   api,
   allfields,
 }) => {
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 600,
+      },
+    },
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const customDataDistance = customFieldsDistance.reduce((acc, field) => {
@@ -52,17 +64,56 @@ const TrainingFormCLVE = ({
         diagnosis = diagnosis + " " + diagnosisValue.value;
       }
     });
+
+    if (showOther.recommendationSpectacle) {
+      devices.recommendationSpectacle.splice(
+        devices.recommendationSpectacle.indexOf("Other"),
+        1
+      );
+      devices.recommendationSpectacle.push(
+        e.target.recommendationSpectacleOther.value
+      );
+    }
+
+    if (showOther.recommendationOptical) {
+      devices.recommendationOptical.splice(
+        devices.recommendationOptical.indexOf("Other"),
+        1
+      );
+      devices.recommendationOptical.push(
+        e.target.recommendationOpticalOther.value
+      );
+    }
+
+    if (showOther.recommendationNonOptical) {
+      devices.recommendationNonOptical.splice(
+        devices.recommendationNonOptical.indexOf("Other"),
+        1
+      );
+      devices.recommendationNonOptical.push(
+        e.target.recommendationNonOpticalOther.value
+      );
+    }
+
+    if (showOther.recommendationElectronic) {
+      devices.recommendationElectronic.splice(
+        devices.recommendationElectronic.indexOf("Other"),
+        1
+      );
+      devices.recommendationElectronic.push(
+        e.target.recommendationElectronicOther.value
+      );
+    }
+
     const newTraining = {
       diagnosis: diagnosis,
       mdvi: e.target.mdvi.value,
       date: e.target.date.value,
       sessionNumber: e.target.sessionNumber.value,
       recommendationSpectacle:
-        e.target.recommendationSpectacle == null
-          ? null
-          : (e.target.recommendationSpectacle.value === "other"
-          ? e.target.recommendationSpectacleOther.value
-          : e.target.recommendationSpectacle.value),
+        devices.recommendationSpectacle.length > 0
+          ? devices.recommendationSpectacle.join(",")
+          : null,
       dispensedDateSpectacle:
         e.target.dispensedDateSpectacle == null
           ? null
@@ -75,22 +126,17 @@ const TrainingFormCLVE = ({
         e.target.costToBeneficiarySpectacle == null
           ? null
           : parseInt(e.target.costToBeneficiarySpectacle.value),
-      dispensedSpectacle:
-        e.target.dispensedSpectacle == null
-          ? null
-          : (e.target.dispensedSpectacle.value === "other"
-          ? e.target.dispensedSpectacleOther.value
-          : e.target.dispensedSpectacle.value),
+      dispensedSpectacle: devices.dispensedSpectacle === "Other"
+        ? e.target.dispensedSpectacleOther.value
+        : devices.dispensedSpectacle,
       trainingGivenSpectacle:
         e.target.trainingGivenSpectacle == null
           ? null
           : e.target.trainingGivenSpectacle.value,
       recommendationOptical:
-        e.target.recommendationOptical == null
-          ? null
-          : (e.target.recommendationOptical.value === "other"
-          ? e.target.recommendationOpticalOther.value
-          : e.target.recommendationOptical.value),
+        devices.recommendationOptical.length > 0
+          ? devices.recommendationOptical.join(",")
+          : null,
       dispensedDateOptical:
         e.target.dispensedDateOptical == null
           ? null
@@ -103,22 +149,17 @@ const TrainingFormCLVE = ({
         e.target.costToBeneficiaryOptical == null
           ? null
           : parseInt(e.target.costToBeneficiaryOptical.value),
-      dispensedOptical:
-        e.target.dispensedOptical == null
-          ? null
-          : (e.target.dispensedOptical.value === "other"
-          ? e.target.dispensedOpticalOther.value
-          : e.target.dispensedOptical.value),
+      dispensedOptical: devices.dispensedOptical === "Other"
+        ? e.target.dispensedOpticalOther.value
+        : devices.dispensedOptical,
       trainingGivenOptical:
         e.target.trainingGivenOptical == null
           ? null
           : e.target.trainingGivenOptical.value,
       recommendationNonOptical:
-        e.target.recommendationNonOptical == null
-          ? null
-          : (e.target.recommendationNonOptical.value === "other"
-          ? e.target.recommendationNonOpticalOther.value
-          : e.target.recommendationNonOptical.value),
+        devices.recommendationNonOptical.length > 0
+          ? devices.recommendationNonOptical.join(",")
+          : null,
       dispensedDateNonOptical:
         e.target.dispensedDateNonOptical == null
           ? null
@@ -131,22 +172,17 @@ const TrainingFormCLVE = ({
         e.target.costToBeneficiaryNonOptical == null
           ? null
           : parseInt(e.target.costToBeneficiaryNonOptical.value),
-      dispensedNonOptical:
-        e.target.dispensedNonOptical == null
-          ? null
-          : (e.target.dispensedNonOptical.value === "other"
-          ? e.target.dispensedNonOpticalOther.value
-          : e.target.dispensedNonOptical.value),
+      dispensedNonOptical: devices.dispensedNonOptical === "Other"
+        ? e.target.dispensedNonOpticalOther.value
+        : devices.dispensedNonOptical,
       trainingGivenNonOptical:
         e.target.trainingGivenNonOptical == null
           ? null
           : e.target.trainingGivenNonOptical.value,
       recommendationElectronic:
-        e.target.recommendationElectronic == null
-          ? null
-          : (e.target.recommendationElectronic.value === "other"
-          ? e.target.recommendationElectronicOther.value
-          : e.target.recommendationElectronic.value),
+        devices.recommendationElectronic.length > 0
+          ? devices.recommendationElectronic.join(",")
+          : null,
       dispensedDateElectronic:
         e.target.dispensedDateElectronic == null
           ? null
@@ -159,12 +195,9 @@ const TrainingFormCLVE = ({
         e.target.costToBeneficiaryElectronic == null
           ? null
           : parseInt(e.target.costToBeneficiaryElectronic.value),
-      dispensedElectronic:
-        e.target.dispensedElectronic == null
-          ? null
-          : (e.target.dispensedElectronic.value === "other"
-          ? e.target.dispensedElectronicOther.value
-          : e.target.dispensedElectronic.value),
+      dispensedElectronic: devices.dispensedElectronic === "Other"
+        ? e.target.dispensedElectronicOther.value
+        : devices.dispensedElectronic,
       trainingGivenElectronic:
         e.target.trainingGivenElectronic == null
           ? null
@@ -189,9 +222,21 @@ const TrainingFormCLVE = ({
       ...customDataDistance,
       ...customDataNear,
     };
+
     addNewTraining(newTraining);
     setShowForm(false);
   };
+
+  const [devices, setDevices] = useState({
+    recommendationSpectacle: [],
+    recommendationOptical: [],
+    recommendationNonOptical: [],
+    recommendationElectronic: [],
+    dispensedSpectacle: "",
+    dispensedOptical: "",
+    dispensedNonOptical: "",
+    dispensedElectronic: "",
+  });
 
   const createOptionList = (values) => {
     return values.map((value) => <option key={value}>{value}</option>);
@@ -206,6 +251,47 @@ const TrainingFormCLVE = ({
           {allOptions.slice(indices[i], indices[i + 1])}
         </optgroup>
       );
+    }
+    return optionGroups;
+  };
+
+  const createMenu = (values, fieldName, checkbox) => {
+    if (checkbox) {
+      return values.map((value) => (
+        <MenuItem key={value} value={value} style={{whiteSpace: 'normal'}}>
+          <Checkbox checked={devices[fieldName].indexOf(value) > -1} />
+          <ListItemText primary={
+            <Typography align="left">
+              {value}
+            </Typography>
+          }/>
+        </MenuItem>
+      ));
+    } else {
+      return values.map((value) => (
+        <MenuItem key={value} value={value}>
+          <Typography align="left">
+              {value}
+          </Typography>
+        </MenuItem>
+      ));
+    }
+  };
+
+  const createOptionMenu = (
+    values,
+    subheadings,
+    indices,
+    fieldName,
+    checkbox
+  ) => {
+    const fullMenu = createMenu(values, fieldName, checkbox);
+    const optionGroups = [];
+    for (var i = 0; i < subheadings.length; i++) {
+      optionGroups.push(
+        <ListSubheader key={subheadings[i]}>{subheadings[i]}</ListSubheader>
+      );
+      optionGroups.push(fullMenu.slice(indices[i], indices[i + 1]));
     }
     return optionGroups;
   };
@@ -240,17 +326,53 @@ const TrainingFormCLVE = ({
   const [nvAcuityValues, setNvAcuityValues] = useState(
     createOptionList(logMARNVValues)
   );
-  const spectacleOptions = createOptionList(spectacleDevices);
-  const opticalOptions = createOptionList(opticalDevices);
-  const nonOpticalOptions = createOptionGroupList(
+  const recommendationSpectacleOptions = createMenu(
+    spectacleDevices,
+    "recommendationSpectacle",
+    true
+  );
+  const dispensedSpectacleOptions = createMenu(
+    spectacleDevices,
+    "dispensedSpectacle",
+    false
+  );
+  const recommendationOpticalOptions = createMenu(
+    opticalDevices,
+    "recommendationOptical",
+    true
+  );
+  const dispensedOpticalOptions = createMenu(
+    opticalDevices,
+    "dispensedOptical",
+    false
+  );
+  const recommendationNonOpticalOptions = createOptionMenu(
     nonOpticalDevices,
     nonOpticalDevicesSubheadings,
-    nonOpticalDevicesIndices
+    nonOpticalDevicesIndices,
+    "recommendationNonOptical",
+    true
   );
-  const electronicOptions = createOptionGroupList(
+  const dispensedNonOpticalOptions = createOptionMenu(
+    nonOpticalDevices,
+    nonOpticalDevicesSubheadings,
+    nonOpticalDevicesIndices,
+    "dispensedNonOptical",
+    false
+  );
+  const recommendationElectronicOptions = createOptionMenu(
     electronicDevices,
     electronicDevicesSubheadings,
-    electronicDevicesIndices
+    electronicDevicesIndices,
+    "recommendationElectronic",
+    true
+  );
+  const dispensedElectronicOptions = createOptionMenu(
+    electronicDevices,
+    electronicDevicesSubheadings,
+    electronicDevicesIndices,
+    "dispensedElectronic",
+    false
   );
 
   const [showOther, setShowOther] = useState({
@@ -265,11 +387,30 @@ const TrainingFormCLVE = ({
   });
   const [editableField, setEditableField] = useState("");
 
-  const handleSelectChange = (e) => {
-    if (e.target.value == "other") {
-      setShowOther({ ...showOther, [e.target.id]: true });
+  const handleMultiSelectChange = (e, fieldName) => {
+    const {
+      target: { value },
+    } = e;
+    setDevices({
+      ...devices,
+      [fieldName]: typeof value === "string" ? value.split(",") : value,
+    });
+    if (value.includes("Other")) {
+      setShowOther({ ...showOther, [fieldName]: true });
     } else {
-      setShowOther({ ...showOther, [e.target.id]: false });
+      setShowOther({ ...showOther, [fieldName]: false });
+    }
+  };
+
+  const handleSelectChange = (e, fieldName) => {
+    const {
+      target: { value },
+    } = e;
+    setDevices({ ...devices, [fieldName]: value });
+    if (value === "Other") {
+      setShowOther({ ...showOther, [fieldName]: true });
+    } else {
+      setShowOther({ ...showOther, [fieldName]: false });
     }
   };
 
@@ -457,19 +598,24 @@ const TrainingFormCLVE = ({
               </Col>
             ))}
         </Row>
-
-        <Form.Group controlId="recommendationSpectacle">
-          <Form.Label>Recommendation Spectacle</Form.Label>
-          <Form.Control
-            as="select"
-            onChange={handleSelectChange}
-            id="recommendationSpectacle"
+        <Row>
+          <Form.Group controlId="recommendationSpectacle">
+            <Form.Label>Recommendation Spectacle</Form.Label>
+          </Form.Group>
+        </Row>
+        <FormControl fullWidth>
+          <Select
+            value={devices.recommendationSpectacle}
+            onChange={(e) => {
+              handleMultiSelectChange(e, "recommendationSpectacle");
+            }}
+            multiple
+            renderValue={(selected) => selected.join(",")}
+            MenuProps={MenuProps}
           >
-            <option defaultValue></option>
-            {spectacleOptions}
-            <option value="other">Other</option>
-          </Form.Control>
-        </Form.Group>
+            {recommendationSpectacleOptions}
+          </Select>
+        </FormControl>
 
         {showOther.recommendationSpectacle && (
           <Form.Group controlId="recommendationSpectacleOther">
@@ -500,18 +646,22 @@ const TrainingFormCLVE = ({
             </Row>
             <Row>
               <Col>
-                <Form.Group controlId="dispensedSpectacle">
-                  <Form.Label>Dispensed Spectacle</Form.Label>
-                  <Form.Control
-                    as="select"
-                    onChange={handleSelectChange}
-                    id="dispensedSpectacle"
+                <Row>
+                  <Form.Group controlId="dispensedSpectacle">
+                    <Form.Label>Dispensed Spectacle</Form.Label>
+                  </Form.Group>
+                </Row>
+                <FormControl fullWidth>
+                  <Select
+                    value={devices.dispensedSpectacle}
+                    onChange={(e) => {
+                      handleSelectChange(e, "dispensedSpectacle");
+                    }}
+                    MenuProps={MenuProps}
                   >
-                    <option defaultValue></option>
-                    {spectacleOptions}
-                    <option value="other">Other</option>
-                  </Form.Control>
-                </Form.Group>
+                    {dispensedSpectacleOptions}
+                  </Select>
+                </FormControl>
               </Col>
               <Col>
                 <Form.Group controlId="trainingGivenSpectacle">
@@ -532,19 +682,24 @@ const TrainingFormCLVE = ({
             )}
           </div>
         )}
-
-        <Form.Group controlId="recommendationOptical">
-          <Form.Label>Recommendation Optical</Form.Label>
-          <Form.Control
-            as="select"
-            onChange={handleSelectChange}
-            id="recommendationOptical"
+        <Row>
+          <Form.Group controlId="recommendationOptical">
+            <Form.Label>Recommendation Optical</Form.Label>
+          </Form.Group>
+        </Row>
+        <FormControl fullWidth>
+          <Select
+            value={devices.recommendationOptical}
+            onChange={(e) => {
+              handleMultiSelectChange(e, "recommendationOptical");
+            }}
+            multiple
+            renderValue={(selected) => selected.join(", ")}
+            MenuProps={MenuProps}
           >
-            <option defaultValue></option>
-            {opticalOptions}
-            <option value="other">Other</option>
-          </Form.Control>
-        </Form.Group>
+            {recommendationOpticalOptions}
+          </Select>
+        </FormControl>
 
         {showOther.recommendationOptical && (
           <Form.Group controlId="recommendationOpticalOther">
@@ -575,18 +730,22 @@ const TrainingFormCLVE = ({
             </Row>
             <Row>
               <Col>
-                <Form.Group controlId="dispensedOptical">
-                  <Form.Label>Dispensed Optical</Form.Label>
-                  <Form.Control
-                    as="select"
-                    onChange={handleSelectChange}
-                    id="dispensedOptical"
+                <Row>
+                  <Form.Group controlId="dispensedOptical">
+                    <Form.Label>Dispensed Optical</Form.Label>
+                  </Form.Group>
+                </Row>
+                <FormControl fullWidth>
+                  <Select
+                    value={devices.dispensedOptical}
+                    onChange={(e) => {
+                      handleSelectChange(e, "dispensedOptical");
+                    }}
+                    MenuProps={MenuProps}
                   >
-                    <option defaultValue></option>
-                    {opticalOptions}
-                    <option value="other">Other</option>
-                  </Form.Control>
-                </Form.Group>
+                    {dispensedOpticalOptions}
+                  </Select>
+                </FormControl>
               </Col>
               <Col>
                 <Form.Group controlId="trainingGivenOptical">
@@ -607,19 +766,24 @@ const TrainingFormCLVE = ({
             )}
           </div>
         )}
-
-        <Form.Group controlId="recommendationNonOptical">
-          <Form.Label>Recommendation Non-Optical</Form.Label>
-          <Form.Control
-            as="select"
-            onChange={handleSelectChange}
-            id="recommendationNonOptical"
+        <Row>
+          <Form.Group controlId="recommendationNonOptical">
+            <Form.Label>Recommendation Non-Optical</Form.Label>
+          </Form.Group>
+        </Row>
+        <FormControl fullWidth>
+          <Select
+            value={devices.recommendationNonOptical}
+            onChange={(e) => {
+              handleMultiSelectChange(e, "recommendationNonOptical");
+            }}
+            multiple
+            renderValue={(selected) => selected.join(", ")}
+            MenuProps={MenuProps}
           >
-            <option defaultValue></option>
-            {nonOpticalOptions}
-            <option value="other">Other</option>
-          </Form.Control>
-        </Form.Group>
+            {recommendationNonOpticalOptions}
+          </Select>
+        </FormControl>
 
         {showOther.recommendationNonOptical && (
           <Form.Group controlId="recommendationNonOpticalOther">
@@ -650,18 +814,22 @@ const TrainingFormCLVE = ({
             </Row>
             <Row>
               <Col>
-                <Form.Group controlId="dispensedNonOptical">
-                  <Form.Label>Dispensed Non-Optical</Form.Label>
-                  <Form.Control
-                    as="select"
-                    onChange={handleSelectChange}
-                    id="dispensedNonOptical"
+                <Row>
+                  <Form.Group controlId="dispensedNonOptical">
+                    <Form.Label>Dispensed Non-Optical</Form.Label>
+                  </Form.Group>
+                </Row>
+                <FormControl fullWidth>
+                  <Select
+                    value={devices.dispensedNonOptical}
+                    onChange={(e) => {
+                      handleSelectChange(e, "dispensedNonOptical");
+                    }}
+                    MenuProps={MenuProps}
                   >
-                    <option defaultValue></option>
-                    {nonOpticalOptions}
-                    <option value="other">Other</option>
-                  </Form.Control>
-                </Form.Group>
+                    {dispensedNonOpticalOptions}
+                  </Select>
+                </FormControl>
               </Col>
               <Col>
                 <Form.Group controlId="trainingGivenNonOptical">
@@ -682,19 +850,24 @@ const TrainingFormCLVE = ({
             )}
           </div>
         )}
-
-        <Form.Group controlId="recommendationElectronic">
-          <Form.Label>Recommendation Electronic</Form.Label>
-          <Form.Control
-            as="select"
-            onChange={handleSelectChange}
-            id="recommendationElectronic"
+        <Row>
+          <Form.Group controlId="recommendationElectronic">
+            <Form.Label>Recommendation Electronic</Form.Label>
+          </Form.Group>
+        </Row>
+        <FormControl fullWidth>
+          <Select
+            value={devices.recommendationElectronic}
+            onChange={(e) => {
+              handleMultiSelectChange(e, "recommendationElectronic");
+            }}
+            multiple
+            renderValue={(selected) => selected.join(", ")}
+            MenuProps={MenuProps}
           >
-            <option defaultValue></option>
-            {electronicOptions}
-            <option value="other">Other</option>
-          </Form.Control>
-        </Form.Group>
+            {recommendationElectronicOptions}
+          </Select>
+        </FormControl>
 
         {showOther.recommendationElectronic && (
           <Form.Group controlId="recommendationElectronicOther">
@@ -725,18 +898,22 @@ const TrainingFormCLVE = ({
             </Row>
             <Row>
               <Col>
-                <Form.Group controlId="dispensedElectronic">
-                  <Form.Label>Dispensed Electronic</Form.Label>
-                  <Form.Control
-                    as="select"
-                    onChange={handleSelectChange}
-                    id="dispensedElectronic"
+                <Row>
+                  <Form.Group controlId="dispensedElectronic">
+                    <Form.Label>Dispensed Electronic</Form.Label>
+                  </Form.Group>
+                </Row>
+                <FormControl fullWidth>
+                  <Select
+                    value={devices.dispensedElectronic}
+                    onChange={(e) => {
+                      handleSelectChange(e, "dispensedElectronic");
+                    }}
+                    MenuProps={MenuProps}
                   >
-                    <option defaultValue></option>
-                    {electronicOptions}
-                    <option value="other">Other</option>
-                  </Form.Control>
-                </Form.Group>
+                    {dispensedElectronicOptions}
+                  </Select>
+                </FormControl>
               </Col>
 
               <Col>
