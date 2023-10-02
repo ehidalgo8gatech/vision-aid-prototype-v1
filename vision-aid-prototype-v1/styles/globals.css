@@ -436,6 +436,7 @@ h2 {
   text-align: left;
   border: #00000010;
   border-radius: 10px;
+  width: 600px;
 }
 
 .thead-dark {
@@ -456,6 +457,7 @@ h2 {
   text-align: right;
   align-items: right;
   align-self: right;
+  float: right;
 }
 
 .flex-container {
@@ -482,4 +484,35 @@ h2 {
 .align-center-parent {
   vertical-align: middle;
   display: inline-block;
+}
+
+.save-button {
+  background-color: #1B5E20;
+  border-radius: 2px;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+}
+
+.profile-card-select {
+  width: 100%;
+  /* padding: 10px; */
+  border-radius: 2px;
+  /* border: 1px solid #ccc; */
+  /* margin-bottom: 10px; */
+}
+
+.profile-card-input {
+  width: 100%;
+  /* padding: 10px; */
+  border-radius: 2px;
+  /* border: 1px solid #ccc; */
+  /* margin-bottom: 10px; */
+}
+
+.nopadding {
+  padding: 0 !important;
+  margin: 0 !important;
 }

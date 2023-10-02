@@ -16,7 +16,7 @@ import HistoricalTrainingForm from "../comps/HistoricalTrainingForm";
 
 export default function HistoricalEvaluationPage(props) {
   let serviceToFetch = props.service;
-  if(props.service == "Low_Vision_Screening") {
+  if (props.service == "Low_Vision_Screening") {
     serviceToFetch = "Low_Vision_Evaluation";
   }
 
@@ -41,13 +41,12 @@ export default function HistoricalEvaluationPage(props) {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    handleServiceChange(formatDate["historyDate"], serviceEditList);
   };
 
-  var historicalDashboard;
-
   const handleServiceChange = (date, services) => {
-    if (date == undefined || filterData(date, services) == undefined) {
+    let historicalDashboard = null;
+    const evaluationData = filterData(date, services);
+    if (date == undefined || evaluationData == undefined) {
       historicalDashboard = (
         <div className="text-align-left">
           Select a historical evaluation date from the drop-down menu!
@@ -57,28 +56,37 @@ export default function HistoricalEvaluationPage(props) {
       if (props.service == "Low_Vision_Screening") {
         historicalDashboard = (
           <HistoricalLowVisionScreeningForm
+            key={evaluationData.service.id}
             evaluationData={filterData(date, services)}
           />
         );
       } else if (props.service == "Comprehensive_Low_Vision_Evaluation") {
         historicalDashboard = (
-          <HistoricalCLVForm evaluationData={filterData(date, services)} />
+          <HistoricalCLVForm
+            key={evaluationData.service.id}
+            evaluationData={evaluationData}
+          />
         );
       } else if (props.service == "Vision_Enhancement") {
         historicalDashboard = (
           <HistoricalVisionEnhancementForm
+            key={evaluationData.service.id}
             evaluationData={filterData(date, services)}
           />
         );
       } else if (props.service == "Counselling_Education") {
         historicalDashboard = (
           <HistoricalCounselingForm
+            key={evaluationData.service.id}
             evaluationData={filterData(date, services)}
           />
         );
       } else if (props.service == "Training") {
         historicalDashboard = (
-          <HistoricalTrainingForm evaluationData={filterData(date, services)} />
+          <HistoricalTrainingForm
+            key={evaluationData.service.id}
+            evaluationData={filterData(date, services)}
+          />
         );
       }
     }
@@ -86,7 +94,9 @@ export default function HistoricalEvaluationPage(props) {
     return historicalDashboard;
   };
 
-  const historicalDates = service.map((item) => formatDate(item.date));
+  const historicalDates = service
+    .filter((item) => item.date !== null)
+    .map((item) => formatDate(item.date));
 
   service.sort(function (record1, record2) {
     var date1 = new Date(record1.date);

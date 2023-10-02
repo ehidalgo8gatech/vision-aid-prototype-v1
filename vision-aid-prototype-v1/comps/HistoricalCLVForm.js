@@ -7,21 +7,303 @@ import { Inter } from "@next/font/google";
 import { useSession, signIn, signOut, getSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import moment from "moment";
+import { FormControl, Select, MenuItem } from "@mui/material";
+import {
+  spectacleDevices,
+  opticalDevices,
+  nonOpticalDevices,
+  nonOpticalDevicesIndices,
+  nonOpticalDevicesSubheadings,
+  electronicDevices,
+  electronicDevicesIndices,
+  electronicDevicesSubheadings,
+} from "@/constants/devicesConstants";
+import { createOptionMenu, createMenu } from "@/constants/globalFunctions";
+import { delimiter } from "@/constants/generalConstants";
 
 export default function HistoricalCLVForm(props) {
-  // let data = props.evaluationData.service;
-  const [data, setData] = useState({});
-  useEffect(() => {
-    setData(props.evaluationData.service);
-  }, [props.evaluationData.service]);
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 300,
+      },
+    },
+  };
+
+  const isNotNullEmptyOrUndefined = (variable) =>
+    variable !== null && variable !== undefined && variable.length !== 0;
+
+  const removeOtherDevices = (devicesArr, originalDevices) => {
+    let otherDevices = devicesArr.filter(
+      (device) => !originalDevices.includes(device)
+    );
+    for (let device of otherDevices) {
+      devicesArr.splice(devicesArr.indexOf(device), 1);
+    }
+    return devicesArr;
+  };
+
+  const addOtherTerm = (devices) => {
+    devices.push("Other");
+    return devices;
+  };
+
+  const replaceOtherByDeviceName = (devices, otherDevices) => {
+    let otherIndex = devices.indexOf("Other");
+    devices.splice(otherIndex, 1);
+    devices.push(otherDevices);
+    return devices;
+  };
+
+  const [data, setData] = useState(props.evaluationData.service);
+
+  const recommendationSpectacleArr = isNotNullEmptyOrUndefined(
+    data.recommendationSpectacle
+  )
+    ? data.recommendationSpectacle.split(delimiter)
+    : [];
+  const recommendationOpticalArr = isNotNullEmptyOrUndefined(
+    data.recommendationOptical
+  )
+    ? data.recommendationOptical.split(delimiter)
+    : [];
+  const recommendationNonOpticalArr = isNotNullEmptyOrUndefined(
+    data.recommendationNonOptical
+  )
+    ? data.recommendationNonOptical.split(delimiter)
+    : [];
+  const recommendationElectronicArr = isNotNullEmptyOrUndefined(
+    data.recommendationElectronic
+  )
+    ? data.recommendationElectronic.split(delimiter)
+    : [];
   
+  const [devices, setDevices] = useState({
+    recommendationSpectacle: isNotNullEmptyOrUndefined(
+      data.recommendationSpectacle
+    )
+      ? recommendationSpectacleArr.every((device) =>
+          spectacleDevices.includes(device)
+        )
+        ? recommendationSpectacleArr
+        : addOtherTerm(
+            removeOtherDevices(
+              [...recommendationSpectacleArr],
+              spectacleDevices
+            )
+          )
+      : [],
+    recommendationOptical: isNotNullEmptyOrUndefined(data.recommendationOptical)
+      ? recommendationOpticalArr.every((device) =>
+          opticalDevices.includes(device)
+        )
+        ? recommendationOpticalArr
+        : addOtherTerm(
+            removeOtherDevices([...recommendationOpticalArr], opticalDevices)
+          )
+      : [],
+    recommendationNonOptical: isNotNullEmptyOrUndefined(
+      data.recommendationNonOptical
+    )
+      ? recommendationNonOpticalArr.every((device) =>
+          nonOpticalDevices.includes(device)
+        )
+        ? recommendationNonOpticalArr
+        : addOtherTerm(
+            removeOtherDevices(
+              [...recommendationNonOpticalArr],
+              nonOpticalDevices
+            )
+          )
+      : [],
+    recommendationElectronic: isNotNullEmptyOrUndefined(
+      data.recommendationElectronic
+    )
+      ? recommendationElectronicArr.every((device) =>
+          electronicDevices.includes(device)
+        )
+        ? recommendationElectronicArr
+        : addOtherTerm(
+            removeOtherDevices(
+              [...recommendationElectronicArr],
+              electronicDevices
+            )
+          )
+      : [],
+    dispensedSpectacle: isNotNullEmptyOrUndefined(data.dispensedSpectacle)
+      ? spectacleDevices.includes(data.dispensedSpectacle)
+        ? data.dispensedSpectacle
+        : "Other"
+      : "",
+    dispensedOptical: isNotNullEmptyOrUndefined(data.dispensedOptical)
+      ? opticalDevices.includes(data.dispensedOptical)
+        ? data.dispensedOptical
+        : "Other"
+      : "",
+    dispensedNonOptical: isNotNullEmptyOrUndefined(data.dispensedNonOptical)
+      ? nonOpticalDevices.includes(data.dispensedNonOptical)
+        ? data.dispensedNonOptical
+        : "Other"
+      : "",
+    dispensedElectronic: isNotNullEmptyOrUndefined(data.dispensedElectronic)
+      ? electronicDevices.includes(data.dispensedElectronic)
+        ? data.dispensedElectronic
+        : "Other"
+      : "",
+  });
+
+  const [showOther, setShowOther] = useState({
+    recommendationSpectacle:
+      isNotNullEmptyOrUndefined(devices.recommendationSpectacle) &&
+      devices.recommendationSpectacle.includes("Other"),
+    recommendationOptical:
+      isNotNullEmptyOrUndefined(devices.recommendationOptical) &&
+      devices.recommendationOptical.includes("Other"),
+    recommendationNonOptical:
+      isNotNullEmptyOrUndefined(devices.recommendationNonOptical) &&
+      devices.recommendationNonOptical.includes("Other"),
+    recommendationElectronic:
+      isNotNullEmptyOrUndefined(devices.recommendationElectronic) &&
+      devices.recommendationElectronic.includes("Other"),
+    dispensedSpectacle:
+      isNotNullEmptyOrUndefined(devices.dispensedSpectacle) &&
+      devices.dispensedSpectacle === "Other",
+    dispensedOptical:
+      isNotNullEmptyOrUndefined(devices.dispensedOptical) &&
+      devices.dispensedOptical === "Other",
+    dispensedNonOptical:
+      isNotNullEmptyOrUndefined(devices.dispensedNonOptical) &&
+      devices.dispensedNonOptical === "Other",
+    dispensedElectronic:
+      isNotNullEmptyOrUndefined(devices.dispensedElectronic) &&
+      devices.dispensedElectronic === "Other",
+  });
+
+  const [otherDevices, setOtherDevices] = useState({
+    recommendationSpectacle: isNotNullEmptyOrUndefined(
+      data.recommendationSpectacle
+    )
+      ? devices.recommendationSpectacle.includes("Other")
+        ? recommendationSpectacleArr.filter(
+            (device) => !spectacleDevices.includes(device)
+          )
+        : 
+          ""
+      : "",
+    recommendationOptical: isNotNullEmptyOrUndefined(data.recommendationOptical)
+      ? devices.recommendationOptical.includes("Other")
+        ? recommendationOpticalArr.filter(
+            (device) => !opticalDevices.includes(device)
+          )
+        : 
+          ""
+      : "",
+    recommendationNonOptical: isNotNullEmptyOrUndefined(
+      data.recommendationNonOptical
+    )
+      ? devices.recommendationNonOptical.includes("Other")
+        ? recommendationNonOpticalArr.filter(
+            (device) => !nonOpticalDevices.includes(device)
+          )
+        : 
+          ""
+      : "",
+    recommendationElectronic: isNotNullEmptyOrUndefined(
+      data.recommendationElectronic
+    )
+      ? devices.recommendationElectronic.includes("Other")
+        ? recommendationElectronicArr.filter(
+            (device) => !electronicDevices.includes(device)
+          )
+        : 
+          ""
+      : "",
+    dispensedSpectacle: isNotNullEmptyOrUndefined(devices.dispensedSpectacle)
+      ? devices.dispensedSpectacle === "Other"
+        ? data.dispensedSpectacle
+        : ""
+      : "",
+    dispensedOptical: isNotNullEmptyOrUndefined(devices.dispensedOptical)
+      ? devices.dispensedOptical === "Other"
+        ? data.dispensedOptical
+        : ""
+      : "",
+    dispensedNonOptical: isNotNullEmptyOrUndefined(devices.dispensedNonOptical)
+      ? devices.dispensedNonOptical === "Other"
+        ? data.dispensedNonOptical
+        : ""
+      : "",
+    dispensedElectronic: isNotNullEmptyOrUndefined(devices.dispensedElectronic)
+      ? devices.dispensedElectronic === "Other"
+        ? data.dispensedElectronic
+        : ""
+      : "",
+  });
+
   const [editMode, setEditMode] = useState(false);
+
+  const recommendationSpectacleOptions = createMenu(
+    spectacleDevices,
+    "recommendationSpectacle",
+    true,
+    devices
+  );
+  const dispensedSpectacleOptions = createMenu(
+    spectacleDevices,
+    "dispensedSpectacle",
+    false
+  );
+  const recommendationOpticalOptions = createMenu(
+    opticalDevices,
+    "recommendationOptical",
+    true,
+    devices
+  );
+  const dispensedOpticalOptions = createMenu(
+    opticalDevices,
+    "dispensedOptical",
+    false
+  );
+  const recommendationNonOpticalOptions = createOptionMenu(
+    nonOpticalDevices,
+    nonOpticalDevicesSubheadings,
+    nonOpticalDevicesIndices,
+    "recommendationNonOptical",
+    true,
+    devices
+  );
+  const dispensedNonOpticalOptions = createOptionMenu(
+    nonOpticalDevices,
+    nonOpticalDevicesSubheadings,
+    nonOpticalDevicesIndices,
+    "dispensedNonOptical",
+    false
+  );
+  const recommendationElectronicOptions = createOptionMenu(
+    electronicDevices,
+    electronicDevicesSubheadings,
+    electronicDevicesIndices,
+    "recommendationElectronic",
+    true,
+    devices
+  );
+  const dispensedElectronicOptions = createOptionMenu(
+    electronicDevices,
+    electronicDevicesSubheadings,
+    electronicDevicesIndices,
+    "dispensedElectronic",
+    false
+  );
 
   const handleClick = (e) => {
     setEditMode(true);
   };
 
   const handleChange = (e) => {
+    
     if (e.target.type === "date") {
       setData({
         ...data,
@@ -29,13 +311,83 @@ export default function HistoricalCLVForm(props) {
       });
     } else if (e.target.type === "number") {
       setData({ ...data, [e.target.name]: parseInt(e.target.value) });
-    } else {
+    } else if (e.target.type === "text") {
       setData({ ...data, [e.target.name]: e.target.value });
+    } else {
+      setDevices((devices) => ({
+        ...devices,
+        [e.target.name]: e.target.value,
+      }));
+    }
+    if (e.target.value === "Other") {
+      setShowOther({ ...showOther, [e.target.name]: true });
+    } else {
+      setShowOther({ ...showOther, [e.target.name]: false });
+    }
+  };
+
+  const handleMultiSelectChange = (e, fieldName) => {
+    const {
+      target: { value },
+    } = e;
+    setDevices((devices) => ({
+      ...devices,
+      [fieldName]: value,
+    }));
+    if (value.includes("Other")) {
+      setShowOther({ ...showOther, [fieldName]: true });
+    } else {
+      setShowOther({ ...showOther, [fieldName]: false });
     }
   };
 
   const saveCLVEData = async () => {
     delete data["beneficiaryId"];
+    data["dispensedSpectacle"] =
+      showOther.dispensedSpectacle === true
+        ? otherDevices.dispensedSpectacle
+        : devices["dispensedSpectacle"];
+    data["dispensedOptical"] =
+      showOther.dispensedOptical === true
+        ? otherDevices.dispensedOptical
+        : devices["dispensedOptical"];
+    data["dispensedNonOptical"] =
+      showOther.dispensedNonOptical === true
+        ? otherDevices.dispensedNonOptical
+        : devices["dispensedNonOptical"];
+    data["dispensedElectronic"] =
+      showOther.dispensedElectronic === true
+        ? otherDevices.dispensedElectronic
+        : devices["dispensedElectronic"];
+    data["recommendationSpectacle"] =
+      showOther.recommendationSpectacle === true
+        ? replaceOtherByDeviceName(
+            devices["recommendationSpectacle"],
+            otherDevices["recommendationSpectacle"]
+          ).join(delimiter)
+        : devices["recommendationSpectacle"].join(delimiter);
+    data["recommendationOptical"] =
+      showOther.recommendationOptical === true
+        ? replaceOtherByDeviceName(
+            devices["recommendationOptical"],
+            otherDevices["recommendationOptical"]
+          ).join(delimiter)
+        : devices["recommendationOptical"].join(delimiter);
+    data["recommendationNonOptical"] =
+      showOther.recommendationNonOptical === true
+        ? replaceOtherByDeviceName(
+            devices["recommendationNonOptical"],
+            otherDevices["recommendationNonOptical"]
+          ).join(delimiter)
+        : devices["recommendationNonOptical"].join(delimiter);
+    data["recommendationElectronic"] =
+      showOther.recommendationElectronic === true
+        ? replaceOtherByDeviceName(
+            devices["recommendationElectronic"],
+            otherDevices["recommendationElectronic"]
+          ).join(delimiter)
+        : devices["recommendationElectronic"].join(delimiter);
+
     const res = await fetch("/api/comprehensiveLowVisionEvaluation", {
       method: "PATCH",
       headers: {
@@ -56,115 +408,152 @@ export default function HistoricalCLVForm(props) {
     </div>
   ) : (
     <div>
-      <table class="table beneficiary-table table-bordered">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">Properties</th>
-            <th scope="col">Data</th>
+      <table class="table beneficiary-table table-bordered row">
+        <thead className="thead-dark">
+          <tr className="row">
+            <th scope="col" className="col-md-4">
+              Properties
+            </th>
+            <th scope="col" className="col-md-8">
+              Data
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">Diagnosis</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Diagnosis
+            </th>
+            <td scope="row" className="col-md-8">
               {!editMode && data.diagnosis}
               {editMode && (
-                <input
-                  type="text"
-                  name="diagnosis"
-                  value={data.diagnosis}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="diagnosis"
+                    value={data.diagnosis}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">MDVI</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              MDVI
+            </th>
+            <td className="col-md-8">
               {!editMode && data.mdvi}
               {editMode && (
-                <input
-                  type="text"
-                  name="mdvi"
-                  value={data.mdvi}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <Select
+                    onChange={(e) => handleChange(e)}
+                    value={data.mdvi}
+                    name="mdvi"
+                    MenuProps={MenuProps}
+                  >
+                    <MenuItem value="Yes">Yes</MenuItem>
+                    <MenuItem value="No">No</MenuItem>
+                  </Select>
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Session Number</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Session Number
+            </th>
+            <td className="col-md-8">
               {!editMode && data.sessionNumber}
               {editMode && (
-                <input
-                  type="number"
-                  name="sessionNumber"
-                  value={data.sessionNumber}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="number"
+                    name="sessionNumber"
+                    value={data.sessionNumber}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Distance Visual Acuity RE</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Distance Visual Acuity RE
+            </th>
+            <td className="col-md-8">
               {!editMode && data.distanceVisualAcuityRE}
               {editMode && (
-                <input
-                  type="text"
-                  name="distanceVisualAcuityRE"
-                  value={data.distanceVisualAcuityRE}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="distanceVisualAcuityRE"
+                    value={data.distanceVisualAcuityRE}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Distance Visual Acuity LE</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Distance Visual Acuity LE
+            </th>
+            <td className="col-md-8">
               {!editMode && data.distanceVisualAcuityLE}
               {editMode && (
-                <input
-                  type="text"
-                  name="distanceVisualAcuityLE"
-                  value={data.distanceVisualAcuityLE}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="distanceVisualAcuityLE"
+                    value={data.distanceVisualAcuityLE}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Distance Binocular Vision BE</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Distance Binocular Vision BE
+            </th>
+            <td className="col-md-8">
               {!editMode && data.distanceBinocularVisionBE}
               {editMode && (
-                <input
-                  type="text"
-                  name="distanceBinocularVisionBE"
-                  value={data.distanceBinocularVisionBE}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="distanceBinocularVisionBE"
+                    value={data.distanceBinocularVisionBE}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Near Visual Acuity RE</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Near Visual Acuity RE
+            </th>
+            <td className="col-md-8">
               {!editMode && data.nearVisualAcuityRE}
               {editMode && (
-                <input
-                  type="text"
-                  name="nearVisualAcuityRE"
-                  value={data.nearVisualAcuityRE}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="nearVisualAcuityRE"
+                    value={data.nearVisualAcuityRE}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Near Visual Acuity LE</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Near Visual Acuity LE
+            </th>
+            <td className="col-md-8">
               {!editMode && data.nearVisualAcuityLE}
               {editMode && (
                 <input
@@ -176,461 +565,759 @@ export default function HistoricalCLVForm(props) {
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Near Binocular Vision BE</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Near Binocular Vision BE
+            </th>
+            <td className="col-md-8">
               {!editMode && data.nearBinocularVisionBE}
               {editMode && (
-                <input
-                  type="text"
-                  name="nearBinocularVisionBE"
-                  value={data.nearBinocularVisionBE}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="nearBinocularVisionBE"
+                    value={data.nearBinocularVisionBE}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Recommendation Spectacle</th>
-            <td>
-              {!editMode && data.recommendationSpectacle}
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Recommendation Spectacle
+            </th>
+            <td scope="row" className="col-md-8">
+              {!editMode && recommendationSpectacleArr.join(", ")}
               {editMode && (
-                <input
-                  type="text"
-                  name="recommendationSpectacle"
-                  value={data.recommendationSpectacle}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <Select
+                    onChange={(e) =>
+                      handleMultiSelectChange(e, "recommendationSpectacle")
+                    }
+                    value={devices.recommendationSpectacle}
+                    name="recommendationSpectacle"
+                    multiple
+                    renderValue={(selected) => selected.join(", ")}
+                    MenuProps={MenuProps}
+                  >
+                    {recommendationSpectacleOptions}
+                  </Select>
+                </FormControl>
+              )}
+              {editMode && showOther.recommendationSpectacle && (
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    id="recommendationSpectacleOther"
+                    value={otherDevices.recommendationSpectacle}
+                    placeholder="Enter device name"
+                    onChange={(e) =>
+                      setOtherDevices({
+                        ...otherDevices,
+                        recommendationSpectacle: e.target.value,
+                      })
+                    }
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Dispensed Date Spectacle</th>
-            <td>
-            {!editMode && data.dispensedDateSpectacle !== null && moment(data.dispensedDateSpectacle).format("DD MMMM YYYY")}
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Dispensed Date Spectacle
+            </th>
+            <td className="col-md-8">
+              {!editMode &&
+                data.dispensedDateSpectacle !== null &&
+                moment(data.dispensedDateSpectacle).format("DD MMMM YYYY")}
               {!editMode && data.dispensedDateSpectacle !== null && ""}
               {editMode && (
-                <input
-                  type="date"
-                  name="dispensedDateSpectacle"
-                  value={moment(data.dispensedDateSpectacle).format(
-                    "YYYY-MM-DD"
-                  )}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="date"
+                    name="dispensedDateSpectacle"
+                    value={moment(data.dispensedDateSpectacle).format(
+                      "YYYY-MM-DD"
+                    )}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Cost Spectacle</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Cost Spectacle
+            </th>
+            <td className="col-md-8">
               {!editMode && data.costSpectacle}
               {editMode && (
-                <input
-                  type="number"
-                  name="costSpectacle"
-                  value={data.costSpectacle}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="number"
+                    name="costSpectacle"
+                    value={data.costSpectacle}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Cost to Beneficiary Spectacle</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Cost to Beneficiary Spectacle
+            </th>
+            <td className="col-md-8">
               {!editMode && data.costToBeneficiarySpectacle}
               {editMode && (
-                <input
-                  type="number"
-                  name="costToBeneficiarySpectacle"
-                  value={data.costToBeneficiarySpectacle}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="number"
+                    name="costToBeneficiarySpectacle"
+                    value={data.costToBeneficiarySpectacle}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Dispensed Spectacle</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Dispensed Spectacle
+            </th>
+            <td className="col-md-8">
               {!editMode && data.dispensedSpectacle}
               {editMode && (
-                <input
-                  type="text"
-                  name="dispensedSpectacle"
-                  value={data.dispensedSpectacle}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <Select
+                    onChange={(e) => handleChange(e)}
+                    value={devices.dispensedSpectacle}
+                    name="dispensedSpectacle"
+                    MenuProps={MenuProps}
+                  >
+                    {dispensedSpectacleOptions}
+                  </Select>
+                </FormControl>
+              )}
+              {editMode && showOther.dispensedSpectacle && (
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    id="dispensedSpectacleOther"
+                    value={otherDevices.dispensedSpectacle}
+                    placeholder="Enter device name"
+                    onChange={(e) =>
+                      setOtherDevices({
+                        ...otherDevices,
+                        dispensedSpectacle: e.target.value,
+                      })
+                    }
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Training Given Spectacle</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Training Given Spectacle
+            </th>
+            <td className="col-md-8">
               {!editMode && data.trainingGivenSpectacle}
               {editMode && (
-                <input
-                  type="text"
-                  name="trainingGivenSpectacle"
-                  value={data.trainingGivenSpectacle}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="trainingGivenSpectacle"
+                    value={data.trainingGivenSpectacle}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Recommendation Optical</th>
-            <td>
-              {!editMode && data.recommendationOptical}
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Recommendation Optical
+            </th>
+            <td className="col-md-8">
+              {!editMode && recommendationOpticalArr.join(", ")}
               {editMode && (
-                <input
-                  type="text"
-                  name="recommendationOptical"
-                  value={data.recommendationOptical}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <Select
+                    onChange={(e) =>
+                      handleMultiSelectChange(e, "recommendationOptical")
+                    }
+                    value={devices.recommendationOptical}
+                    name="recommendationOptical"
+                    multiple
+                    renderValue={(selected) => selected.join(", ")}
+                    MenuProps={MenuProps}
+                  >
+                    {recommendationOpticalOptions}
+                  </Select>
+                </FormControl>
+              )}
+              {editMode && showOther.recommendationOptical && (
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    id="recommendationOpticalOther"
+                    value={otherDevices.recommendationOptical}
+                    placeholder="Enter device name"
+                    onChange={(e) =>
+                      setOtherDevices({
+                        ...otherDevices,
+                        recommendationOptical: e.target.value,
+                      })
+                    }
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Dispensed Date Optical</th>
-            <td>
-            {!editMode && data.dispensedDateOptical !== null && moment(data.dispensedDateOptical).format("DD MMMM YYYY")}
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Dispensed Date Optical
+            </th>
+            <td className="col-md-8">
+              {!editMode &&
+                data.dispensedDateOptical !== null &&
+                moment(data.dispensedDateOptical).format("DD MMMM YYYY")}
               {!editMode && data.dispensedDateOptical !== null && ""}
               {editMode && (
-                <input
-                  type="date"
-                  name="dispensedDateOptical"
-                  value={moment(data.dispensedDateOptical).format("YYYY-MM-DD")}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="date"
+                    name="dispensedDateOptical"
+                    value={moment(data.dispensedDateOptical).format(
+                      "YYYY-MM-DD"
+                    )}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Cost Optical</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Cost Optical
+            </th>
+            <td className="col-md-8">
               {!editMode && data.costOptical}
               {editMode && (
-                <input
-                  type="number"
-                  name="costOptical"
-                  value={data.costOptical}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="number"
+                    name="costOptical"
+                    value={data.costOptical}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Cost to Beneficiary Optical</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Cost to Beneficiary Optical
+            </th>
+            <td className="col-md-8">
               {!editMode && data.costToBeneficiaryOptical}
               {editMode && (
-                <input
-                  type="number"
-                  name="costToBeneficiaryOptical"
-                  value={data.costToBeneficiaryOptical}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="number"
+                    name="costToBeneficiaryOptical"
+                    value={data.costToBeneficiaryOptical}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Dispensed Optical</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Dispensed Optical
+            </th>
+            <td className="col-md-8">
               {!editMode && data.dispensedOptical}
               {editMode && (
-                <input
-                  type="text"
-                  name="dispensedOptical"
-                  value={data.dispensedOptical}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <Select
+                    onChange={(e) => handleChange(e)}
+                    value={devices.dispensedOptical}
+                    name="dispensedOptical"
+                    MenuProps={MenuProps}
+                  >
+                    {dispensedOpticalOptions}
+                  </Select>
+                </FormControl>
+              )}
+              {editMode && showOther.dispensedOptical && (
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    id="dispensedOpticalOther"
+                    value={otherDevices.dispensedOptical}
+                    placeholder="Enter device name"
+                    onChange={(e) =>
+                      setOtherDevices({
+                        ...otherDevices,
+                        dispensedOptical: e.target.value,
+                      })
+                    }
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Training Given Optical</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Training Given Optical
+            </th>
+            <td className="col-md-8">
               {!editMode && data.trainingGivenOptical}
               {editMode && (
-                <input
-                  type="text"
-                  name="trainingGivenOptical"
-                  value={data.trainingGivenOptical}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="trainingGivenOptical"
+                    value={data.trainingGivenOptical}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Recommendation Non-Optical</th>
-            <td>
-              {!editMode && data.recommendationNonOptical}
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Recommendation Non-Optical
+            </th>
+            <td className="col-md-8">
+              {!editMode && recommendationNonOpticalArr.join(", ")}
               {editMode && (
-                <input
-                  type="text"
-                  name="recommendationNonOptical"
-                  value={data.recommendationNonOptical}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <Select
+                    onChange={(e) =>
+                      handleMultiSelectChange(e, "recommendationNonOptical")
+                    }
+                    value={devices.recommendationNonOptical}
+                    name="recommendationNonOptical"
+                    multiple
+                    renderValue={(selected) => selected.join(", ")}
+                    MenuProps={MenuProps}
+                  >
+                    {recommendationNonOpticalOptions}
+                  </Select>
+                </FormControl>
+              )}
+              {editMode && showOther.recommendationNonOptical && (
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    id="recommendationNonOpticalOther"
+                    value={otherDevices.recommendationNonOptical}
+                    placeholder="Enter device name"
+                    onChange={(e) =>
+                      setOtherDevices({
+                        ...otherDevices,
+                        recommendationNonOptical: e.target.value,
+                      })
+                    }
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Dispensed Date Non-Optical</th>
-            <td>
-            {!editMode && data.dispensedDateNonOptical !== null && moment(data.dispensedDateNonOptical).format("DD MMMM YYYY")}
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Dispensed Date Non-Optical
+            </th>
+            <td className="col-md-8">
+              {!editMode &&
+                data.dispensedDateNonOptical !== null &&
+                moment(data.dispensedDateNonOptical).format("DD MMMM YYYY")}
               {!editMode && data.dispensedDateNonOptical !== null && ""}
               {editMode && (
-                <input
-                  type="date"
-                  name="dispensedDateNonOptical"
-                  value={moment(data.dispensedDateNonOptical).format(
-                    "YYYY-MM-DD"
-                  )}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="date"
+                    name="dispensedDateNonOptical"
+                    value={moment(data.dispensedDateNonOptical).format(
+                      "YYYY-MM-DD"
+                    )}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Cost Non-Optical</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Cost Non-Optical
+            </th>
+            <td className="col-md-8">
               {!editMode && data.costNonOptical}
               {editMode && (
-                <input
-                  type="number"
-                  name="costNonOptical"
-                  value={data.costNonOptical}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="number"
+                    name="costNonOptical"
+                    value={data.costNonOptical}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Cost To Beneficiary NonOptical</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Cost To Beneficiary NonOptical
+            </th>
+            <td className="col-md-8">
               {!editMode && data.costToBeneficiaryNonOptical}
               {editMode && (
-                <input
-                  type="number"
-                  name="costToBeneficiaryNonOptical"
-                  value={data.costToBeneficiaryNonOptical}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="number"
+                    name="costToBeneficiaryNonOptical"
+                    value={data.costToBeneficiaryNonOptical}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Dispensed Non-Optical</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Dispensed Non-Optical
+            </th>
+            <td className="col-md-8">
               {!editMode && data.dispensedNonOptical}
               {editMode && (
-                <input
-                  type="text"
-                  name="dispensedNonOptical"
-                  value={data.dispensedNonOptical}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <Select
+                    onChange={(e) => handleChange(e)}
+                    value={devices.dispensedNonOptical}
+                    name="dispensedNonOptical"
+                    MenuProps={MenuProps}
+                  >
+                    {dispensedNonOpticalOptions}
+                  </Select>
+                </FormControl>
+              )}
+              {editMode && showOther.dispensedNonOptical && (
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    id="dispensedNonOpticalOther"
+                    value={otherDevices.dispensedNonOptical}
+                    placeholder="Enter device name"
+                    onChange={(e) =>
+                      setOtherDevices({
+                        ...otherDevices,
+                        dispensedNonOptical: e.target.value,
+                      })
+                    }
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Training Given Non-Optical</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Training Given Non-Optical
+            </th>
+            <td className="col-md-8">
               {!editMode && data.trainingGivenNonOptical}
               {editMode && (
-                <input
-                  type="text"
-                  name="trainingGivenNonOptical"
-                  value={data.trainingGivenNonOptical}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="trainingGivenNonOptical"
+                    value={data.trainingGivenNonOptical}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Recommendation Electronic</th>
-            <td>
-              {!editMode && data.recommendationElectronic}
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Recommendation Electronic
+            </th>
+            <td className="col-md-8">
+              {!editMode && recommendationElectronicArr.join(", ")}
               {editMode && (
-                <input
-                  type="test"
-                  name="recommendationElectronic"
-                  value={data.recommendationElectronic}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <Select
+                    onChange={(e) =>
+                      handleMultiSelectChange(e, "recommendationElectronic")
+                    }
+                    value={devices.recommendationElectronic}
+                    name="recommendationElectronic"
+                    multiple
+                    renderValue={(selected) => selected.join(", ")}
+                    MenuProps={MenuProps}
+                  >
+                    {recommendationElectronicOptions}
+                  </Select>
+                </FormControl>
+              )}
+              {editMode && showOther.recommendationElectronic && (
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    id="recommendationElectronicOther"
+                    value={otherDevices.recommendationElectronic}
+                    placeholder="Enter device name"
+                    onChange={(e) =>
+                      setOtherDevices({
+                        ...otherDevices,
+                        recommendationElectronic: e.target.value,
+                      })
+                    }
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Dispensed Date Electronic</th>
-            <td>
-            {!editMode && data.dispensedDateElectronic !== null && moment(data.dispensedDateElectronic).format("DD MMMM YYYY")}
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Dispensed Date Electronic
+            </th>
+            <td className="col-md-8">
+              {!editMode &&
+                data.dispensedDateElectronic !== null &&
+                moment(data.dispensedDateElectronic).format("DD MMMM YYYY")}
               {!editMode && data.dispensedDateElectronic !== null && ""}
               {editMode && (
-                <input
-                  type="date"
-                  name="dispensedDateElectronic"
-                  value={moment(data.dispensedDateElectronic).format(
-                    "YYYY-MM-DD"
-                  )}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="date"
+                    name="dispensedDateElectronic"
+                    value={moment(data.dispensedDateElectronic).format(
+                      "YYYY-MM-DD"
+                    )}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Cost Electronic</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Cost Electronic
+            </th>
+            <td className="col-md-8">
               {!editMode && data.costElectronic}
               {editMode && (
-                <input
-                  type="number"
-                  name="costElectronic"
-                  value={data.costElectronic}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="number"
+                    name="costElectronic"
+                    value={data.costElectronic}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Cost To Beneficiary Electronic</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Cost To Beneficiary Electronic
+            </th>
+            <td className="col-md-8">
               {!editMode && data.costToBeneficiaryElectronic}
               {editMode && (
-                <input
-                  type="number"
-                  name="costToBeneficiaryElectronic"
-                  value={data.costToBeneficiaryElectronic}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="number"
+                    name="costToBeneficiaryElectronic"
+                    value={data.costToBeneficiaryElectronic}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Dispensed Electronic</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Dispensed Electronic
+            </th>
+            <td className="col-md-8">
               {!editMode && data.dispensedElectronic}
               {editMode && (
-                <input
-                  type="text"
-                  name="dispensedElectronic"
-                  value={data.dispensedElectronic}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <Select
+                    onChange={(e) => handleChange(e)}
+                    value={devices.dispensedElectronic}
+                    name="dispensedElectronic"
+                    MenuProps={MenuProps}
+                  >
+                    {dispensedElectronicOptions}
+                  </Select>
+                </FormControl>
+              )}
+              {editMode && showOther.dispensedElectronic && (
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    id="dispensedElectronicOther"
+                    value={otherDevices.dispensedElectronic}
+                    placeholder="Enter device name"
+                    onChange={(e) =>
+                      setOtherDevices({
+                        ...otherDevices,
+                        dispensedElectronic: e.target.value,
+                      })
+                    }
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Training Given Electronic</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Training Given Electronic
+            </th>
+            <td className="col-md-8">
               {!editMode && data.trainingGivenElectronic}
               {editMode && (
-                <input
-                  type="text"
-                  name="trainingGivenElectronic"
-                  value={data.trainingGivenElectronic}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="trainingGivenElectronic"
+                    value={data.trainingGivenElectronic}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Colour Vision Right Eye</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Colour Vision Right Eye
+            </th>
+            <td className="col-md-8">
               {!editMode && data.colourVisionRE}
               {editMode && (
-                <input
-                  type="text"
-                  name="colourVisionRE"
-                  value={data.colourVisionRE}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="colourVisionRE"
+                    value={data.colourVisionRE}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Colour Vision Left Eye</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Colour Vision Left Eye
+            </th>
+            <td className="col-md-8">
               {!editMode && data.colourVisionLE}
               {editMode && (
-                <input
-                  type="text"
-                  name="colourVisionLE"
-                  value={data.colourVisionLE}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="colourVisionLE"
+                    value={data.colourVisionLE}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Contrast Sensitivity Right Eye</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Contrast Sensitivity Right Eye
+            </th>
+            <td className="col-md-8">
               {!editMode && data.contrastSensitivityRE}
               {editMode && (
-                <input
-                  type="text"
-                  name="contrastSensitivityRE"
-                  value={data.contrastSensitivityRE}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="contrastSensitivityRE"
+                    value={data.contrastSensitivityRE}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Contrast Sensitivity Left Eye</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Contrast Sensitivity Left Eye
+            </th>
+            <td className="col-md-8">
               {!editMode && data.contrastSensitivityLE}
               {editMode && (
-                <input
-                  type="text"
-                  name="contrastSensitivityLE"
-                  value={data.contrastSensitivityLE}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="contrastSensitivityLE"
+                    value={data.contrastSensitivityLE}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Visual Fields Right Eye</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Visual Fields Right Eye
+            </th>
+            <td className="col-md-8">
               {!editMode && data.visualFieldsRE}
               {editMode && (
-                <input
-                  type="text"
-                  name="visualFieldsRE"
-                  value={data.visualFieldsRE}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="visualFieldsRE"
+                    value={data.visualFieldsRE}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Visual Fields Left Eye</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Visual Fields Left Eye
+            </th>
+            <td className="col-md-8">
               {!editMode && data.visualFieldsLE}
               {editMode && (
-                <input
-                  type="text"
-                  name="visualFieldsLE"
-                  value={data.visualFieldsLE}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="visualFieldsLE"
+                    value={data.visualFieldsLE}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Extra Information</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Extra Information
+            </th>
+            <td className="col-md-8">
               {!editMode && data.extraInformation}
               {editMode && (
-                <input
-                  type="text"
-                  name="extraInformation"
-                  value={data.extraInformation}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <input
+                    type="text"
+                    name="extraInformation"
+                    value={data.extraInformation}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormControl>
               )}
             </td>
           </tr>
