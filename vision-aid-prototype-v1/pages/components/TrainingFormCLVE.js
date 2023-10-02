@@ -24,6 +24,8 @@ import {
   electronicDevicesSubheadings,
   electronicDevicesIndices,
 } from "@/constants/devicesConstants";
+import { createMenu, createOptionMenu } from "@/constants/globalFunctions";
+import { delimiter } from "@/constants/generalConstants";
 
 const TrainingFormCLVE = ({
   existingTrainings = [],
@@ -112,8 +114,8 @@ const TrainingFormCLVE = ({
       sessionNumber: e.target.sessionNumber.value,
       recommendationSpectacle:
         devices.recommendationSpectacle.length > 0
-          ? devices.recommendationSpectacle.join(",")
-          : null,
+          ? devices.recommendationSpectacle.join(delimiter)
+          : "",
       dispensedDateSpectacle:
         e.target.dispensedDateSpectacle == null
           ? null
@@ -135,8 +137,8 @@ const TrainingFormCLVE = ({
           : e.target.trainingGivenSpectacle.value,
       recommendationOptical:
         devices.recommendationOptical.length > 0
-          ? devices.recommendationOptical.join(",")
-          : null,
+          ? devices.recommendationOptical.join(delimiter)
+          : "",
       dispensedDateOptical:
         e.target.dispensedDateOptical == null
           ? null
@@ -158,8 +160,8 @@ const TrainingFormCLVE = ({
           : e.target.trainingGivenOptical.value,
       recommendationNonOptical:
         devices.recommendationNonOptical.length > 0
-          ? devices.recommendationNonOptical.join(",")
-          : null,
+          ? devices.recommendationNonOptical.join(delimiter)
+          : "",
       dispensedDateNonOptical:
         e.target.dispensedDateNonOptical == null
           ? null
@@ -181,8 +183,8 @@ const TrainingFormCLVE = ({
           : e.target.trainingGivenNonOptical.value,
       recommendationElectronic:
         devices.recommendationElectronic.length > 0
-          ? devices.recommendationElectronic.join(",")
-          : null,
+          ? devices.recommendationElectronic.join(delimiter)
+          : "",
       dispensedDateElectronic:
         e.target.dispensedDateElectronic == null
           ? null
@@ -255,47 +257,6 @@ const TrainingFormCLVE = ({
     return optionGroups;
   };
 
-  const createMenu = (values, fieldName, checkbox) => {
-    if (checkbox) {
-      return values.map((value) => (
-        <MenuItem key={value} value={value} style={{whiteSpace: 'normal'}}>
-          <Checkbox checked={devices[fieldName].indexOf(value) > -1} />
-          <ListItemText primary={
-            <Typography align="left">
-              {value}
-            </Typography>
-          }/>
-        </MenuItem>
-      ));
-    } else {
-      return values.map((value) => (
-        <MenuItem key={value} value={value}>
-          <Typography align="left">
-              {value}
-          </Typography>
-        </MenuItem>
-      ));
-    }
-  };
-
-  const createOptionMenu = (
-    values,
-    subheadings,
-    indices,
-    fieldName,
-    checkbox
-  ) => {
-    const fullMenu = createMenu(values, fieldName, checkbox);
-    const optionGroups = [];
-    for (var i = 0; i < subheadings.length; i++) {
-      optionGroups.push(
-        <ListSubheader key={subheadings[i]}>{subheadings[i]}</ListSubheader>
-      );
-      optionGroups.push(fullMenu.slice(indices[i], indices[i + 1]));
-    }
-    return optionGroups;
-  };
-
   const changeDvValues = (e) => {
     if (e.target.value == "LogMAR") {
       setDvAcuityValues(createOptionList(logMARValues));
@@ -329,50 +290,58 @@ const TrainingFormCLVE = ({
   const recommendationSpectacleOptions = createMenu(
     spectacleDevices,
     "recommendationSpectacle",
-    true
+    true,
+    devices
   );
   const dispensedSpectacleOptions = createMenu(
     spectacleDevices,
     "dispensedSpectacle",
-    false
+    false,
+    devices
   );
   const recommendationOpticalOptions = createMenu(
     opticalDevices,
     "recommendationOptical",
-    true
+    true,
+    devices
   );
   const dispensedOpticalOptions = createMenu(
     opticalDevices,
     "dispensedOptical",
-    false
+    false,
+    devices
   );
   const recommendationNonOpticalOptions = createOptionMenu(
     nonOpticalDevices,
     nonOpticalDevicesSubheadings,
     nonOpticalDevicesIndices,
     "recommendationNonOptical",
-    true
+    true,
+    devices
   );
   const dispensedNonOpticalOptions = createOptionMenu(
     nonOpticalDevices,
     nonOpticalDevicesSubheadings,
     nonOpticalDevicesIndices,
     "dispensedNonOptical",
-    false
+    false,
+    devices
   );
   const recommendationElectronicOptions = createOptionMenu(
     electronicDevices,
     electronicDevicesSubheadings,
     electronicDevicesIndices,
     "recommendationElectronic",
-    true
+    true,
+    devices
   );
   const dispensedElectronicOptions = createOptionMenu(
     electronicDevices,
     electronicDevicesSubheadings,
     electronicDevicesIndices,
     "dispensedElectronic",
-    false
+    false,
+    devices
   );
 
   const [showOther, setShowOther] = useState({
@@ -393,7 +362,7 @@ const TrainingFormCLVE = ({
     } = e;
     setDevices({
       ...devices,
-      [fieldName]: typeof value === "string" ? value.split(",") : value,
+      [fieldName]: value,
     });
     if (value.includes("Other")) {
       setShowOther({ ...showOther, [fieldName]: true });
@@ -610,7 +579,7 @@ const TrainingFormCLVE = ({
               handleMultiSelectChange(e, "recommendationSpectacle");
             }}
             multiple
-            renderValue={(selected) => selected.join(",")}
+            renderValue={(selected) => selected.join(", ")}
             MenuProps={MenuProps}
           >
             {recommendationSpectacleOptions}
