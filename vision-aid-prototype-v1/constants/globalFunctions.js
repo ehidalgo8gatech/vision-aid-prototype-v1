@@ -41,4 +41,7 @@ export const createOptionMenu = (
       optionGroups.push(fullMenu.slice(indices[i], indices[i + 1]));
     }
     return optionGroups;
-  };
+};
+  
+export const isNotNullEmptyOrUndefined = (variable) =>
+  variable !== null && variable !== undefined && variable.length !== 0;
