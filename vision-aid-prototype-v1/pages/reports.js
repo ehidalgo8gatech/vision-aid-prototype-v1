@@ -22,6 +22,7 @@ import GraphCustomizer from "./components/GraphCustomizer";
 import { Tab, Tabs, Paper } from "@mui/material";
 // import * as XLSX from "xlsx";
 import XLSX from "xlsx-js-style";
+import { isNotNullEmptyOrUndefined } from "@/constants/globalFunctions";
 import { Orienta } from "@next/font/google";
 
 // This function is called to load data from the server side.
@@ -632,14 +633,26 @@ export default function Summary({
     return age;
   };
 
-  const mergeRowsForColumn = (column) => {
-    return { s: { r: 0, c: column }, e: { r: 1, c: column } };
+  const mergeHeaderCells = ({ row = 0, col = 0, rowSpan = 0, colSpan = 0 }) => {
+    return { s: { r: row, c: col }, e: { r: row + rowSpan, c: col + colSpan } };
   };
 
   const addEmptyElements = (array, element, count) => {
     for (let i = 0; i < count; i++) {
       array.push(element);
     }
+  };
+
+  // Get all sessions from CLVE data where devices were dispensed
+  const getSessionsForDispenedDevices = (clveData) => {
+    const sessionsForDispensedDevices = clveData.filter(
+      (evaluation) =>
+        isNotNullEmptyOrUndefined(evaluation.dispensedSpectacle) ||
+        isNotNullEmptyOrUndefined(evaluation.dispensedElectronic) ||
+        isNotNullEmptyOrUndefined(evaluation.dispensedOptical) ||
+        isNotNullEmptyOrUndefined(evaluation.dispensedNonOptical)
+    );
+    return sessionsForDispensedDevices;
   };
 
   // filter summary data based on start and end date of the training
@@ -687,6 +700,7 @@ export default function Summary({
   let orientationMobilityTrainingData = [];
   let trainingData = [];
   let counsellingEducationData = [];
+  let aggregatedHospitalData = [];
 
   let beneficiaryIdx = 1;
   let clveIdx = 1;
@@ -782,6 +796,242 @@ export default function Summary({
   lveSubHeader.push("LE");
   lveSubHeader.push("BE");
   addEmptyElements(lveSubHeader, "", 5);
+
+  // Reference sheet here: https://docs.google.com/spreadsheets/d/1cIYeMO9YuPSaNFwVEfRlDkJ1_qZdOsC-/edit#gid=535411624
+
+  // Sheet Header (Row 1)
+  const ahdMainHeader = [];
+  ahdMainHeader.push("Programs");
+  addEmptyElements(ahdMainHeader, "", 1);
+  ahdMainHeader.push("Hospitals (Break up)");
+  addEmptyElements(ahdMainHeader, "", summary.length * 2 - 1);
+  ahdMainHeader.push("Beneficiaries of Hospitals");
+  addEmptyElements(ahdMainHeader, "", 1);
+
+  // Sheet Sub Headers (Row 2) & (Row 3)
+  const ahdSubHeader1 = [];
+  const ahdSubHeader2 = [];
+  addEmptyElements(ahdSubHeader1, "", 2);
+  addEmptyElements(ahdSubHeader2, "", 2);
+  for (let i = 0; i < summary.length; i++) {
+    ahdSubHeader1.push(summary[i].name);
+    addEmptyElements(ahdSubHeader1, "", 1);
+    ahdSubHeader2.push("Sessions");
+    ahdSubHeader2.push("Beneficiaries");
+  }
+  addEmptyElements(ahdSubHeader1, "", 2);
+
+  ahdSubHeader2.push("Number of Sessions");
+  ahdSubHeader2.push("Number of Beneficiaries");
+
+  // Low Vision Screening
+  let lveRow = {
+    Programs1: "Screening / Out reach activities",
+    Programs2: "Low vision screening/camps",
+  };
+  let lveSessionsTotal = 0;
+  let lveBeneficiariesTotal = 0;
+
+  // MDVI
+  let mdviRow = { Programs1: "", Programs2: "Identification of MDVI" };
+  let mdviTotal = 0;
+
+  // Vision Enhancement
+  let veRow = {
+    Programs1: "Functional vision / Early intervention / Vision enhancement",
+    Programs2: "",
+  };
+  let veSessionsTotal = 0;
+  let veBeneficiariesTotal = 0;
+
+  // Comprehensive Low Vision Evaluation
+  let clveRow = {
+    Programs1: "Comprehensive Low Vision Evaluation",
+    Programs2: "",
+  };
+  let clveSessionsTotal = 0;
+  let clveBeneficiariesTotal = 0;
+
+  // Dispensed devices
+  let devicesRow = {
+    Programs1: "Assistive devices / aids / smartphone/ RLF tactile books",
+    Programs2: "",
+  };
+  let devicesSessionsTotal = 0;
+  let devicesBeneficiariesTotal = 0;
+
+  // Counselling & referrals
+  let ceRow = { Programs1: "Counseling & referrals", Programs2: "" };
+  let ceSessionsTotal = 0;
+  let ceBeneficiariesTotal = 0;
+
+  // List of unique training types from training data
+  const trainingTypes = Array.from(
+    new Set(
+      filteredBeneficiaryData
+        .map((beneficiary) => {
+          return (
+            beneficiary.training
+              // .filter((training) => isNotNullEmptyOrUndefined(training.type))
+              .map((training) => training.type)
+          );
+        })
+        .flat(Infinity)
+    )
+  );
+
+  const tRowWithMainHeader = { Programs1: "Training activities at hospitals" };
+  const tRowWithoutMainHeader = { Programs1: "" };
+
+  // Setting up rows corresponding to each training type
+  const trainingTypesList = trainingTypes.map((type, index) => {
+    if (index === 0) {
+      return {
+        tRow: { ...tRowWithMainHeader, Programs2: type },
+        tSessionsTotal: 0,
+        tBeneficiariesTotal: 0,
+      };
+    } else {
+      return {
+        tRow: { ...tRowWithoutMainHeader, Programs2: type },
+        tSessionsTotal: 0,
+        tBeneficiariesTotal: 0,
+      };
+    }
+  });
+
+  // Add checks for empty arrays
+  for (let hospital of summary) {
+    // Low Vision Screening data
+    lveRow[hospital.name + " Sessions"] = hospital.lowVisionEvaluation.length;
+    lveRow[hospital.name + " Beneficiaries"] = Array.from(
+      new Set(
+        hospital.lowVisionEvaluation.map(
+          (evaluation) => evaluation.beneficiaryId
+        )
+      )
+    ).length;
+    lveSessionsTotal += lveRow[hospital.name + " Sessions"];
+    lveBeneficiariesTotal += lveRow[hospital.name + " Beneficiaries"];
+
+    // MDVI data
+    mdviRow[hospital.name + " Sessions"] = "";
+    mdviRow[hospital.name + " Beneficiaries"] = hospital.beneficiary.filter(
+      (beneficiary) => beneficiary.mDVI === "Yes"
+    ).length;
+    mdviTotal += mdviRow[hospital.name + " Beneficiaries"];
+
+    // Vision Enhancement data
+    veRow[hospital.name + " Sessions"] = hospital.visionEnhancement.length;
+    veRow[hospital.name + " Beneficiaries"] = Array.from(
+      new Set(
+        hospital.visionEnhancement.map((evaluation) => evaluation.beneficiaryId)
+      )
+    ).length;
+    veSessionsTotal += veRow[hospital.name + " Sessions"];
+    veBeneficiariesTotal += veRow[hospital.name + " Beneficiaries"];
+
+    // Comprehensive Low Vision Evaluation data
+    clveRow[hospital.name + " Sessions"] =
+      hospital.comprehensiveLowVisionEvaluation.length;
+    clveRow[hospital.name + " Beneficiaries"] = Array.from(
+      new Set(
+        hospital.comprehensiveLowVisionEvaluation.map(
+          (evaluation) => evaluation.beneficiaryId
+        )
+      )
+    ).length;
+    clveSessionsTotal += clveRow[hospital.name + " Sessions"];
+    clveBeneficiariesTotal += clveRow[hospital.name + " Beneficiaries"];
+
+    // Dispensed devices data
+    devicesRow[hospital.name + " Sessions"] = getSessionsForDispenedDevices(
+      hospital.comprehensiveLowVisionEvaluation
+    ).length;
+    devicesRow[hospital.name + " Beneficiaries"] = Array.from(
+      new Set(
+        getSessionsForDispenedDevices(
+          hospital.comprehensiveLowVisionEvaluation
+        ).map((evaluation) => evaluation.beneficiaryId)
+      )
+    ).length;
+    devicesSessionsTotal += devicesRow[hospital.name + " Sessions"];
+    devicesBeneficiariesTotal += devicesRow[hospital.name + " Beneficiaries"];
+
+    // Counselling & referrals data
+    ceRow[hospital.name + " Sessions"] = hospital.counsellingEducation.length;
+    ceRow[hospital.name + " Beneficiaries"] = Array.from(
+      new Set(
+        hospital.counsellingEducation.map(
+          (evaluation) => evaluation.beneficiaryId
+        )
+      )
+    ).length;
+    ceSessionsTotal += ceRow[hospital.name + " Sessions"];
+    ceBeneficiariesTotal += ceRow[hospital.name + " Beneficiaries"];
+
+    let trainingIdx = 0;
+    // Populate row corresponding to each training type identified earlier
+    for (let trainingType of trainingTypes) {
+      trainingTypesList[trainingIdx]["tRow"][hospital.name + " Sessions"] =
+        hospital.training.filter(
+          (training) => training.type === trainingType
+        ).length;
+      trainingTypesList[trainingIdx]["tRow"][hospital.name + " Beneficiaries"] =
+        Array.from(
+          new Set(
+            hospital.training
+              .filter((training) => training.type === trainingType)
+              .map((training) => training.beneficiaryId)
+          )
+        ).length;
+      trainingTypesList[trainingIdx]["tSessionsTotal"] +=
+        trainingTypesList[trainingIdx]["tRow"][hospital.name + " Sessions"];
+      trainingTypesList[trainingIdx]["tBeneficiariesTotal"] +=
+        trainingTypesList[trainingIdx]["tRow"][
+          hospital.name + " Beneficiaries"
+        ];
+
+      trainingIdx += 1;
+    }
+  }
+
+  // Push totals of each row
+  lveRow["Number of Sessions"] = lveSessionsTotal;
+  lveRow["Number of Beneficiaries"] = lveBeneficiariesTotal;
+
+  mdviRow["Number of Sessions"] = "";
+  mdviRow["Number of Beneficiaries"] = mdviTotal;
+
+  veRow["Number of Sessions"] = veSessionsTotal;
+  veRow["Number of Beneficiaries"] = veBeneficiariesTotal;
+
+  clveRow["Number of Sessions"] = clveSessionsTotal;
+  clveRow["Number of Beneficiaries"] = clveBeneficiariesTotal;
+
+  devicesRow["Number of Sessions"] = devicesSessionsTotal;
+  devicesRow["Number of Beneficiaries"] = devicesBeneficiariesTotal;
+
+  ceRow["Number of Sessions"] = ceSessionsTotal;
+  ceRow["Number of Beneficiaries"] = ceBeneficiariesTotal;
+
+  let trainingIdx = 0;
+  for (let trainingTypeRow of trainingTypesList) {
+    trainingTypeRow["tRow"]["Number of Sessions"] =
+      trainingTypeRow["tSessionsTotal"];
+    trainingTypeRow["tRow"]["Number of Beneficiaries"] =
+      trainingTypeRow["tBeneficiariesTotal"];
+    trainingIdx += 1;
+  }
+
+  // Add rows to the aggregated hospital data
+  aggregatedHospitalData.push(lveRow);
+  aggregatedHospitalData.push(mdviRow);
+  aggregatedHospitalData.push(veRow);
+  aggregatedHospitalData.push(clveRow);
+  aggregatedHospitalData.push(devicesRow);
+  aggregatedHospitalData.push(ceRow);
+  aggregatedHospitalData.push(...trainingTypesList.map((item) => item.tRow));
 
   // Filtered Report Download
   for (let beneficiary of filteredBeneficiaryData) {
@@ -1026,6 +1276,8 @@ export default function Summary({
     const wtd = XLSX.utils.json_to_sheet(trainingData);
     const wced = XLSX.utils.json_to_sheet(counsellingEducationData);
 
+    const wahd = XLSX.utils.json_to_sheet([]);
+
     XLSX.utils.book_append_sheet(wb, wben, "Beneficiary Sheet");
     XLSX.utils.book_append_sheet(wb, wved, "Vision Enhancement Sheet");
     XLSX.utils.book_append_sheet(wb, wlved, "Low Vision Screening");
@@ -1035,6 +1287,7 @@ export default function Summary({
     XLSX.utils.book_append_sheet(wb, womtd, "Orientation Mobile Sheet");
     XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
     XLSX.utils.book_append_sheet(wb, wced, "Counselling Education Sheet");
+    XLSX.utils.book_append_sheet(wb, wahd, "Aggregated Hospital Sheet");
 
     XLSX.utils.sheet_add_aoa(wclve, [clveMainHeader, clveSubHeader]);
     XLSX.utils.sheet_add_json(wclve, comprehensiveLowVisionEvaluationData, {
@@ -1042,29 +1295,29 @@ export default function Summary({
       origin: -1,
     });
     wclve["!merges"] = [
-      mergeRowsForColumn(0), // {s: {r: 0, c: 0}, e: {r: 1, c: 0}},
-      mergeRowsForColumn(1),
-      mergeRowsForColumn(2),
-      mergeRowsForColumn(3),
-      mergeRowsForColumn(4),
-      mergeRowsForColumn(5),
-      mergeRowsForColumn(6),
-      mergeRowsForColumn(7),
-      mergeRowsForColumn(8),
-      mergeRowsForColumn(9),
-      mergeRowsForColumn(10),
-      { s: { r: 0, c: 11 }, e: { r: 0, c: 14 } },
-      { s: { r: 0, c: 15 }, e: { r: 0, c: 18 } },
-      mergeRowsForColumn(19),
-      mergeRowsForColumn(20),
-      mergeRowsForColumn(21),
-      mergeRowsForColumn(22),
-      mergeRowsForColumn(23),
-      mergeRowsForColumn(24),
-      mergeRowsForColumn(25),
-      mergeRowsForColumn(26),
-      mergeRowsForColumn(27),
-      mergeRowsForColumn(28),
+      mergeHeaderCells({ col: 0, rowSpan: 1 }), // {s: {r: 0, c: 0}, e: {r: 1, c: 0}}, Title: Index
+      mergeHeaderCells({ col: 1, rowSpan: 1 }), // Date
+      mergeHeaderCells({ col: 2, rowSpan: 1 }), // MRN
+      mergeHeaderCells({ col: 3, rowSpan: 1 }), // Name of the Patient
+      mergeHeaderCells({ col: 4, rowSpan: 1 }), // Age
+      mergeHeaderCells({ col: 5, rowSpan: 1 }), // Gender
+      mergeHeaderCells({ col: 6, rowSpan: 1 }), // Education
+      mergeHeaderCells({ col: 7, rowSpan: 1 }), // Occupation
+      mergeHeaderCells({ col: 8, rowSpan: 1 }), // Diagnosis
+      mergeHeaderCells({ col: 9, rowSpan: 1 }), // District
+      mergeHeaderCells({ col: 10, rowSpan: 1 }), // State
+      mergeHeaderCells({ col: 11, colSpan: 3 }), // { s: { r: 0, c: 11 }, e: { r: 0, c: 14 } }, Title: Acuity
+      mergeHeaderCells({ col: 15, colSpan: 3 }), // { s: { r: 0, c: 15 }, e: { r: 0, c: 18 } }, Title: Near Visual Acuity
+      mergeHeaderCells({ col: 19, rowSpan: 1 }), // Recommended Optical Aid
+      mergeHeaderCells({ col: 20, rowSpan: 1 }), // Recommended Non-Optical Aid
+      mergeHeaderCells({ col: 21, rowSpan: 1 }), // Recommended Electronic Aid
+      mergeHeaderCells({ col: 22, rowSpan: 1 }), // Spectacles (Refractive Error Only)
+      mergeHeaderCells({ col: 23, rowSpan: 1 }), // Dispensed Optical Aid
+      mergeHeaderCells({ col: 24, rowSpan: 1 }), // Dispensed Non-Optical Aid
+      mergeHeaderCells({ col: 25, rowSpan: 1 }), // Dispensed Electronic Aid
+      mergeHeaderCells({ col: 26, rowSpan: 1 }), // Dispensed Spectacles (Refractive Error Only)
+      mergeHeaderCells({ col: 27, rowSpan: 1 }), // Cost of all the aids dispensed
+      mergeHeaderCells({ col: 28, rowSpan: 1 }), // Cost to the Beneficiary
     ];
 
     XLSX.utils.sheet_add_aoa(wlved, [lveMainHeader, lveSubHeader]);
@@ -1073,27 +1326,55 @@ export default function Summary({
       origin: -1,
     });
     wlved["!merges"] = [
-      mergeRowsForColumn(0), // {s: {r: 0, c: 0}, e: {r: 1, c: 0}},
-      mergeRowsForColumn(1),
-      mergeRowsForColumn(2),
-      mergeRowsForColumn(3),
-      mergeRowsForColumn(4),
-      mergeRowsForColumn(5),
-      mergeRowsForColumn(6),
-      mergeRowsForColumn(7),
-      mergeRowsForColumn(8),
-      mergeRowsForColumn(9),
-      mergeRowsForColumn(10),
-      mergeRowsForColumn(11),
-      mergeRowsForColumn(12),
-      { s: { r: 0, c: 13 }, e: { r: 0, c: 16 } },
-      { s: { r: 0, c: 17 }, e: { r: 0, c: 20 } },
-      mergeRowsForColumn(21),
-      mergeRowsForColumn(22),
-      mergeRowsForColumn(23),
-      mergeRowsForColumn(24),
-      mergeRowsForColumn(25),
+      mergeHeaderCells({ col: 0, rowSpan: 1 }), // {s: {r: 0, c: 0}, e: {r: 1, c: 0}}, Title: Index
+      mergeHeaderCells({ col: 1, rowSpan: 1 }), // Date
+      mergeHeaderCells({ col: 2, rowSpan: 1 }), // MRN
+      mergeHeaderCells({ col: 3, rowSpan: 1 }), // Name of the Patient
+      mergeHeaderCells({ col: 4, rowSpan: 1 }), // Age
+      mergeHeaderCells({ col: 5, rowSpan: 1 }), // Gender
+      mergeHeaderCells({ col: 6, rowSpan: 1 }), // Education
+      mergeHeaderCells({ col: 7, rowSpan: 1 }), // Occupation
+      mergeHeaderCells({ col: 8, rowSpan: 1 }), // Diagnosis
+      mergeHeaderCells({ col: 9, rowSpan: 1 }), // District
+      mergeHeaderCells({ col: 10, rowSpan: 1 }), // State
+      mergeHeaderCells({ col: 11, rowSpan: 1 }), // Session Number
+      mergeHeaderCells({ col: 12, rowSpan: 1 }), // MDVI
+      mergeHeaderCells({ col: 13, colSpan: 3 }), // { s: { r: 0, c: 13 }, e: { r: 0, c: 16 } }, Title: Acuity
+      mergeHeaderCells({ col: 17, colSpan: 3 }), // { s: { r: 0, c: 17 }, e: { r: 0, c: 20 } }, Title: Near Visual Acuity
+      mergeHeaderCells({ col: 21, rowSpan: 1 }), // Recommended Optical Aid
+      mergeHeaderCells({ col: 22, rowSpan: 1 }), // Recommended Non-Optical Aid
+      mergeHeaderCells({ col: 23, rowSpan: 1 }), // Recommended Electronic Aid
+      mergeHeaderCells({ col: 24, rowSpan: 1 }), // Spectacles (Refractive Error Only)
+      mergeHeaderCells({ col: 25, rowSpan: 1 }), // Extra Information
     ];
+
+    XLSX.utils.sheet_add_aoa(wahd, [
+      ahdMainHeader,
+      ahdSubHeader1,
+      ahdSubHeader2,
+    ]);
+    XLSX.utils.sheet_add_json(wahd, aggregatedHospitalData, {
+      skipHeader: true,
+      origin: -1,
+    });
+    wahd["!merges"] = [
+      mergeHeaderCells({ row: 0, col: 0, rowSpan: 2, colSpan: 1 }), // { s: { r: 0, c: 0 }, e: { r: 2, c: 1 } }, Title: Programs
+      mergeHeaderCells({ col: 2, colSpan: summary.length * 2 - 1 }), // { s: { r: 0, c: 2 }, e: { r: 0, c: 2 + (summary.length * 2 - 1) } }, Title: Hospitals (Break up)
+      mergeHeaderCells({
+        row: 0,
+        col: 2 + summary.length * 2,
+        rowSpan: 1,
+        colSpan: 1,
+      }), // { s: { r: 0, c: 2 + summary.length * 2 }, e: { r: 1, c: 2 + summary.length * 2 + 1 } }, Title: Beneficiaries of Hospitals
+    ];
+
+    let currentColumn = 2;
+    for (let i = 0; i < summary.length; i++) {
+      wahd["!merges"].push(
+        mergeHeaderCells({ row: 1, col: currentColumn, colSpan: 1 })
+      );
+      currentColumn += 2;
+    }
 
     XLSX.writeFile(wb, "filtered_report.xlsx");
   };
