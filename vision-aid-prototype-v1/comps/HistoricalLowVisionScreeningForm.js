@@ -17,7 +17,7 @@ import {
   electronicDevicesIndices,
   electronicDevicesSubheadings,
 } from "@/constants/devicesConstants";
-import { createOptionMenu, createMenu } from "@/constants/globalFunctions";
+import { createOptionMenu, createMenu, isNotNullEmptyOrUndefined } from "@/constants/globalFunctions";
 import { delimiter } from "@/constants/generalConstants";
 
 export default function HistoricalLowVisionScreeningForm(props) {
@@ -31,9 +31,6 @@ export default function HistoricalLowVisionScreeningForm(props) {
       },
     },
   };
-
-  const isNotNullEmptyOrUndefined = (variable) =>
-    variable !== null && variable !== undefined && variable.length !== 0;
 
   const removeOtherDevices = (devicesArr, originalDevices) => {
     let otherDevices = devicesArr.filter(
