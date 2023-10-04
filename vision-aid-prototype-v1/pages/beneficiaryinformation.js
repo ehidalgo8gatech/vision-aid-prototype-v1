@@ -395,23 +395,25 @@ function RequiredFields(props) {
   }
 
   var mDVI;
-  if (!props.requiredBeneficiaryFields.mDVIRequired) {
-    mDVI = <div></div>;
-  } else {
     mDVI = (
       <div className="form-group">
         <label className="form-check-label" htmlFor="mDVI">
           MDVI
         </label>
-        <input
-          type="text"
-          className="form-control"
-          id="mDVI"
-          placeholder="Enter beneficiary's MDVI"
-        />
+        <select className="form-select" id="mDVI">
+          <option key="Yes" value="Yes">
+            Yes
+          </option>
+          <option selected key="No" value="No">
+            No
+          </option>
+          <option key="At Risk" value="At Risk">
+            At Risk
+          </option>
+        </select>
       </div>
     );
-  }
+  // }
 
   let extraInformation = JSON.parse(
     props.requiredBeneficiaryFields.extraInformationRequired
@@ -488,9 +490,9 @@ function RequiredFields(props) {
                 <div className="mb-3">{state}</div>
               </div>
             </div>
+            {mDVI}
             {diagnosis}
             {vision}
-            {mDVI}
             <br />
             <div id="extraFields">
               <p>Additional Fields</p>

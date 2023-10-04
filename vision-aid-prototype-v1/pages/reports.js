@@ -917,7 +917,7 @@ export default function Summary({
     // MDVI data
     mdviRow[hospital.name + " Sessions"] = "";
     mdviRow[hospital.name + " Beneficiaries"] = hospital.beneficiary.filter(
-      (beneficiary) => beneficiary.mDVI === "Yes"
+      (beneficiary) => beneficiary.mDVI === "Yes" || beneficiary.mDVI === "At Risk"
     ).length;
     mdviTotal += mdviRow[hospital.name + " Beneficiaries"];
 
