@@ -57,6 +57,9 @@ const TrainingFormCLVE = ({
     },
   };
 
+  if (mdvi === null || mdvi === undefined || mdvi === "") {
+    mdvi = "No";
+  }
   const [mdviValue, setMdviValue] = useState(mdvi);
 
   const handleSubmit = (e) => {
@@ -511,7 +514,9 @@ const TrainingFormCLVE = ({
               <Form.Control
                 as="select"
                 value={mdviValue}
-                onChange={(e) => { setMdviValue(e.target.value) }}
+                onChange={(e) => {
+                  setMdviValue(e.target.value);
+                }}
               >
                 <option key="Yes" value="Yes">
                   Yes
