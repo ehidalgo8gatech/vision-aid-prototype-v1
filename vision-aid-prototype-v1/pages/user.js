@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Router, { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
-import { Pencil } from "react-bootstrap-icons";
+import { Pencil, Check2 } from "react-bootstrap-icons";
 import Navigation from "./navigation/Navigation";
 import TrainingForm from "./components/TrainingForm";
 import BeneficiaryServicesTable from "./components/BeneficiaryServicesTable";
@@ -14,7 +14,7 @@ import { getTrainingSubTypes } from "@/pages/api/trainingSubType";
 import { findAllHospital } from "./api/hospital";
 
 function UserPage(props) {
-  console.log("props: ", JSON.stringify(props));
+  // console.log("props: ", JSON.stringify(props));
   // const session = await getSession();
   // const loggedInUser = getSessionUser();
   // console.log("session.user: ", JSON.stringify(session.user));
@@ -66,6 +66,16 @@ function UserPage(props) {
     setOrientationMobilityData(props.user.Orientation_Mobility_Training);
   }, []);
 
+  const hospitalOptions = [];
+  for (let i = 0; i < props.hospitals.length; i++) {
+    const hospital = props.hospitals[i];
+    hospitalOptions.push(
+      <option key={hospital.name} value={hospital.id}>
+        {hospital.name} (ID {hospital.id})
+      </option>
+    );
+  }
+
   const callMe = async (data, url, setter, cur_data) => {
     data["sessionNumber"] = parseInt(data["sessionNumber"]);
     // parse date
@@ -85,9 +95,7 @@ function UserPage(props) {
     });
 
     // Handle response from the API
-    if (response.ok) {
-      alert("Training data saved successfully!");
-    } else {
+    if (!response.ok) {
       alert("An error occurred while saving data. Please try again.");
     }
     Router.reload();
@@ -158,6 +166,12 @@ function UserPage(props) {
       ...formData,
       [sel.name]: sel.selectedOptions[0].label.split("(")[0],
     });
+    if (sel.name === "hospitalName")
+      setFormData((formData) => ({
+          ...formData,
+          hospitalId: sel.selectedOptions[0].value,
+        }
+      ));
   };
 
   // Handle edit icon click
@@ -169,7 +183,7 @@ function UserPage(props) {
   const handleSubmit = async (e, field) => {
     e.preventDefault();
     let fieldValue = formData[field];
-    if(field === "hospitalName") {
+    if (field === "hospitalName") {
       fieldValue = parseInt(document.getElementById("hospitalName").value);
       field = "hospitalId";
     }
@@ -185,7 +199,6 @@ function UserPage(props) {
 
     // Handle response from the API
     if (response.ok) {
-      alert("User data saved successfully!");
       setEditableField("");
     } else {
       alert("An error occurred while saving user data. Please try again.");
@@ -197,104 +210,176 @@ function UserPage(props) {
   }
 
   const renderSelectField = (field, type, canEdit) => {
-    const hospitalOptions = [];
-    for (let i = 0; i < props.hospitals.length; i++) {
-      const hospital = props.hospitals[i];
-      hospitalOptions.push(
-        <option key={hospital.name} value={hospital.id}>
-          {hospital.name} (ID {hospital.id})
-        </option>
-      );
+    let options = [];
+    let currentValue = null;
+    if (field === "hospitalName") {
+      options = hospitalOptions;
+      currentValue = formData["hospitalId"];
+    } else if (field === "gender") {
+      options = [
+        <option value="">Select Gender</option>,
+        <option key="Male" value="Male">
+          Male
+        </option>,
+        <option key="Female" value="Female">
+          Female
+        </option>,
+        <option key="Other" value="Other">
+          Other
+        </option>,
+      ];
+      currentValue = formData[field];
+    } else if (field === "mDVI") {
+      options = [
+        <option key="Yes" value="Yes">
+          Yes
+        </option>,
+        <option key="No" value="No">
+          No
+        </option>,
+        <option key="At Risk" value="At Risk">
+          At Risk
+        </option>,
+      ];
+      currentValue = formData[field];
     }
+
     return canEdit && editableField === field ? (
-          <div>
-            <form
-              onSubmit={(e) => handleSubmit(e, field)}
-              className="d-inline ms-2"
-            >
-              <select className="form-select" name={field} id="hospitalName" onChange={handleSelectChange}>
-                <option selected key="" value="">
-                  Select Hospital
-                </option>
-                {hospitalOptions}
-              </select>
-              <button type="submit" className="btn btn-primary btn-sm ms-2">
-                Save
-              </button>
-            </form>
-          </div>
-        ) : type == "hidden" ? (
-          <div></div>
-        ) : (
-          <div className="text-align-left">
-            <div className="flex-container">
-              {formData[field]}
-              <button
-                type="button"
-                className="btn btn-link btn-sm text-primary ms-2"
-                onClick={() => handleEditClick(field)}
-              >
-                {canEdit && <Pencil />}
-              </button>
-            </div>
-          </div>
-        )};
-  
-  const renderField = (field, type, canEdit) => {
-    return canEdit && editableField === field ? (
-        <div>
+      <div className="text-align-left">
+        <div className="flex-container">
           <form
             onSubmit={(e) => handleSubmit(e, field)}
             className="d-inline ms-2"
           >
-            <input
-              type={type}
-              className="form-control d-inline w-auto"
-              name={field}
-              value={formData[field]}
-              onChange={handleInputChange}
-            />
-            <button type="submit" className="btn btn-primary btn-sm ms-2">
-              Save
-            </button>
+            <div className="row">
+              <div className="col-md-9 nopadding">
+                <select
+                  // className="form-select"
+                  className="profile-card-select"
+                  name={field}
+                  id={field}
+                  onChange={handleSelectChange}
+                  value={currentValue}
+                >
+                  {options}
+                </select>
+              </div>
+              {/* <div className="divider" /> */}
+              <div className="col-md-1 nopadding" />
+              <div className="col-md-2 nopadding">
+                <button
+                  type="submit"
+                  className="btn text-primary ms-2 nopadding"
+                >
+                  <Check2 />
+                </button>
+              </div>
+            </div>
           </form>
         </div>
-      ) : type == "hidden" ? (
-        <div></div>
-      ) : (
-        <div className="text-align-left">
-          <div className="flex-container">
-            {formData[field]}
+      </div>
+    ) : type == "hidden" ? (
+      <div></div>
+    ) : (
+      <div className="text-align-left">
+        <div className="flex-container">
+          {formData[field]}
+          <button
+            type="button"
+            className="btn btn-link btn-sm text-primary ms-2"
+            onClick={() => handleEditClick(field)}
+          >
+            {canEdit && <Pencil />}
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderField = (field, type, canEdit) => {
+    return canEdit && editableField === field ? (
+      <div className="text-align-left">
+        <div className="flex-container">
+          <form
+            onSubmit={(e) => handleSubmit(e, field)}
+            className="d-inline ms-2"
+          >
+            <div className="row">
+              <div className="col-md-9 nopadding">
+                <input
+                  type={type}
+                  className="profile-card-input"
+                  name={field}
+                  value={formData[field]}
+                  onChange={handleInputChange}
+                />
+              </div>
+              {/* <div className="divider" /> */}
+              <div className="col-md-1 nopadding" />
+              <div className="col-md-2 nopadding">
+                <button
+                  type="submit"
+                  className="btn text-primary ms-2 nopadding"
+                >
+                  <Check2 />
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    ) : type == "hidden" ? (
+      <div></div>
+    ) : (
+      <div className="text-align-left">
+        <div className="flex-container">
+          <div>{formData[field]}</div>
+          <div className="text-align-right">
             <button
               type="button"
-              className="btn btn-link btn-sm text-primary ms-2 text-align-right"
+              className="btn btn-link btn-sm text-primary ms-2"
               onClick={() => handleEditClick(field)}
             >
               {canEdit && <Pencil />}
             </button>
           </div>
         </div>
-      )
-    };
+      </div>
+    );
+  };
 
   const renderDOB = () => {
     return editableField === "dateOfBirth" ? (
-      <div>
-        <form
-          onSubmit={(e) => handleSubmit(e, "dateOfBirth")}
-          className="d-inline ms-2"
-        >
-          <input
-            type="date"
-            className="form-control d-inline w-auto"
-            name="dateOfBirth"
-            value={formData["dateOfBirth"]}
-            onChange={handleInputChange}
-          />
-          <button type="submit" className="btn btn-primary btn-sm ms-2">
-            Save
-          </button>
-        </form>
+      <div className="text-align-left">
+        <div className="flex-container">
+          <form
+            onSubmit={(e) => handleSubmit(e, "dateOfBirth")}
+            // className="d-inline ms-2"
+          >
+            <div className="row nopadding">
+              <div className="col-md-9 nopadding">
+                <input
+                  type="date"
+                  className="profile-card-input"
+                  name="dateOfBirth"
+                  value={formData["dateOfBirth"]}
+                  onChange={handleInputChange}
+                />
+              </div>
+              {/* <div className="divider" /> */}
+              <div className="col-md-1 nopadding" />
+              <div className="col-md-2 nopadding">
+                <button
+                  type="submit"
+                  className="btn text-primary ms-2 nopadding text-align-right"
+                >
+                  <Check2 />
+                </button>
+              </div>
+              {/* </div> */}
+            </div>
+          </form>
+        </div>
       </div>
     ) : "date" == "hidden" ? (
       <div></div>
@@ -316,22 +401,35 @@ function UserPage(props) {
 
   const renderExtraInformation = () => {
     return editableField === "extraInformation" ? (
-      <div>
-        <form
-          onSubmit={(e) => handleSubmit(e, "extraInformation")}
-          className="d-inline ms-2"
-        >
-          <input
-            type="text"
-            className="form-control d-inline w-auto"
-            name="extraInformation"
-            value={formData["extraInformation"]}
-            onChange={handleInputChange}
-          />
-          <button type="submit" className="btn btn-primary btn-sm ms-2">
-            Save
-          </button>
-        </form>
+      <div className="text-align-left">
+        <div className="flex-container">
+          <form
+            onSubmit={(e) => handleSubmit(e, "extraInformation")}
+            className="d-inline ms-2"
+          >
+            <div className="row">
+              <div className="col-md-9 nopadding">
+                <textarea
+                  type="text"
+                  className="profile-card-input"
+                  name="extraInformation"
+                  value={formData["extraInformation"]}
+                  onChange={handleInputChange}
+                />
+              </div>
+              {/* <div className="divider" /> */}
+              <div className="col-md-1 nopadding" />
+              <div className="col-md-2 nopadding">
+                <button
+                  type="submit"
+                  className="btn text-primary ms-2 nopadding text-align-right"
+                >
+                  <Check2 />
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     ) : "text" == "hidden" ? (
       <div></div>
@@ -361,7 +459,7 @@ function UserPage(props) {
         <div className="row">
           <div className="col-md-6">
             <UserProfileCard
-              gender={renderField("gender", "text", true)}
+              gender={renderSelectField("gender", "text", true)}
               phoneNumber={renderField("phoneNumber", "text", true)}
               MRN={renderField("mrn", "text", true)}
               dob={renderDOB()}
@@ -397,6 +495,7 @@ function UserPage(props) {
               )}
               extraInformation={renderExtraInformation()}
               name={formData["beneficiaryName"]}
+              mdvi={renderSelectField("mDVI", "text", true)}
             />
           </div>
           <div className="col-md-6">
