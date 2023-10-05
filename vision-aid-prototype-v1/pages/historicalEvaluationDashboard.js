@@ -21,7 +21,7 @@ export default function HistoricalEvaluationPage(props) {
   }
 
   const service = props.user[serviceToFetch];
-  const curentUser = props.curentUser;
+  const currentUser = props.currentUser;
   const [formData, setFormData] = useState({});
 
   const formatTitle = (title) => {
@@ -114,8 +114,8 @@ export default function HistoricalEvaluationPage(props) {
   let serviceEditList = [];
 
   for (let i = 0; i < service.length; i++) {
-    if (curentUser.hospitalRole !== null) {
-      if (curentUser.hospitalRole.admin === true && i < 2) {
+    if (currentUser.hospitalRole !== null) {
+      if (currentUser.hospitalRole.admin === true && i < 2) {
         serviceEditList.push({ service: service[i], editable: true });
       } else {
         serviceEditList.push({ service: service[i], editable: false });
@@ -146,6 +146,7 @@ export default function HistoricalEvaluationPage(props) {
               occupation={props.user.occupation}
               extraInformation={props.user.extraInformation[0].value}
               name={props.user.beneficiaryName}
+              mdvi={props.user.mDVI}
             />
           </div>
           <div className="col-md-6">
@@ -193,7 +194,7 @@ export async function getServerSideProps(ctx) {
       },
     };
   }
-  const curentUser = await readUser(session.user.email);
+  const currentUser = await readUser(session.user.email);
   try {
     const beneficiary = await await fetch(
       `${process.env.NEXTAUTH_URL}/api/beneficiary?mrn=${query.mrn}`,
@@ -228,7 +229,7 @@ export async function getServerSideProps(ctx) {
 
   return {
     props: {
-      curentUser: curentUser,
+      currentUser: currentUser,
       user: user,
       service: service,
       beneficiaryMirror: benMirrorJson,

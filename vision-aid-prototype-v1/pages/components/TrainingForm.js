@@ -13,8 +13,14 @@ const TrainingForm = ({
   submitButtonTest,
   typeList,
   mdvi,
+  updateMDVIForBeneficiary,
+  mdviValue="No",
   subTypeList,
 }) => {
+  const [mdviVal, setMdviVal] = useState(mdviValue);
+  if (mdviValue === null || mdviValue === undefined)
+    setMdviVal("No");
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const customData = customFields.reduce((acc, field) => {
@@ -30,11 +36,14 @@ const TrainingForm = ({
         e.target.subTypeSelect == null ? null : e.target.subTypeSelect.value,
       subTypeOther:
         e.target.subTypeOther == null ? null : e.target.subTypeOther.value,
-      MDVI: e.target.MDVI == null ? null : e.target.MDVI.value,
+      MDVI: mdvi ? mdviVal : null,
       Diagnosis: e.target.Diagnosis == null ? null : e.target.Diagnosis.value,
       extraInformation: e.target.extraInformation.value,
       ...customData,
     };
+    if (mdvi) {
+      updateMDVIForBeneficiary({ mDVI: mdviVal });
+    }
     addNewTraining(newTraining);
     setShowForm(false);
   };
@@ -195,10 +204,20 @@ const TrainingForm = ({
               <Col>
                 <Form.Group controlId="MDVI">
                   <Form.Label>MDVI</Form.Label>
-                  <Form.Control as="select">
-                    <option defaultValue></option>
-                    <option>Yes</option>
-                    <option>No</option>
+                  <Form.Control
+                    as="select"
+                    value={mdviVal}
+                    onChange={(e) => setMdviVal(e.target.value)}
+                  >
+                    <option key="Yes" value="Yes">
+                      Yes
+                    </option>
+                    <option selected key="No" value="No">
+                      No
+                    </option>
+                    <option key="At Risk" value="At Risk">
+                      At Risk
+                    </option>
                   </Form.Control>
                 </Form.Group>
               </Col>
