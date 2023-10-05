@@ -3,7 +3,15 @@ import { Form, Row, Col, Button } from "react-bootstrap";
 import { ChevronDown, ChevronRight, Pencil } from "react-bootstrap-icons";
 import { v4 as uuidv4 } from "uuid";
 import Router from "next/router";
-import { Select, MenuItem, Checkbox, ListItemText, ListSubheader, FormControl, Typography } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  Checkbox,
+  ListItemText,
+  ListSubheader,
+  FormControl,
+  Typography,
+} from "@mui/material";
 import {
   logMARValues,
   sixmValues,
@@ -30,6 +38,8 @@ import { delimiter } from "@/constants/generalConstants";
 const TrainingFormCLVE = ({
   existingTrainings = [],
   addNewTraining,
+  updateMDVIForBeneficiary,
+  mdvi,
   customFieldsDistance,
   customFieldsNear,
   title,
@@ -46,6 +56,8 @@ const TrainingFormCLVE = ({
       },
     },
   };
+
+  const [mdviValue, setMdviValue] = useState(mdvi);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -109,7 +121,7 @@ const TrainingFormCLVE = ({
 
     const newTraining = {
       diagnosis: diagnosis,
-      mdvi: e.target.mdvi.value,
+      mdvi: mdviValue,
       date: e.target.date.value,
       sessionNumber: e.target.sessionNumber.value,
       recommendationSpectacle:
@@ -128,9 +140,10 @@ const TrainingFormCLVE = ({
         e.target.costToBeneficiarySpectacle == null
           ? null
           : parseInt(e.target.costToBeneficiarySpectacle.value),
-      dispensedSpectacle: devices.dispensedSpectacle === "Other"
-        ? e.target.dispensedSpectacleOther.value
-        : devices.dispensedSpectacle,
+      dispensedSpectacle:
+        devices.dispensedSpectacle === "Other"
+          ? e.target.dispensedSpectacleOther.value
+          : devices.dispensedSpectacle,
       trainingGivenSpectacle:
         e.target.trainingGivenSpectacle == null
           ? null
@@ -151,9 +164,10 @@ const TrainingFormCLVE = ({
         e.target.costToBeneficiaryOptical == null
           ? null
           : parseInt(e.target.costToBeneficiaryOptical.value),
-      dispensedOptical: devices.dispensedOptical === "Other"
-        ? e.target.dispensedOpticalOther.value
-        : devices.dispensedOptical,
+      dispensedOptical:
+        devices.dispensedOptical === "Other"
+          ? e.target.dispensedOpticalOther.value
+          : devices.dispensedOptical,
       trainingGivenOptical:
         e.target.trainingGivenOptical == null
           ? null
@@ -174,9 +188,10 @@ const TrainingFormCLVE = ({
         e.target.costToBeneficiaryNonOptical == null
           ? null
           : parseInt(e.target.costToBeneficiaryNonOptical.value),
-      dispensedNonOptical: devices.dispensedNonOptical === "Other"
-        ? e.target.dispensedNonOpticalOther.value
-        : devices.dispensedNonOptical,
+      dispensedNonOptical:
+        devices.dispensedNonOptical === "Other"
+          ? e.target.dispensedNonOpticalOther.value
+          : devices.dispensedNonOptical,
       trainingGivenNonOptical:
         e.target.trainingGivenNonOptical == null
           ? null
@@ -197,9 +212,10 @@ const TrainingFormCLVE = ({
         e.target.costToBeneficiaryElectronic == null
           ? null
           : parseInt(e.target.costToBeneficiaryElectronic.value),
-      dispensedElectronic: devices.dispensedElectronic === "Other"
-        ? e.target.dispensedElectronicOther.value
-        : devices.dispensedElectronic,
+      dispensedElectronic:
+        devices.dispensedElectronic === "Other"
+          ? e.target.dispensedElectronicOther.value
+          : devices.dispensedElectronic,
       trainingGivenElectronic:
         e.target.trainingGivenElectronic == null
           ? null
@@ -224,7 +240,7 @@ const TrainingFormCLVE = ({
       ...customDataDistance,
       ...customDataNear,
     };
-
+    updateMDVIForBeneficiary({ mDVI: mdviValue });
     addNewTraining(newTraining);
     setShowForm(false);
   };
@@ -492,10 +508,20 @@ const TrainingFormCLVE = ({
           <Col>
             <Form.Group controlId="mdvi">
               <Form.Label>MDVI</Form.Label>
-              <Form.Control as="select">
-                <option defaultValue></option>
-                <option>Yes</option>
-                <option>No</option>
+              <Form.Control
+                as="select"
+                value={mdviValue}
+                onChange={(e) => { setMdviValue(e.target.value) }}
+              >
+                <option key="Yes" value="Yes">
+                  Yes
+                </option>
+                <option key="No" value="No">
+                  No
+                </option>
+                <option key="At Risk" value="At Risk">
+                  At Risk
+                </option>
               </Form.Control>
             </Form.Group>
           </Col>

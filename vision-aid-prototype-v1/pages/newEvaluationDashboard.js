@@ -62,6 +62,23 @@ export default function NewEvaluationDashboard(props) {
     setOrientationMobilityData(props.user.Orientation_Mobility_Training);
   }, []);
 
+  const updateMDVIForBeneficiary = async (data) => {
+    data["mrn"] = props.user.mrn;
+
+    const response = await fetch(`api/beneficiary`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    // Handle response from the API
+    if (!response.ok) {
+      alert("An error occurred while saving data. Please try again.");
+    }
+  };
+
   const callMe = async (data, url, setter, cur_data) => {
     data["sessionNumber"] = parseInt(data["sessionNumber"]);
     // parse date
@@ -211,6 +228,8 @@ export default function NewEvaluationDashboard(props) {
               <TrainingFormCLVE
                 existingTrainings={comprehensiveLowVisionEvaluationData}
                 addNewTraining={handleSubmitComprehensiveLowVisionEvaluation}
+                mdvi={props.user.mDVI}
+                updateMDVIForBeneficiary={updateMDVIForBeneficiary}
                 title="Comprehensive Low Vision Evaluation"
                 customFieldsDistance={[
                   "distanceVisualAcuityRE",
@@ -230,6 +249,8 @@ export default function NewEvaluationDashboard(props) {
               <TrainingFormCLVE
                 existingTrainings={lowVisionEvaluationData}
                 addNewTraining={handleSubmitLowVisionEvaluation}
+                mdvi={props.user.mDVI}
+                updateMDVIForBeneficiary={updateMDVIForBeneficiary}
                 title="Low Vision Screening"
                 customFieldsDistance={[
                   "distanceVisualAcuityRE",
@@ -255,6 +276,8 @@ export default function NewEvaluationDashboard(props) {
                 submitButtonTest="Add New Vision Enhancement"
                 typeList={null}
                 mdvi={true}
+                updateMDVIForBeneficiary={updateMDVIForBeneficiary}
+                mdviValue={props.user.mDVI}
                 subTypeList={null}
               />
             )}
