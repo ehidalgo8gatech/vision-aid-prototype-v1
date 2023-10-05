@@ -168,10 +168,9 @@ function UserPage(props) {
     });
     if (sel.name === "hospitalName")
       setFormData((formData) => ({
-          ...formData,
-          hospitalId: sel.selectedOptions[0].value,
-        }
-      ));
+        ...formData,
+        hospitalId: sel.selectedOptions[0].value,
+      }));
   };
 
   // Handle edit icon click
@@ -217,7 +216,9 @@ function UserPage(props) {
       currentValue = formData["hospitalId"];
     } else if (field === "gender") {
       options = [
-        <option value="">Select Gender</option>,
+        <option key="" value="">
+          Select Gender
+        </option>,
         <option key="Male" value="Male">
           Male
         </option>,
