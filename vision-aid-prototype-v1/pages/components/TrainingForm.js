@@ -17,9 +17,9 @@ const TrainingForm = ({
   mdviValue="No",
   subTypeList,
 }) => {
+  if (mdviValue === null || mdviValue === undefined || mdviValue === "")
+    mdviValue = "No";
   const [mdviVal, setMdviVal] = useState(mdviValue);
-  if (mdviValue === null || mdviValue === undefined)
-    setMdviVal("No");
 
   const handleSubmit = (e) => {
     e.preventDefault();
