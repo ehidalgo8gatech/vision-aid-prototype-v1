@@ -7,14 +7,36 @@ import { Inter } from "@next/font/google";
 import { useSession, signIn, signOut, getSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import moment from "moment";
+import { FormControl, Select } from "@mui/material";
+import { createMenu } from "@/constants/globalFunctions";
 
 export default function HistoricalCounselingForm(props) {
-  // const data = props.evaluationData;
-  const [data, setData] = useState({});
-  useEffect(() => {
-    setData(props.evaluationData.service);
-  }, [props.evaluationData.service]);
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 300,
+      },
+    },
+  };
+  const [data, setData] = useState(props.evaluationData.service);
+  const counselingTypeList = props.counselingTypeList;
+  const counselingTypeOptions = createMenu(counselingTypeList, "type", false);
+
   const [editMode, setEditMode] = useState(false);
+
+  let type = data.type;
+  const [showOther, setShowOther] = useState(
+    counselingTypeList.includes(data.type) ? false : true
+  );
+  const [otherType, setOtherType] = useState(
+    counselingTypeList.includes(data.type) ? "" : data.type
+  );
+  if (showOther) {
+    type = "Other";
+  }
 
   const handleClick = (e) => {
     setEditMode(true);
@@ -32,9 +54,17 @@ export default function HistoricalCounselingForm(props) {
     } else {
       setData({ ...data, [e.target.name]: e.target.value });
     }
+    if (e.target.value === "Other") {
+      setShowOther(true);
+    } else {
+      setShowOther(false);
+    }
   };
 
   const saveCounselingData = async () => {
+    if (showOther) {
+      data["type"] = otherType;
+    }
     const res = await fetch("/api/counsellingEducation", {
       method: "PATCH",
       headers: {
@@ -55,18 +85,26 @@ export default function HistoricalCounselingForm(props) {
     </div>
   ) : (
     <div>
-      <table class="table beneficiary-table table-bordered">
+      <table class="table beneficiary-table table-bordered row">
         <thead class="thead-dark">
-          <tr>
-            <th scope="col">Properties</th>
-            <th scope="col">Data</th>
+          <tr className="row">
+            <th scope="col" className="col-md-4">
+              Properties
+            </th>
+            <th scope="col" className="col-md-8">
+              Data
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">Date</th>
-            <td>
-            {!editMode && data.date !== null && moment(data.date).format("DD MMMM YYYY")}
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Date
+            </th>
+            <td className="col-md-8">
+              {!editMode &&
+                data.date !== null &&
+                moment(data.date).format("DD MMMM YYYY")}
               {!editMode && data.date !== null && ""}
               {editMode && (
                 <input
@@ -78,9 +116,11 @@ export default function HistoricalCounselingForm(props) {
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Session Number</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Session Number
+            </th>
+            <td className="col-md-8">
               {!editMode && data.sessionNumber}
               {editMode && (
                 <input
@@ -92,27 +132,49 @@ export default function HistoricalCounselingForm(props) {
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Type</th>
-            <td>
-              {!editMode && data.type}
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Type
+            </th>
+            <td className="col-md-8">
+              {!editMode && type}
               {editMode && (
-                <input
-                  type="text"
-                  name="type"
-                  value={data.type}
-                  onChange={(e) => handleChange(e)}
-                />
+                <FormControl fullWidth>
+                  <Select
+                    onChange={(e) => handleChange(e)}
+                    value={type}
+                    name="type"
+                    MenuProps={MenuProps}
+                  >
+                    {counselingTypeOptions}
+                  </Select>
+                </FormControl>
               )}
             </td>
           </tr>
-          {/* <tr>
-            <th scope="row">Other Type</th>
-            <td>{data.typeOther}</td>
-            </tr> */}
-          <tr>
-            <th scope="row">Extra Information</th>
-            <td>
+          {showOther && (
+            <tr className="row">
+              <th scope="row" className="col-md-4">
+                Other Type
+              </th>
+              <td className="col-md-8">
+                {!editMode && otherType}
+                {editMode && (
+                  <input
+                    type="text"
+                    name="otherType"
+                    value={otherType}
+                    onChange={(e) => setOtherType(e.target.value)}
+                  />
+                )}
+              </td>
+            </tr>
+          )}
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Extra Information
+            </th>
+            <td className="col-md-8">
               {!editMode && data.extraInformation}
               {editMode && (
                 <input

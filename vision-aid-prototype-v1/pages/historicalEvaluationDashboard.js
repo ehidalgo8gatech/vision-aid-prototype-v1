@@ -13,6 +13,11 @@ import HistoricalCLVForm from "../comps/HistoricalCLVForm";
 import HistoricalVisionEnhancementForm from "../comps/HistoricalVisionEnhancementForm";
 import HistoricalCounselingForm from "../comps/HistoricalCounselingForm";
 import HistoricalTrainingForm from "../comps/HistoricalTrainingForm";
+import { getCounsellingType } from "./api/counsellingType";
+import {
+  getTrainingTypes
+} from "./api/trainingType";
+import { getTrainingSubTypes } from "./api/trainingSubType";
 
 export default function HistoricalEvaluationPage(props) {
   let serviceToFetch = props.service;
@@ -20,6 +25,7 @@ export default function HistoricalEvaluationPage(props) {
     serviceToFetch = "Low_Vision_Evaluation";
   }
 
+  console.log("CounselingTypeList from getServerSideprops: ", props.counselingTypeList);
   const service = props.user[serviceToFetch];
   const currentUser = props.currentUser;
   const [formData, setFormData] = useState({});
@@ -79,6 +85,7 @@ export default function HistoricalEvaluationPage(props) {
           <HistoricalCounselingForm
             key={evaluationData.service.id}
             evaluationData={filterData(date, services)}
+            counselingTypeList={props.counselingTypeList}
           />
         );
       } else if (props.service == "Training") {
@@ -233,6 +240,9 @@ export async function getServerSideProps(ctx) {
       user: user,
       service: service,
       beneficiaryMirror: benMirrorJson,
+      counselingTypeList: await getCounsellingType(),
+      trainingTypeList: await getTrainingTypes(),
+      trainingSubTypeList: await getTrainingSubTypes()
     },
   };
 }
