@@ -3,16 +3,16 @@ import {PrismaClient} from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function getCounsellingType() {
-    var trainings = []
-    trainings.push("Other")
+    var trainings = [];
     const  ct = await prisma.counselling_Type.findMany({})
     for (const t of ct) {
         if (t.value == "Other") {
-            continue
+            continue;
         }
-        trainings.push(t.value)
+        trainings.push(t.value);
     }
-    return trainings
+    trainings.push("Other");
+    return trainings;
 }
 
 export default async function handler(req, res) {
