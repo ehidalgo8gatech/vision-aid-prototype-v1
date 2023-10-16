@@ -26,9 +26,30 @@ export default function HistoricalEvaluationPage(props) {
   }
 
   console.log("CounselingTypeList from getServerSideprops: ", props.counselingTypeList);
-  const service = props.user[serviceToFetch];
+
+  const [user, setUser] = useState(props.user);
+
+  const service = user[serviceToFetch];
   const currentUser = props.currentUser;
   const [formData, setFormData] = useState({});
+
+  const refetchUser = async () => {
+    let user = {};
+    try {
+      const beneficiary = await fetch(
+        `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/beneficiary?mrn=${props.mrn}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      user = await beneficiary.json();
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+    user.hospitalName = user.hospital.name;
+    setUser(user);
+  }
 
   const formatTitle = (title) => {
     return title.split("_").join(" ");
@@ -59,40 +80,43 @@ export default function HistoricalEvaluationPage(props) {
         </div>
       );
     } else {
+      let commonProps = {refetchUser, evaluationData}
       if (props.service == "Low_Vision_Screening") {
         historicalDashboard = (
           <HistoricalLowVisionScreeningForm
+            {...commonProps}
             key={evaluationData.service.id}
-            evaluationData={filterData(date, services)}
           />
         );
       } else if (props.service == "Comprehensive_Low_Vision_Evaluation") {
         historicalDashboard = (
           <HistoricalCLVForm
+            {...commonProps}
             key={evaluationData.service.id}
-            evaluationData={evaluationData}
           />
         );
       } else if (props.service == "Vision_Enhancement") {
         historicalDashboard = (
           <HistoricalVisionEnhancementForm
+            {...commonProps}
             key={evaluationData.service.id}
-            evaluationData={filterData(date, services)}
           />
         );
       } else if (props.service == "Counselling_Education") {
         historicalDashboard = (
           <HistoricalCounselingForm
+            {...commonProps}
             key={evaluationData.service.id}
-            evaluationData={filterData(date, services)}
             counselingTypeList={props.counselingTypeList}
           />
         );
       } else if (props.service == "Training") {
         historicalDashboard = (
           <HistoricalTrainingForm
+            {...commonProps}
             key={evaluationData.service.id}
-            evaluationData={filterData(date, services)}
+            trainingTypeList={props.trainingTypeList}
+            trainingSubTypeList={props.trainingSubTypeList}
           />
         );
       }
@@ -141,19 +165,19 @@ export default function HistoricalEvaluationPage(props) {
         <div className="row">
           <div className="col-md-6">
             <UserProfileCard
-              gender={props.user.gender}
-              phoneNumber={props.user.phoneNumber}
-              MRN={props.user.mrn}
-              dob={formatDate(props.user.dateOfBirth)}
-              hospitalName={props.user.hospitalName}
-              education={props.user.education}
-              districts={props.user.districts}
-              state={props.user.state}
-              beneficiaryName={props.user.beneficiaryName}
-              occupation={props.user.occupation}
-              extraInformation={props.user.extraInformation[0].value}
-              name={props.user.beneficiaryName}
-              mdvi={props.user.mDVI}
+              gender={user.gender}
+              phoneNumber={user.phoneNumber}
+              MRN={user.mrn}
+              dob={formatDate(user.dateOfBirth)}
+              hospitalName={user.hospitalName}
+              education={user.education}
+              districts={user.districts}
+              state={user.state}
+              beneficiaryName={user.beneficiaryName}
+              occupation={user.occupation}
+              extraInformation={user.extraInformation[0].value}
+              name={user.beneficiaryName}
+              mdvi={user.mDVI}
             />
           </div>
           <div className="col-md-6">
@@ -203,7 +227,7 @@ export async function getServerSideProps(ctx) {
   }
   const currentUser = await readUser(session.user.email);
   try {
-    const beneficiary = await await fetch(
+    const beneficiary = await fetch(
       `${process.env.NEXTAUTH_URL}/api/beneficiary?mrn=${query.mrn}`,
       {
         method: "GET",
@@ -236,6 +260,7 @@ export async function getServerSideProps(ctx) {
 
   return {
     props: {
+      mrn: query.mrn,
       currentUser: currentUser,
       user: user,
       service: service,

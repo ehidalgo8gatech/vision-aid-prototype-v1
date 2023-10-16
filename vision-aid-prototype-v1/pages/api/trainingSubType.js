@@ -20,10 +20,10 @@ export async function getTrainingSubTypes(){
             },
         },
     })
-    ttNotOther.forEach(o => {
-        ttOther.push(o)
+    ttOther.forEach(o => {
+        ttNotOther.push(o)
     })
-    return ttOther
+    return ttNotOther
 }
 
 export default async function handler(req, res) {

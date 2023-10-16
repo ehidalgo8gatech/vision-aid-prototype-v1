@@ -27,16 +27,18 @@ export default function HistoricalCounselingForm(props) {
 
   const [editMode, setEditMode] = useState(false);
 
-  let type = data.type;
   const [showOther, setShowOther] = useState(
     counselingTypeList.includes(data.type) ? false : true
   );
   const [otherType, setOtherType] = useState(
     counselingTypeList.includes(data.type) ? "" : data.type
   );
-  if (showOther) {
-    type = "Other";
-  }
+  
+    useEffect(() => {
+      if (showOther && editMode) {
+        setData((data) => ({ ...data, type: "Other" }));
+      }
+    }, [showOther, editMode]);
 
   const handleClick = (e) => {
     setEditMode(true);
@@ -62,8 +64,10 @@ export default function HistoricalCounselingForm(props) {
   };
 
   const saveCounselingData = async () => {
+    let trainingData = { ...data };
     if (showOther) {
-      data["type"] = otherType;
+      trainingData = { ...trainingData, type: otherType };
+      setData((data) => ({ ...data, type: otherType }));
     }
     const res = await fetch("/api/counsellingEducation", {
       method: "PATCH",
@@ -77,6 +81,7 @@ export default function HistoricalCounselingForm(props) {
     } else {
       alert("Failed to save data!");
     }
+    await props.refetchUser();
   };
 
   return data == undefined ? (
@@ -137,12 +142,12 @@ export default function HistoricalCounselingForm(props) {
               Type
             </th>
             <td className="col-md-8">
-              {!editMode && type}
+              {!editMode && data.type}
               {editMode && (
                 <FormControl fullWidth>
                   <Select
                     onChange={(e) => handleChange(e)}
-                    value={type}
+                    value={data.type}
                     name="type"
                     MenuProps={MenuProps}
                   >
@@ -152,21 +157,18 @@ export default function HistoricalCounselingForm(props) {
               )}
             </td>
           </tr>
-          {showOther && (
+          {showOther && editMode && (
             <tr className="row">
               <th scope="row" className="col-md-4">
                 Other Type
               </th>
               <td className="col-md-8">
-                {!editMode && otherType}
-                {editMode && (
-                  <input
-                    type="text"
-                    name="otherType"
-                    value={otherType}
-                    onChange={(e) => setOtherType(e.target.value)}
-                  />
-                )}
+                <input
+                  type="text"
+                  name="otherType"
+                  value={otherType}
+                  onChange={(e) => setOtherType(e.target.value)}
+                />
               </td>
             </tr>
           )}
