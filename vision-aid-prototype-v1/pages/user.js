@@ -497,6 +497,7 @@ function UserPage(props) {
               extraInformation={renderExtraInformation()}
               name={formData["beneficiaryName"]}
               mdvi={renderSelectField("mDVI", "text", true)}
+              consent={renderField("consent", "text", false)}
             />
           </div>
           <div className="col-md-6">

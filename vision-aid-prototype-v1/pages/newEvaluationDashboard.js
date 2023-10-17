@@ -221,6 +221,7 @@ export default function NewEvaluationDashboard(props) {
               extraInformation={props.user.extraInformation[0].value}
               name={props.user.beneficiaryName}
               mdvi={props.user.mDVI}
+              consent={props.user.consent}
             />
           </div>
           <div className="col-md-6">

@@ -178,6 +178,7 @@ export default function HistoricalEvaluationPage(props) {
               extraInformation={user.extraInformation[0].value}
               name={user.beneficiaryName}
               mdvi={user.mDVI}
+              consent={user.consent}
             />
           </div>
           <div className="col-md-6">
