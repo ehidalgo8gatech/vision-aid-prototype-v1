@@ -18,8 +18,13 @@ import {
   electronicDevicesIndices,
   electronicDevicesSubheadings,
 } from "@/constants/devicesConstants";
-import { createOptionMenu, createMenu, isNotNullEmptyOrUndefined } from "@/constants/globalFunctions";
-import { delimiter } from "@/constants/generalConstants";
+import {
+  createOptionMenu,
+  createMenu,
+  isNotNullEmptyOrUndefined,
+} from "@/constants/globalFunctions";
+import { comma, commaAndSpace } from "@/constants/generalConstants";
+import { jsonToCSV, readString } from "react-papaparse";
 
 export default function HistoricalCLVForm(props) {
   const ITEM_HEIGHT = 48;
@@ -31,6 +36,11 @@ export default function HistoricalCLVForm(props) {
         width: 300,
       },
     },
+  };
+
+  let config = {
+    quotes: true,
+    quoteChar: '"',
   };
 
   const removeOtherDevices = (devicesArr, originalDevices) => {
@@ -60,24 +70,31 @@ export default function HistoricalCLVForm(props) {
   const recommendationSpectacleArr = isNotNullEmptyOrUndefined(
     data.recommendationSpectacle
   )
-    ? data.recommendationSpectacle.split(delimiter)
+    ? readString(data.recommendationSpectacle).data[0]
     : [];
   const recommendationOpticalArr = isNotNullEmptyOrUndefined(
     data.recommendationOptical
   )
-    ? data.recommendationOptical.split(delimiter)
+    ? readString(data.recommendationOptical).data[0]
     : [];
   const recommendationNonOpticalArr = isNotNullEmptyOrUndefined(
     data.recommendationNonOptical
   )
-    ? data.recommendationNonOptical.split(delimiter)
+    ? readString(data.recommendationNonOptical).data[0]
     : [];
   const recommendationElectronicArr = isNotNullEmptyOrUndefined(
     data.recommendationElectronic
   )
-    ? data.recommendationElectronic.split(delimiter)
+    ? readString(data.recommendationElectronic).data[0]
     : [];
-  
+
+  console.log(
+    recommendationSpectacleArr,
+    recommendationOpticalArr,
+    recommendationNonOpticalArr,
+    recommendationElectronicArr
+  );
+
   const [devices, setDevices] = useState({
     recommendationSpectacle: isNotNullEmptyOrUndefined(
       data.recommendationSpectacle
@@ -187,16 +204,14 @@ export default function HistoricalCLVForm(props) {
         ? recommendationSpectacleArr.filter(
             (device) => !spectacleDevices.includes(device)
           )
-        : 
-          ""
+        : ""
       : "",
     recommendationOptical: isNotNullEmptyOrUndefined(data.recommendationOptical)
       ? devices.recommendationOptical.includes("Other")
         ? recommendationOpticalArr.filter(
             (device) => !opticalDevices.includes(device)
           )
-        : 
-          ""
+        : ""
       : "",
     recommendationNonOptical: isNotNullEmptyOrUndefined(
       data.recommendationNonOptical
@@ -205,8 +220,7 @@ export default function HistoricalCLVForm(props) {
         ? recommendationNonOpticalArr.filter(
             (device) => !nonOpticalDevices.includes(device)
           )
-        : 
-          ""
+        : ""
       : "",
     recommendationElectronic: isNotNullEmptyOrUndefined(
       data.recommendationElectronic
@@ -215,8 +229,7 @@ export default function HistoricalCLVForm(props) {
         ? recommendationElectronicArr.filter(
             (device) => !electronicDevices.includes(device)
           )
-        : 
-          ""
+        : ""
       : "",
     dispensedSpectacle: isNotNullEmptyOrUndefined(devices.dispensedSpectacle)
       ? devices.dispensedSpectacle === "Other"
@@ -300,7 +313,6 @@ export default function HistoricalCLVForm(props) {
   };
 
   const handleChange = (e) => {
-    
     if (e.target.type === "date") {
       setData({
         ...data,
@@ -356,34 +368,64 @@ export default function HistoricalCLVForm(props) {
       showOther.dispensedElectronic === true
         ? otherDevices.dispensedElectronic
         : devices["dispensedElectronic"];
+    console.log([
+      replaceOtherByDeviceName(
+        devices["recommendationSpectacle"],
+        otherDevices["recommendationSpectacle"]
+      ),
+    ]);
     data["recommendationSpectacle"] =
       showOther.recommendationSpectacle === true
-        ? replaceOtherByDeviceName(
-            devices["recommendationSpectacle"],
-            otherDevices["recommendationSpectacle"]
-          ).join(delimiter)
-        : devices["recommendationSpectacle"].join(delimiter);
+        ? jsonToCSV([
+            replaceOtherByDeviceName(
+              devices["recommendationSpectacle"],
+              otherDevices["recommendationSpectacle"]
+            ),
+            { ...config, delimiter: comma },
+          ])
+        : jsonToCSV([devices["recommendationSpectacle"]], {
+            ...config,
+            delimiter: comma,
+          });
     data["recommendationOptical"] =
       showOther.recommendationOptical === true
-        ? replaceOtherByDeviceName(
-            devices["recommendationOptical"],
-            otherDevices["recommendationOptical"]
-          ).join(delimiter)
-        : devices["recommendationOptical"].join(delimiter);
+        ? jsonToCSV([
+            replaceOtherByDeviceName(
+              devices["recommendationOptical"],
+              otherDevices["recommendationOptical"]
+            ),
+            { ...config, delimiter: comma },
+          ])
+        : jsonToCSV([devices["recommendationOptical"]], {
+            ...config,
+            delimiter: comma,
+          });
     data["recommendationNonOptical"] =
       showOther.recommendationNonOptical === true
-        ? replaceOtherByDeviceName(
-            devices["recommendationNonOptical"],
-            otherDevices["recommendationNonOptical"]
-          ).join(delimiter)
-        : devices["recommendationNonOptical"].join(delimiter);
+        ? jsonToCSV([
+            replaceOtherByDeviceName(
+              devices["recommendationNonOptical"],
+              otherDevices["recommendationNonOptical"]
+            ),
+            { ...config, delimiter: comma },
+          ])
+        : jsonToCSV([devices["recommendationNonOptical"]], {
+            ...config,
+            delimiter: comma,
+          });
     data["recommendationElectronic"] =
       showOther.recommendationElectronic === true
-        ? replaceOtherByDeviceName(
-            devices["recommendationElectronic"],
-            otherDevices["recommendationElectronic"]
-          ).join(delimiter)
-        : devices["recommendationElectronic"].join(delimiter);
+        ? jsonToCSV([
+            replaceOtherByDeviceName(
+              devices["recommendationElectronic"],
+              otherDevices["recommendationElectronic"]
+            ),
+            { ...config, delimiter: comma },
+          ])
+        : jsonToCSV([devices["recommendationElectronic"]], {
+            ...config,
+            delimiter: comma,
+          });
 
     const res = await fetch("/api/comprehensiveLowVisionEvaluation", {
       method: "PATCH",
@@ -397,6 +439,7 @@ export default function HistoricalCLVForm(props) {
     } else {
       alert("Failed to save data!");
     }
+    await props.refetchUser();
   };
 
   return data == undefined ? (
@@ -585,7 +628,11 @@ export default function HistoricalCLVForm(props) {
               Recommendation Spectacle
             </th>
             <td scope="row" className="col-md-8">
-              {!editMode && recommendationSpectacleArr.join(", ")}
+              {!editMode &&
+                jsonToCSV([recommendationSpectacleArr], {
+                  ...config,
+                  delimiter: commaAndSpace,
+                })}
               {editMode && (
                 <FormControl fullWidth>
                   <Select
@@ -738,7 +785,11 @@ export default function HistoricalCLVForm(props) {
               Recommendation Optical
             </th>
             <td className="col-md-8">
-              {!editMode && recommendationOpticalArr.join(", ")}
+              {!editMode &&
+                jsonToCSV([recommendationOpticalArr], {
+                  ...config,
+                  delimiter: commaAndSpace,
+                })}
               {editMode && (
                 <FormControl fullWidth>
                   <Select
@@ -891,7 +942,11 @@ export default function HistoricalCLVForm(props) {
               Recommendation Non-Optical
             </th>
             <td className="col-md-8">
-              {!editMode && recommendationNonOpticalArr.join(", ")}
+              {!editMode &&
+                jsonToCSV([recommendationNonOpticalArr], {
+                  ...config,
+                  delimiter: commaAndSpace,
+                })}
               {editMode && (
                 <FormControl fullWidth>
                   <Select
@@ -1044,7 +1099,11 @@ export default function HistoricalCLVForm(props) {
               Recommendation Electronic
             </th>
             <td className="col-md-8">
-              {!editMode && recommendationElectronicArr.join(", ")}
+              {!editMode &&
+                jsonToCSV([recommendationElectronicArr], {
+                  ...config,
+                  delimiter: commaAndSpace,
+                })}
               {editMode && (
                 <FormControl fullWidth>
                   <Select

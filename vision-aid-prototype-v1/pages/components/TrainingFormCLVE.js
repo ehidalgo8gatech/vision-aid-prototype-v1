@@ -33,7 +33,8 @@ import {
   electronicDevicesIndices,
 } from "@/constants/devicesConstants";
 import { createMenu, createOptionMenu } from "@/constants/globalFunctions";
-import { delimiter } from "@/constants/generalConstants";
+import { comma, commaAndSpace } from "@/constants/generalConstants";
+import { jsonToCSV } from "react-papaparse";
 
 const TrainingFormCLVE = ({
   existingTrainings = [],
@@ -55,6 +56,11 @@ const TrainingFormCLVE = ({
         width: 600,
       },
     },
+  };
+
+  let config = {
+    quotes: true,
+    quoteChar: '"',
   };
 
   if (mdvi === null || mdvi === undefined || mdvi === "") {
@@ -129,7 +135,10 @@ const TrainingFormCLVE = ({
       sessionNumber: e.target.sessionNumber.value,
       recommendationSpectacle:
         devices.recommendationSpectacle.length > 0
-          ? devices.recommendationSpectacle.join(delimiter)
+          ? jsonToCSV([devices.recommendationSpectacle], {
+              ...config,
+              delimiter: comma,
+            })
           : "",
       dispensedDateSpectacle:
         e.target.dispensedDateSpectacle == null
@@ -153,7 +162,10 @@ const TrainingFormCLVE = ({
           : e.target.trainingGivenSpectacle.value,
       recommendationOptical:
         devices.recommendationOptical.length > 0
-          ? devices.recommendationOptical.join(delimiter)
+          ? jsonToCSV([devices.recommendationOptical], {
+              ...config,
+              delimiter: comma,
+            })
           : "",
       dispensedDateOptical:
         e.target.dispensedDateOptical == null
@@ -177,7 +189,10 @@ const TrainingFormCLVE = ({
           : e.target.trainingGivenOptical.value,
       recommendationNonOptical:
         devices.recommendationNonOptical.length > 0
-          ? devices.recommendationNonOptical.join(delimiter)
+          ? jsonToCSV([devices.recommendationNonOptical], {
+              ...config,
+              delimiter: comma,
+            })
           : "",
       dispensedDateNonOptical:
         e.target.dispensedDateNonOptical == null
@@ -201,7 +216,10 @@ const TrainingFormCLVE = ({
           : e.target.trainingGivenNonOptical.value,
       recommendationElectronic:
         devices.recommendationElectronic.length > 0
-          ? devices.recommendationElectronic.join(delimiter)
+          ? jsonToCSV([devices.recommendationElectronic], {
+              ...config,
+              delimiter: comma,
+            })
           : "",
       dispensedDateElectronic:
         e.target.dispensedDateElectronic == null

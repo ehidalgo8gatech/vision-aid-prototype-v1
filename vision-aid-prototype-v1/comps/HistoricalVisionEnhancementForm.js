@@ -10,10 +10,7 @@ import moment from "moment";
 
 export default function HistoricalVisionEnhancementForm(props) {
   //   let data = props.evaluationData.service;
-  const [data, setData] = useState({});
-  useEffect(() => {
-    setData(props.evaluationData.service);
-  }, [props.evaluationData.service]);
+  const [data, setData] = useState(props.evaluationData.service);
 
   const [editMode, setEditMode] = useState(false);
 
@@ -48,6 +45,7 @@ export default function HistoricalVisionEnhancementForm(props) {
     } else {
       alert("Failed to save data!");
     }
+    await refetchUser();
   };
 
   return data == undefined ? (
