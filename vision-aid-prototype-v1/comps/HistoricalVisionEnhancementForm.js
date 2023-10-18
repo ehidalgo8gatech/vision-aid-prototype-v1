@@ -112,7 +112,8 @@ export default function HistoricalVisionEnhancementForm(props) {
                   type="number"
                   name="sessionNumber"
                   value={data.sessionNumber}
-                  onChange={(e) => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
+                    min="1"
                 />
               )}
             </td>

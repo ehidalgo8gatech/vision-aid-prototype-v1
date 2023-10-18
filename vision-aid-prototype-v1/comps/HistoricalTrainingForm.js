@@ -152,7 +152,8 @@ export default function HistoricalTrainingForm(props) {
                   type="number"
                   name="sessionNumber"
                   value={data.sessionNumber}
-                  onChange={(e) => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
+                    min="1"
                 />
               )}
             </td>

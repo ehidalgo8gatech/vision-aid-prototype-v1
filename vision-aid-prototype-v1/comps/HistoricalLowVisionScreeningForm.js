@@ -407,7 +407,8 @@ export default function HistoricalLowVisionScreeningForm(props) {
                     type="number"
                     name="sessionNumber"
                     value={data.sessionNumber}
-                    onChange={(e) => handleChange(e)}
+                      onChange={(e) => handleChange(e)}
+                      min="1"
                   />
                 </FormControl>
               )}

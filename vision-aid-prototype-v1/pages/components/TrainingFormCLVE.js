@@ -569,7 +569,7 @@ const TrainingFormCLVE = ({
           <Col>
             <Form.Group controlId="sessionNumber">
               <Form.Label>Session Number</Form.Label>
-              <Form.Control type="number" />
+              <Form.Control type="number" min={1}/>
             </Form.Group>
           </Col>
         </Row>
@@ -652,13 +652,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="costSpectacle">
                   <Form.Label>Cost Spectacle</Form.Label>
-                  <Form.Control type="number" />
+                  <Form.Control type="number" min={0}/>
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiarySpectacle">
                   <Form.Label>Cost to Beneficiary Spectacle</Form.Label>
-                  <Form.Control type="number" />
+                  <Form.Control type="number" min={0}/>
                 </Form.Group>
               </Col>
             </Row>
@@ -736,13 +736,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="costOptical">
                   <Form.Label>Cost Optical</Form.Label>
-                  <Form.Control type="number" />
+                  <Form.Control type="number" min={0}/>
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiaryOptical">
                   <Form.Label>Cost to Beneficiary Optical</Form.Label>
-                  <Form.Control type="number" />
+                  <Form.Control type="number" min={0}/>
                 </Form.Group>
               </Col>
             </Row>
@@ -820,13 +820,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="costNonOptical">
                   <Form.Label>Cost NonOptical</Form.Label>
-                  <Form.Control type="number" />
+                  <Form.Control type="number" min={0}/>
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiaryNonOptical">
                   <Form.Label>Cost to Beneficiary NonOptical</Form.Label>
-                  <Form.Control type="number" />
+                  <Form.Control type="number" min={0}/>
                 </Form.Group>
               </Col>
             </Row>
@@ -904,13 +904,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="costElectronic">
                   <Form.Label>Cost Electronic</Form.Label>
-                  <Form.Control type="number" />
+                  <Form.Control type="number" min={0}/>
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiaryElectronic">
                   <Form.Label>Cost to Beneficiary Electronic</Form.Label>
-                  <Form.Control type="number" />
+                  <Form.Control type="number" min={0}/>
                 </Form.Group>
               </Col>
             </Row>

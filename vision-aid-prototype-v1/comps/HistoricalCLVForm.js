@@ -511,7 +511,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="sessionNumber"
                     value={data.sessionNumber}
-                    onChange={(e) => handleChange(e)}
+                      onChange={(e) => handleChange(e)}
+                      min="1"
                   />
                 </FormControl>
               )}
@@ -702,7 +703,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costSpectacle"
                     value={data.costSpectacle}
-                    onChange={(e) => handleChange(e)}
+                      onChange={(e) => handleChange(e)}
+                      min="0"
                   />
                 </FormControl>
               )}
@@ -720,7 +722,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costToBeneficiarySpectacle"
                     value={data.costToBeneficiarySpectacle}
-                    onChange={(e) => handleChange(e)}
+                      onChange={(e) => handleChange(e)}
+                      min="0"
                   />
                 </FormControl>
               )}
@@ -859,7 +862,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costOptical"
                     value={data.costOptical}
-                    onChange={(e) => handleChange(e)}
+                      onChange={(e) => handleChange(e)}
+                      min="0"
                   />
                 </FormControl>
               )}
@@ -877,7 +881,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costToBeneficiaryOptical"
                     value={data.costToBeneficiaryOptical}
-                    onChange={(e) => handleChange(e)}
+                      onChange={(e) => handleChange(e)}
+                      min="0"
                   />
                 </FormControl>
               )}
@@ -1016,7 +1021,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costNonOptical"
                     value={data.costNonOptical}
-                    onChange={(e) => handleChange(e)}
+                      onChange={(e) => handleChange(e)}
+                      min="0"
                   />
                 </FormControl>
               )}
@@ -1034,7 +1040,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costToBeneficiaryNonOptical"
                     value={data.costToBeneficiaryNonOptical}
-                    onChange={(e) => handleChange(e)}
+                      onChange={(e) => handleChange(e)}
+                      min="0"
                   />
                 </FormControl>
               )}
@@ -1173,7 +1180,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costElectronic"
                     value={data.costElectronic}
-                    onChange={(e) => handleChange(e)}
+                      onChange={(e) => handleChange(e)}
+                      min="0"
                   />
                 </FormControl>
               )}
@@ -1191,7 +1199,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costToBeneficiaryElectronic"
                     value={data.costToBeneficiaryElectronic}
-                    onChange={(e) => handleChange(e)}
+                      onChange={(e) => handleChange(e)}
+                      min="0"
                   />
                 </FormControl>
               )}

@@ -188,7 +188,7 @@ const TrainingForm = ({
             <Col>
               <Form.Group controlId="sessionNumber">
                 <Form.Label>Session Number</Form.Label>
-                <Form.Control type="number" />
+                <Form.Control type="number" min={1} />
               </Form.Group>
             </Col>
           </Row>
