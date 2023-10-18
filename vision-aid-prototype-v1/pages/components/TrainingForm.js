@@ -14,7 +14,7 @@ const TrainingForm = ({
   typeList,
   mdvi,
   updateMDVIForBeneficiary,
-  mdviValue="No",
+  mdviValue = "No",
   subTypeList,
 }) => {
   if (mdviValue === null || mdviValue === undefined || mdviValue === "")
@@ -266,7 +266,7 @@ const TrainingForm = ({
             <Form.Control as="textarea" rows={3} />
           </Form.Group>
           <br />
-          <Button variant="primary" type="submit">
+          <Button className="btn btn-success border-0 btn-block" type="submit">
             {submitButtonTest}
           </Button>
         </Form>

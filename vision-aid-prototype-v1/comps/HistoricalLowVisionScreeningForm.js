@@ -718,9 +718,21 @@ export default function HistoricalLowVisionScreeningForm(props) {
         </tbody>
       </table>
       {props.evaluationData.editable && !editMode && (
-        <button onClick={handleClick}>Edit</button>
+        <button
+          class="btn btn-success border-0 btn-block"
+          onClick={handleClick}
+        >
+          Edit
+        </button>
       )}
-      {editMode && <button onClick={saveLowVisionData}>Save</button>}
+      {editMode && (
+        <button
+          class="btn btn-success border-0 btn-block"
+          onClick={saveLowVisionData}
+        >
+          Save
+        </button>
+      )}
     </div>
   );
 }

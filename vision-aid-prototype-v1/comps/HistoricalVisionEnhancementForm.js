@@ -54,18 +54,26 @@ export default function HistoricalVisionEnhancementForm(props) {
     </div>
   ) : (
     <div>
-      <table class="table beneficiary-table table-bordered">
+      <table class="table beneficiary-table table-bordered row">
         <thead class="thead-dark">
-          <tr>
-            <th scope="col">Properties</th>
-            <th scope="col">Data</th>
+          <tr className="row">
+            <th scope="col" className="col-md-4">
+              Properties
+            </th>
+            <th scope="col" className="col-md-8">
+              Data
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">Date</th>
-            <td>
-            {!editMode && data.date !== null && moment(data.date).format("DD MMMM YYYY")}
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Date
+            </th>
+            <td scope="row" className="col-md-8">
+              {!editMode &&
+                data.date !== null &&
+                moment(data.date).format("DD MMMM YYYY")}
               {!editMode && data.date !== null && ""}
               {editMode && (
                 <input
@@ -77,9 +85,11 @@ export default function HistoricalVisionEnhancementForm(props) {
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">MDVI</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              MDVI
+            </th>
+            <td scope="row" className="col-md-8">
               {!editMode && data.MDVI}
               {editMode && (
                 <input
@@ -91,9 +101,11 @@ export default function HistoricalVisionEnhancementForm(props) {
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Session Number</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Session Number
+            </th>
+            <td scope="row" className="col-md-8">
               {!editMode && data.sessionNumber}
               {editMode && (
                 <input
@@ -105,9 +117,11 @@ export default function HistoricalVisionEnhancementForm(props) {
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Diagnosis</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Diagnosis
+            </th>
+            <td scope="row" className="col-md-8">
               {!editMode && data.Diagnosis}
               {editMode && (
                 <input
@@ -119,9 +133,11 @@ export default function HistoricalVisionEnhancementForm(props) {
               )}
             </td>
           </tr>
-          <tr>
-            <th scope="row">Extra Information</th>
-            <td>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Extra Information
+            </th>
+            <td scope="row" className="col-md-8">
               {!editMode && data.extraInformation}
               {editMode && (
                 <input
@@ -136,9 +152,21 @@ export default function HistoricalVisionEnhancementForm(props) {
         </tbody>
       </table>
       {props.evaluationData.editable && !editMode && (
-        <button onClick={handleClick}>Edit</button>
+        <button
+          class="btn btn-success border-0 btn-block"
+          onClick={handleClick}
+        >
+          Edit
+        </button>
       )}
-      {editMode && <button onClick={saveVisionEnhancementData}>Save</button>}
+      {editMode && (
+        <button
+          class="btn btn-success border-0 btn-block"
+          onClick={saveVisionEnhancementData}
+        >
+          Save
+        </button>
+      )}
     </div>
   );
 }

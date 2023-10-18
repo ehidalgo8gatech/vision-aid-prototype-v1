@@ -1005,7 +1005,10 @@ const TrainingFormCLVE = ({
           <Form.Control as="textarea" rows={3} />
         </Form.Group>
         <br />
-        <Button variant="primary" type="submit">
+        <Button
+          className="btn btn-success border-0 btn-block"
+          type="submit"
+        >
           Submit Evaluation
         </Button>
       </Form>

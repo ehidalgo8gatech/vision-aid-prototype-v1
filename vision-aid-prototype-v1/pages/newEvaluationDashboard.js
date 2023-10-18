@@ -200,13 +200,13 @@ export default function NewEvaluationDashboard(props) {
   return (
     <div>
       <Navigation />
-      <div className="container">
+      <div className="container p-4 mb-3">
         <h2 class="benficiary-heading">
           Submit New {formatTitle(props.service)}
         </h2>
         <hr class="horizontal-line" />
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-5">
             <UserProfileCard
               gender={props.user.gender}
               phoneNumber={props.user.phoneNumber}
@@ -224,7 +224,7 @@ export default function NewEvaluationDashboard(props) {
               consent={props.user.consent}
             />
           </div>
-          <div className="col-md-6">
+          <div className="col-md-7">
             {props.service === "Comprehensive_Low_Vision_Evaluation" && (
               <TrainingFormCLVE
                 existingTrainings={comprehensiveLowVisionEvaluationData}
