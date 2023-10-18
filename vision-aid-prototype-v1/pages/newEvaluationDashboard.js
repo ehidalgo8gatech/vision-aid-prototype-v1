@@ -202,7 +202,7 @@ export default function NewEvaluationDashboard(props) {
       <Navigation />
       <div className="container p-4 mb-3">
         <h2 class="benficiary-heading">
-          Submit New {formatTitle(props.service)}
+          {formatTitle(props.service)}
         </h2>
         <hr class="horizontal-line" />
         <div className="row">

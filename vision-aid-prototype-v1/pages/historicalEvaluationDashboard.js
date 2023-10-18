@@ -158,7 +158,7 @@ export default function HistoricalEvaluationPage(props) {
     <div>
       <Navigation />
       <div className="container p-4 mb-3">
-        <h2>{formatTitle(props.service)} Details</h2>
+        <h2>{formatTitle(props.service)} History</h2>
         <hr class="horizontal-line" />
         <div className="row">
           <div className="col-md-5">
@@ -183,7 +183,7 @@ export default function HistoricalEvaluationPage(props) {
           <div className="col-md-7">
             <div className="row">
               <div className="text-align-left">
-                Select a date: 
+                Select a date:
                 <select
                   className="mb-3"
                   name="historyDate"

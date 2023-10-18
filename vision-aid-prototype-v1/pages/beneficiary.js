@@ -40,7 +40,10 @@ function HomePage() {
           {users.length === 0 && searched && (
             <div>
               <br />
-              <p>No beneficiary matches your search term! Please try again or register a new beneficiary.</p>
+              <p>
+                No beneficiary matches your search term! Please try again or
+                register a new beneficiary.
+              </p>
             </div>
           )}
         </div>
