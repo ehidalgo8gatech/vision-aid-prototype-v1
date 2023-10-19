@@ -64,7 +64,8 @@ function RequiredFields(props) {
         ? document.getElementById("beneficiaryName").value
         : null;
     let hospitalId =
-      (document.getElementById("hospitalName") != null && document.getElementById("hospitalName").value != "")
+      document.getElementById("hospitalName") != null &&
+      document.getElementById("hospitalName").value != ""
         ? parseInt(document.getElementById("hospitalName").value)
         : null;
     let dateOfBirth =
@@ -72,7 +73,8 @@ function RequiredFields(props) {
         ? new Date(Date.parse(document.getElementById("dateOfBirth").value))
         : null;
     let gender =
-      (document.getElementById("gender") != null && document.getElementById("gender").value != "")
+      document.getElementById("gender") != null &&
+      document.getElementById("gender").value != ""
         ? document.getElementById("gender").value
         : null;
     let phoneNumber =
@@ -107,6 +109,14 @@ function RequiredFields(props) {
       document.getElementById("mDVI") != null
         ? document.getElementById("mDVI").value
         : null;
+    let consent =
+      document.getElementById("consent") !== null &&
+      document.getElementById("consent").value !== null &&
+      document.getElementById("consent").value ===
+        document.getElementById("beneficiaryName").value
+        ? "Yes"
+        : "No";
+
     console.log(
       "mrn" +
         mrn +
@@ -124,7 +134,8 @@ function RequiredFields(props) {
       "state" + state,
       "diagnosis" + diagnosis,
       "vision" + vision,
-      "mDVI" + mDVI
+      "mDVI" + mDVI,
+      "consent" + consent
     );
     let elements = document.getElementsByName("extraField");
     document.get;
@@ -159,6 +170,7 @@ function RequiredFields(props) {
         vision: vision,
         mDVI: mDVI,
         extraInformation: extraInfo,
+        consent: consent,
       }),
     });
     let json = await response.json();
@@ -246,7 +258,12 @@ function RequiredFields(props) {
   const dateOfBirth = (
     <div>
       <label htmlFor="dateOfBirth">Date Of Birth</label>
-      <input type="date" className="form-control" id="dateOfBirth" max={today}/>
+      <input
+        type="date"
+        className="form-control"
+        id="dateOfBirth"
+        max={today}
+      />
     </div>
   );
 
@@ -395,25 +412,24 @@ function RequiredFields(props) {
   }
 
   var mDVI;
-    mDVI = (
-      <div className="form-group">
-        <label className="form-check-label" htmlFor="mDVI">
-          MDVI
-        </label>
-        <select className="form-select" id="mDVI">
-          <option key="Yes" value="Yes">
-            Yes
-          </option>
-          <option selected key="No" value="No">
-            No
-          </option>
-          <option key="At Risk" value="At Risk">
-            At Risk
-          </option>
-        </select>
-      </div>
-    );
-  // }
+  mDVI = (
+    <div className="form-group">
+      <label className="form-check-label" htmlFor="mDVI">
+        MDVI
+      </label>
+      <select className="form-select" id="mDVI">
+        <option key="Yes" value="Yes">
+          Yes
+        </option>
+        <option selected key="No" value="No">
+          No
+        </option>
+        <option key="At Risk" value="At Risk">
+          At Risk
+        </option>
+      </select>
+    </div>
+  );
 
   let extraInformation = JSON.parse(
     props.requiredBeneficiaryFields.extraInformationRequired
@@ -432,6 +448,21 @@ function RequiredFields(props) {
       </div>
     );
   });
+
+  var consent;
+  consent = (
+    <div className="form-group">
+      <label className="form-check-label" htmlFor="consent">
+        Consent
+      </label>
+      <input
+        type="text"
+        className="form-control"
+        id="consent"
+        placeholder="Enter full name"
+      />
+    </div>
+  );
 
   async function search(e) {
     e.preventDefault();
@@ -498,6 +529,8 @@ function RequiredFields(props) {
               <p>Additional Fields</p>
               {exInfo}
             </div>
+            <br />
+            {consent}
             <br />
             <button type="submit" className="btn btn-primary">
               Submit

@@ -33,14 +33,17 @@ function HomePage() {
     <div>
       <Navigation />
       <div className="container">
-        <h1 className="text-center mt-4 mb-4">Beneficiary Search</h1>
+        <h1 className="text-center mt-4 mb-4">Beneficiary Search / Register</h1>
         <div className="beneficiary-child-container">
           <SearchBar onSearch={searchUsers} />
           {users.length > 0 && <UserList users={users} />}
           {users.length === 0 && searched && (
             <div>
               <br />
-              <p>No beneficiary matches your search term! Please try again or register a new beneficiary.</p>
+              <p>
+                No beneficiary matches your search term! Please try again or
+                register a new beneficiary.
+              </p>
             </div>
           )}
         </div>
