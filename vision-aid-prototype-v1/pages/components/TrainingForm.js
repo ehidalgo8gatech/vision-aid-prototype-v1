@@ -14,7 +14,7 @@ const TrainingForm = ({
   typeList,
   mdvi,
   updateMDVIForBeneficiary,
-  mdviValue = "No",
+  mdviValue="No",
   subTypeList,
 }) => {
   if (mdviValue === null || mdviValue === undefined || mdviValue === "")
@@ -188,7 +188,7 @@ const TrainingForm = ({
             <Col>
               <Form.Group controlId="sessionNumber">
                 <Form.Label>Session Number</Form.Label>
-                <Form.Control type="number" min={1} />
+                <Form.Control type="number" />
               </Form.Group>
             </Col>
           </Row>
@@ -266,7 +266,7 @@ const TrainingForm = ({
             <Form.Control as="textarea" rows={3} />
           </Form.Group>
           <br />
-          <Button className="btn btn-success border-0 btn-block" type="submit">
+          <Button variant="primary" type="submit">
             {submitButtonTest}
           </Button>
         </Form>

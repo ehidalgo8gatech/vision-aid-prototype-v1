@@ -56,7 +56,6 @@ model Beneficiary {
   vision                              String?
   mDVI                                String?
   extraInformation                    String                                @db.Text
-  consent                             String?
   Computer_Training                   Computer_Training[]
   Mobile_Training                     Mobile_Training[]
   Orientation_Mobility_Training       Orientation_Mobility_Training[]

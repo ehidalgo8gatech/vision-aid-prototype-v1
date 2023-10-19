@@ -10,7 +10,10 @@ import moment from "moment";
 
 export default function HistoricalVisionEnhancementForm(props) {
   //   let data = props.evaluationData.service;
-  const [data, setData] = useState(props.evaluationData.service);
+  const [data, setData] = useState({});
+  useEffect(() => {
+    setData(props.evaluationData.service);
+  }, [props.evaluationData.service]);
 
   const [editMode, setEditMode] = useState(false);
 
@@ -45,7 +48,6 @@ export default function HistoricalVisionEnhancementForm(props) {
     } else {
       alert("Failed to save data!");
     }
-    await refetchUser();
   };
 
   return data == undefined ? (
@@ -54,26 +56,18 @@ export default function HistoricalVisionEnhancementForm(props) {
     </div>
   ) : (
     <div>
-      <table class="table beneficiary-table table-bordered row">
+      <table class="table beneficiary-table table-bordered">
         <thead class="thead-dark">
-          <tr className="row">
-            <th scope="col" className="col-md-4">
-              Properties
-            </th>
-            <th scope="col" className="col-md-8">
-              Data
-            </th>
+          <tr>
+            <th scope="col">Properties</th>
+            <th scope="col">Data</th>
           </tr>
         </thead>
         <tbody>
-          <tr className="row">
-            <th scope="row" className="col-md-4">
-              Date
-            </th>
-            <td scope="row" className="col-md-8">
-              {!editMode &&
-                data.date !== null &&
-                moment(data.date).format("DD MMMM YYYY")}
+          <tr>
+            <th scope="row">Date</th>
+            <td>
+            {!editMode && data.date !== null && moment(data.date).format("DD MMMM YYYY")}
               {!editMode && data.date !== null && ""}
               {editMode && (
                 <input
@@ -85,11 +79,9 @@ export default function HistoricalVisionEnhancementForm(props) {
               )}
             </td>
           </tr>
-          <tr className="row">
-            <th scope="row" className="col-md-4">
-              MDVI
-            </th>
-            <td scope="row" className="col-md-8">
+          <tr>
+            <th scope="row">MDVI</th>
+            <td>
               {!editMode && data.MDVI}
               {editMode && (
                 <input
@@ -101,28 +93,23 @@ export default function HistoricalVisionEnhancementForm(props) {
               )}
             </td>
           </tr>
-          <tr className="row">
-            <th scope="row" className="col-md-4">
-              Session Number
-            </th>
-            <td scope="row" className="col-md-8">
+          <tr>
+            <th scope="row">Session Number</th>
+            <td>
               {!editMode && data.sessionNumber}
               {editMode && (
                 <input
                   type="number"
                   name="sessionNumber"
                   value={data.sessionNumber}
-                    onChange={(e) => handleChange(e)}
-                    min="1"
+                  onChange={(e) => handleChange(e)}
                 />
               )}
             </td>
           </tr>
-          <tr className="row">
-            <th scope="row" className="col-md-4">
-              Diagnosis
-            </th>
-            <td scope="row" className="col-md-8">
+          <tr>
+            <th scope="row">Diagnosis</th>
+            <td>
               {!editMode && data.Diagnosis}
               {editMode && (
                 <input
@@ -134,11 +121,9 @@ export default function HistoricalVisionEnhancementForm(props) {
               )}
             </td>
           </tr>
-          <tr className="row">
-            <th scope="row" className="col-md-4">
-              Extra Information
-            </th>
-            <td scope="row" className="col-md-8">
+          <tr>
+            <th scope="row">Extra Information</th>
+            <td>
               {!editMode && data.extraInformation}
               {editMode && (
                 <input
@@ -153,21 +138,9 @@ export default function HistoricalVisionEnhancementForm(props) {
         </tbody>
       </table>
       {props.evaluationData.editable && !editMode && (
-        <button
-          class="btn btn-success border-0 btn-block"
-          onClick={handleClick}
-        >
-          Edit
-        </button>
+        <button onClick={handleClick}>Edit</button>
       )}
-      {editMode && (
-        <button
-          class="btn btn-success border-0 btn-block"
-          onClick={saveVisionEnhancementData}
-        >
-          Save
-        </button>
-      )}
+      {editMode && <button onClick={saveVisionEnhancementData}>Save</button>}
     </div>
   );
 }

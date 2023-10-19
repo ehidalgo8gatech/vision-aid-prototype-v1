@@ -454,11 +454,11 @@ function UserPage(props) {
   return (
     <div>
       <Navigation />
-      <div className="container p-4 mb-3">
+      <div className="container">
         <h2 class="benficiary-heading">Beneficiary Details</h2>
         <hr class="horizontal-line" />
         <div className="row">
-          <div className="col-md-5">
+          <div className="col-md-6">
             <UserProfileCard
               gender={renderSelectField("gender", "text", true)}
               phoneNumber={renderField("phoneNumber", "text", true)}
@@ -497,11 +497,9 @@ function UserPage(props) {
               extraInformation={renderExtraInformation()}
               name={formData["beneficiaryName"]}
               mdvi={renderSelectField("mDVI", "text", true)}
-              consent={renderField("consent", "text", false)}
             />
           </div>
-          {/* <div className="col-md-1"></div> */}
-          <div className="col-md-7">
+          <div className="col-md-6">
             <BeneficiaryServicesTable user={props.user} />
           </div>
         </div>
