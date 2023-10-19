@@ -33,8 +33,7 @@ import {
   electronicDevicesIndices,
 } from "@/constants/devicesConstants";
 import { createMenu, createOptionMenu } from "@/constants/globalFunctions";
-import { comma, commaAndSpace } from "@/constants/generalConstants";
-import { jsonToCSV } from "react-papaparse";
+import { delimiter } from "@/constants/generalConstants";
 
 const TrainingFormCLVE = ({
   existingTrainings = [],
@@ -56,11 +55,6 @@ const TrainingFormCLVE = ({
         width: 600,
       },
     },
-  };
-
-  let config = {
-    quotes: true,
-    quoteChar: '"',
   };
 
   if (mdvi === null || mdvi === undefined || mdvi === "") {
@@ -135,10 +129,7 @@ const TrainingFormCLVE = ({
       sessionNumber: e.target.sessionNumber.value,
       recommendationSpectacle:
         devices.recommendationSpectacle.length > 0
-          ? jsonToCSV([devices.recommendationSpectacle], {
-              ...config,
-              delimiter: comma,
-            })
+          ? devices.recommendationSpectacle.join(delimiter)
           : "",
       dispensedDateSpectacle:
         e.target.dispensedDateSpectacle == null
@@ -162,10 +153,7 @@ const TrainingFormCLVE = ({
           : e.target.trainingGivenSpectacle.value,
       recommendationOptical:
         devices.recommendationOptical.length > 0
-          ? jsonToCSV([devices.recommendationOptical], {
-              ...config,
-              delimiter: comma,
-            })
+          ? devices.recommendationOptical.join(delimiter)
           : "",
       dispensedDateOptical:
         e.target.dispensedDateOptical == null
@@ -189,10 +177,7 @@ const TrainingFormCLVE = ({
           : e.target.trainingGivenOptical.value,
       recommendationNonOptical:
         devices.recommendationNonOptical.length > 0
-          ? jsonToCSV([devices.recommendationNonOptical], {
-              ...config,
-              delimiter: comma,
-            })
+          ? devices.recommendationNonOptical.join(delimiter)
           : "",
       dispensedDateNonOptical:
         e.target.dispensedDateNonOptical == null
@@ -216,10 +201,7 @@ const TrainingFormCLVE = ({
           : e.target.trainingGivenNonOptical.value,
       recommendationElectronic:
         devices.recommendationElectronic.length > 0
-          ? jsonToCSV([devices.recommendationElectronic], {
-              ...config,
-              delimiter: comma,
-            })
+          ? devices.recommendationElectronic.join(delimiter)
           : "",
       dispensedDateElectronic:
         e.target.dispensedDateElectronic == null
@@ -569,7 +551,7 @@ const TrainingFormCLVE = ({
           <Col>
             <Form.Group controlId="sessionNumber">
               <Form.Label>Session Number</Form.Label>
-              <Form.Control type="number" min={1}/>
+              <Form.Control type="number" />
             </Form.Group>
           </Col>
         </Row>
@@ -652,13 +634,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="costSpectacle">
                   <Form.Label>Cost Spectacle</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiarySpectacle">
                   <Form.Label>Cost to Beneficiary Spectacle</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" />
                 </Form.Group>
               </Col>
             </Row>
@@ -736,13 +718,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="costOptical">
                   <Form.Label>Cost Optical</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiaryOptical">
                   <Form.Label>Cost to Beneficiary Optical</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" />
                 </Form.Group>
               </Col>
             </Row>
@@ -820,13 +802,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="costNonOptical">
                   <Form.Label>Cost NonOptical</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiaryNonOptical">
                   <Form.Label>Cost to Beneficiary NonOptical</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" />
                 </Form.Group>
               </Col>
             </Row>
@@ -904,13 +886,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="costElectronic">
                   <Form.Label>Cost Electronic</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiaryElectronic">
                   <Form.Label>Cost to Beneficiary Electronic</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" />
                 </Form.Group>
               </Col>
             </Row>
@@ -1005,10 +987,7 @@ const TrainingFormCLVE = ({
           <Form.Control as="textarea" rows={3} />
         </Form.Group>
         <br />
-        <Button
-          className="btn btn-success border-0 btn-block"
-          type="submit"
-        >
+        <Button variant="primary" type="submit">
           Submit Evaluation
         </Button>
       </Form>
