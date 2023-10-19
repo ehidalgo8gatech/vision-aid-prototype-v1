@@ -2,16 +2,16 @@ import {PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient();
 export async function getTrainingTypes(){
-    var trainings = []
-    trainings.push("Other")
-     const tt = await prisma.training_Type.findMany({})
+    var trainings = [];
+    const tt = await prisma.training_Type.findMany({});
          for (const t of tt) {
              if (t.value == "Other") {
-                 continue
+                 continue;
              }
-            trainings.push(t.value)
-        }
-    return trainings
+             trainings.push(t.value);
+    }
+    trainings.push("Other");
+    return trainings;
 }
 
 export default async function handler(req, res) {
