@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "client";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
@@ -140,7 +138,7 @@ async function addData(req, res) {
       vision: body.vision,
       mDVI: body.mDVI,
       extraInformation: body.extraInformation,
-      consent: body.consent
+      consent: body.consent,
     },
     include: {
       hospital: true,
@@ -213,6 +211,6 @@ export async function findAllBeneficiaryForHospitalId(hospitalId) {
     return beneficiary;
   } catch (error) {
     console.log(error);
-    return {"error": "Couldn't read from db"};
+    return { error: "Couldn't read from db" };
   }
 }
