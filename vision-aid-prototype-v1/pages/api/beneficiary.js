@@ -140,6 +140,7 @@ async function addData(req, res) {
       vision: body.vision,
       mDVI: body.mDVI,
       extraInformation: body.extraInformation,
+      consent: body.consent
     },
     include: {
       hospital: true,
