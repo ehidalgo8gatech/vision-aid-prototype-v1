@@ -132,7 +132,8 @@ export default function HistoricalCounselingForm(props) {
                   type="number"
                   name="sessionNumber"
                   value={data.sessionNumber}
-                  onChange={(e) => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
+                    min="1"
                 />
               )}
             </td>
@@ -191,9 +192,21 @@ export default function HistoricalCounselingForm(props) {
         </tbody>
       </table>
       {props.evaluationData.editable && !editMode && (
-        <button onClick={handleClick}>Edit</button>
+        <button
+          class="btn btn-success border-0 btn-block"
+          onClick={handleClick}
+        >
+          Edit
+        </button>
       )}
-      {editMode && <button onClick={saveCounselingData}>Save</button>}
+      {editMode && (
+        <button
+          class="btn btn-success border-0 btn-block"
+          onClick={saveCounselingData}
+        >
+          Save
+        </button>
+      )}
     </div>
   );
 }

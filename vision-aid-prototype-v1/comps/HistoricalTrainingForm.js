@@ -22,22 +22,13 @@ export default function HistoricalTrainingForm(props) {
     },
   };
   const [data, setData] = useState(props.evaluationData.service);
-
-  console.log("trainingTypeList: ", props.trainingTypeList);
-  console.log(data.type);
   let trainingSubTypeList = props.trainingSubTypeList
     .filter((item) => item.trainingType.value === data.type)
     .map((item) => item.value);
-
-  console.log(trainingSubTypeList);
-
   const trainingTypeOptions = createMenu(props.trainingTypeList, "type", false);
-  console.log("trainingTypeOptions: ", trainingTypeOptions);
   const [trainingSubTypeOptions, setTrainingSubTypeOptions] = useState(
     createMenu(trainingSubTypeList, "subType", false)
   );
-
-  console.log("Training subtypelist: ", trainingSubTypeList);
 
   const [editMode, setEditMode] = useState(false);
 
@@ -55,14 +46,11 @@ export default function HistoricalTrainingForm(props) {
     }
   }, [showOther, editMode]);
 
-  console.log("subtype", data.subType);
-
   const handleClick = (e) => {
     setEditMode(true);
   };
 
   const handleTypeChange = (e) => {
-    console.log("entered");
     setData({ ...data, [e.target.name]: e.target.value });
 
     trainingSubTypeList = props.trainingSubTypeList
@@ -74,11 +62,7 @@ export default function HistoricalTrainingForm(props) {
     );
 
     setData((data) => ({ ...data, subType: "" }));
-    // subType = trainingSubTypeList.length > 0 ? trainingSubTypeList[0] : "";
     setShowOther(false);
-    // console.log(subType);
-
-    console.log("Subtype list: ", trainingSubTypeList);
   };
 
   const handleChange = (e) => {
@@ -117,7 +101,6 @@ export default function HistoricalTrainingForm(props) {
     } else {
       alert("Failed to save data!");
     }
-    // setShowOther(false);
     await props.refetchUser();
   };
 
@@ -169,7 +152,8 @@ export default function HistoricalTrainingForm(props) {
                   type="number"
                   name="sessionNumber"
                   value={data.sessionNumber}
-                  onChange={(e) => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
+                    min="1"
                 />
               )}
             </td>
@@ -248,9 +232,21 @@ export default function HistoricalTrainingForm(props) {
         </tbody>
       </table>
       {props.evaluationData.editable && !editMode && (
-        <button onClick={handleClick}>Edit</button>
+        <button
+          class="btn btn-success border-0 btn-block"
+          onClick={handleClick}
+        >
+          Edit
+        </button>
       )}
-      {editMode && <button onClick={saveTrainingData}>Save</button>}
+      {editMode && (
+        <button
+          class="btn btn-success border-0 btn-block"
+          onClick={saveTrainingData}
+        >
+          Save
+        </button>
+      )}
     </div>
   );
 }

@@ -14,9 +14,7 @@ import HistoricalVisionEnhancementForm from "../comps/HistoricalVisionEnhancemen
 import HistoricalCounselingForm from "../comps/HistoricalCounselingForm";
 import HistoricalTrainingForm from "../comps/HistoricalTrainingForm";
 import { getCounsellingType } from "./api/counsellingType";
-import {
-  getTrainingTypes
-} from "./api/trainingType";
+import { getTrainingTypes } from "./api/trainingType";
 import { getTrainingSubTypes } from "./api/trainingSubType";
 
 export default function HistoricalEvaluationPage(props) {
@@ -25,7 +23,10 @@ export default function HistoricalEvaluationPage(props) {
     serviceToFetch = "Low_Vision_Evaluation";
   }
 
-  console.log("CounselingTypeList from getServerSideprops: ", props.counselingTypeList);
+  console.log(
+    "CounselingTypeList from getServerSideprops: ",
+    props.counselingTypeList
+  );
 
   const [user, setUser] = useState(props.user);
 
@@ -49,7 +50,7 @@ export default function HistoricalEvaluationPage(props) {
     }
     user.hospitalName = user.hospital.name;
     setUser(user);
-  }
+  };
 
   const formatTitle = (title) => {
     return title.split("_").join(" ");
@@ -80,7 +81,7 @@ export default function HistoricalEvaluationPage(props) {
         </div>
       );
     } else {
-      let commonProps = {refetchUser, evaluationData}
+      let commonProps = { refetchUser, evaluationData };
       if (props.service == "Low_Vision_Screening") {
         historicalDashboard = (
           <HistoricalLowVisionScreeningForm
@@ -90,10 +91,7 @@ export default function HistoricalEvaluationPage(props) {
         );
       } else if (props.service == "Comprehensive_Low_Vision_Evaluation") {
         historicalDashboard = (
-          <HistoricalCLVForm
-            {...commonProps}
-            key={evaluationData.service.id}
-          />
+          <HistoricalCLVForm {...commonProps} key={evaluationData.service.id} />
         );
       } else if (props.service == "Vision_Enhancement") {
         historicalDashboard = (
@@ -159,11 +157,11 @@ export default function HistoricalEvaluationPage(props) {
   return (
     <div>
       <Navigation />
-      <div className="container">
-        <h2>{formatTitle(props.service)} Details</h2>
+      <div className="container p-4 mb-3">
+        <h2>{formatTitle(props.service)} History</h2>
         <hr class="horizontal-line" />
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-5">
             <UserProfileCard
               gender={user.gender}
               phoneNumber={user.phoneNumber}
@@ -178,9 +176,11 @@ export default function HistoricalEvaluationPage(props) {
               extraInformation={user.extraInformation[0].value}
               name={user.beneficiaryName}
               mdvi={user.mDVI}
+              consent={user.consent}
             />
           </div>
-          <div className="col-md-6">
+          {/* <div className="col-md-1"></div> */}
+          <div className="col-md-7">
             <div className="row">
               <div className="text-align-left">
                 Select a date:
@@ -267,7 +267,7 @@ export async function getServerSideProps(ctx) {
       beneficiaryMirror: benMirrorJson,
       counselingTypeList: await getCounsellingType(),
       trainingTypeList: await getTrainingTypes(),
-      trainingSubTypeList: await getTrainingSubTypes()
+      trainingSubTypeList: await getTrainingSubTypes(),
     },
   };
 }
