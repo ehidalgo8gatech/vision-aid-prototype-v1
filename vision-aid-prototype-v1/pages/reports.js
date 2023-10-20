@@ -1412,7 +1412,7 @@ export default function Summary({
   return (
     <div>
       <Navigation />
-      <Container>
+      <Container className="p-3">
         <h1 className="text-center mt-4 mb-4">Visualization and Reports</h1>
         {/* <div className="row">
           <button

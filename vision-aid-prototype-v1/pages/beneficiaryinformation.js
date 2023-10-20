@@ -532,7 +532,10 @@ function RequiredFields(props) {
             <br />
             {consent}
             <br />
-            <button type="submit" className="btn btn-primary">
+            <button
+              type="submit"
+              className="btn btn-success border-0 btn-block"
+            >
               Submit
             </button>
           </form>

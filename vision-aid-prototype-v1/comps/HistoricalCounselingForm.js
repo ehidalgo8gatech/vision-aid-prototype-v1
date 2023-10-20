@@ -33,12 +33,12 @@ export default function HistoricalCounselingForm(props) {
   const [otherType, setOtherType] = useState(
     counselingTypeList.includes(data.type) ? "" : data.type
   );
-  
-    useEffect(() => {
-      if (showOther && editMode) {
-        setData((data) => ({ ...data, type: "Other" }));
-      }
-    }, [showOther, editMode]);
+
+  useEffect(() => {
+    if (showOther && editMode) {
+      setData((data) => ({ ...data, type: "Other" }));
+    }
+  }, [showOther, editMode]);
 
   const handleClick = (e) => {
     setEditMode(true);
@@ -132,8 +132,8 @@ export default function HistoricalCounselingForm(props) {
                   type="number"
                   name="sessionNumber"
                   value={data.sessionNumber}
-                    onChange={(e) => handleChange(e)}
-                    min="1"
+                  onChange={(e) => handleChange(e)}
+                  min="1"
                 />
               )}
             </td>

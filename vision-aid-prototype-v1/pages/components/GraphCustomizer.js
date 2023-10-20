@@ -18,7 +18,42 @@ export default function ReportsHospitalSelection(props) {
   const today = moment(new Date()).format("YYYY-MM-DD");
 
   return (
-    <div className="col-md-3">
+    <div>
+      <div className="flex-container-vertical">
+        <div className="row">
+          <div className="col-md-5">
+            <label htmlFor="startDate">Start Date:</label>
+          </div>
+          <div className="col-md-5">
+            <input
+              type="date"
+              id="startDate"
+              name="startDate"
+              value={moment(startDate).format("YYYY-MM-DD")}
+              onChange={handleStartDateChange}
+              max={today}
+            />
+          </div>
+        </div>
+        <br />
+        <div className="row">
+          <div className="col-md-5">
+            <label htmlFor="endDate">End Date:</label>
+          </div>
+          <div className="col-md-5">
+            <input
+              type="date"
+              id="endDate"
+              name="endDate"
+              value={moment(endDate).format("YYYY-MM-DD")}
+              onChange={handleEndDateChange}
+              min={moment(startDate).format("YYYY-MM-DD")}
+              max={today}
+            />
+          </div>
+        </div>
+      </div>
+      <br />
       <div>
         <Table striped bordered hover>
           <thead>
@@ -55,42 +90,10 @@ export default function ReportsHospitalSelection(props) {
         </Table>
       </div>
       <br />
-      <div className="flex-container-vertical">
-        <div className="row">
-          <div className="col-md-5">
-            <label htmlFor="startDate">Start Date:</label>
-          </div>
-          <div className="col-md-5">
-            <input
-              type="date"
-              id="startDate"
-              name="startDate"
-              value={moment(startDate).format("YYYY-MM-DD")}
-              onChange={handleStartDateChange}
-              max={today}
-            />
-          </div>
-        </div>
-        <br />
-        <div className="row">
-          <div className="col-md-5">
-            <label htmlFor="endDate">End Date:</label>
-          </div>
-          <div className="col-md-5">
-            <input
-              type="date"
-              id="endDate"
-              name="endDate"
-              value={moment(endDate).format("YYYY-MM-DD")}
-              onChange={handleEndDateChange}
-              min={moment(startDate).format("YYYY-MM-DD")}
-              max={today}
-            />
-          </div>
-        </div>
-      </div>
-      <br />
-      <button className="btn btn-success border-0 btn-block" onClick={downloadReportFn}>
+      <button
+        className="btn btn-success border-0 btn-block"
+        onClick={downloadReportFn}
+      >
         Download Filtered Report
       </button>
     </div>
