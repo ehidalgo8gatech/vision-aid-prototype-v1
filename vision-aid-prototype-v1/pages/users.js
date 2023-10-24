@@ -4,6 +4,9 @@ import { allUsers, readUser } from "@/pages/api/user";
 import { findAllHospital } from "@/pages/api/hospital";
 import Router from "next/router";
 import { Table } from "react-bootstrap";
+import { FormControl, Select, MenuItem, Input, FormLabel } from "@mui/material";
+import { createMenu } from "@/constants/globalFunctions";
+import { useState } from "react";
 
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx);
@@ -41,18 +44,35 @@ export async function getServerSideProps(ctx) {
 }
 
 function Users(props) {
+  const [hosp, setHosp] = useState("");
+  const [role, setRole] = useState("");
+
   const addUser = async (e) => {
     e.preventDefault();
     const userEmail = document.getElementById("userEmail").value;
-    const hospitalElement = document.getElementById("hospitalSelect");
-    const hosidx = hospitalElement.selectedIndex;
-    const hospitalId = parseInt(hospitalElement.options[hosidx].value);
+    // const hospitalElement = document.getElementById("hospitalSelect");
+    // console.log(hospitalElement);
+    // const hosidx = hospitalElement.selectedIndex;
+    console.log(hosp);
+    let hospitalId;
+    if (hosp === "All") {
+      hospitalId = 0;
+    }
+    else {
+      hospitalId = parseInt(
+        hosp.substring(hosp.indexOf("("), hosp.indexOf(")")).substring(4)
+      );
+    }
+    console.log(
+      hosp.substring(hosp.indexOf("("), hosp.indexOf(")")).substring(4)
+    );
+    console.log(hospitalId);
     const [user, existed] = await insertUserIfRequiredByEmail(userEmail);
-    let role = document.getElementById("manager").selectedOptions[0].value;
-    let roleIsAdmin = role === "admin";
-    let roleIsHospAdmin = role === "manager";
+    // let role = document.getElementById("manager").selectedOptions[0].value;
+    let roleIsAdmin = role === "Admin";
+    let roleIsHospAdmin = role === "Manager";
 
-    if (hosidx === 0) {
+    if (hospitalId === 0) {
       if (roleIsAdmin) {
         // add admin in admin table
         const response = await fetch("/api/admin", {
@@ -155,19 +175,15 @@ function Users(props) {
   const hospitalOptions = [];
   for (let i = 0; i < props.hospitals.length; i++) {
     const hospital = props.hospitals[i];
-    hospitalOptions.push(
-      <option key={hospital.name} value={hospital.id}>
-        {hospital.name} (ID {hospital.id})
-      </option>
-    );
+    hospitalOptions.push(hospital.name + " (ID " + hospital.id + ")");
   }
 
   const roleOptions = [];
 
-  roleOptions.push(<option value="tech">Technician</option>);
+  roleOptions.push("Technician");
   if (props.user.admin !== null) {
-    roleOptions.push(<option value="manager">Manager</option>);
-    roleOptions.push(<option value="admin">Admin</option>);
+    roleOptions.push("Manager");
+    roleOptions.push("Admin");
   }
 
   let usersList = [];
@@ -217,113 +233,111 @@ function Users(props) {
   return (
     <div>
       <Navigation />
-      <h2 className="text-center mt-4 mb-4">
-        <strong>List Of Users</strong>
-      </h2>
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>
-              <i>User Id</i>
-            </th>
-            <th>
-              <i>User Email</i>
-            </th>
-            <th>
-              <i>Admin</i>
-            </th>
-            <th>
-              <i>Manager</i>
-            </th>
-            <th>
-              <i>Hospital</i>
-            </th>
-          </tr>
-        </thead>
-        <tbody>{usersList}</tbody>
-      </Table>
-      <br />
-      <h2 className="text-center mt-4 mb-4">
-        <strong>Add User To Hospital</strong>
-      </h2>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <label htmlFor="hospitalSelect" style={{ marginRight: "10px" }}>
-          Select a hospital
-        </label>
-        <select
-          id="hospitalSelect"
-          style={{
-            border: "1px solid #ccc",
-            borderRadius: "0.25rem",
-            color: "#495057",
-            backgroundColor: "#fff",
-            boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-            transition:
-              "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
-          }}
-        >
-          <option value="0">ALL</option>
-          {hospitalOptions}
-        </select>
+      <div className="row">
+        <div className="offset-md-1 col-md-4">
+          <br />
+          <strong>Add User To Hospital</strong>
+          <br />
+          {/* <br /> */}
+          <div className="container m-4">
+            <br />
+            <br />
+            <form action="#" method="POST" onSubmit={(e) => addUser(e)}>
+              <table className="row">
+                <tr className="row">
+                  <td
+                    htmlFor="hospitalSelect"
+                    className="col-md-5 flex-container-vertical"
+                  >
+                    Select a hospital
+                  </td>
+                  <td className="col-md-7">
+                    <FormControl fullWidth size="small">
+                      <Select
+                        value={hosp}
+                        onChange={(e) => setHosp(e.target.value)}
+                      >
+                        <MenuItem key="All" value="All">
+                          ALL
+                        </MenuItem>
+                        {createMenu(hospitalOptions, "hospitals", false)}
+                      </Select>
+                    </FormControl>
+                  </td>
+                </tr>
+                <br />
+                <tr className="row padding">
+                  <td htmlFor="email" className="col-md-5 vertical-align">
+                    User Email
+                  </td>
+                  <td className="col-md-7">
+                    <FormControl fullWidth>
+                      <Input id="userEmail"></Input>
+                    </FormControl>
+                  </td>
+                </tr>
+                <br />
+                <tr className="row">
+                  <td
+                    htmlFor="manager"
+                    className="col-md-5 flex-container-vertical"
+                  >
+                    Role Type
+                  </td>
+                  <td className="col-md-7">
+                    <FormControl fullWidth size="small">
+                      <Select
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                      >
+                        {createMenu(roleOptions, "role", false)}
+                      </Select>
+                    </FormControl>
+                  </td>
+                </tr>
+              </table>
+              <br />
+              <button
+                type="submit"
+                className="btn btn-success border-0 btn-block"
+              >
+                Submit
+              </button>
+            </form>
+            <br />
+          </div>
+        </div>
+        {/* <hr style="width: 1px; height: 20px; display: inline-block;"></hr> */}
+        <div className="offset-md-1 col-md-5">
+          <br />
+          <strong>List Of Users</strong>
+          <br />
+          <br />
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr>
+                <th>
+                  <i>User Id</i>
+                </th>
+                <th>
+                  <i>User Email</i>
+                </th>
+                <th>
+                  <i>Admin</i>
+                </th>
+                <th>
+                  <i>Manager</i>
+                </th>
+                <th>
+                  <i>Hospital</i>
+                </th>
+              </tr>
+            </thead>
+            <tbody>{usersList}</tbody>
+          </Table>
+        </div>
       </div>
       <br />
-      <form action="#" method="POST" onSubmit={(e) => addUser(e)}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <label htmlFor="email" style={{ marginRight: "10px" }}>
-            User Email
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="userEmail"
-            style={{ width: "200px" }}
-          />
-        </div>
-        <br />
-        <br />
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <label htmlFor="manager" style={{ marginRight: "10px" }}>
-            Role Type
-          </label>
-          <select
-            id="manager"
-            name="role"
-            style={{
-              border: "1px solid #ccc",
-              borderRadius: "0.25rem",
-              color: "#495057",
-              backgroundColor: "#fff",
-              boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-              transition:
-                "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
-            }}
-          >
-            {roleOptions}
-          </select>
-        </div>
-        <br />
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
-      </form>
     </div>
   );
 }
