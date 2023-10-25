@@ -24,6 +24,7 @@ import { Tab, Tabs, Paper } from "@mui/material";
 import XLSX from "xlsx-js-style";
 import { isNotNullEmptyOrUndefined } from "@/constants/globalFunctions";
 import { Orienta } from "@next/font/google";
+import { Download } from "react-bootstrap-icons";
 
 // This function is called to load data from the server side.
 export async function getServerSideProps(ctx) {
@@ -1414,14 +1415,17 @@ export default function Summary({
       <Navigation />
       <Container className="p-3">
         <h1 className="text-center mt-4 mb-4">Visualization and Reports</h1>
-        {/* <div className="row">
-          <button
-            className="btn btn-success border-0 btn-block"
-            onClick={downloadFilteredReport}
-          >
-            Download Filtered Report
-          </button>
-        </div> */}
+        <div className="row">
+          <div className="offset-md-10 col-md-2">
+            <button
+              className="btn btn-success border-0 btn-block text-align-right"
+              onClick={downloadFilteredReport}
+            >
+              <Download></Download> Report
+            </button>
+          </div>
+        </div>
+        <br />
         {user.admin != null && (
           <div className="row">
             <div className="col-md-3">
@@ -1434,7 +1438,6 @@ export default function Summary({
                 handleStartDateChange={handleStartDateChange}
                 endDate={endDate}
                 handleEndDateChange={handleEndDateChange}
-                downloadReportFn={downloadFilteredReport}
               />
             </div>
             <div className="col-md-9">
@@ -1458,22 +1461,24 @@ export default function Summary({
           </div>
         )}
         {user.admin == null && (
-          <Paper>
-            <Tabs
-              value={activeGraphTab}
-              onChange={handleGraphTabChange}
-              indicatorColor="primary"
-              textColor="primary"
-              centered
-            >
-              <Tab label="Beneficiaries" />
-              <Tab label="All Activities" />
-              <Tab label="Training Activities" />
-              <Tab label="Counselling Activities" />
-              <Tab label="Devices" />
-            </Tabs>
-            {renderGraph(activeGraphTab)}
-          </Paper>
+          <div className="row">
+            <Paper>
+              <Tabs
+                value={activeGraphTab}
+                onChange={handleGraphTabChange}
+                indicatorColor="primary"
+                textColor="primary"
+                centered
+              >
+                <Tab label="Beneficiaries" />
+                <Tab label="All Activities" />
+                <Tab label="Training Activities" />
+                <Tab label="Counselling Activities" />
+                <Tab label="Devices" />
+              </Tabs>
+              {renderGraph(activeGraphTab)}
+            </Paper>
+          </div>
         )}
       </Container>
       <br />
