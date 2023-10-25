@@ -1,45 +1,73 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-
+import { useState } from "react";
 
 function SearchBar({ onSearch }) {
-    const [searchTerm, setSearchTerm] = useState('');
-    const router = useRouter();
-  
-    const handleChange = (event) => {
-      setSearchTerm(event.target.value);
-    };
-  
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      onSearch(searchTerm);
-    };
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showOther, setShowOther] = useState(false);
 
-    const openUserPage = async (mrn = null) => {
-      if (mrn)
-        router.push(`/user?mrn=${mrn}`);
-      else
-        router.push(`/beneficiaryinformation`);
-    };
-  
-    return (
-      <form onSubmit={handleSubmit} className="mb-3">
+  const handleInput = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onSearch(searchTerm, event.target.id, showOther);
+  };
+
+  return (
+    <form className="mb-3">
+      <div>
+        {!showOther && (
+          <div>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={handleInput}
+              className="form-control"
+              placeholder="Enter beneficiary name..."
+            />
+            <br />
+          </div>
+        )}
+        {!showOther && (
+          <div>
+            <a href="javascript: ;" onClick={() => setShowOther(true)}>
+              Filter by all parameters
+            </a>
+            <br />
+          </div>
+        )}
+        {showOther && (
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleInput}
+            className="form-control"
+            placeholder="Enter other parameters..."
+          />
+        )}
+        <br />
         <div>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleChange}
-          className="form-control"
-          placeholder="Type beneficiary information to search..."
-        />
-        <br/>
-        <div>
-        <button type="submit" className="btn btn-primary">Search</button>
-        <button type="button" onClick={() => openUserPage()} class="btn btn-success border-0 btn-block" style={{ marginLeft: '10px' }}>Register new beneficiary</button>
+          <button
+            type="button"
+            onClick={(e) => handleSubmit(e)}
+            className="btn btn-primary"
+            id="search"
+          >
+            Search
+          </button>
+          <button
+            type="button"
+            onClick={(e) => handleSubmit(e)}
+            class="btn btn-success border-0 btn-block"
+            style={{ marginLeft: "10px" }}
+            id="register"
+          >
+            Register new beneficiary
+          </button>
         </div>
-        </div>
-      </form>
-    );
-  }
+      </div>
+    </form>
+  );
+}
 
 export default SearchBar;

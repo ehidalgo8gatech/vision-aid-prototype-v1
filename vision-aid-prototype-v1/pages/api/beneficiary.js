@@ -17,11 +17,11 @@ export default async function handler(req, res) {
 async function readData(req, res) {
   try {
     var beneficiary;
-    if (req.query.beneficiaryName != null) {
+    if (req.query.otherParam != null) {
       const hospitalList = await prisma.hospital.findMany({
         where: {
           name: {
-            contains: req.query.beneficiaryName,
+            contains: req.query.otherParam,
           },
         },
       });
@@ -36,7 +36,7 @@ async function readData(req, res) {
           OR: [
             {
               beneficiaryName: {
-                contains: req.query.beneficiaryName,
+                contains: req.query.otherParam,
               },
             },
             {
@@ -44,12 +44,12 @@ async function readData(req, res) {
             },
             {
               mrn: {
-                contains: req.query.beneficiaryName,
+                contains: req.query.otherParam,
               },
             },
             {
               phoneNumber: {
-                contains: req.query.beneficiaryName,
+                contains: req.query.otherParam,
               },
             },
           ],
@@ -66,11 +66,29 @@ async function readData(req, res) {
           Training: true,
         },
       });
-      console.log(beneficiary);
     } else if (req.query.mrn != null) {
       beneficiary = await prisma.beneficiary.findUnique({
         where: {
           mrn: req.query.mrn,
+        },
+        include: {
+          hospital: true,
+          Computer_Training: true,
+          Mobile_Training: true,
+          Orientation_Mobility_Training: true,
+          Vision_Enhancement: true,
+          Comprehensive_Low_Vision_Evaluation: true,
+          Counselling_Education: true,
+          Low_Vision_Evaluation: true,
+          Training: true,
+        },
+      });
+    } else if (req.query.beneficiaryName != null) {
+      beneficiary = await prisma.beneficiary.findMany({
+        where: {
+          beneficiaryName: {
+            contains: req.query.beneficiaryName,
+          },
         },
         include: {
           hospital: true,

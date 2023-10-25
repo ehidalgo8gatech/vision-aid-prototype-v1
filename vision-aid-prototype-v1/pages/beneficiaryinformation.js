@@ -34,6 +34,7 @@ export async function getServerSideProps(ctx) {
   }
   return {
     props: {
+      beneficiaryName: ctx.query.beneficiaryName,
       user: user,
       requiredBeneficiaryFields: await readBeneficiaryMirror(),
       hospitals: await findAllHospital(),
@@ -47,6 +48,7 @@ function RequiredFields(props) {
 
   const [phone, setPhone] = useState("");
   const today = moment(new Date()).format("YYYY-MM-DD");
+  const [beneficiaryNameVal, setBeneficiaryNameVal] = useState(props.beneficiaryName);
 
   const checkInput = (e) => {
     const onlyDigits = e.target.value.replace(/\D/g, "");
@@ -206,6 +208,8 @@ function RequiredFields(props) {
         className="form-control"
         id="beneficiaryName"
         placeholder="Enter beneficiary's full name"
+        value={beneficiaryNameVal}
+        onChange={(e) => setBeneficiaryNameVal(e.target.value)}
       />
     </div>
   );
@@ -459,7 +463,7 @@ function RequiredFields(props) {
         type="text"
         className="form-control"
         id="consent"
-        placeholder="Enter full name"
+        placeholder="Enter full name to grant media usage consent to Vision-Aid"
       />
     </div>
   );
