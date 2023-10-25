@@ -12,7 +12,6 @@ export default function ReportsHospitalSelection(props) {
     endDate,
     handleStartDateChange,
     handleEndDateChange,
-    downloadReportFn,
   } = props;
 
   const today = moment(new Date()).format("YYYY-MM-DD");
@@ -89,13 +88,6 @@ export default function ReportsHospitalSelection(props) {
           </tbody>
         </Table>
       </div>
-      <br />
-      <button
-        className="btn btn-success border-0 btn-block"
-        onClick={downloadReportFn}
-      >
-        Download Filtered Report
-      </button>
     </div>
   );
 }
