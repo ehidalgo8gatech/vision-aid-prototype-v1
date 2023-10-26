@@ -95,9 +95,8 @@ function HomePage() {
           )}
           {users.length > 0 && choice === "register" && (
             <div>
-              <UserList users={users} />
               <p>
-                The beneficiary you are trying to register might already exist.
+                The beneficiary you are trying to register might already exist as displayed below.
                 Would you still like to continue?
               </p>
               <button
@@ -106,6 +105,9 @@ function HomePage() {
               >
                 Continue
               </button>
+              <br />
+              <br />
+              <UserList users={users} />
             </div>
           )}
           <br />
