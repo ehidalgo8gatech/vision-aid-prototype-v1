@@ -158,95 +158,6 @@ function filterByDate(training, start, end) {
   );
 }
 
-// This function is used to filter the entire summary data by date range
-export function filterTrainingSummaryByDateRange(
-  startDate,
-  endDate,
-  summary,
-  summaryType
-) {
-  const filteredSummary = summary.map((element) => {
-    const mobileTraining = element.mobileTraining.filter((training) => {
-      // log data of each training
-      return filterByDate(training, startDate, endDate);
-    });
-    // log the difference in length before and after filter
-
-    const computerTraining = element.computerTraining.filter((training) => {
-      return filterByDate(training, startDate, endDate);
-    });
-
-    const orientationMobilityTraining =
-      element.orientationMobilityTraining.filter((training) => {
-        return filterByDate(training, startDate, endDate);
-      });
-
-    const visionEnhancement = element.visionEnhancement.filter((training) => {
-      return filterByDate(training, startDate, endDate);
-    });
-
-    const counsellingEducation = element.counsellingEducation.filter(
-      (training) => {
-        return filterByDate(training, startDate, endDate);
-      }
-    );
-
-    const comprehensiveLowVisionEvaluation =
-      element.comprehensiveLowVisionEvaluation.filter((training) => {
-        return filterByDate(training, startDate, endDate);
-      });
-
-    const lowVisionEvaluation = element.lowVisionEvaluation.filter(
-      (training) => {
-        return filterByDate(training, startDate, endDate);
-      }
-    );
-
-    let filteredElement = {
-      ...element,
-      mobileTraining,
-      computerTraining,
-      orientationMobilityTraining,
-      visionEnhancement,
-      counsellingEducation,
-      comprehensiveLowVisionEvaluation,
-      lowVisionEvaluation,
-    };
-
-    if (summaryType === "hospital") {
-      const beneficiary = element.beneficiary;
-
-      return {
-        ...filteredElement,
-        beneficiary,
-      };
-    } else if (summaryType === "beneficiary") {
-      const training = element.training.filter((tr) => {
-        return filterByDate(tr, startDate, endDate);
-      });
-
-      return {
-        ...filteredElement,
-        training,
-      };
-    }
-  });
-
-  return filteredSummary;
-}
-
-// Get age from date of birth
-function getAge(dateString) {
-  let today = new Date();
-  let birthDate = new Date(dateString);
-  let age = today.getFullYear() - birthDate.getFullYear();
-  let m = today.getMonth() - birthDate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-    age -= 1;
-  }
-  return age;
-}
-
 // Returns common columns of all Excel sheets
 function getCommonData(beneficiaryIdx, beneficiary) {
   const commonData = {
@@ -438,90 +349,6 @@ function getCeJson(commonData, ceIdx, ceData) {
   ceJson["Extra Information"] = ceData["extraInformation"];
 
   return ceJson;
-}
-
-// Sets the header for CLVE sheet, including merged cells and sub-headers
-export function setClveHeader(wclve) {
-  XLSX.utils.sheet_add_aoa(wclve, [clveMainHeader, clveSubHeader]);
-  wclve["!merges"] = [
-    mergeHeaderCells({ col: 0, rowSpan: 1 }), // {s: {r: 0, c: 0}, e: {r: 1, c: 0}}, Title: Index
-    mergeHeaderCells({ col: 1, rowSpan: 1 }), // Date
-    mergeHeaderCells({ col: 2, rowSpan: 1 }), // MRN
-    mergeHeaderCells({ col: 3, rowSpan: 1 }), // Name of the Patient
-    mergeHeaderCells({ col: 4, rowSpan: 1 }), // Age
-    mergeHeaderCells({ col: 5, rowSpan: 1 }), // Gender
-    mergeHeaderCells({ col: 6, rowSpan: 1 }), // Education
-    mergeHeaderCells({ col: 7, rowSpan: 1 }), // Occupation
-    mergeHeaderCells({ col: 8, rowSpan: 1 }), // Diagnosis
-    mergeHeaderCells({ col: 9, rowSpan: 1 }), // District
-    mergeHeaderCells({ col: 10, rowSpan: 1 }), // State
-    mergeHeaderCells({ col: 11, colSpan: 3 }), // { s: { r: 0, c: 11 }, e: { r: 0, c: 14 } }, Title: Acuity
-    mergeHeaderCells({ col: 15, colSpan: 3 }), // { s: { r: 0, c: 15 }, e: { r: 0, c: 18 } }, Title: Near Visual Acuity
-    mergeHeaderCells({ col: 19, rowSpan: 1 }), // Recommended Optical Aid
-    mergeHeaderCells({ col: 20, rowSpan: 1 }), // Recommended Non-Optical Aid
-    mergeHeaderCells({ col: 21, rowSpan: 1 }), // Recommended Electronic Aid
-    mergeHeaderCells({ col: 22, rowSpan: 1 }), // Spectacles (Refractive Error Only)
-    mergeHeaderCells({ col: 23, rowSpan: 1 }), // Dispensed Optical Aid
-    mergeHeaderCells({ col: 24, rowSpan: 1 }), // Dispensed Non-Optical Aid
-    mergeHeaderCells({ col: 25, rowSpan: 1 }), // Dispensed Electronic Aid
-    mergeHeaderCells({ col: 26, rowSpan: 1 }), // Dispensed Spectacles (Refractive Error Only)
-    mergeHeaderCells({ col: 27, rowSpan: 1 }), // Cost of all the aids dispensed
-    mergeHeaderCells({ col: 28, rowSpan: 1 }), // Cost to the Beneficiary
-  ];
-
-  return wclve;
-}
-
-// Sets the header for Low Vision Screening sheet, including merged cells and sub-headers
-export function setLveHeader(wlved) {
-  XLSX.utils.sheet_add_aoa(wlved, [lveMainHeader, lveSubHeader]);
-  wlved["!merges"] = [
-    mergeHeaderCells({ col: 0, rowSpan: 1 }), // {s: {r: 0, c: 0}, e: {r: 1, c: 0}}, Title: Index
-    mergeHeaderCells({ col: 1, rowSpan: 1 }), // Date
-    mergeHeaderCells({ col: 2, rowSpan: 1 }), // MRN
-    mergeHeaderCells({ col: 3, rowSpan: 1 }), // Name of the Patient
-    mergeHeaderCells({ col: 4, rowSpan: 1 }), // Age
-    mergeHeaderCells({ col: 5, rowSpan: 1 }), // Gender
-    mergeHeaderCells({ col: 6, rowSpan: 1 }), // Education
-    mergeHeaderCells({ col: 7, rowSpan: 1 }), // Occupation
-    mergeHeaderCells({ col: 8, rowSpan: 1 }), // Diagnosis
-    mergeHeaderCells({ col: 9, rowSpan: 1 }), // District
-    mergeHeaderCells({ col: 10, rowSpan: 1 }), // State
-    mergeHeaderCells({ col: 11, rowSpan: 1 }), // Session Number
-    mergeHeaderCells({ col: 12, rowSpan: 1 }), // MDVI
-    mergeHeaderCells({ col: 13, colSpan: 3 }), // { s: { r: 0, c: 13 }, e: { r: 0, c: 16 } }, Title: Acuity
-    mergeHeaderCells({ col: 17, colSpan: 3 }), // { s: { r: 0, c: 17 }, e: { r: 0, c: 20 } }, Title: Near Visual Acuity
-    mergeHeaderCells({ col: 21, rowSpan: 1 }), // Recommended Optical Aid
-    mergeHeaderCells({ col: 22, rowSpan: 1 }), // Recommended Non-Optical Aid
-    mergeHeaderCells({ col: 23, rowSpan: 1 }), // Recommended Electronic Aid
-    mergeHeaderCells({ col: 24, rowSpan: 1 }), // Spectacles (Refractive Error Only)
-    mergeHeaderCells({ col: 25, rowSpan: 1 }), // Extra Information
-  ];
-}
-
-// Sets the header for Aggregated Hospital Data sheet, including merged cells and sub-headers
-export function setAhdHeader(wahd, hospitals) {
-  let { ahdMainHeader, ahdSubHeader1, ahdSubHeader2 } =
-    populateAhdHeaders(hospitals);
-  XLSX.utils.sheet_add_aoa(wahd, [ahdMainHeader, ahdSubHeader1, ahdSubHeader2]);
-  wahd["!merges"] = [
-    mergeHeaderCells({ row: 0, col: 0, rowSpan: 2, colSpan: 1 }), // { s: { r: 0, c: 0 }, e: { r: 2, c: 1 } }, Title: Programs
-    mergeHeaderCells({ col: 2, colSpan: hospitals.length * 2 - 1 }), // { s: { r: 0, c: 2 }, e: { r: 0, c: 2 + (hospitals.length * 2 - 1) } }, Title: Hospitals (Break up)
-    mergeHeaderCells({
-      row: 0,
-      col: 2 + hospitals.length * 2,
-      rowSpan: 1,
-      colSpan: 1,
-    }), // { s: { r: 0, c: 2 + hospitals.length * 2 }, e: { r: 1, c: 2 + hospitals.length * 2 + 1 } }, Title: Beneficiaries of Hospitals
-  ];
-
-  let currentColumn = 2;
-  for (let i = 0; i < hospitals.length; i++) {
-    wahd["!merges"].push(
-      mergeHeaderCells({ row: 1, col: currentColumn, colSpan: 1 })
-    );
-    currentColumn += 2;
-  }
 }
 
 // Populates data for Aggregated Hospital Data Sheet
@@ -741,8 +568,181 @@ function getAggregatedHospitalData(filteredBeneficiaryData, filteredSummary) {
   return aggregatedHospitalData;
 }
 
+// This function is used to filter the entire summary data by date range
+export function filterTrainingSummaryByDateRange(
+  startDate,
+  endDate,
+  summary,
+  summaryType
+) {
+  const filteredSummary = summary.map((element) => {
+    const mobileTraining = element.mobileTraining.filter((training) => {
+      // log data of each training
+      return filterByDate(training, startDate, endDate);
+    });
+    // log the difference in length before and after filter
+
+    const computerTraining = element.computerTraining.filter((training) => {
+      return filterByDate(training, startDate, endDate);
+    });
+
+    const orientationMobilityTraining =
+      element.orientationMobilityTraining.filter((training) => {
+        return filterByDate(training, startDate, endDate);
+      });
+
+    const visionEnhancement = element.visionEnhancement.filter((training) => {
+      return filterByDate(training, startDate, endDate);
+    });
+
+    const counsellingEducation = element.counsellingEducation.filter(
+      (training) => {
+        return filterByDate(training, startDate, endDate);
+      }
+    );
+
+    const comprehensiveLowVisionEvaluation =
+      element.comprehensiveLowVisionEvaluation.filter((training) => {
+        return filterByDate(training, startDate, endDate);
+      });
+
+    const lowVisionEvaluation = element.lowVisionEvaluation.filter(
+      (training) => {
+        return filterByDate(training, startDate, endDate);
+      }
+    );
+
+    let filteredElement = {
+      ...element,
+      mobileTraining,
+      computerTraining,
+      orientationMobilityTraining,
+      visionEnhancement,
+      counsellingEducation,
+      comprehensiveLowVisionEvaluation,
+      lowVisionEvaluation,
+    };
+
+    if (summaryType === "hospital") {
+      const beneficiary = element.beneficiary;
+
+      return {
+        ...filteredElement,
+        beneficiary,
+      };
+    } else if (summaryType === "beneficiary") {
+      const training = element.training.filter((tr) => {
+        return filterByDate(tr, startDate, endDate);
+      });
+
+      return {
+        ...filteredElement,
+        training,
+      };
+    }
+  });
+
+  return filteredSummary;
+}
+
+// Get age from date of birth
+export function getAge(dateString) {
+  let today = new Date();
+  let birthDate = new Date(dateString);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  let m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age -= 1;
+  }
+  return age;
+}
+
+// Sets the header for CLVE sheet, including merged cells and sub-headers
+export function setClveHeader(wclve) {
+  XLSX.utils.sheet_add_aoa(wclve, [clveMainHeader, clveSubHeader]);
+  wclve["!merges"] = [
+    mergeHeaderCells({ col: 0, rowSpan: 1 }), // {s: {r: 0, c: 0}, e: {r: 1, c: 0}}, Title: Index
+    mergeHeaderCells({ col: 1, rowSpan: 1 }), // Date
+    mergeHeaderCells({ col: 2, rowSpan: 1 }), // MRN
+    mergeHeaderCells({ col: 3, rowSpan: 1 }), // Name of the Patient
+    mergeHeaderCells({ col: 4, rowSpan: 1 }), // Age
+    mergeHeaderCells({ col: 5, rowSpan: 1 }), // Gender
+    mergeHeaderCells({ col: 6, rowSpan: 1 }), // Education
+    mergeHeaderCells({ col: 7, rowSpan: 1 }), // Occupation
+    mergeHeaderCells({ col: 8, rowSpan: 1 }), // Diagnosis
+    mergeHeaderCells({ col: 9, rowSpan: 1 }), // District
+    mergeHeaderCells({ col: 10, rowSpan: 1 }), // State
+    mergeHeaderCells({ col: 11, colSpan: 3 }), // { s: { r: 0, c: 11 }, e: { r: 0, c: 14 } }, Title: Acuity
+    mergeHeaderCells({ col: 15, colSpan: 3 }), // { s: { r: 0, c: 15 }, e: { r: 0, c: 18 } }, Title: Near Visual Acuity
+    mergeHeaderCells({ col: 19, rowSpan: 1 }), // Recommended Optical Aid
+    mergeHeaderCells({ col: 20, rowSpan: 1 }), // Recommended Non-Optical Aid
+    mergeHeaderCells({ col: 21, rowSpan: 1 }), // Recommended Electronic Aid
+    mergeHeaderCells({ col: 22, rowSpan: 1 }), // Spectacles (Refractive Error Only)
+    mergeHeaderCells({ col: 23, rowSpan: 1 }), // Dispensed Optical Aid
+    mergeHeaderCells({ col: 24, rowSpan: 1 }), // Dispensed Non-Optical Aid
+    mergeHeaderCells({ col: 25, rowSpan: 1 }), // Dispensed Electronic Aid
+    mergeHeaderCells({ col: 26, rowSpan: 1 }), // Dispensed Spectacles (Refractive Error Only)
+    mergeHeaderCells({ col: 27, rowSpan: 1 }), // Cost of all the aids dispensed
+    mergeHeaderCells({ col: 28, rowSpan: 1 }), // Cost to the Beneficiary
+  ];
+
+  return wclve;
+}
+
+// Sets the header for Low Vision Screening sheet, including merged cells and sub-headers
+export function setLveHeader(wlved) {
+  XLSX.utils.sheet_add_aoa(wlved, [lveMainHeader, lveSubHeader]);
+  wlved["!merges"] = [
+    mergeHeaderCells({ col: 0, rowSpan: 1 }), // {s: {r: 0, c: 0}, e: {r: 1, c: 0}}, Title: Index
+    mergeHeaderCells({ col: 1, rowSpan: 1 }), // Date
+    mergeHeaderCells({ col: 2, rowSpan: 1 }), // MRN
+    mergeHeaderCells({ col: 3, rowSpan: 1 }), // Name of the Patient
+    mergeHeaderCells({ col: 4, rowSpan: 1 }), // Age
+    mergeHeaderCells({ col: 5, rowSpan: 1 }), // Gender
+    mergeHeaderCells({ col: 6, rowSpan: 1 }), // Education
+    mergeHeaderCells({ col: 7, rowSpan: 1 }), // Occupation
+    mergeHeaderCells({ col: 8, rowSpan: 1 }), // Diagnosis
+    mergeHeaderCells({ col: 9, rowSpan: 1 }), // District
+    mergeHeaderCells({ col: 10, rowSpan: 1 }), // State
+    mergeHeaderCells({ col: 11, rowSpan: 1 }), // Session Number
+    mergeHeaderCells({ col: 12, rowSpan: 1 }), // MDVI
+    mergeHeaderCells({ col: 13, colSpan: 3 }), // { s: { r: 0, c: 13 }, e: { r: 0, c: 16 } }, Title: Acuity
+    mergeHeaderCells({ col: 17, colSpan: 3 }), // { s: { r: 0, c: 17 }, e: { r: 0, c: 20 } }, Title: Near Visual Acuity
+    mergeHeaderCells({ col: 21, rowSpan: 1 }), // Recommended Optical Aid
+    mergeHeaderCells({ col: 22, rowSpan: 1 }), // Recommended Non-Optical Aid
+    mergeHeaderCells({ col: 23, rowSpan: 1 }), // Recommended Electronic Aid
+    mergeHeaderCells({ col: 24, rowSpan: 1 }), // Spectacles (Refractive Error Only)
+    mergeHeaderCells({ col: 25, rowSpan: 1 }), // Extra Information
+  ];
+}
+
+// Sets the header for Aggregated Hospital Data sheet, including merged cells and sub-headers
+export function setAhdHeader(wahd, hospitals) {
+  let { ahdMainHeader, ahdSubHeader1, ahdSubHeader2 } =
+    populateAhdHeaders(hospitals);
+  XLSX.utils.sheet_add_aoa(wahd, [ahdMainHeader, ahdSubHeader1, ahdSubHeader2]);
+  wahd["!merges"] = [
+    mergeHeaderCells({ row: 0, col: 0, rowSpan: 2, colSpan: 1 }), // { s: { r: 0, c: 0 }, e: { r: 2, c: 1 } }, Title: Programs
+    mergeHeaderCells({ col: 2, colSpan: hospitals.length * 2 - 1 }), // { s: { r: 0, c: 2 }, e: { r: 0, c: 2 + (hospitals.length * 2 - 1) } }, Title: Hospitals (Break up)
+    mergeHeaderCells({
+      row: 0,
+      col: 2 + hospitals.length * 2,
+      rowSpan: 1,
+      colSpan: 1,
+    }), // { s: { r: 0, c: 2 + hospitals.length * 2 }, e: { r: 1, c: 2 + hospitals.length * 2 + 1 } }, Title: Beneficiaries of Hospitals
+  ];
+
+  let currentColumn = 2;
+  for (let i = 0; i < hospitals.length; i++) {
+    wahd["!merges"].push(
+      mergeHeaderCells({ row: 1, col: currentColumn, colSpan: 1 })
+    );
+    currentColumn += 2;
+  }
+}
+
 // Get data for all sheets in the Report Excel
-export function getReportData (filteredBeneficiaryData, filteredSummary) {
+export function getReportData(filteredBeneficiaryData, filteredSummary) {
   let beneficiaryData = [];
   let visionEnhancementData = [];
   let lowVisionEvaluationData = [];
@@ -854,4 +854,4 @@ export function getReportData (filteredBeneficiaryData, filteredSummary) {
     counsellingEducationData,
     aggregatedHospitalData,
   };
-};
+}
