@@ -592,7 +592,7 @@ export default function Summary({
       trainingData,
       counsellingEducationData,
       aggregatedHospitalData,
-    } = getReportData(filteredBeneficiaryData, filteredSummary);
+    } = getReportData(filteredBeneficiaryData, filteredSummary, true);
 
     const wb = XLSX.utils.book_new();
 
@@ -682,12 +682,14 @@ export default function Summary({
         <h1 className="text-center mt-4 mb-4">Visualization and Reports</h1>
         <div className="row">
           <div className="col-md-2 ">
-            <button
-              onClick={() => router.push("/customizedReport")}
-              className="btn btn-success border-0 btn-block"
-            >
-              More Customization
-            </button>
+            {user.admin && (
+              <button
+                onClick={() => router.push("/customizedReport")}
+                className="btn btn-success border-0 btn-block"
+              >
+                More Customization
+              </button>
+            )}
           </div>
           <div className="offset-md-8 col-md-2">
             <button

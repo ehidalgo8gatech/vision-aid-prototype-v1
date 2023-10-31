@@ -352,7 +352,11 @@ function getCeJson(commonData, ceIdx, ceData) {
 }
 
 // Populates data for Aggregated Hospital Data Sheet
-function getAggregatedHospitalData(filteredBeneficiaryData, filteredSummary) {
+function getAggregatedHospitalData(
+  filteredBeneficiaryData,
+  filteredSummary,
+  includeAllBeneficiaries
+) {
   let aggregatedHospitalData = [];
 
   // Low Vision Screening
@@ -430,6 +434,50 @@ function getAggregatedHospitalData(filteredBeneficiaryData, filteredSummary) {
       };
     }
   });
+
+  // If all beneficiaries are not to be included in the report,
+  // remove those beneficiaries from filteredSummary which do not meet selected criteria
+  if (!includeAllBeneficiaries) {
+    const filteredBeneficiaryIds = filteredBeneficiaryData.map(
+      (beneficiary) => beneficiary.mrn
+    );
+    filteredSummary = filteredSummary.map((hospital) => {
+      return {
+        ...hospital,
+        beneficiary: hospital.beneficiary.filter((beneficiary) =>
+          filteredBeneficiaryIds.includes(beneficiary.mrn)
+        ),
+        comprehensiveLowVisionEvaluation:
+          hospital.comprehensiveLowVisionEvaluation.filter((evaluation) =>
+            filteredBeneficiaryIds.includes(evaluation.beneficiaryId)
+          ),
+        lowVisionEvaluation: hospital.lowVisionEvaluation.filter((evaluation) =>
+          filteredBeneficiaryIds.includes(evaluation.beneficiaryId)
+        ),
+        visionEnhancement: hospital.visionEnhancement.filter((evaluation) =>
+          filteredBeneficiaryIds.includes(evaluation.beneficiaryId)
+        ),
+        orientationMobilityTraining:
+          hospital.orientationMobilityTraining.filter((evaluation) =>
+            filteredBeneficiaryIds.includes(evaluation.beneficiaryId)
+          ),
+        mobileTraining: hospital.mobileTraining.filter((evaluation) =>
+          filteredBeneficiaryIds.includes(evaluation.beneficiaryId)
+        ),
+        computerTraining: hospital.computerTraining.filter((evaluation) =>
+          filteredBeneficiaryIds.includes(evaluation.beneficiaryId)
+        ),
+        counsellingEducation: hospital.counsellingEducation.filter(
+          (evaluation) =>
+            filteredBeneficiaryIds.includes(evaluation.beneficiaryId)
+        ),
+        training: hospital.training.filter((evaluation) =>
+          filteredBeneficiaryIds.includes(evaluation.beneficiaryId)
+        ),
+      };
+    });
+  }
+  console.log(filteredSummary);
 
   // Add checks for empty arrays
   for (let hospital of filteredSummary) {
@@ -742,7 +790,11 @@ export function setAhdHeader(wahd, hospitals) {
 }
 
 // Get data for all sheets in the Report Excel
-export function getReportData(filteredBeneficiaryData, filteredSummary) {
+export function getReportData(
+  filteredBeneficiaryData,
+  filteredSummary,
+  includeAllBeneficiaries
+) {
   let beneficiaryData = [];
   let visionEnhancementData = [];
   let lowVisionEvaluationData = [];
@@ -754,7 +806,8 @@ export function getReportData(filteredBeneficiaryData, filteredSummary) {
   let counsellingEducationData = [];
   let aggregatedHospitalData = getAggregatedHospitalData(
     filteredBeneficiaryData,
-    filteredSummary
+    filteredSummary,
+    includeAllBeneficiaries
   );
 
   let beneficiaryIdx = 1;
