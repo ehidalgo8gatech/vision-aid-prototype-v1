@@ -15,6 +15,12 @@ import {
   getReportData,
 } from "@/constants/reportFunctions";
 
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import { ExpandMoreRounded } from "@mui/icons-material";
+
 export async function getServerSideProps(ctx) {
   const beneficiaryListFromAPI = await findAllBeneficiary();
 
@@ -65,6 +71,18 @@ function ReportCustomizer({ summary, beneficiaryList } = props) {
   const [selectedHospitals, setSelectedHospitals] = useState([]);
   const [selectedGenders, setSelectedGenders] = useState(["M", "F", "Other"]);
   const [selectedMdvi, setSelectedMdvi] = useState(["Yes", "No", "At Risk"]);
+  const [selectedSheets, setSelectedSheets] = useState([
+    "Beneficiary",
+    "Vision Enhancement",
+    "Low Vision Screening",
+    "Comprehensive Low Vision Evaluation",
+    "Computer Training",
+    "Mobile Training",
+    "Orientation Mobility Training",
+    "Training",
+    "Counselling Education",
+    "Aggregated Hospital Data",
+  ]);
   const today = moment(new Date()).format("YYYY-MM-DD");
 
   const handleStartDateChange = (e) => {
@@ -121,6 +139,18 @@ function ReportCustomizer({ summary, beneficiaryList } = props) {
     }
   };
 
+  const updateSheets = (e) => {
+    if (e.target.checked) {
+      setSelectedSheets((selectedSheets) => [...selectedSheets, e.target.id]);
+    } else {
+      setSelectedSheets((selectedSheets) =>
+        selectedSheets.filter(function (sheetName) {
+          return sheetName != e.target.id;
+        })
+      );
+    }
+  };
+
   const downloadFilteredReport = () => {
     const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
       startDate,
@@ -128,6 +158,8 @@ function ReportCustomizer({ summary, beneficiaryList } = props) {
       JSON.parse(JSON.stringify(beneficiaryList)),
       "beneficiary"
     );
+
+    const numTotalBeneficiaries = dateFilteredBeneficiaryData.length;
 
     const minAge = isNotNullEmptyOrUndefined(
       document.getElementById("minAge").value
@@ -149,6 +181,8 @@ function ReportCustomizer({ summary, beneficiaryList } = props) {
         minAge <= getAge(item.dateOfBirth) &&
         getAge(item.dateOfBirth) <= maxAge
     );
+
+    const numFilteredBeneficiaries = filteredBeneficiaryData.length;
 
     // filter summary data based on start and end date of the training
     const dateFilteredSummary = filterTrainingSummaryByDateRange(
@@ -173,55 +207,81 @@ function ReportCustomizer({ summary, beneficiaryList } = props) {
       trainingData,
       counsellingEducationData,
       aggregatedHospitalData,
-    } = getReportData(filteredBeneficiaryData, filteredSummary);
+    } = getReportData(
+      filteredBeneficiaryData,
+      filteredSummary,
+      numTotalBeneficiaries === numFilteredBeneficiaries
+    );
 
     const wb = XLSX.utils.book_new();
 
-    const wben = XLSX.utils.json_to_sheet(beneficiaryData);
-    const wved = XLSX.utils.json_to_sheet(visionEnhancementData);
+    if (selectedSheets.includes("Beneficiary")) {
+      const wben = XLSX.utils.json_to_sheet(beneficiaryData);
+      XLSX.utils.book_append_sheet(wb, wben, "Beneficiary Sheet");
+    }
 
-    const wlved = XLSX.utils.json_to_sheet([]);
-    const wclve = XLSX.utils.json_to_sheet([]);
+    if (selectedSheets.includes("Vision Enhancement")) {
+      const wved = XLSX.utils.json_to_sheet(visionEnhancementData);
+      XLSX.utils.book_append_sheet(wb, wved, "Vision Enhancement Sheet");
+    }
 
-    const wctd = XLSX.utils.json_to_sheet(computerTrainingData);
-    const wmtd = XLSX.utils.json_to_sheet(mobileTrainingData);
-    const womtd = XLSX.utils.json_to_sheet(orientationMobilityTrainingData);
-    const wtd = XLSX.utils.json_to_sheet(trainingData);
-    const wced = XLSX.utils.json_to_sheet(counsellingEducationData);
+    if (selectedSheets.includes("Low Vision Screening")) {
+      const wlved = XLSX.utils.json_to_sheet([]);
+      XLSX.utils.book_append_sheet(wb, wlved, "Low Vision Screening");
+      setLveHeader(wlved);
+      XLSX.utils.sheet_add_json(wlved, lowVisionEvaluationData, {
+        skipHeader: true,
+        origin: -1,
+      });
+    }
 
-    const wahd = XLSX.utils.json_to_sheet([]);
+    if (selectedSheets.includes("Comprehensive Low Vision Evaluation")) {
+      const wclve = XLSX.utils.json_to_sheet([]);
+      XLSX.utils.book_append_sheet(wb, wclve, "CLVE Sheet");
+      setClveHeader(wclve);
+      XLSX.utils.sheet_add_json(wclve, comprehensiveLowVisionEvaluationData, {
+        skipHeader: true,
+        origin: -1,
+      });
+    }
 
-    XLSX.utils.book_append_sheet(wb, wben, "Beneficiary Sheet");
-    XLSX.utils.book_append_sheet(wb, wved, "Vision Enhancement Sheet");
-    XLSX.utils.book_append_sheet(wb, wlved, "Low Vision Screening");
-    XLSX.utils.book_append_sheet(wb, wclve, "CLVE Sheet");
-    XLSX.utils.book_append_sheet(wb, wctd, "Computer Training Sheet");
-    XLSX.utils.book_append_sheet(wb, wmtd, "Mobile Training Sheet");
-    XLSX.utils.book_append_sheet(wb, womtd, "Orientation Mobile Sheet");
-    XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
-    XLSX.utils.book_append_sheet(wb, wced, "Counselling Education Sheet");
-    XLSX.utils.book_append_sheet(wb, wahd, "Aggregated Hospital Sheet");
+    if (selectedSheets.includes("Computer Training")) {
+      const wctd = XLSX.utils.json_to_sheet(computerTrainingData);
+      XLSX.utils.book_append_sheet(wb, wctd, "Computer Training Sheet");
+    }
 
-    setClveHeader(wclve);
-    XLSX.utils.sheet_add_json(wclve, comprehensiveLowVisionEvaluationData, {
-      skipHeader: true,
-      origin: -1,
-    });
+    if (selectedSheets.includes("Mobile Training")) {
+      const wmtd = XLSX.utils.json_to_sheet(mobileTrainingData);
+      XLSX.utils.book_append_sheet(wb, wmtd, "Mobile Training Sheet");
+    }
 
-    setLveHeader(wlved);
-    XLSX.utils.sheet_add_json(wlved, lowVisionEvaluationData, {
-      skipHeader: true,
-      origin: -1,
-    });
+    if (selectedSheets.includes("Orientation Mobility Training")) {
+      const womtd = XLSX.utils.json_to_sheet(orientationMobilityTrainingData);
+      XLSX.utils.book_append_sheet(wb, womtd, "Orientation Mobile Sheet");
+    }
 
-    setAhdHeader(
-      wahd,
-      filteredSummary.map((hospital) => hospital.name)
-    );
-    XLSX.utils.sheet_add_json(wahd, aggregatedHospitalData, {
-      skipHeader: true,
-      origin: -1,
-    });
+    if (selectedSheets.includes("Training")) {
+      const wtd = XLSX.utils.json_to_sheet(trainingData);
+      XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
+    }
+
+    if (selectedSheets.includes("Counselling Education")) {
+      const wced = XLSX.utils.json_to_sheet(counsellingEducationData);
+      XLSX.utils.book_append_sheet(wb, wced, "Counselling Education Sheet");
+    }
+
+    if (selectedSheets.includes("Aggregated Hospital Data")) {
+      const wahd = XLSX.utils.json_to_sheet([]);
+      XLSX.utils.book_append_sheet(wb, wahd, "Aggregated Hospital Sheet");
+      setAhdHeader(
+        wahd,
+        filteredSummary.map((hospital) => hospital.name)
+      );
+      XLSX.utils.sheet_add_json(wahd, aggregatedHospitalData, {
+        skipHeader: true,
+        origin: -1,
+      });
+    }
 
     XLSX.writeFile(wb, "customized_report.xlsx");
   };
@@ -231,185 +291,358 @@ function ReportCustomizer({ summary, beneficiaryList } = props) {
       <Navigation />
       <div className="container p-4 mb-3">
         <h1 className="mt-4 mb-4">Customize Report</h1>
-        <br />
-        <br />
-        <div>
-          <div className="row">
-            <div className="col-md-3 text-align-left">
-              <strong className="padding-left">Date Range for Trainings</strong>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreRounded />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography>
+              <strong>Date Range For Trainings</strong>
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div className="row">
+              <div className="col-md-4 text-align-left">
+                <label htmlFor="startDate">Start Date: </label>
+                <input
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                  value={moment(startDate).format("YYYY-MM-DD")}
+                  onChange={handleStartDateChange}
+                  max={today}
+                  className="margin-left"
+                />
+              </div>
+              <div className="col-md-4 text-align-left">
+                <label htmlFor="endDate">End Date: </label>
+                <input
+                  type="date"
+                  id="endDate"
+                  name="endDate"
+                  value={moment(endDate).format("YYYY-MM-DD")}
+                  onChange={handleEndDateChange}
+                  min={moment(startDate).format("YYYY-MM-DD")}
+                  max={today}
+                  className="margin-left"
+                />
+              </div>
             </div>
-            <div className="col-md-2 text-align-left">
-              <label htmlFor="startDate">Start Date: </label>
-            </div>
-            <div className="col-md-2 text-align-left">
-              <input
-                type="date"
-                id="startDate"
-                name="startDate"
-                value={moment(startDate).format("YYYY-MM-DD")}
-                onChange={handleStartDateChange}
-                max={today}
-              />
-            </div>
-            <div className="col-md-2 text-align-left">
-              <label htmlFor="endDate">End Date: </label>
-            </div>
-            <div className="col-md-2 text-align-left">
-              <input
-                type="date"
-                id="endDate"
-                name="endDate"
-                value={moment(endDate).format("YYYY-MM-DD")}
-                onChange={handleEndDateChange}
-                min={moment(startDate).format("YYYY-MM-DD")}
-                max={today}
-              />
-            </div>
-          </div>
-        </div>
-        <hr />
-        <div className="row">
-          <div className="col-md-3 text-align-left">
-            <strong className="padding-left">Gender</strong>
-          </div>
-          <div className="col-md-2 text-align-left">
-            <input
-              type="checkbox"
-              id="M"
-              onClick={(e) => updateGender(e)}
-              checked={selectedGenders.includes("M")}
-            />
-            <label className="padding-left">Male</label>
-          </div>
-
-          <div className="col-md-2 text-align-left">
-            <input
-              type="checkbox"
-              id="F"
-              onClick={(e) => updateGender(e)}
-              checked={selectedGenders.includes("F")}
-            />
-            <label className="padding-left">Female</label>
-          </div>
-
-          <div className="col-md-2 text-align-left">
-            <input
-              type="checkbox"
-              id="Other"
-              onClick={(e) => updateGender(e)}
-              checked={selectedGenders.includes("Other")}
-            />
-            <label className="padding-left">Other</label>
-          </div>
-        </div>
-        <hr />
-        <div className="row">
-          <div className="col-md-3 text-align-left">
-            <strong className="padding-left">Age</strong>
-          </div>
-          <div className="col-md-2 text-align-left">
-            <label>Minimum Age: </label>
-          </div>
-          <div className="col-md-2 text-align-left">
-            <input
-              type="number"
-              min={0}
-              max={100}
-              id="minAge"
-              className="date-size"
-            />
-          </div>
-
-          <div className="col-md-2 text-align-left">
-            <label>Maximum Age: </label>
-          </div>
-          <div className="col-md-2 text-align-left">
-            <input
-              type="number"
-              min={0}
-              max={100}
-              id="maxAge"
-              className="date-size"
-            />
-          </div>
-        </div>
-        <hr />
-        <div className="row">
-          <div className="col-md-3 text-align-left">
-            <strong className="padding-left">MDVI</strong>
-          </div>
-
-          <div className="col-md-2 text-align-left">
-            <input
-              type="checkbox"
-              id="Yes"
-              onClick={(e) => updateMdvi(e)}
-              checked={selectedMdvi.includes("Yes")}
-            />
-            <label className="padding-left">Yes</label>
-          </div>
-
-          <div className="col-md-2 text-align-left">
-            <input
-              type="checkbox"
-              id="No"
-              onClick={(e) => updateMdvi(e)}
-              checked={selectedMdvi.includes("No")}
-            />
-            <label className="padding-left">No</label>
-          </div>
-
-          <div className="col-md-2 text-align-left">
-            <input
-              type="checkbox"
-              id="At Risk"
-              onClick={(e) => updateMdvi(e)}
-              checked={selectedMdvi.includes("At Risk")}
-            />
-            <label className="padding-left">At Risk</label>
-          </div>
-        </div>
-        <hr />
-        <div className="row">
-          <div className="col-md-3 text-align-left">
-            <strong className="padding-left">Hospitals</strong>
-          </div>
-          <div className="col-md-6">
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Hospital</th>
-                  <th>
-                    <button
-                      type="button"
-                      className="btn btn-light"
-                      onClick={handleSelectAll}
-                    >
-                      Select All
-                    </button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {summary != null &&
-                  summary.map((item) => (
-                    <tr key={item.id}>
-                      <td>{item.name}</td>
-                      <td>
-                        <input
-                          type="checkbox"
-                          id={`hospital-${item.id}`}
-                          value={item.id}
-                          onChange={handleHospitalSelection}
-                          checked={selectedHospitals.includes(item.id)}
-                        />
-                      </td>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreRounded />}
+            aria-controls="panel2a-content"
+            id="panel2a-header"
+          >
+            <Typography>
+              <strong>Hospitals</strong>
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div className="row">
+              <div className="col-md-6">
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Hospital</th>
+                      <th>
+                        <button
+                          type="button"
+                          className="btn btn-light"
+                          onClick={handleSelectAll}
+                        >
+                          Select All
+                        </button>
+                      </th>
                     </tr>
-                  ))}
-              </tbody>
-            </Table>
-          </div>
-        </div>
+                  </thead>
+                  <tbody>
+                    {summary != null &&
+                      summary.map((item) => (
+                        <tr key={item.id}>
+                          <td>{item.name}</td>
+                          <td>
+                            <input
+                              type="checkbox"
+                              id={`hospital-${item.id}`}
+                              value={item.id}
+                              onChange={handleHospitalSelection}
+                              checked={selectedHospitals.includes(item.id)}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </Table>
+              </div>
+            </div>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreRounded />}
+            aria-controls="panel2a-content"
+            id="panel2a-header"
+          >
+            <Typography>
+              <strong>Gender</strong>
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div className="row">
+              <div className="col-md-2 text-align-left">
+                <input
+                  type="checkbox"
+                  id="M"
+                  onClick={(e) => updateGender(e)}
+                  checked={selectedGenders.includes("M")}
+                />
+                <label className="margin-left">Male</label>
+              </div>
+
+              <div className="col-md-2 text-align-left">
+                <input
+                  type="checkbox"
+                  id="F"
+                  onClick={(e) => updateGender(e)}
+                  checked={selectedGenders.includes("F")}
+                />
+                <label className="margin-left">Female</label>
+              </div>
+
+              <div className="col-md-2 text-align-left">
+                <input
+                  type="checkbox"
+                  id="Other"
+                  onClick={(e) => updateGender(e)}
+                  checked={selectedGenders.includes("Other")}
+                />
+                <label className="margin-left">Other</label>
+              </div>
+            </div>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreRounded />}
+            aria-controls="panel3a-content"
+            id="panel3a-header"
+          >
+            <Typography>
+              <strong>Age</strong>
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div className="row">
+              <div className="col-md-4 text-align-left">
+                <label>Minimum Age: </label>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  id="minAge"
+                  className="margin-left"
+                />
+              </div>
+
+              <div className="col-md-4 text-align-left">
+                <label>Maximum Age: </label>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  id="maxAge"
+                  className="margin-left"
+                />
+              </div>
+            </div>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreRounded />}
+            aria-controls="panel2a-content"
+            id="panel2a-header"
+          >
+            <Typography>
+              <strong>MDVI</strong>
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div className="row">
+              <div className="col-md-2 text-align-left">
+                <input
+                  type="checkbox"
+                  id="Yes"
+                  onClick={(e) => updateMdvi(e)}
+                  checked={selectedMdvi.includes("Yes")}
+                />
+                <label className="margin-left">Yes</label>
+              </div>
+
+              <div className="col-md-2 text-align-left">
+                <input
+                  type="checkbox"
+                  id="No"
+                  onClick={(e) => updateMdvi(e)}
+                  checked={selectedMdvi.includes("No")}
+                />
+                <label className="margin-left">No</label>
+              </div>
+
+              <div className="col-md-2 text-align-left">
+                <input
+                  type="checkbox"
+                  id="At Risk"
+                  onClick={(e) => updateMdvi(e)}
+                  checked={selectedMdvi.includes("At Risk")}
+                />
+                <label className="margin-left">At Risk</label>
+              </div>
+            </div>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreRounded />}
+            aria-controls="panel2a-content"
+            id="panel2a-header"
+          >
+            <Typography>
+              <strong>Sheets To Include</strong>
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div className="row">
+              <div className="col-md-6 text-align-left">
+                <input
+                  type="checkbox"
+                  id="Beneficiary"
+                  onClick={(e) => updateSheets(e)}
+                  checked={selectedSheets.includes("Beneficiary")}
+                />
+                <label className="margin-left">Beneficiary</label>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-6 text-align-left">
+                <input
+                  type="checkbox"
+                  id="Vision Enhancement"
+                  onClick={(e) => updateSheets(e)}
+                  checked={selectedSheets.includes("Vision Enhancement")}
+                />
+                <label className="margin-left">Vision Enhancement</label>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-6 text-align-left">
+                <input
+                  type="checkbox"
+                  id="Low Vision Screening"
+                  onClick={(e) => updateSheets(e)}
+                  checked={selectedSheets.includes("Low Vision Screening")}
+                />
+                <label className="margin-left">Low Vision Screening</label>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-6 text-align-left">
+                <input
+                  type="checkbox"
+                  id="Comprehensive Low Vision Evaluation"
+                  onClick={(e) => updateSheets(e)}
+                  checked={selectedSheets.includes(
+                    "Comprehensive Low Vision Evaluation"
+                  )}
+                />
+                <label className="margin-left">
+                  Comprehensive Low Vision Evaluation
+                </label>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-6 text-align-left">
+                <input
+                  type="checkbox"
+                  id="Computer Training"
+                  onClick={(e) => updateSheets(e)}
+                  checked={selectedSheets.includes("Computer Training")}
+                />
+                <label className="margin-left">Computer Training</label>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-6 text-align-left">
+                <input
+                  type="checkbox"
+                  id="Mobile Training"
+                  onClick={(e) => updateSheets(e)}
+                  checked={selectedSheets.includes("Mobile Training")}
+                />
+                <label className="margin-left">Mobile Training</label>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-6 text-align-left">
+                <input
+                  type="checkbox"
+                  id="Orientation Mobility Training"
+                  onClick={(e) => updateSheets(e)}
+                  checked={selectedSheets.includes(
+                    "Orientation Mobility Training"
+                  )}
+                />
+                <label className="margin-left">
+                  Orientation Mobility Training
+                </label>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-6 text-align-left">
+                <input
+                  type="checkbox"
+                  id="Training"
+                  onClick={(e) => updateSheets(e)}
+                  checked={selectedSheets.includes("Training")}
+                />
+                <label className="margin-left">Training</label>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-6 text-align-left">
+                <input
+                  type="checkbox"
+                  id="Counselling Education"
+                  onClick={(e) => updateSheets(e)}
+                  checked={selectedSheets.includes("Counselling Education")}
+                />
+                <label className="margin-left">Counselling Education</label>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-6 text-align-left">
+                <input
+                  type="checkbox"
+                  id="Aggregated Hospital Data"
+                  onClick={(e) => updateSheets(e)}
+                  checked={selectedSheets.includes("Aggregated Hospital Data")}
+                />
+                <label className="margin-left">Aggregated Hospital Data</label>
+              </div>
+            </div>
+          </AccordionDetails>
+        </Accordion>
         <br />
         <button
           class="btn btn-success border-0 btn-block"
