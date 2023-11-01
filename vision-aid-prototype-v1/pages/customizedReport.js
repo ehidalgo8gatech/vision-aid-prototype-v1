@@ -1,27 +1,108 @@
-import moment, { updateLocale } from "moment";
-import { useState, useEffect } from "react";
+import { readUser } from "./api/user";
+import { getSession } from "next-auth/react";
+import { Chart as ChartJS } from "chart.js/auto";
+import { Chart } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
+import {
+  getSummaryForAllHospitals,
+  getSummaryForHospitalFromID,
+} from "@/pages/api/hospital";
+import { Container } from "react-bootstrap";
 import Navigation from "./navigation/Navigation";
 import { Table } from "react-bootstrap";
-import { findAllBeneficiary } from "./api/beneficiary";
-import { getSummaryForAllHospitals } from "./api/hospital";
+import Link from "next/link";
+import moment from "moment";
+import { useState, useEffect } from "react";
+import {
+  findAllBeneficiary,
+  findAllBeneficiaryForHospitalId,
+} from "@/pages/api/beneficiary";
+import { CSVLink, CSVDownload } from "react-csv";
+import GraphCustomizer from "./components/GraphCustomizer";
+import { Tab, Tabs, Paper } from "@mui/material";
+// import * as XLSX from "xlsx";
 import XLSX from "xlsx-js-style";
 import { isNotNullEmptyOrUndefined } from "@/constants/globalFunctions";
+import { Orienta } from "@next/font/google";
+import { Download } from "react-bootstrap-icons";
+import { useRouter } from "next/router";
 import {
   setAhdHeader,
   setClveHeader,
   setLveHeader,
-  getAge,
   filterTrainingSummaryByDateRange,
   getReportData,
 } from "@/constants/reportFunctions";
 
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
-import { ExpandMoreRounded } from "@mui/icons-material";
-
+// This function is called to load data from the server side.
 export async function getServerSideProps(ctx) {
+  const session = await getSession(ctx);
+  if (session == null) {
+    console.log("session is null");
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  // If it's a non admin user, we only want to show the summary for their hospital
+  const user = await readUser(session.user.email);
+  if (user.admin == null) {
+    const hospitalSummary = await getSummaryForHospitalFromID(
+      user.hospitalRole.hospitalId
+    );
+
+    let hospitalBeneficiaryListFromAPI = [];
+    hospitalBeneficiaryListFromAPI = await findAllBeneficiaryForHospitalId(
+      user.hospitalRole.hospitalId
+    );
+
+    let hospitalBeneficiaryList = [];
+
+    hospitalBeneficiaryList = hospitalBeneficiaryListFromAPI.map(
+      (beneficiary) => ({
+        mrn: beneficiary.mrn,
+        beneficiaryName: beneficiary.beneficiaryName,
+        hospitalId: beneficiary.hospitalId,
+        dateOfBirth: beneficiary.dateOfBirth,
+        gender: beneficiary.gender,
+        phoneNumber: beneficiary.phoneNumber,
+        education: beneficiary.education,
+        occupation: beneficiary.occupation,
+        districts: beneficiary.districts,
+        state: beneficiary.state,
+        diagnosis: beneficiary.diagnosis,
+        vision: beneficiary.vision,
+        mDVI: beneficiary.mDVI,
+        extraInformation: beneficiary.extraInformation,
+        hospital: beneficiary.hospital,
+        visionEnhancement: beneficiary.Vision_Enhancement,
+        counsellingEducation: beneficiary.Counselling_Education,
+        comprehensiveLowVisionEvaluation:
+          beneficiary.Comprehensive_Low_Vision_Evaluation,
+        lowVisionEvaluation: beneficiary.Low_Vision_Evaluation,
+        training: beneficiary.Training,
+        computerTraining: beneficiary.Computer_Training,
+        mobileTraining: beneficiary.Mobile_Training,
+        orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
+      })
+    );
+
+    return {
+      props: {
+        user: user,
+        summary: JSON.parse(JSON.stringify([hospitalSummary])),
+        beneficiaryList: JSON.parse(JSON.stringify(hospitalBeneficiaryList)),
+        error: null,
+      },
+    };
+  }
+
+  // The user is an admin, so we want to show the summary for all hospitals
+
+  // The following is code to download summary data as a CSV file
   const beneficiaryListFromAPI = await findAllBeneficiary();
 
   let beneficiaryList = [];
@@ -53,49 +134,396 @@ export async function getServerSideProps(ctx) {
     orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
   }));
 
-  const summary = await getSummaryForAllHospitals();
+  let flatList = [];
+  function flatFields(extraInformation, key) {
+    let flat = {};
+    try {
+      const ex = JSON.parse(extraInformation);
+      for (let i = 0; i < ex.length; i++) {
+        const e = ex[i];
+        flat[(key + "." + i + "." + e.name).replaceAll(",", " ")] =
+          e.value.replaceAll(",", " ");
+      }
+    } catch (e) {
+      return {};
+    }
+    return flat;
+  }
 
-  return {
-    props: {
-      summary: JSON.parse(JSON.stringify(summary)),
-      beneficiaryList: JSON.parse(JSON.stringify(beneficiaryList)),
-    },
-  };
+  function flatChildArray(childArray, key) {
+    let flat = {};
+    try {
+      for (let i1 = 0; i1 < childArray.length; i1++) {
+        const child = childArray[i1];
+        for (let i = 0; i < Object.keys(child).length; i++) {
+          const jsonKey = Object.keys(child)[i];
+          flat[(key + "." + i1 + "." + jsonKey).replaceAll(",", " ")] =
+            child[jsonKey] == null
+              ? ""
+              : child[jsonKey].toString().replaceAll(",", " ");
+        }
+      }
+    } catch (e) {
+      return {};
+    }
+    return flat;
+  }
+
+  function appendFlat(appendFrom, appendTo) {
+    Object.keys(appendFrom).forEach((append) => {
+      appendTo[append] = appendFrom[append];
+    });
+  }
+
+  for (const beneficiary of beneficiaryListFromAPI) {
+    const visionEnhancementFlat = flatChildArray(
+      beneficiary.Vision_Enhancement,
+      "visionEnhancement"
+    );
+    const counselingEducationFlat = flatChildArray(
+      beneficiary.Counselling_Education,
+      "counselingEducation"
+    );
+    const comprehensiveLowVisionEvaluationFlat = flatChildArray(
+      beneficiary.Comprehensive_Low_Vision_Evaluation,
+      "comprehensiveLowVisionEvaluation"
+    );
+    const lowVisionEvaluationFlat = flatChildArray(
+      beneficiary.Low_Vision_Evaluation,
+      "lowVisionEvaluation"
+    );
+    const trainingFlat = flatChildArray(beneficiary.Training, "training");
+    const computerTrainingFlat = flatChildArray(
+      beneficiary.Computer_Training,
+      "computerTraining"
+    );
+    const mobileTrainingFlat = flatChildArray(
+      beneficiary.Mobile_Training,
+      "mobileTraining"
+    );
+    const orientationMobilityTrainingFlat = flatChildArray(
+      beneficiary.Orientation_Mobility_Training,
+      "orientationMobilityTraining"
+    );
+    const extraFields = flatFields(
+      beneficiary.extraInformation,
+      "BeneficiaryExtraField"
+    );
+    let flat = {
+      mrn: beneficiary.mrn.replaceAll(",", " "),
+      hospitalName:
+        beneficiary.hospital == null
+          ? ""
+          : beneficiary.hospital.name.replaceAll(",", " "),
+      beneficiaryName:
+        beneficiary.beneficiaryName == null
+          ? ""
+          : beneficiary.beneficiaryName.replaceAll(",", " "),
+      dateOfBirth:
+        beneficiary.dateOfBirth == null
+          ? ""
+          : beneficiary.dateOfBirth.toString().replaceAll(",", " "),
+      gender:
+        beneficiary.gender == null
+          ? ""
+          : beneficiary.gender.replaceAll(",", " "),
+      phoneNumber:
+        beneficiary.phoneNumber == null
+          ? ""
+          : beneficiary.phoneNumber.replaceAll(",", " "),
+      education:
+        beneficiary.education == null
+          ? ""
+          : beneficiary.education.replaceAll(",", " "),
+      occupation:
+        beneficiary.occupation == null
+          ? ""
+          : beneficiary.occupation.replaceAll(",", " "),
+      districts:
+        beneficiary.districts == null
+          ? ""
+          : beneficiary.districts.replaceAll(",", " "),
+      state:
+        beneficiary.state == null ? "" : beneficiary.state.replaceAll(",", " "),
+      diagnosis:
+        beneficiary.diagnosis == null
+          ? ""
+          : beneficiary.diagnosis.replaceAll(",", " "),
+      vision:
+        beneficiary.vision == null
+          ? ""
+          : beneficiary.vision.replaceAll(",", " "),
+      mDVI:
+        beneficiary.mDVI == null ? "" : beneficiary.mDVI.replaceAll(",", " "),
+      rawExtraFields:
+        beneficiary.extraInformation == null
+          ? ""
+          : beneficiary.extraInformation.replaceAll(",", " "),
+      visionEnhancement: JSON.stringify(beneficiary.Vision_Enhancement),
+      counsellingEducation: JSON.stringify(beneficiary.Counselling_Education),
+      comprehensiveLowVisionEvaluation: JSON.stringify(
+        beneficiary.Comprehensive_Low_Vision_Evaluation
+      ),
+      lowVisionEvaluation: JSON.stringify(beneficiary.Low_Vision_Evaluation),
+      training: JSON.stringify(beneficiary.Training),
+      computerTraining: JSON.stringify(beneficiary.Computer_Training),
+      mobileTraining: JSON.stringify(beneficiary.Mobile_Training),
+      orientationMobilityTraining: JSON.stringify(
+        beneficiary.Orientation_Mobility_Training
+      ),
+    };
+    appendFlat(extraFields, flat);
+    appendFlat(visionEnhancementFlat, flat);
+    appendFlat(counselingEducationFlat, flat);
+    appendFlat(comprehensiveLowVisionEvaluationFlat, flat);
+    appendFlat(lowVisionEvaluationFlat, flat);
+    appendFlat(trainingFlat, flat);
+    appendFlat(computerTrainingFlat, flat);
+    appendFlat(mobileTrainingFlat, flat);
+    appendFlat(orientationMobilityTrainingFlat, flat);
+    flatList.push(flat);
+  }
+
+  // We finally return all the data to the page
+  if (user.admin != null) {
+    const summary = await getSummaryForAllHospitals();
+
+    return {
+      props: {
+        user: user,
+        summary: JSON.parse(JSON.stringify(summary)),
+        beneficiaryList: JSON.parse(JSON.stringify(beneficiaryList)),
+        beneficiaryFlatList: flatList,
+        error: null,
+      },
+    };
+  }
 }
 
-function ReportCustomizer({ summary, beneficiaryList } = props) {
+// Graph Options that are constant for all graphs
+const graphOptions = {
+  backgroundColor: [
+    "rgba(255, 99, 132, 0.2)",
+    "rgba(54, 162, 235, 0.2)",
+    "rgba(255, 206, 86, 0.2)",
+    "rgba(75, 192, 192, 0.2)",
+    "rgba(153, 102, 255, 0.2)",
+    "rgba(255, 159, 64, 0.2)",
+    "rgba(255, 99, 132, 0.2)",
+    "rgba(119, 221, 119, 0.2)",
+  ],
+  borderColor: [
+    "rgba(255, 99, 132, 1)",
+    "rgba(54, 162, 235, 1)",
+    "rgba(255, 206, 86, 1)",
+    "rgba(75, 192, 192, 1)",
+    "rgba(153, 102, 255, 1)",
+    "rgba(255, 159, 64, 1)",
+    "rgba(255, 99, 132, 1)",
+    "rgba(119, 221, 119, 1)",
+  ],
+  borderWidth: 1,
+};
+
+// Function that builds a bar graph to show number of beneficiaries per hospital
+function buildBeneficiaryGraph(data) {
+  // data is an array of hopital objects
+  const simplifiedData = data.map((hospital) => {
+    return {
+      name: hospital.name,
+      value: hospital.beneficiary.length,
+    };
+  });
+
+  // create a bar graph with graphData
+  const graphData = {
+    labels: simplifiedData.map((hospital) => hospital.name),
+    datasets: [
+      {
+        label: "Beneficiaries",
+        data: simplifiedData.map((hospital) => hospital.value),
+        ...graphOptions,
+      },
+    ],
+  };
+  return graphData;
+}
+
+// Function that builds a bar graph to show all the activities involved
+function buildActivitiesGraph(data) {
+  //First get the evaluations
+  const lowVisionScreeningCount = data.reduce(
+    (sum, item) => sum + item.lowVisionEvaluation.length,
+    0
+  );
+  const comprehensiveLowVisionEvaluationCount = data.reduce(
+    (sum, item) => sum + item.comprehensiveLowVisionEvaluation.length,
+    0
+  );
+  const visionEnhancementCount = data.reduce(
+    (sum, item) => sum + item.visionEnhancement.length,
+    0
+  );
+
+  // Then the trainings
+  const mobileTrainingCount = data.reduce(
+    (sum, item) => sum + item.mobileTraining.length,
+    0
+  );
+  const computerTrainingCount = data.reduce(
+    (sum, item) => sum + item.computerTraining.length,
+    0
+  );
+  const orientationMobilityTrainingCount = data.reduce(
+    (sum, item) => sum + item.orientationMobilityTraining.length,
+    0
+  );
+  const trainingCount =
+    data.reduce((sum, item) => sum + item.training.length, 0) +
+    mobileTrainingCount +
+    computerTrainingCount +
+    orientationMobilityTrainingCount;
+
+  // Then the counselling
+  const counsellingCount = data.reduce(
+    (sum, item) => sum + item.counsellingEducation.length,
+    0
+  );
+
+  const chartData = {
+    labels: [
+      `Low Vision Screening (${lowVisionScreeningCount})`,
+      `Comprehensive Low Vision Evaluation (${comprehensiveLowVisionEvaluationCount})`,
+      `Vision Enhancement (${visionEnhancementCount})`,
+      `All Training (${trainingCount})`,
+      `All Counselling (${counsellingCount})`,
+    ],
+    datasets: [
+      {
+        label: "Cumulative Counts",
+        data: [
+          lowVisionScreeningCount,
+          comprehensiveLowVisionEvaluationCount,
+          visionEnhancementCount,
+          trainingCount,
+          counsellingCount,
+        ],
+        ...graphOptions,
+      },
+    ],
+  };
+
+  return chartData;
+}
+
+// Function that builds a bar graph at a sublevel. This function is called
+// with both "training" and "counselling" as the breakdownType
+function buildBreakdownGraph(data, breakdownType) {
+  const types = data.reduce((types, hospital) => {
+    const hospitalTypes = hospital[breakdownType].map((item) => item.type);
+    return [...types, ...hospitalTypes];
+  }, []);
+
+  const typeCounts = types.reduce((counts, type) => {
+    const count = counts[type] || 0;
+    return {
+      ...counts,
+      [type]: count + 1,
+    };
+  }, {});
+
+  const chartData = {
+    labels: Object.keys(typeCounts),
+    datasets: [
+      {
+        label: "Cumulative Counts",
+        data: Object.values(typeCounts),
+        ...graphOptions,
+      },
+    ],
+  };
+
+  return chartData;
+}
+
+// Function that builds a bar graph to show the number of devices dispensed
+function buildDevicesGraph(data) {
+  // The device information is stored inside the comprehensiveLowVisionEvaluation array
+  // Inside the array, there are fields dispensedSpectacle, dispensedElectronic, dispensedOptical, dispensedNonOptical
+  // We want to count the number of entries in which these fields are not empty
+  const dispensedSpectacleCount = data.reduce(
+    (sum, item) =>
+      sum +
+      item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => evaluation.dispensedSpectacle !== ""
+      ).length,
+    0
+  );
+  const dispensedElectronicCount = data.reduce(
+    (sum, item) =>
+      sum +
+      item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => evaluation.dispensedElectronic !== ""
+      ).length,
+    0
+  );
+  const dispensedOpticalCount = data.reduce(
+    (sum, item) =>
+      sum +
+      item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => evaluation.dispensedOptical !== ""
+      ).length,
+    0
+  );
+  const dispensedNonOpticalCount = data.reduce(
+    (sum, item) =>
+      sum +
+      item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => evaluation.dispensedNonOptical !== ""
+      ).length,
+    0
+  );
+
+  const chartData = {
+    labels: [
+      `Spectacle (${dispensedSpectacleCount})`,
+      `Electronic (${dispensedElectronicCount})`,
+      `Optical (${dispensedOpticalCount})`,
+      `Non-Optical (${dispensedNonOpticalCount})`,
+    ],
+    datasets: [
+      {
+        label: "Cumulative Counts",
+        data: [
+          dispensedSpectacleCount,
+          dispensedElectronicCount,
+          dispensedOpticalCount,
+          dispensedNonOpticalCount,
+        ],
+        ...graphOptions,
+      },
+    ],
+  };
+
+  return chartData;
+}
+
+export default function Summary({
+  user,
+  summary,
+  beneficiaryList,
+  beneficiaryFlatList,
+  error,
+}) {
+  // create start date and end data states, start date is set to one year ago, end date is set to today
   const [startDate, setStartDate] = useState(
     moment().subtract(1, "year").toDate()
   );
   const [endDate, setEndDate] = useState(moment().toDate());
+
   const [selectedHospitals, setSelectedHospitals] = useState([]);
-  const [selectedGenders, setSelectedGenders] = useState(["M", "F", "Other"]);
-  const [selectedMdvi, setSelectedMdvi] = useState(["Yes", "No", "At Risk"]);
-  const [selectedSheets, setSelectedSheets] = useState([
-    "Beneficiary",
-    "Vision Enhancement",
-    "Low Vision Screening",
-    "Comprehensive Low Vision Evaluation",
-    "Computer Training",
-    "Mobile Training",
-    "Orientation Mobility Training",
-    "Training",
-    "Counselling Education",
-    "Aggregated Hospital Data",
-  ]);
-  const today = moment(new Date()).format("YYYY-MM-DD");
 
-  const handleStartDateChange = (e) => {
-    setStartDate(moment(e.target.value).toDate());
-  };
-
-  const handleEndDateChange = (e) => {
-    setEndDate(moment(e.target.value).toDate());
-  };
-
-  const handleSelectAll = () => {
-    setSelectedHospitals(summary.map((item) => item.id));
-  };
+  const router = useRouter();
 
   useEffect(() => {
     setSelectedHospitals(summary.map((item) => item.id));
@@ -112,90 +540,47 @@ function ReportCustomizer({ summary, beneficiaryList } = props) {
     }
   };
 
-  const updateGender = (e) => {
-    if (e.target.checked) {
-      setSelectedGenders((selectedGenders) => [
-        ...selectedGenders,
-        e.target.id,
-      ]);
-    } else {
-      setSelectedGenders((selectedGenders) =>
-        selectedGenders.filter(function (gender) {
-          return gender != e.target.id;
-        })
-      );
-    }
+  const handleSelectAll = () => {
+    setSelectedHospitals(summary.map((item) => item.id));
   };
 
-  const updateMdvi = (e) => {
-    if (e.target.checked) {
-      setSelectedMdvi((selectedMdvi) => [...selectedMdvi, e.target.id]);
-    } else {
-      setSelectedMdvi((selectedMdvi) =>
-        selectedMdvi.filter(function (mdvi) {
-          return mdvi != e.target.id;
-        })
-      );
-    }
-  };
+  // filter summary data based on start and end date of the training
+  const dateFilteredSummary = filterTrainingSummaryByDateRange(
+    startDate,
+    endDate,
+    summary,
+    "hospital"
+  );
+  // filter summary data based on selected hospitals
+  const filteredSummary = dateFilteredSummary.filter((item) =>
+    selectedHospitals.includes(item.id)
+  );
 
-  const updateSheets = (e) => {
-    if (e.target.checked) {
-      setSelectedSheets((selectedSheets) => [...selectedSheets, e.target.id]);
-    } else {
-      setSelectedSheets((selectedSheets) =>
-        selectedSheets.filter(function (sheetName) {
-          return sheetName != e.target.id;
-        })
-      );
-    }
-  };
+  const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
+    startDate,
+    endDate,
+    JSON.parse(JSON.stringify(beneficiaryList)),
+    "beneficiary"
+  );
+
+  const filteredBeneficiaryData = dateFilteredBeneficiaryData.filter((item) =>
+    selectedHospitals.includes(item.hospital.id)
+  );
+
+  // generate all the data for required graphs
+  const beneficiaryGraphData = buildBeneficiaryGraph(filteredSummary);
+  const activitiesGraphData = buildActivitiesGraph(filteredSummary);
+  const trainingBreakdownGraphData = buildBreakdownGraph(
+    filteredSummary,
+    "training"
+  );
+  const counsellingBreakdownGraphData = buildBreakdownGraph(
+    filteredSummary,
+    "counsellingEducation"
+  );
+  const devicesGraphData = buildDevicesGraph(filteredSummary);
 
   const downloadFilteredReport = () => {
-    const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
-      startDate,
-      endDate,
-      JSON.parse(JSON.stringify(beneficiaryList)),
-      "beneficiary"
-    );
-
-    const numTotalBeneficiaries = dateFilteredBeneficiaryData.length;
-
-    const minAge = isNotNullEmptyOrUndefined(
-      document.getElementById("minAge").value
-    )
-      ? document.getElementById("minAge").value
-      : 0;
-
-    const maxAge = isNotNullEmptyOrUndefined(
-      document.getElementById("maxAge").value
-    )
-      ? document.getElementById("maxAge").value
-      : 100;
-
-    const filteredBeneficiaryData = dateFilteredBeneficiaryData.filter(
-      (item) =>
-        selectedHospitals.includes(item.hospital.id) &&
-        selectedGenders.includes(item.gender) &&
-        selectedMdvi.includes(item.mDVI) &&
-        minAge <= getAge(item.dateOfBirth) &&
-        getAge(item.dateOfBirth) <= maxAge
-    );
-
-    const numFilteredBeneficiaries = filteredBeneficiaryData.length;
-
-    // filter summary data based on start and end date of the training
-    const dateFilteredSummary = filterTrainingSummaryByDateRange(
-      startDate,
-      endDate,
-      summary,
-      "hospital"
-    );
-    // filter summary data based on selected hospitals
-    const filteredSummary = dateFilteredSummary.filter((item) =>
-      selectedHospitals.includes(item.id)
-    );
-
     const {
       beneficiaryData,
       visionEnhancementData,
@@ -207,455 +592,174 @@ function ReportCustomizer({ summary, beneficiaryList } = props) {
       trainingData,
       counsellingEducationData,
       aggregatedHospitalData,
-    } = getReportData(
-      filteredBeneficiaryData,
-      filteredSummary,
-      numTotalBeneficiaries === numFilteredBeneficiaries
-    );
+    } = getReportData(filteredBeneficiaryData, filteredSummary, true);
 
     const wb = XLSX.utils.book_new();
 
-    if (selectedSheets.includes("Beneficiary")) {
-      const wben = XLSX.utils.json_to_sheet(beneficiaryData);
-      XLSX.utils.book_append_sheet(wb, wben, "Beneficiary Sheet");
-    }
+    const wben = XLSX.utils.json_to_sheet(beneficiaryData);
+    const wved = XLSX.utils.json_to_sheet(visionEnhancementData);
 
-    if (selectedSheets.includes("Vision Enhancement")) {
-      const wved = XLSX.utils.json_to_sheet(visionEnhancementData);
-      XLSX.utils.book_append_sheet(wb, wved, "Vision Enhancement Sheet");
-    }
+    const wlved = XLSX.utils.json_to_sheet([]);
+    const wclve = XLSX.utils.json_to_sheet([]);
 
-    if (selectedSheets.includes("Low Vision Screening")) {
-      const wlved = XLSX.utils.json_to_sheet([]);
-      XLSX.utils.book_append_sheet(wb, wlved, "Low Vision Screening");
-      setLveHeader(wlved);
-      XLSX.utils.sheet_add_json(wlved, lowVisionEvaluationData, {
-        skipHeader: true,
-        origin: -1,
-      });
-    }
+    const wctd = XLSX.utils.json_to_sheet(computerTrainingData);
+    const wmtd = XLSX.utils.json_to_sheet(mobileTrainingData);
+    const womtd = XLSX.utils.json_to_sheet(orientationMobilityTrainingData);
+    const wtd = XLSX.utils.json_to_sheet(trainingData);
+    const wced = XLSX.utils.json_to_sheet(counsellingEducationData);
 
-    if (selectedSheets.includes("Comprehensive Low Vision Evaluation")) {
-      const wclve = XLSX.utils.json_to_sheet([]);
-      XLSX.utils.book_append_sheet(wb, wclve, "CLVE Sheet");
-      setClveHeader(wclve);
-      XLSX.utils.sheet_add_json(wclve, comprehensiveLowVisionEvaluationData, {
-        skipHeader: true,
-        origin: -1,
-      });
-    }
+    const wahd = XLSX.utils.json_to_sheet([]);
 
-    if (selectedSheets.includes("Computer Training")) {
-      const wctd = XLSX.utils.json_to_sheet(computerTrainingData);
-      XLSX.utils.book_append_sheet(wb, wctd, "Computer Training Sheet");
-    }
+    XLSX.utils.book_append_sheet(wb, wben, "Beneficiary Sheet");
+    XLSX.utils.book_append_sheet(wb, wved, "Vision Enhancement Sheet");
+    XLSX.utils.book_append_sheet(wb, wlved, "Low Vision Screening");
+    XLSX.utils.book_append_sheet(wb, wclve, "CLVE Sheet");
+    XLSX.utils.book_append_sheet(wb, wctd, "Computer Training Sheet");
+    XLSX.utils.book_append_sheet(wb, wmtd, "Mobile Training Sheet");
+    XLSX.utils.book_append_sheet(wb, womtd, "Orientation Mobile Sheet");
+    XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
+    XLSX.utils.book_append_sheet(wb, wced, "Counselling Education Sheet");
+    XLSX.utils.book_append_sheet(wb, wahd, "Aggregated Hospital Sheet");
 
-    if (selectedSheets.includes("Mobile Training")) {
-      const wmtd = XLSX.utils.json_to_sheet(mobileTrainingData);
-      XLSX.utils.book_append_sheet(wb, wmtd, "Mobile Training Sheet");
-    }
+    setClveHeader(wclve);
+    XLSX.utils.sheet_add_json(wclve, comprehensiveLowVisionEvaluationData, {
+      skipHeader: true,
+      origin: -1,
+    });
 
-    if (selectedSheets.includes("Orientation Mobility Training")) {
-      const womtd = XLSX.utils.json_to_sheet(orientationMobilityTrainingData);
-      XLSX.utils.book_append_sheet(wb, womtd, "Orientation Mobile Sheet");
-    }
+    setLveHeader(wlved);
+    XLSX.utils.sheet_add_json(wlved, lowVisionEvaluationData, {
+      skipHeader: true,
+      origin: -1,
+    });
 
-    if (selectedSheets.includes("Training")) {
-      const wtd = XLSX.utils.json_to_sheet(trainingData);
-      XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
-    }
+    setAhdHeader(
+      wahd,
+      filteredSummary.map((hospital) => hospital.name)
+    );
+    XLSX.utils.sheet_add_json(wahd, aggregatedHospitalData, {
+      skipHeader: true,
+      origin: -1,
+    });
 
-    if (selectedSheets.includes("Counselling Education")) {
-      const wced = XLSX.utils.json_to_sheet(counsellingEducationData);
-      XLSX.utils.book_append_sheet(wb, wced, "Counselling Education Sheet");
-    }
+    XLSX.writeFile(wb, "filtered_report.xlsx");
+  };
 
-    if (selectedSheets.includes("Aggregated Hospital Data")) {
-      const wahd = XLSX.utils.json_to_sheet([]);
-      XLSX.utils.book_append_sheet(wb, wahd, "Aggregated Hospital Sheet");
-      setAhdHeader(
-        wahd,
-        filteredSummary.map((hospital) => hospital.name)
-      );
-      XLSX.utils.sheet_add_json(wahd, aggregatedHospitalData, {
-        skipHeader: true,
-        origin: -1,
-      });
-    }
+  const handleStartDateChange = (e) => {
+    setStartDate(moment(e.target.value).toDate());
+  };
 
-    XLSX.writeFile(wb, "customized_report.xlsx");
+  const handleEndDateChange = (e) => {
+    setEndDate(moment(e.target.value).toDate());
+  };
+
+  const [activeGraphTab, setActiveGraphTab] = useState(0);
+  const handleGraphTabChange = (event, newValue) => {
+    setActiveGraphTab(newValue);
+  };
+
+  const renderGraph = (activeTab) => {
+    switch (activeTab) {
+      case 0:
+        return <Bar data={beneficiaryGraphData} />;
+      case 1:
+        return <Bar data={activitiesGraphData} />;
+      case 2:
+        return <Bar data={trainingBreakdownGraphData} />;
+      case 3:
+        return <Bar data={counsellingBreakdownGraphData} />;
+      case 4:
+        return <Bar data={devicesGraphData} />;
+      default:
+        return null;
+    }
   };
 
   return (
     <div>
       <Navigation />
-      {/* <div className="container p-4 mb-3">
-        <h1 className="mt-4 mb-4">Customize Report</h1>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreRounded />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography>
-              <strong>Date Range For Trainings</strong>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col-md-4 text-align-left">
-                <label htmlFor="startDate">Start Date: </label>
-                <input
-                  type="date"
-                  id="startDate"
-                  name="startDate"
-                  value={moment(startDate).format("YYYY-MM-DD")}
-                  onChange={handleStartDateChange}
-                  max={today}
-                  className="margin-left"
-                />
-              </div>
-              <div className="col-md-4 text-align-left">
-                <label htmlFor="endDate">End Date: </label>
-                <input
-                  type="date"
-                  id="endDate"
-                  name="endDate"
-                  value={moment(endDate).format("YYYY-MM-DD")}
-                  onChange={handleEndDateChange}
-                  min={moment(startDate).format("YYYY-MM-DD")}
-                  max={today}
-                  className="margin-left"
-                />
-              </div>
-            </div>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreRounded />}
-            aria-controls="panel2a-content"
-            id="panel2a-header"
-          >
-            <Typography>
-              <strong>Hospitals</strong>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col-md-6">
-                <Table striped bordered hover>
-                  <thead>
-                    <tr>
-                      <th>Hospital</th>
-                      <th>
-                        <button
-                          type="button"
-                          className="btn btn-light"
-                          onClick={handleSelectAll}
-                        >
-                          Select All
-                        </button>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {summary != null &&
-                      summary.map((item) => (
-                        <tr key={item.id}>
-                          <td>{item.name}</td>
-                          <td>
-                            <input
-                              type="checkbox"
-                              id={`hospital-${item.id}`}
-                              value={item.id}
-                              onChange={handleHospitalSelection}
-                              checked={selectedHospitals.includes(item.id)}
-                            />
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </Table>
-              </div>
-            </div>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreRounded />}
-            aria-controls="panel2a-content"
-            id="panel2a-header"
-          >
-            <Typography>
-              <strong>Gender</strong>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col-md-2 text-align-left">
-                <input
-                  type="checkbox"
-                  id="M"
-                  onClick={(e) => updateGender(e)}
-                  checked={selectedGenders.includes("M")}
-                />
-                <label className="margin-left">Male</label>
-              </div>
-
-              <div className="col-md-2 text-align-left">
-                <input
-                  type="checkbox"
-                  id="F"
-                  onClick={(e) => updateGender(e)}
-                  checked={selectedGenders.includes("F")}
-                />
-                <label className="margin-left">Female</label>
-              </div>
-
-              <div className="col-md-2 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Other"
-                  onClick={(e) => updateGender(e)}
-                  checked={selectedGenders.includes("Other")}
-                />
-                <label className="margin-left">Other</label>
-              </div>
-            </div>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreRounded />}
-            aria-controls="panel3a-content"
-            id="panel3a-header"
-          >
-            <Typography>
-              <strong>Age</strong>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col-md-4 text-align-left">
-                <label>Minimum Age: </label>
-                <input
-                  type="number"
-                  min={0}
-                  max={100}
-                  id="minAge"
-                  className="margin-left"
-                />
-              </div>
-
-              <div className="col-md-4 text-align-left">
-                <label>Maximum Age: </label>
-                <input
-                  type="number"
-                  min={0}
-                  max={100}
-                  id="maxAge"
-                  className="margin-left"
-                />
-              </div>
-            </div>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreRounded />}
-            aria-controls="panel2a-content"
-            id="panel2a-header"
-          >
-            <Typography>
-              <strong>MDVI</strong>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col-md-2 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Yes"
-                  onClick={(e) => updateMdvi(e)}
-                  checked={selectedMdvi.includes("Yes")}
-                />
-                <label className="margin-left">Yes</label>
-              </div>
-
-              <div className="col-md-2 text-align-left">
-                <input
-                  type="checkbox"
-                  id="No"
-                  onClick={(e) => updateMdvi(e)}
-                  checked={selectedMdvi.includes("No")}
-                />
-                <label className="margin-left">No</label>
-              </div>
-
-              <div className="col-md-2 text-align-left">
-                <input
-                  type="checkbox"
-                  id="At Risk"
-                  onClick={(e) => updateMdvi(e)}
-                  checked={selectedMdvi.includes("At Risk")}
-                />
-                <label className="margin-left">At Risk</label>
-              </div>
-            </div>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreRounded />}
-            aria-controls="panel2a-content"
-            id="panel2a-header"
-          >
-            <Typography>
-              <strong>Sheets To Include</strong>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Beneficiary"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Beneficiary")}
-                />
-                <label className="margin-left">Beneficiary</label>
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Vision Enhancement"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Vision Enhancement")}
-                />
-                <label className="margin-left">Vision Enhancement</label>
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Low Vision Screening"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Low Vision Screening")}
-                />
-                <label className="margin-left">Low Vision Screening</label>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Comprehensive Low Vision Evaluation"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes(
-                    "Comprehensive Low Vision Evaluation"
-                  )}
-                />
-                <label className="margin-left">
-                  Comprehensive Low Vision Evaluation
-                </label>
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Computer Training"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Computer Training")}
-                />
-                <label className="margin-left">Computer Training</label>
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Mobile Training"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Mobile Training")}
-                />
-                <label className="margin-left">Mobile Training</label>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Orientation Mobility Training"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes(
-                    "Orientation Mobility Training"
-                  )}
-                />
-                <label className="margin-left">
-                  Orientation Mobility Training
-                </label>
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Training"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Training")}
-                />
-                <label className="margin-left">Training</label>
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Counselling Education"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Counselling Education")}
-                />
-                <label className="margin-left">Counselling Education</label>
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Aggregated Hospital Data"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Aggregated Hospital Data")}
-                />
-                <label className="margin-left">Aggregated Hospital Data</label>
-              </div>
-            </div>
-          </AccordionDetails>
-        </Accordion>
+      <Container className="p-3">
+        <h1 className="text-center mt-4 mb-4">Visualization and Reports</h1>
+        <div className="row">
+          <div className="col-md-2 ">
+            {user.admin && (
+              <button
+                onClick={() => router.push("/customizedReport")}
+                className="btn btn-success border-0 btn-block"
+              >
+                More Customization
+              </button>
+            )}
+          </div>
+          <div className="offset-md-8 col-md-2">
+            <button
+              className="btn btn-success border-0 btn-block text-align-right"
+              onClick={downloadFilteredReport}
+            >
+              <Download></Download> Report
+            </button>
+          </div>
+        </div>
         <br />
-        <button
-          class="btn btn-success border-0 btn-block"
-          onClick={() => downloadFilteredReport()}
-        >
-          Download Customized Report
-        </button>
-        <br />
-        <br />
-      </div>
-      <br /> */}
+        {user.admin != null && (
+          <div className="row">
+            <div className="col-md-3">
+              <p>
+                <strong>Basic Customization</strong>
+              </p>
+              <GraphCustomizer
+                summary={summary}
+                selectedHospitals={selectedHospitals}
+                handleHospitalSelection={handleHospitalSelection}
+                handleSelectAll={handleSelectAll}
+                startDate={startDate}
+                handleStartDateChange={handleStartDateChange}
+                endDate={endDate}
+                handleEndDateChange={handleEndDateChange}
+              />
+            </div>
+            <div className="col-md-9">
+              <Paper>
+                <Tabs
+                  value={activeGraphTab}
+                  onChange={handleGraphTabChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
+                  <Tab label="Beneficiaries" />
+                  <Tab label="All Activities" />
+                  <Tab label="Training Activities" />
+                  <Tab label="Counselling Activities" />
+                  <Tab label="Devices" />
+                </Tabs>
+                {renderGraph(activeGraphTab)}
+              </Paper>
+            </div>
+          </div>
+        )}
+        {user.admin == null && (
+          <div className="row">
+            <Paper>
+              <Tabs
+                value={activeGraphTab}
+                onChange={handleGraphTabChange}
+                indicatorColor="primary"
+                textColor="primary"
+                centered
+              >
+                <Tab label="Beneficiaries" />
+                <Tab label="All Activities" />
+                <Tab label="Training Activities" />
+                <Tab label="Counselling Activities" />
+                <Tab label="Devices" />
+              </Tabs>
+              {renderGraph(activeGraphTab)}
+            </Paper>
+          </div>
+        )}
+      </Container>
+      <br />
     </div>
   );
 }
-
-export default ReportCustomizer;
