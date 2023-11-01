@@ -289,7 +289,7 @@ function ReportCustomizer({ summary, beneficiaryList } = props) {
   return (
     <div>
       <Navigation />
-      <div className="container p-4 mb-3">
+      {/* <div className="container p-4 mb-3">
         <h1 className="mt-4 mb-4">Customize Report</h1>
         <Accordion>
           <AccordionSummary
@@ -653,7 +653,7 @@ function ReportCustomizer({ summary, beneficiaryList } = props) {
         <br />
         <br />
       </div>
-      <br />
+      <br /> */}
     </div>
   );
 }
