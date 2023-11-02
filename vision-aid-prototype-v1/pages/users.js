@@ -57,8 +57,7 @@ function Users(props) {
     let hospitalId;
     if (hosp === "All") {
       hospitalId = 0;
-    }
-    else {
+    } else {
       hospitalId = parseInt(
         hosp.substring(hosp.indexOf("("), hosp.indexOf(")")).substring(4)
       );
@@ -232,7 +231,7 @@ function Users(props) {
   }
   return (
     <div>
-      <Navigation />
+      <Navigation user={props.user} />
       <div className="row">
         <div className="offset-md-1 col-md-4">
           <br />

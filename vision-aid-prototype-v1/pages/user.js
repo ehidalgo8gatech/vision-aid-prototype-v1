@@ -12,6 +12,7 @@ import { getTrainingTypes } from "@/pages/api/trainingType";
 import { getCounsellingType } from "@/pages/api/counsellingType";
 import { getTrainingSubTypes } from "@/pages/api/trainingSubType";
 import { findAllHospital } from "./api/hospital";
+import { readUser } from "./api/user";
 
 function UserPage(props) {
   // console.log("props: ", JSON.stringify(props));
@@ -453,7 +454,7 @@ function UserPage(props) {
 
   return (
     <div>
-      <Navigation />
+      <Navigation user={props.currentUser} />
       <div className="container p-4 mb-3">
         <h2 class="benficiary-heading">Beneficiary Details</h2>
         <hr class="horizontal-line" />
@@ -510,11 +511,22 @@ function UserPage(props) {
   );
 }
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps(ctx) {
+  const session = await getSession(ctx);
+  if (session == null) {
+    console.log("session is null");
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  const currentUser = await readUser(session.user.email);
   var user;
   try {
     const beneficiary = await await fetch(
-      `${process.env.NEXTAUTH_URL}/api/beneficiary?mrn=${query.mrn}`,
+      `${process.env.NEXTAUTH_URL}/api/beneficiary?mrn=${ctx.query.mrn}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -545,6 +557,7 @@ export async function getServerSideProps({ query }) {
 
   return {
     props: {
+      currentUser: currentUser,
       user: user,
       beneficiaryMirror: benMirrorJson,
       trainingType: await getTrainingTypes(),
