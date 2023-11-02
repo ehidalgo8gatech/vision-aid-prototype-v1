@@ -45,7 +45,7 @@ export default function HistoricalVisionEnhancementForm(props) {
     } else {
       alert("Failed to save data!");
     }
-    await refetchUser();
+    await props.refetchUser();
   };
 
   return data == undefined ? (

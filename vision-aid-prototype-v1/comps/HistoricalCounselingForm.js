@@ -74,7 +74,7 @@ export default function HistoricalCounselingForm(props) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(trainingData),
     });
     if (res.status == 200) {
       setEditMode(false);
