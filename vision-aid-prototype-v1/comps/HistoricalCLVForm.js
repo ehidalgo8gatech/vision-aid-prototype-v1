@@ -88,13 +88,6 @@ export default function HistoricalCLVForm(props) {
     ? readString(data.recommendationElectronic).data[0]
     : [];
 
-  console.log(
-    recommendationSpectacleArr,
-    recommendationOpticalArr,
-    recommendationNonOpticalArr,
-    recommendationElectronicArr
-  );
-
   const [devices, setDevices] = useState({
     recommendationSpectacle: isNotNullEmptyOrUndefined(
       data.recommendationSpectacle
@@ -368,60 +361,62 @@ export default function HistoricalCLVForm(props) {
       showOther.dispensedElectronic === true
         ? otherDevices.dispensedElectronic
         : devices["dispensedElectronic"];
-    console.log([
-      replaceOtherByDeviceName(
-        devices["recommendationSpectacle"],
-        otherDevices["recommendationSpectacle"]
-      ),
-    ]);
     data["recommendationSpectacle"] =
       showOther.recommendationSpectacle === true
-        ? jsonToCSV([
-            replaceOtherByDeviceName(
-              devices["recommendationSpectacle"],
-              otherDevices["recommendationSpectacle"]
-            ),
-            { ...config, delimiter: comma },
-          ])
+        ? jsonToCSV(
+            [
+              replaceOtherByDeviceName(
+                devices["recommendationSpectacle"],
+                otherDevices["recommendationSpectacle"]
+              ),
+            ],
+            { ...config, delimiter: comma }
+          )
         : jsonToCSV([devices["recommendationSpectacle"]], {
             ...config,
             delimiter: comma,
           });
     data["recommendationOptical"] =
       showOther.recommendationOptical === true
-        ? jsonToCSV([
-            replaceOtherByDeviceName(
-              devices["recommendationOptical"],
-              otherDevices["recommendationOptical"]
-            ),
-            { ...config, delimiter: comma },
-          ])
+        ? jsonToCSV(
+            [
+              replaceOtherByDeviceName(
+                devices["recommendationOptical"],
+                otherDevices["recommendationOptical"]
+              ),
+            ],
+            { ...config, delimiter: comma }
+          )
         : jsonToCSV([devices["recommendationOptical"]], {
             ...config,
             delimiter: comma,
           });
     data["recommendationNonOptical"] =
       showOther.recommendationNonOptical === true
-        ? jsonToCSV([
-            replaceOtherByDeviceName(
-              devices["recommendationNonOptical"],
-              otherDevices["recommendationNonOptical"]
-            ),
-            { ...config, delimiter: comma },
-          ])
+        ? jsonToCSV(
+            [
+              replaceOtherByDeviceName(
+                devices["recommendationNonOptical"],
+                otherDevices["recommendationNonOptical"]
+              ),
+            ],
+            { ...config, delimiter: comma }
+          )
         : jsonToCSV([devices["recommendationNonOptical"]], {
             ...config,
             delimiter: comma,
           });
     data["recommendationElectronic"] =
       showOther.recommendationElectronic === true
-        ? jsonToCSV([
-            replaceOtherByDeviceName(
-              devices["recommendationElectronic"],
-              otherDevices["recommendationElectronic"]
-            ),
-            { ...config, delimiter: comma },
-          ])
+        ? jsonToCSV(
+            [
+              replaceOtherByDeviceName(
+                devices["recommendationElectronic"],
+                otherDevices["recommendationElectronic"]
+              ),
+            ],
+            { ...config, delimiter: comma }
+          )
         : jsonToCSV([devices["recommendationElectronic"]], {
             ...config,
             delimiter: comma,
@@ -511,8 +506,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="sessionNumber"
                     value={data.sessionNumber}
-                      onChange={(e) => handleChange(e)}
-                      min="1"
+                    onChange={(e) => handleChange(e)}
+                    min="1"
                   />
                 </FormControl>
               )}
@@ -703,8 +698,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costSpectacle"
                     value={data.costSpectacle}
-                      onChange={(e) => handleChange(e)}
-                      min="0"
+                    onChange={(e) => handleChange(e)}
+                    min="0"
                   />
                 </FormControl>
               )}
@@ -722,8 +717,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costToBeneficiarySpectacle"
                     value={data.costToBeneficiarySpectacle}
-                      onChange={(e) => handleChange(e)}
-                      min="0"
+                    onChange={(e) => handleChange(e)}
+                    min="0"
                   />
                 </FormControl>
               )}
@@ -862,8 +857,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costOptical"
                     value={data.costOptical}
-                      onChange={(e) => handleChange(e)}
-                      min="0"
+                    onChange={(e) => handleChange(e)}
+                    min="0"
                   />
                 </FormControl>
               )}
@@ -881,8 +876,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costToBeneficiaryOptical"
                     value={data.costToBeneficiaryOptical}
-                      onChange={(e) => handleChange(e)}
-                      min="0"
+                    onChange={(e) => handleChange(e)}
+                    min="0"
                   />
                 </FormControl>
               )}
@@ -1021,8 +1016,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costNonOptical"
                     value={data.costNonOptical}
-                      onChange={(e) => handleChange(e)}
-                      min="0"
+                    onChange={(e) => handleChange(e)}
+                    min="0"
                   />
                 </FormControl>
               )}
@@ -1040,8 +1035,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costToBeneficiaryNonOptical"
                     value={data.costToBeneficiaryNonOptical}
-                      onChange={(e) => handleChange(e)}
-                      min="0"
+                    onChange={(e) => handleChange(e)}
+                    min="0"
                   />
                 </FormControl>
               )}
@@ -1180,8 +1175,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costElectronic"
                     value={data.costElectronic}
-                      onChange={(e) => handleChange(e)}
-                      min="0"
+                    onChange={(e) => handleChange(e)}
+                    min="0"
                   />
                 </FormControl>
               )}
@@ -1199,8 +1194,8 @@ export default function HistoricalCLVForm(props) {
                     type="number"
                     name="costToBeneficiaryElectronic"
                     value={data.costToBeneficiaryElectronic}
-                      onChange={(e) => handleChange(e)}
-                      min="0"
+                    onChange={(e) => handleChange(e)}
+                    min="0"
                   />
                 </FormControl>
               )}

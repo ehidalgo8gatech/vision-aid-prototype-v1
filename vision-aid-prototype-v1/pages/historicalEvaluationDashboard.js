@@ -17,22 +17,35 @@ import { getCounsellingType } from "./api/counsellingType";
 import { getTrainingTypes } from "./api/trainingType";
 import { getTrainingSubTypes } from "./api/trainingSubType";
 
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import { ExpandMoreRounded } from "@mui/icons-material";
+
 export default function HistoricalEvaluationPage(props) {
   let serviceToFetch = props.service;
   if (props.service == "Low_Vision_Screening") {
     serviceToFetch = "Low_Vision_Evaluation";
   }
-
-  console.log(
-    "CounselingTypeList from getServerSideprops: ",
-    props.counselingTypeList
-  );
+  let serviceIsATraining = false;
+  if (
+    props.service === "Training" ||
+    props.service === "Counselling_Education"
+  ) {
+    serviceIsATraining = true;
+  }
 
   const [user, setUser] = useState(props.user);
 
   const service = user[serviceToFetch];
   const currentUser = props.currentUser;
   const [formData, setFormData] = useState({});
+  const [expanded, setExpanded] = useState(false);
+
+  const handleExpand = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
 
   const refetchUser = async () => {
     let user = {};
@@ -61,24 +74,32 @@ export default function HistoricalEvaluationPage(props) {
     return new Date(date).toLocaleDateString(undefined, options);
   };
 
-  const filterData = (date, services) => {
+  const filterData = (entry, services) => {
     return services.filter(function (value) {
-      return formatDate(value["service"].date) === formatDate(date);
+      if (serviceIsATraining) {
+        return (
+          formatDate(value["service"].date) === formatDate(entry.date) &&
+          value["service"].type == entry.suppInfo
+        );
+      } else {
+        return (
+          formatDate(value["service"].date) === formatDate(entry.date) &&
+          value["service"].sessionNumber == entry.suppInfo
+        );
+      }
     })[0];
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleServiceChange = (date, services) => {
+  const handleServiceChange = (entry, services) => {
     let historicalDashboard = null;
-    const evaluationData = filterData(date, services);
-    if (date == undefined || evaluationData == undefined) {
+    const evaluationData = filterData(entry, services);
+    if (
+      entry.date == undefined ||
+      entry.suppInfo == undefined ||
+      evaluationData == undefined
+    ) {
       historicalDashboard = (
-        <div className="text-align-left">
-          Select a historical evaluation date from the drop-down menu!
-        </div>
+        <div className="text-align-left">No corresponding data found!</div>
       );
     } else {
       let commonProps = { refetchUser, evaluationData };
@@ -123,10 +144,6 @@ export default function HistoricalEvaluationPage(props) {
     return historicalDashboard;
   };
 
-  const historicalDates = service
-    .filter((item) => item.date !== null)
-    .map((item) => formatDate(item.date));
-
   service.sort(function (record1, record2) {
     var date1 = new Date(record1.date);
     var date2 = new Date(record2.date);
@@ -140,6 +157,20 @@ export default function HistoricalEvaluationPage(props) {
     }
   });
 
+  const historicalDates = service
+    .filter((item) => item.date !== null)
+    .map((item) => {
+      if (serviceIsATraining) {
+        return { date: formatDate(item.date), suppInfo: item.type };
+      } else {
+        return {
+          date: formatDate(item.date),
+          suppInfo: item.sessionNumber,
+        };
+      }
+    });
+  console.log("Historical dates refreshed.");
+
   let serviceEditList = [];
 
   for (let i = 0; i < service.length; i++) {
@@ -152,6 +183,33 @@ export default function HistoricalEvaluationPage(props) {
     } else {
       serviceEditList.push({ service: service[i], editable: true });
     }
+  }
+
+  let accordionList = [];
+  for (let i = 0; i < historicalDates.length; i++) {
+    let name = "panel" + i;
+    accordionList.push(
+      <Accordion expanded={expanded === name} onChange={handleExpand(name)}>
+        <AccordionSummary expandIcon={<ExpandMoreRounded />}>
+          <Typography>
+            {serviceIsATraining && (
+              <strong>
+                {historicalDates[i].date} (Type: {historicalDates[i].suppInfo})
+              </strong>
+            )}
+            {!serviceIsATraining && (
+              <strong>
+                {historicalDates[i].date} (Session:{" "}
+                {historicalDates[i].suppInfo})
+              </strong>
+            )}
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {handleServiceChange(historicalDates[i], serviceEditList)}
+        </AccordionDetails>
+      </Accordion>
+    );
   }
 
   return (
@@ -179,29 +237,9 @@ export default function HistoricalEvaluationPage(props) {
               consent={user.consent}
             />
           </div>
-          {/* <div className="col-md-1"></div> */}
           <div className="col-md-7">
             <div className="row">
-              <div className="text-align-left">
-                Select a date:
-                <select
-                  className="mb-3"
-                  name="historyDate"
-                  id="historyDate"
-                  onChange={handleChange}
-                  style={{ width: "200px" }}
-                >
-                  <option value="">Date Picker</option>
-                  {historicalDates.map((date, idx) => (
-                    <option key={idx} value={formatDate(date)}>
-                      {formatDate(date)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="row">
-              {handleServiceChange(formData["historyDate"], serviceEditList)}
+              {accordionList}
             </div>
           </div>
         </div>
