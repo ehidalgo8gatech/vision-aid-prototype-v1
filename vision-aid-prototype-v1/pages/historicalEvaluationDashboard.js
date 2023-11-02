@@ -214,7 +214,7 @@ export default function HistoricalEvaluationPage(props) {
 
   return (
     <div>
-      <Navigation />
+      <Navigation user={currentUser} />
       <div className="container p-4 mb-3">
         <h2>{formatTitle(props.service)} History</h2>
         <hr class="horizontal-line" />

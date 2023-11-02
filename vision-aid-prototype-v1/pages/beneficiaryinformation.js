@@ -48,7 +48,9 @@ function RequiredFields(props) {
 
   const [phone, setPhone] = useState("");
   const today = moment(new Date()).format("YYYY-MM-DD");
-  const [beneficiaryNameVal, setBeneficiaryNameVal] = useState(props.beneficiaryName);
+  const [beneficiaryNameVal, setBeneficiaryNameVal] = useState(
+    props.beneficiaryName
+  );
 
   const checkInput = (e) => {
     const onlyDigits = e.target.value.replace(/\D/g, "");
@@ -504,7 +506,7 @@ function RequiredFields(props) {
 
   return (
     <div>
-      <Navigation />
+      <Navigation user={props.user} />
       <div className="container">
         <h1 className="text-center mt-4 mb-4">Register Beneficiary</h1>
         <div className="beneficiary-child-container">

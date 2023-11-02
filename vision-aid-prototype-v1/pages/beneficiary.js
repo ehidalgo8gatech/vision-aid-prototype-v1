@@ -7,8 +7,29 @@ import SearchBar from "./components/SearchBar";
 import UserList from "./components/UserList";
 import Navigation from "./navigation/Navigation";
 import Router, { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
+import { readUser } from "./api/user";
 
-function HomePage() {
+export async function getServerSideProps(ctx) {
+  const session = await getSession(ctx);
+  if (session == null) {
+    console.log("session is null");
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  const user = await readUser(session.user.email);
+  return {
+    props: {
+      user: user,
+    },
+  };
+}
+
+function HomePage(props) {
   const [users, setUsers] = useState([]);
   const [searched, setSearched] = useState(false);
   const [choice, setChoice] = useState("");
@@ -76,7 +97,7 @@ function HomePage() {
 
   return (
     <div>
-      <Navigation />
+      <Navigation user={props.user} />
       <div className="container">
         <h1 className="text-center mt-4 mb-4">Search / Register</h1>
         <div className="beneficiary-child-container">
@@ -96,8 +117,8 @@ function HomePage() {
           {users.length > 0 && choice === "register" && (
             <div>
               <p>
-                The beneficiary you are trying to register might already exist as displayed below.
-                Would you still like to continue?
+                The beneficiary you are trying to register might already exist
+                as displayed below. Would you still like to continue?
               </p>
               <button
                 class="btn btn-success border-0 btn-block"

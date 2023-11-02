@@ -1,8 +1,29 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import Navigation from './navigation/Navigation';
+import { useState } from "react";
+import { useRouter } from "next/router";
+import Navigation from "./navigation/Navigation";
+import { getSession } from "next-auth/react";
+import { readUser } from "./api/user";
 
-const AddUser = () => {
+export async function getServerSideProps(ctx) {
+  const session = await getSession(ctx);
+  if (session == null) {
+    console.log("session is null");
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  const user = await readUser(session.user.email);
+  return {
+    props: {
+      user: user,
+    },
+  };
+}
+
+const AddUser = (props) => {
   const [formData, setFormData] = useState({});
   const router = useRouter();
 
@@ -14,31 +35,31 @@ const AddUser = () => {
     e.preventDefault();
 
     console.log(formData);
-    var hospitalName = formData['hospitalName'];
-    const hospital = await fetch('/api/hospital?name=' + hospitalName, {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
-    })
-    const hospitalJson = await hospital.json()
+    var hospitalName = formData["hospitalName"];
+    const hospital = await fetch("/api/hospital?name=" + hospitalName, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    const hospitalJson = await hospital.json();
     if (hospitalJson == null || hospitalJson.error != null) {
-        alert("Can't find hospital name in db " + hospitalName)
-        return
+      alert("Can't find hospital name in db " + hospitalName);
+      return;
     }
-    formData['hospitalId'] = hospitalJson.id
-    formData['dateOfBirth'] = new Date(formData['dateOfBirth']);
+    formData["hospitalId"] = hospitalJson.id;
+    formData["dateOfBirth"] = new Date(formData["dateOfBirth"]);
 
-    const response = await fetch('/api/beneficiary', {
-      method: 'POST',
+    const response = await fetch("/api/beneficiary", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
     });
 
     if (response.ok) {
-        router.push('/user?mrn=' + formData['mrn']);
+      router.push("/user?mrn=" + formData["mrn"]);
     } else {
-      alert('An error occurred while creating the user. Please try again.');
+      alert("An error occurred while creating the user. Please try again.");
     }
   };
 
@@ -50,7 +71,7 @@ const AddUser = () => {
         className="form-control"
         name={name}
         id={name}
-        value={formData[name] || ''}
+        value={formData[name] || ""}
         onChange={handleChange}
       />
     </div>
@@ -58,40 +79,42 @@ const AddUser = () => {
 
   return (
     <div className="container">
-      <Navigation />
+      <Navigation user={props.user} />
       <h1 className="text-center mt-4 mb-4">Add User</h1>
       <form onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-md-6">
-            <div className="mb-3">{renderField('MRN', 'mrn')}</div>
+            <div className="mb-3">{renderField("MRN", "mrn")}</div>
             <div className="mb-3">
-              {renderField('Beneficiary Name', 'beneficiaryName',)}
+              {renderField("Beneficiary Name", "beneficiaryName")}
             </div>
             <div className="mb-3">
-              {renderField('Hospital Name', 'hospitalName')}
+              {renderField("Hospital Name", "hospitalName")}
             </div>
             <div className="mb-3">
-              {renderField('Date of Birth', 'dateOfBirth', 'date')}
+              {renderField("Date of Birth", "dateOfBirth", "date")}
             </div>
-            <div className="mb-3">{renderField('Gender', 'gender')}</div>
+            <div className="mb-3">{renderField("Gender", "gender")}</div>
           </div>
           <div className="col-md-6">
             <div className="mb-3">
-              {renderField('Phone Number', 'phoneNumber')}
+              {renderField("Phone Number", "phoneNumber")}
             </div>
-            <div className="mb-3">{renderField('Education', 'education')}</div>
-            <div className="mb-3">{renderField('Occupation', 'occupation')}</div>
-            <div className="mb-3">{renderField('Districts', 'districts')}</div>
-            <div className="mb-3">{renderField('State', 'state')}</div>
+            <div className="mb-3">{renderField("Education", "education")}</div>
+            <div className="mb-3">
+              {renderField("Occupation", "occupation")}
+            </div>
+            <div className="mb-3">{renderField("Districts", "districts")}</div>
+            <div className="mb-3">{renderField("State", "state")}</div>
           </div>
         </div>
         <div className="row">
           <div className="col-12">
-            <div className="mb-3">{renderField('Diagnosis', 'diagnosis')}</div>
-            <div className="mb-3">{renderField('Vision', 'vision')}</div>
-            <div className="mb-3">{renderField('mDVI', 'mDVI')}</div>
+            <div className="mb-3">{renderField("Diagnosis", "diagnosis")}</div>
+            <div className="mb-3">{renderField("Vision", "vision")}</div>
+            <div className="mb-3">{renderField("mDVI", "mDVI")}</div>
             <div className="mb-3">
-              {renderField('Extra Information', 'extraInformation')}
+              {renderField("Extra Information", "extraInformation")}
             </div>
           </div>
         </div>
