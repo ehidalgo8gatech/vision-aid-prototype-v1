@@ -186,6 +186,14 @@ export default function HistoricalEvaluationPage(props) {
   }
 
   let accordionList = [];
+  if (historicalDates.length === 0) {
+    accordionList.push(
+      <div>
+        <br />
+        <strong>No history for this user!</strong>
+      </div>
+    );
+  }
   for (let i = 0; i < historicalDates.length; i++) {
     let name = "panel" + i;
     accordionList.push(
