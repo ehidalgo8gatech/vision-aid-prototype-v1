@@ -173,7 +173,7 @@ function UserPage(props) {
       }
     } else {
       alert(
-        "Please ensure that you have entered the beneficiary\'s name correctly. Try again!"
+        "Please ensure that you have entered the beneficiary's name correctly. Try again!"
       );
       setConsentName("");
     }
@@ -304,7 +304,7 @@ function UserPage(props) {
                   <br />
                   <br />
                   <div>
-                    Please type beneficiary's full name to grant consent:
+                    Please type beneficiary&apos;s full name to grant consent:
                     <br />
                     <br />
                     <input
@@ -428,10 +428,12 @@ function UserPage(props) {
 
                 {/* <!-- Modal body --> */}
                 <div class="modal-body">
-                  Type the beneficiary's full name to grant consent to
-                  Vision-Aid. Please do so only if you wish to give Vision-Aid
-                  the authority to use your photos, videos or other media in
-                  their public campaigns.
+                  <div>
+                    Type the beneficiary&apos;s full name to grant consent to
+                    Vision-Aid. Please do so only if you wish to give Vision-Aid
+                    the authority to use your photos, videos or other media in
+                    their public campaigns.
+                  </div>
                   <br /> <br />
                   <input
                     type="text"
