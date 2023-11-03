@@ -173,7 +173,7 @@ function UserPage(props) {
       }
     } else {
       alert(
-        "Please ensure that you have entered the beneficiary's name correctly. Try again!"
+        "Please ensure that you have entered the beneficiary\'s name correctly. Try again!"
       );
       setConsentName("");
     }
