@@ -13,6 +13,7 @@ import { getCounsellingType } from "@/pages/api/counsellingType";
 import { getTrainingSubTypes } from "@/pages/api/trainingSubType";
 import { findAllHospital } from "./api/hospital";
 import { readUser } from "./api/user";
+import ConsentForm from "./components/ConsentForm";
 
 function UserPage(props) {
   // console.log("props: ", JSON.stringify(props));
@@ -39,6 +40,7 @@ function UserPage(props) {
   const [openMobile, setOpenMobile] = useState(false);
   const [openComputer, setOpenComputer] = useState(false);
   const [openVision, setOpenVision] = useState(false);
+  const [consentName, setConsentName] = useState("");
 
   useEffect(() => {
     setMobileTrainingData(props.user.Mobile_Training);
@@ -150,6 +152,53 @@ function UserPage(props) {
     callMe(data, url, setOrientationMobilityData, orientationMobilityData);
   };
 
+  const grantConsent = async () => {
+    if (consentName === props.user.beneficiaryName) {
+      // Update user data in the database
+      const response = await fetch(`/api/beneficiary`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ mrn: props.user.mrn, consent: "Yes" }),
+      });
+
+      // Handle response from the API
+      if (response.ok) {
+        setEditableField("");
+        setConsentName("");
+        setFormData((formData) => ({ ...formData, consent: "Yes" }));
+      } else {
+        alert("An error occurred while saving user data. Please try again.");
+      }
+    } else {
+      alert(
+        "Please ensure that you have entered the beneficiary's name correctly. Try again!"
+      );
+      setConsentName("");
+    }
+  };
+
+  const revokeConsent = async () => {
+    // Update user data in the database
+    const response = await fetch(`/api/beneficiary`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ mrn: props.user.mrn, consent: "No" }),
+    });
+
+    // Handle response from the API
+    if (response.ok) {
+      setEditableField("");
+      setFormData((formData) => ({ ...formData, consent: "No" }));
+      setConsentName("");
+    } else {
+      alert("An error occurred while saving user data. Please try again.");
+    }
+  };
+
   // Handle input changes
   const handleInputChange = (e) => {
     console.log("Entered", e);
@@ -208,6 +257,207 @@ function UserPage(props) {
   if (!props.user) {
     return <div>Loading...</div>;
   }
+
+  const formatDate = (date) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(date).toLocaleDateString(undefined, options);
+  };
+
+  const renderConsentField = (field, type, canEdit) => {
+    if (formData[field] == null || formData[field] === "") {
+      return (
+        <div>
+          <div className="text-align-left">
+            <div className="flex-container">
+              <div className="text-danger">
+                No consent information recorded.
+              </div>
+              <div className="text-align-right">
+                <button
+                  className="btn btn-sm btn-link"
+                  data-bs-toggle="modal"
+                  data-bs-target="#indicateConsent"
+                >
+                  Indicate Consent
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="modal" id="indicateConsent">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                {/* <!-- Modal Header --> */}
+                <div class="modal-header">
+                  <h4 class="modal-title">Consent Form</h4>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    id="close-indicate"
+                  ></button>
+                </div>
+
+                {/* <!-- Modal body --> */}
+                <div class="modal-body">
+                  I hereby grant Vision-Aid the authority to use my photos,
+                  videos or other media in their public campaigns.
+                  <br />
+                  <br />
+                  <div>
+                    Please type beneficiary's full name to grant consent:
+                    <br />
+                    <br />
+                    <input
+                      type="text"
+                      value={consentName}
+                      onChange={(e) => setConsentName(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                {/* <!-- Modal footer --> */}
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-success"
+                    data-bs-dismiss="modal"
+                    onClick={() => grantConsent()}
+                  >
+                    Yes, I consent
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    data-bs-dismiss="modal"
+                    onClick={() => revokeConsent()}
+                  >
+                    No, I do not consent
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    } else if (formData[field] === "Yes") {
+      return (
+        <div>
+          <div className="text-align-left">
+            <div className="flex-container">
+              <div>{formData[field]}</div>
+              <div className="text-align-right">
+                {canEdit && (
+                  <button
+                    className="btn btn-sm btn-link text-primary ms-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#revokeConsent"
+                  >
+                    Revoke Consent
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+          <div class="modal" id="revokeConsent">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                {/* <!-- Modal Header --> */}
+                <div class="modal-header">
+                  <h4 class="modal-title">Revoke Consent?</h4>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    id="close-revoke"
+                  ></button>
+                </div>
+
+                {/* <!-- Modal body --> */}
+                <div class="modal-body">
+                  Please confirm that you wish to revoke consent.
+                </div>
+
+                {/* <!-- Modal footer --> */}
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    data-bs-dismiss="modal"
+                    onClick={() => revokeConsent()}
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    } else if (formData[field] === "No") {
+      return (
+        <div>
+          <div className="text-align-left">
+            <div className="flex-container">
+              <div>{formData[field]}</div>
+              <div className="text-align-right">
+                {canEdit && (
+                  <button
+                    className="btn btn-sm btn-link text-primary ms-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#grantConsent"
+                  >
+                    Grant Consent
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+          <div class="modal" id="grantConsent">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                {/* <!-- Modal Header --> */}
+                <div class="modal-header">
+                  <h4 class="modal-title">Grant Consent?</h4>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    id="close-grant"
+                  ></button>
+                </div>
+
+                {/* <!-- Modal body --> */}
+                <div class="modal-body">
+                  Type the beneficiary's full name to grant consent to
+                  Vision-Aid. Please do so only if you wish to give Vision-Aid
+                  the authority to use your photos, videos or other media in
+                  their public campaigns.
+                  <br /> <br />
+                  <input
+                    type="text"
+                    value={consentName}
+                    onChange={(e) => setConsentName(e.target.value)}
+                  />
+                </div>
+
+                {/* <!-- Modal footer --> */}
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-success"
+                    data-bs-dismiss="modal"
+                    onClick={() => grantConsent()}
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  };
 
   const renderSelectField = (field, type, canEdit) => {
     let options = [];
@@ -388,7 +638,7 @@ function UserPage(props) {
     ) : (
       <div className="text-align-left">
         <div className="flex-container">
-          {formData["dateOfBirth"].toString().split("T")[0]}
+          {formatDate(formData["dateOfBirth"].toString().split("T")[0])}
           <button
             type="button"
             className="btn btn-link btn-sm text-primary ms-2 text-align-right"
@@ -498,12 +748,19 @@ function UserPage(props) {
               extraInformation={renderExtraInformation()}
               name={formData["beneficiaryName"]}
               mdvi={renderSelectField("mDVI", "text", true)}
-              consent={renderField("consent", "text", false)}
             />
           </div>
           {/* <div className="col-md-1"></div> */}
           <div className="col-md-7">
             <BeneficiaryServicesTable user={props.user} />
+          </div>
+        </div>
+        <br />
+        <div className="row">
+          <div className="col-md-5">
+            <ConsentForm
+              consent={renderConsentField("consent", "text", true)}
+            />
           </div>
         </div>
       </div>

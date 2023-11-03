@@ -113,13 +113,6 @@ function RequiredFields(props) {
       document.getElementById("mDVI") != null
         ? document.getElementById("mDVI").value
         : null;
-    let consent =
-      document.getElementById("consent") !== null &&
-      document.getElementById("consent").value !== null &&
-      document.getElementById("consent").value ===
-        document.getElementById("beneficiaryName").value
-        ? "Yes"
-        : "No";
 
     console.log(
       "mrn" +
@@ -138,8 +131,7 @@ function RequiredFields(props) {
       "state" + state,
       "diagnosis" + diagnosis,
       "vision" + vision,
-      "mDVI" + mDVI,
-      "consent" + consent
+      "mDVI" + mDVI
     );
     let elements = document.getElementsByName("extraField");
     document.get;
@@ -174,7 +166,6 @@ function RequiredFields(props) {
         vision: vision,
         mDVI: mDVI,
         extraInformation: extraInfo,
-        consent: consent,
       }),
     });
     let json = await response.json();
@@ -455,21 +446,6 @@ function RequiredFields(props) {
     );
   });
 
-  var consent;
-  consent = (
-    <div className="form-group">
-      <label className="form-check-label" htmlFor="consent">
-        Consent
-      </label>
-      <input
-        type="text"
-        className="form-control"
-        id="consent"
-        placeholder="Enter full name to grant media usage consent to Vision-Aid"
-      />
-    </div>
-  );
-
   async function search(e) {
     e.preventDefault();
     let nameSearch = document.getElementById("searchName").value;
@@ -535,8 +511,6 @@ function RequiredFields(props) {
               <p>Additional Fields</p>
               {exInfo}
             </div>
-            <br />
-            {consent}
             <br />
             <button
               type="submit"
