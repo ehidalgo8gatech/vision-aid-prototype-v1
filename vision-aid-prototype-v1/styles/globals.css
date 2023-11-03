@@ -530,6 +530,15 @@ h2 {
   padding: 10px;
 }
 
+.margin-left {
+  margin-left: 20px;
+}
+
 .vertical-align {
   vertical-align: baseline;
+}
+
+.date-size {
+  height: 22.5px;
+  width: 111.8px;
 }
