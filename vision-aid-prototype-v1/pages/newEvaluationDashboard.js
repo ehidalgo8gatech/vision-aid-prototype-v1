@@ -198,6 +198,11 @@ export default function NewEvaluationDashboard(props) {
     return title.split("_").join(" ");
   };
 
+  const formatDate = (date) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(date).toLocaleDateString(undefined, options);
+  };
+
   return (
     <div>
       <Navigation user={props.currentUser} />
@@ -210,7 +215,7 @@ export default function NewEvaluationDashboard(props) {
               gender={props.user.gender}
               phoneNumber={props.user.phoneNumber}
               MRN={props.user.mrn}
-              dob={props.user.dateOfBirth}
+              dob={formatDate(props.user.dateOfBirth)}
               hospitalName={props.user.hospitalName}
               education={props.user.education}
               districts={props.user.districts}
@@ -220,7 +225,6 @@ export default function NewEvaluationDashboard(props) {
               extraInformation={props.user.extraInformation[0].value}
               name={props.user.beneficiaryName}
               mdvi={props.user.mDVI}
-              consent={props.user.consent}
             />
           </div>
           <div className="col-md-7">

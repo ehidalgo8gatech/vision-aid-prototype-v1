@@ -4,7 +4,6 @@ import { signIn, signOut} from "next-auth/react";
 
 function Navigation({ user } = props) {
   const router = useRouter();
-  console.log("Props in Navigation: ", user);
   let role = "";
   if (user) {
     role = user.admin

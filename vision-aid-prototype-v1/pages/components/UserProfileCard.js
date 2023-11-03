@@ -19,7 +19,6 @@ export default function UserProfileCard({
   dob,
   name,
   mdvi,
-  consent,
 }) {
   return (
     <div className="user-profile-card">
@@ -83,10 +82,6 @@ export default function UserProfileCard({
           <tr>
             <td>Extra Information:</td>
             <td>{extraInformation}</td>
-          </tr>
-          <tr>
-            <td>Consent:</td>
-            <td>{consent}</td>
           </tr>
         </table>
       </div>
