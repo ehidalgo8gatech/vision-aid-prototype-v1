@@ -322,7 +322,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
             </h2>
             <div
               id="panelsStayOpen-collapseOne"
-              class="accordion-collapse collapse show"
+              class="accordion-collapse collapse"
               aria-labelledby="panelsStayOpen-headingOne"
             >
               <div class="accordion-body">
