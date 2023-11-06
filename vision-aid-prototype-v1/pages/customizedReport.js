@@ -1041,6 +1041,9 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
   return (
     <div>
       <Navigation user={user} />
+      {JSON.stringify(beneficiaryList)}
+      <br />
+      {JSON.stringify(summary)}
       {/* <div className="container p-4 mb-3">
         <h1 className="mt-4 mb-4">Customize Report</h1>
         <Accordion>
