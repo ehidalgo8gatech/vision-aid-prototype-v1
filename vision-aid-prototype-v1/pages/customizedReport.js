@@ -308,358 +308,422 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
       {JSON.stringify(summary)} */}
       <div className="container p-4 mb-3">
         <h1 className="mt-4 mb-4">Customize Report</h1>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreRounded />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography>
-              <strong>Date Range For Trainings</strong>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col-md-4 text-align-left">
-                <label htmlFor="startDate">Start Date: </label>
-                <input
-                  type="date"
-                  id="startDate"
-                  name="startDate"
-                  value={moment(startDate).format("YYYY-MM-DD")}
-                  onChange={handleStartDateChange}
-                  max={today}
-                  className="margin-left"
-                />
-              </div>
-              <div className="col-md-4 text-align-left">
-                <label htmlFor="endDate">End Date: </label>
-                <input
-                  type="date"
-                  id="endDate"
-                  name="endDate"
-                  value={moment(endDate).format("YYYY-MM-DD")}
-                  onChange={handleEndDateChange}
-                  min={moment(startDate).format("YYYY-MM-DD")}
-                  max={today}
-                  className="margin-left"
-                />
+
+        <div class="accordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="dateRange">
+              <button
+                class="accordion-button"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseOne"
+                aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseOne"
+              >
+                <strong>Date Range For Trainings</strong>
+              </button>
+            </h2>
+            <div
+              id="panelsStayOpen-collapseOne"
+              class="accordion-collapse collapse show"
+              aria-labelledby="panelsStayOpen-headingOne"
+            >
+              <div class="accordion-body">
+                <div className="row">
+                  <div className="col-md-4 text-align-left">
+                    <label htmlFor="startDate">Start Date: </label>
+                    <input
+                      type="date"
+                      id="startDate"
+                      name="startDate"
+                      value={moment(startDate).format("YYYY-MM-DD")}
+                      onChange={handleStartDateChange}
+                      max={today}
+                      className="margin-left"
+                    />
+                  </div>
+                  <div className="col-md-4 text-align-left">
+                    <label htmlFor="endDate">End Date: </label>
+                    <input
+                      type="date"
+                      id="endDate"
+                      name="endDate"
+                      value={moment(endDate).format("YYYY-MM-DD")}
+                      onChange={handleEndDateChange}
+                      min={moment(startDate).format("YYYY-MM-DD")}
+                      max={today}
+                      className="margin-left"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreRounded />}
-            aria-controls="panel2a-content"
-            id="panel2a-header"
-          >
-            <Typography>
-              <strong>Hospitals</strong>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col-md-6">
-                <Table striped bordered hover>
-                  <thead>
-                    <tr>
-                      <th>Hospital</th>
-                      <th>
-                        <button
-                          type="button"
-                          className="btn btn-light"
-                          onClick={handleSelectAll}
-                        >
-                          Select All
-                        </button>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {summary != null &&
-                      summary.map((item) => (
-                        <tr key={item.id}>
-                          <td>{item.name}</td>
-                          <td>
-                            <input
-                              type="checkbox"
-                              id={`hospital-${item.id}`}
-                              value={item.id}
-                              onChange={handleHospitalSelection}
-                              checked={selectedHospitals.includes(item.id)}
-                            />
-                          </td>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseTwo"
+                aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseTwo"
+              >
+                <strong>Hospitals</strong>
+              </button>
+            </h2>
+            <div
+              id="panelsStayOpen-collapseTwo"
+              class="accordion-collapse collapse"
+              aria-labelledby="panelsStayOpen-headingTwo"
+            >
+              <div class="accordion-body">
+                <div className="row">
+                  <div className="col-md-6">
+                    <Table striped bordered hover>
+                      <thead>
+                        <tr>
+                          <th>Hospital</th>
+                          <th>
+                            <button
+                              type="button"
+                              className="btn btn-light"
+                              onClick={handleSelectAll}
+                            >
+                              Select All
+                            </button>
+                          </th>
                         </tr>
-                      ))}
-                  </tbody>
-                </Table>
+                      </thead>
+                      <tbody>
+                        {summary != null &&
+                          summary.map((item) => (
+                            <tr key={item.id}>
+                              <td>{item.name}</td>
+                              <td>
+                                <input
+                                  type="checkbox"
+                                  id={`hospital-${item.id}`}
+                                  value={item.id}
+                                  onChange={handleHospitalSelection}
+                                  checked={selectedHospitals.includes(item.id)}
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </Table>
+                  </div>
+                </div>
               </div>
             </div>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreRounded />}
-            aria-controls="panel2a-content"
-            id="panel2a-header"
-          >
-            <Typography>
-              <strong>Gender</strong>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col-md-2 text-align-left">
-                <input
-                  type="checkbox"
-                  id="M"
-                  onClick={(e) => updateGender(e)}
-                  checked={selectedGenders.includes("M")}
-                />
-                <label className="margin-left">Male</label>
-              </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseThree"
+                aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseThree"
+              >
+                <strong>Gender</strong>
+              </button>
+            </h2>
+            <div
+              id="panelsStayOpen-collapseThree"
+              class="accordion-collapse collapse"
+              aria-labelledby="panelsStayOpen-headingThree"
+            >
+              <div class="accordion-body">
+                <div className="row">
+                  <div className="col-md-2 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="M"
+                      onClick={(e) => updateGender(e)}
+                      checked={selectedGenders.includes("M")}
+                    />
+                    <label className="margin-left">Male</label>
+                  </div>
 
-              <div className="col-md-2 text-align-left">
-                <input
-                  type="checkbox"
-                  id="F"
-                  onClick={(e) => updateGender(e)}
-                  checked={selectedGenders.includes("F")}
-                />
-                <label className="margin-left">Female</label>
-              </div>
+                  <div className="col-md-2 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="F"
+                      onClick={(e) => updateGender(e)}
+                      checked={selectedGenders.includes("F")}
+                    />
+                    <label className="margin-left">Female</label>
+                  </div>
 
-              <div className="col-md-2 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Other"
-                  onClick={(e) => updateGender(e)}
-                  checked={selectedGenders.includes("Other")}
-                />
-                <label className="margin-left">Other</label>
+                  <div className="col-md-2 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="Other"
+                      onClick={(e) => updateGender(e)}
+                      checked={selectedGenders.includes("Other")}
+                    />
+                    <label className="margin-left">Other</label>
+                  </div>
+                </div>
               </div>
             </div>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreRounded />}
-            aria-controls="panel3a-content"
-            id="panel3a-header"
-          >
-            <Typography>
-              <strong>Age</strong>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col-md-4 text-align-left">
-                <label>Minimum Age: </label>
-                <input
-                  type="number"
-                  min={0}
-                  max={100}
-                  id="minAge"
-                  className="margin-left"
-                />
-              </div>
+          </div>
 
-              <div className="col-md-4 text-align-left">
-                <label>Maximum Age: </label>
-                <input
-                  type="number"
-                  min={0}
-                  max={100}
-                  id="maxAge"
-                  className="margin-left"
-                />
-              </div>
-            </div>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreRounded />}
-            aria-controls="panel2a-content"
-            id="panel2a-header"
-          >
-            <Typography>
-              <strong>MDVI</strong>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col-md-2 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Yes"
-                  onClick={(e) => updateMdvi(e)}
-                  checked={selectedMdvi.includes("Yes")}
-                />
-                <label className="margin-left">Yes</label>
-              </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingFour">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseFour"
+                aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseFour"
+              >
+                <strong>Age</strong>
+              </button>
+            </h2>
+            <div
+              id="panelsStayOpen-collapseFour"
+              class="accordion-collapse collapse"
+              aria-labelledby="panelsStayOpen-headingFour"
+            >
+              <div class="accordion-body">
+                <div className="row">
+                  <div className="col-md-4 text-align-left">
+                    <label>Minimum Age: </label>
+                    <input
+                      type="number"
+                      min={0}
+                      max={100}
+                      id="minAge"
+                      className="margin-left"
+                    />
+                  </div>
 
-              <div className="col-md-2 text-align-left">
-                <input
-                  type="checkbox"
-                  id="No"
-                  onClick={(e) => updateMdvi(e)}
-                  checked={selectedMdvi.includes("No")}
-                />
-                <label className="margin-left">No</label>
+                  <div className="col-md-4 text-align-left">
+                    <label>Maximum Age: </label>
+                    <input
+                      type="number"
+                      min={0}
+                      max={100}
+                      id="maxAge"
+                      className="margin-left"
+                    />
+                  </div>
+                </div>
               </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingFive">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseFive"
+                aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseFive"
+              >
+                <strong>MDVI</strong>
+              </button>
+            </h2>
+            <div
+              id="panelsStayOpen-collapseFive"
+              class="accordion-collapse collapse"
+              aria-labelledby="panelsStayOpen-headingFive"
+            >
+              <div class="accordion-body">
+                <div className="row">
+                  <div className="col-md-2 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="Yes"
+                      onClick={(e) => updateMdvi(e)}
+                      checked={selectedMdvi.includes("Yes")}
+                    />
+                    <label className="margin-left">Yes</label>
+                  </div>
 
-              <div className="col-md-2 text-align-left">
-                <input
-                  type="checkbox"
-                  id="At Risk"
-                  onClick={(e) => updateMdvi(e)}
-                  checked={selectedMdvi.includes("At Risk")}
-                />
-                <label className="margin-left">At Risk</label>
-              </div>
-            </div>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreRounded />}
-            aria-controls="panel2a-content"
-            id="panel2a-header"
-          >
-            <Typography>
-              <strong>Sheets To Include</strong>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Beneficiary"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Beneficiary")}
-                />
-                <label className="margin-left">Beneficiary</label>
-              </div>
-            </div>
+                  <div className="col-md-2 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="No"
+                      onClick={(e) => updateMdvi(e)}
+                      checked={selectedMdvi.includes("No")}
+                    />
+                    <label className="margin-left">No</label>
+                  </div>
 
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Vision Enhancement"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Vision Enhancement")}
-                />
-                <label className="margin-left">Vision Enhancement</label>
+                  <div className="col-md-2 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="At Risk"
+                      onClick={(e) => updateMdvi(e)}
+                      checked={selectedMdvi.includes("At Risk")}
+                    />
+                    <label className="margin-left">At Risk</label>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Low Vision Screening"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Low Vision Screening")}
-                />
-                <label className="margin-left">Low Vision Screening</label>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Comprehensive Low Vision Evaluation"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes(
-                    "Comprehensive Low Vision Evaluation"
-                  )}
-                />
-                <label className="margin-left">
-                  Comprehensive Low Vision Evaluation
-                </label>
-              </div>
-            </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingSix">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseSix"
+                aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseSix"
+              >
+                <strong>Sheets To Include</strong>
+              </button>
+            </h2>
+            <div
+              id="panelsStayOpen-collapseSix"
+              class="accordion-collapse collapse"
+              aria-labelledby="panelsStayOpen-headingSix"
+            >
+              <div class="accordion-body">
+                <div className="row">
+                  <div className="col-md-6 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="Beneficiary"
+                      onClick={(e) => updateSheets(e)}
+                      checked={selectedSheets.includes("Beneficiary")}
+                    />
+                    <label className="margin-left">Beneficiary</label>
+                  </div>
+                </div>
 
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Computer Training"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Computer Training")}
-                />
-                <label className="margin-left">Computer Training</label>
-              </div>
-            </div>
+                <div className="row">
+                  <div className="col-md-6 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="Vision Enhancement"
+                      onClick={(e) => updateSheets(e)}
+                      checked={selectedSheets.includes("Vision Enhancement")}
+                    />
+                    <label className="margin-left">Vision Enhancement</label>
+                  </div>
+                </div>
 
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Mobile Training"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Mobile Training")}
-                />
-                <label className="margin-left">Mobile Training</label>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Orientation Mobility Training"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes(
-                    "Orientation Mobility Training"
-                  )}
-                />
-                <label className="margin-left">
-                  Orientation Mobility Training
-                </label>
-              </div>
-            </div>
+                <div className="row">
+                  <div className="col-md-6 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="Low Vision Screening"
+                      onClick={(e) => updateSheets(e)}
+                      checked={selectedSheets.includes("Low Vision Screening")}
+                    />
+                    <label className="margin-left">Low Vision Screening</label>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="Comprehensive Low Vision Evaluation"
+                      onClick={(e) => updateSheets(e)}
+                      checked={selectedSheets.includes(
+                        "Comprehensive Low Vision Evaluation"
+                      )}
+                    />
+                    <label className="margin-left">
+                      Comprehensive Low Vision Evaluation
+                    </label>
+                  </div>
+                </div>
 
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Training"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Training")}
-                />
-                <label className="margin-left">Training</label>
-              </div>
-            </div>
+                <div className="row">
+                  <div className="col-md-6 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="Computer Training"
+                      onClick={(e) => updateSheets(e)}
+                      checked={selectedSheets.includes("Computer Training")}
+                    />
+                    <label className="margin-left">Computer Training</label>
+                  </div>
+                </div>
 
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Counselling Education"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Counselling Education")}
-                />
-                <label className="margin-left">Counselling Education</label>
-              </div>
-            </div>
+                <div className="row">
+                  <div className="col-md-6 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="Mobile Training"
+                      onClick={(e) => updateSheets(e)}
+                      checked={selectedSheets.includes("Mobile Training")}
+                    />
+                    <label className="margin-left">Mobile Training</label>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="Orientation Mobility Training"
+                      onClick={(e) => updateSheets(e)}
+                      checked={selectedSheets.includes(
+                        "Orientation Mobility Training"
+                      )}
+                    />
+                    <label className="margin-left">
+                      Orientation Mobility Training
+                    </label>
+                  </div>
+                </div>
 
-            <div className="row">
-              <div className="col-md-6 text-align-left">
-                <input
-                  type="checkbox"
-                  id="Aggregated Hospital Data"
-                  onClick={(e) => updateSheets(e)}
-                  checked={selectedSheets.includes("Aggregated Hospital Data")}
-                />
-                <label className="margin-left">Aggregated Hospital Data</label>
+                <div className="row">
+                  <div className="col-md-6 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="Training"
+                      onClick={(e) => updateSheets(e)}
+                      checked={selectedSheets.includes("Training")}
+                    />
+                    <label className="margin-left">Training</label>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-md-6 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="Counselling Education"
+                      onClick={(e) => updateSheets(e)}
+                      checked={selectedSheets.includes("Counselling Education")}
+                    />
+                    <label className="margin-left">Counselling Education</label>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-md-6 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="Aggregated Hospital Data"
+                      onClick={(e) => updateSheets(e)}
+                      checked={selectedSheets.includes(
+                        "Aggregated Hospital Data"
+                      )}
+                    />
+                    <label className="margin-left">
+                      Aggregated Hospital Data
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
-          </AccordionDetails>
-        </Accordion>
+          </div>
+        </div>
+
         <br />
         <button
           class="btn btn-success border-0 btn-block"
