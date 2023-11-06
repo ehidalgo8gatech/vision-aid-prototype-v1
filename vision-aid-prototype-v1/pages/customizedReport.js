@@ -99,20 +99,12 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
   ]);
   const today = moment(new Date()).format("YYYY-MM-DD");
 
-  const handleStartDateChange = (e) => {
-    setStartDate(moment(e.target.value).toDate());
-  };
-
-  const handleEndDateChange = (e) => {
-    setEndDate(moment(e.target.value).toDate());
-  };
-
   const handleSelectAll = () => {
     setSelectedHospitals(summary.map((item) => item.id));
   };
 
   useEffect(() => {
-    setSelectedHospitals(summary.map((item) => item.id));
+    handleSelectAll();
   }, []);
 
   const handleHospitalSelection = (event) => {
@@ -120,9 +112,14 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
     const isChecked = event.target.checked;
 
     if (isChecked) {
-      setSelectedHospitals([...selectedHospitals, hospitalId]);
+      setSelectedHospitals((selectedHospitals) => [
+        ...selectedHospitals,
+        hospitalId,
+      ]);
     } else {
-      setSelectedHospitals(selectedHospitals.filter((id) => id !== hospitalId));
+      setSelectedHospitals((selectedHospitals) =>
+        selectedHospitals.filter((id) => id !== hospitalId)
+      );
     }
   };
 
@@ -149,9 +146,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
       ]);
     } else {
       setSelectedGenders((selectedGenders) =>
-        selectedGenders.filter(function (gender) {
-          return gender != e.target.id;
-        })
+        selectedGenders.filter(gender !== e.target.id)
       );
     }
   };
@@ -161,9 +156,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
       setSelectedMdvi((selectedMdvi) => [...selectedMdvi, e.target.id]);
     } else {
       setSelectedMdvi((selectedMdvi) =>
-        selectedMdvi.filter(function (mdvi) {
-          return mdvi != e.target.id;
-        })
+        selectedMdvi.filter(mdvi !== e.target.id)
       );
     }
   };
@@ -173,9 +166,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
       setSelectedSheets((selectedSheets) => [...selectedSheets, e.target.id]);
     } else {
       setSelectedSheets((selectedSheets) =>
-        selectedSheets.filter(function (sheetName) {
-          return sheetName != e.target.id;
-        })
+        selectedSheets.filter(sheetName !== e.target.id)
       );
     }
   };
@@ -326,9 +317,9 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
 
         <div class="accordion">
           <div class="accordion-item">
-            <h2 class="accordion-header" id="dateRange">
+            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
               <button
-                class="accordion-button"
+                class="accordion-button collapsed"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#panelsStayOpen-collapseOne"
@@ -352,7 +343,9 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
                       id="startDate"
                       name="startDate"
                       value={moment(startDate).format("YYYY-MM-DD")}
-                      onChange={handleStartDateChange}
+                      onChange={(e) =>
+                        setStartDate(moment(e.target.value).toDate())
+                      }
                       max={today}
                       className="margin-left"
                     />
@@ -364,7 +357,9 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
                       id="endDate"
                       name="endDate"
                       value={moment(endDate).format("YYYY-MM-DD")}
-                      onChange={handleEndDateChange}
+                      onChange={(e) =>
+                        setEndDate(moment(e.target.value).toDate())
+                      }
                       min={moment(startDate).format("YYYY-MM-DD")}
                       max={today}
                       className="margin-left"
