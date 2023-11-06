@@ -126,6 +126,21 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
     }
   };
 
+  const hospitalTable = summary.map((item) => (
+    <tr key={item.id}>
+      <td>{item.name}</td>
+      <td>
+        <input
+          type="checkbox"
+          id={`hospital-${item.id}`}
+          value={item.id}
+          onChange={handleHospitalSelection}
+          checked={selectedHospitals.includes(item.id)}
+        />
+      </td>
+    </tr>
+  ));
+
   const updateGender = (e) => {
     if (e.target.checked) {
       setSelectedGenders((selectedGenders) => [
@@ -383,7 +398,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
                     <Table striped bordered hover>
                       <thead>
                         <tr>
-                          <th>Hospital</th>
+                          <th>Hospitals</th>
                           <th>
                             <button
                               type="button"
@@ -395,23 +410,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
                           </th>
                         </tr>
                       </thead>
-                      <tbody>
-                        {summary != null &&
-                          summary.map((item) => (
-                            <tr key={item.id}>
-                              <td>{item.name}</td>
-                              <td>
-                                <input
-                                  type="checkbox"
-                                  id={`hospital-${item.id}`}
-                                  value={item.id}
-                                  onChange={handleHospitalSelection}
-                                  checked={selectedHospitals.includes(item.id)}
-                                />
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
+                      <tbody>{summary != null && hospitalTable}</tbody>
                     </Table>
                   </div>
                 </div>
