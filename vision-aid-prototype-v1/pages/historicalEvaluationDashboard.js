@@ -1,10 +1,5 @@
-import Link from "next/link";
-import styles from "@/styles/Home.module.css";
-import Head from "next/head";
 import { useState } from "react";
-import Image from "next/image";
-import { Inter } from "@next/font/google";
-import { useSession, signIn, signOut, getSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import { readUser } from "./api/user";
 import Navigation from "./navigation/Navigation";
 import UserProfileCard from "./components/UserProfileCard";
@@ -16,12 +11,6 @@ import HistoricalTrainingForm from "../comps/HistoricalTrainingForm";
 import { getCounsellingType } from "./api/counsellingType";
 import { getTrainingTypes } from "./api/trainingType";
 import { getTrainingSubTypes } from "./api/trainingSubType";
-
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
-import { ExpandMoreRounded } from "@mui/icons-material";
 
 export default function HistoricalEvaluationPage(props) {
   let serviceToFetch = props.service;
@@ -42,10 +31,6 @@ export default function HistoricalEvaluationPage(props) {
   const currentUser = props.currentUser;
   const [formData, setFormData] = useState({});
   const [expanded, setExpanded] = useState(false);
-
-  const handleExpand = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
 
   const refetchUser = async () => {
     let user = {};
@@ -185,41 +170,6 @@ export default function HistoricalEvaluationPage(props) {
     }
   }
 
-  let accordionList = [];
-  if (historicalDates.length === 0) {
-    accordionList.push(
-      <div>
-        <br />
-        <strong>No history for this user!</strong>
-      </div>
-    );
-  }
-  for (let i = 0; i < historicalDates.length; i++) {
-    let name = "panel" + i;
-    accordionList.push(
-      <Accordion expanded={expanded === name} onChange={handleExpand(name)}>
-        <AccordionSummary expandIcon={<ExpandMoreRounded />}>
-          <Typography>
-            {serviceIsATraining && (
-              <strong>
-                {historicalDates[i].date} (Type: {historicalDates[i].suppInfo})
-              </strong>
-            )}
-            {!serviceIsATraining && (
-              <strong>
-                {historicalDates[i].date} (Session:{" "}
-                {historicalDates[i].suppInfo})
-              </strong>
-            )}
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          {handleServiceChange(historicalDates[i], serviceEditList)}
-        </AccordionDetails>
-      </Accordion>
-    );
-  }
-
   return (
     <div>
       <Navigation user={currentUser} />
@@ -246,7 +196,82 @@ export default function HistoricalEvaluationPage(props) {
           </div>
           <div className="col-md-7">
             <div className="row">
-              {accordionList}
+              {/* {accordionList} */}
+              {historicalDates.length === 0 && (
+                <div>
+                  <br />
+                  <br />
+                  <strong>No history for this user!</strong>
+                </div>
+              )}
+              {historicalDates.length > 0 && (
+                <div class="accordion" id="historyAccordion">
+                  {serviceIsATraining &&
+                    historicalDates.map((entry, index) => (
+                      <div class="accordion-item">
+                        <h2
+                          class="accordion-header"
+                          id={"panelsStayOpen-heading" + index}
+                        >
+                          <button
+                            class="accordion-button collapsed"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target={"#panelsStayOpen-collapse" + index}
+                            aria-expanded="false"
+                            aria-controls={"panelsStayOpen-collapse" + index}
+                          >
+                            <strong>
+                              {entry.date} (Type: {entry.suppInfo})
+                            </strong>
+                          </button>
+                        </h2>
+                        <div
+                          id={"panelsStayOpen-collapse" + index}
+                          class="accordion-collapse collapse"
+                          aria-labelledby={"panelsStayOpen-heading" + index}
+                          data-bs-parent="#historyAccordion"
+                        >
+                          <div class="accordion-body">
+                            {handleServiceChange(entry, serviceEditList)}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  {!serviceIsATraining &&
+                    historicalDates.map((entry, index) => (
+                      <div class="accordion-item">
+                        <h2
+                          class="accordion-header"
+                          id={"panelsStayOpen-heading" + index}
+                        >
+                          <button
+                            class="accordion-button collapsed"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target={"#panelsStayOpen-collapse" + index}
+                            aria-expanded="false"
+                            aria-controls={"panelsStayOpen-collapse" + index}
+                          >
+                            <strong>
+                              {entry.date} (Session: {entry.suppInfo})
+                            </strong>
+                          </button>
+                        </h2>
+                        <div
+                          id={"panelsStayOpen-collapse" + index}
+                          class="accordion-collapse collapse"
+                          aria-labelledby={"panelsStayOpen-heading" + index}
+                          data-bs-parent="#historyAccordion"
+                        >
+                          <div class="accordion-body">
+                            {handleServiceChange(entry, serviceEditList)}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
