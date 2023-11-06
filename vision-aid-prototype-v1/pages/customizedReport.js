@@ -140,7 +140,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
       ]);
     } else {
       setSelectedGenders((selectedGenders) =>
-        selectedGenders.filter(gender !== e.target.id)
+        selectedGenders.filter((gender) => gender !== e.target.id)
       );
     }
   };
@@ -150,7 +150,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
       setSelectedMdvi((selectedMdvi) => [...selectedMdvi, e.target.id]);
     } else {
       setSelectedMdvi((selectedMdvi) =>
-        selectedMdvi.filter(mdvi !== e.target.id)
+        selectedMdvi.filter((mdvi) => mdvi !== e.target.id)
       );
     }
   };
@@ -160,7 +160,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
       setSelectedSheets((selectedSheets) => [...selectedSheets, e.target.id]);
     } else {
       setSelectedSheets((selectedSheets) =>
-        selectedSheets.filter(sheetName !== e.target.id)
+        selectedSheets.filter((sheetName) => sheetName !== e.target.id)
       );
     }
   };
