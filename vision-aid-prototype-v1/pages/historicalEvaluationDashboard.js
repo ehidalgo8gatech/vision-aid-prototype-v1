@@ -208,7 +208,7 @@ export default function HistoricalEvaluationPage(props) {
                 <div class="accordion" id="historyAccordion">
                   {serviceIsATraining &&
                     historicalDates.map((entry, index) => (
-                      <div class="accordion-item">
+                      <div class="accordion-item" key={index}>
                         <h2
                           class="accordion-header"
                           id={"panelsStayOpen-heading" + index}
@@ -240,7 +240,7 @@ export default function HistoricalEvaluationPage(props) {
                     ))}
                   {!serviceIsATraining &&
                     historicalDates.map((entry, index) => (
-                      <div class="accordion-item">
+                      <div class="accordion-item" key={index}>
                         <h2
                           class="accordion-header"
                           id={"panelsStayOpen-heading" + index}
