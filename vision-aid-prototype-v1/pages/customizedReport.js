@@ -15,11 +15,11 @@ import {
   getReportData,
 } from "@/constants/reportFunctions";
 
-// import Accordion from "@mui/material/Accordion";
-// import AccordionSummary from "@mui/material/AccordionSummary";
-// import AccordionDetails from "@mui/material/AccordionDetails";
-// import Typography from "@mui/material/Typography";
-// import { ExpandMoreRounded } from "@mui/icons-material";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import { ExpandMoreRounded } from "@mui/icons-material";
 import { getSession } from "next-auth/react";
 import { readUser } from "./api/user";
 
@@ -303,10 +303,10 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
   return (
     <div>
       <Navigation user={user} />
-      {JSON.stringify(beneficiaryList)}
+      {/* {JSON.stringify(beneficiaryList)}
       <br />
-      {JSON.stringify(summary)}
-      {/* <div className="container p-4 mb-3">
+      {JSON.stringify(summary)} */}
+      <div className="container p-4 mb-3">
         <h1 className="mt-4 mb-4">Customize Report</h1>
         <Accordion>
           <AccordionSummary
@@ -670,7 +670,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
         <br />
         <br />
       </div>
-      <br /> */}
+      <br />
     </div>
   );
 }
