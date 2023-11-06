@@ -1,4 +1,4 @@
-import moment, { updateLocale } from "moment";
+import moment from "moment";
 import { useState, useEffect } from "react";
 import Navigation from "./navigation/Navigation";
 import { Table } from "react-bootstrap";
@@ -14,12 +14,6 @@ import {
   filterTrainingSummaryByDateRange,
   getReportData,
 } from "@/constants/reportFunctions";
-
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
-import { ExpandMoreRounded } from "@mui/icons-material";
 import { getSession } from "next-auth/react";
 import { readUser } from "./api/user";
 
