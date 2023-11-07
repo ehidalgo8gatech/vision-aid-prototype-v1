@@ -468,6 +468,7 @@ export default function HistoricalCLVForm(props) {
                     name="diagnosis"
                     value={data.diagnosis}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -508,6 +509,7 @@ export default function HistoricalCLVForm(props) {
                     value={data.sessionNumber}
                     onChange={(e) => handleChange(e)}
                     min="1"
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -526,6 +528,7 @@ export default function HistoricalCLVForm(props) {
                     name="distanceVisualAcuityRE"
                     value={data.distanceVisualAcuityRE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -544,6 +547,7 @@ export default function HistoricalCLVForm(props) {
                     name="distanceVisualAcuityLE"
                     value={data.distanceVisualAcuityLE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -562,6 +566,7 @@ export default function HistoricalCLVForm(props) {
                     name="distanceBinocularVisionBE"
                     value={data.distanceBinocularVisionBE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -580,6 +585,7 @@ export default function HistoricalCLVForm(props) {
                     name="nearVisualAcuityRE"
                     value={data.nearVisualAcuityRE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -597,6 +603,7 @@ export default function HistoricalCLVForm(props) {
                   name="nearVisualAcuityLE"
                   value={data.nearVisualAcuityLE}
                   onChange={(e) => handleChange(e)}
+                  autoComplete="off"
                 />
               )}
             </td>
@@ -614,6 +621,7 @@ export default function HistoricalCLVForm(props) {
                     name="nearBinocularVisionBE"
                     value={data.nearBinocularVisionBE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -658,6 +666,7 @@ export default function HistoricalCLVForm(props) {
                         recommendationSpectacle: e.target.value,
                       })
                     }
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -700,6 +709,7 @@ export default function HistoricalCLVForm(props) {
                     value={data.costSpectacle}
                     onChange={(e) => handleChange(e)}
                     min="0"
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -719,6 +729,7 @@ export default function HistoricalCLVForm(props) {
                     value={data.costToBeneficiarySpectacle}
                     onChange={(e) => handleChange(e)}
                     min="0"
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -755,6 +766,7 @@ export default function HistoricalCLVForm(props) {
                         dispensedSpectacle: e.target.value,
                       })
                     }
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -773,6 +785,7 @@ export default function HistoricalCLVForm(props) {
                     name="trainingGivenSpectacle"
                     value={data.trainingGivenSpectacle}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -817,6 +830,7 @@ export default function HistoricalCLVForm(props) {
                         recommendationOptical: e.target.value,
                       })
                     }
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -859,6 +873,7 @@ export default function HistoricalCLVForm(props) {
                     value={data.costOptical}
                     onChange={(e) => handleChange(e)}
                     min="0"
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -878,6 +893,7 @@ export default function HistoricalCLVForm(props) {
                     value={data.costToBeneficiaryOptical}
                     onChange={(e) => handleChange(e)}
                     min="0"
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -914,6 +930,7 @@ export default function HistoricalCLVForm(props) {
                         dispensedOptical: e.target.value,
                       })
                     }
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -932,6 +949,7 @@ export default function HistoricalCLVForm(props) {
                     name="trainingGivenOptical"
                     value={data.trainingGivenOptical}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -976,6 +994,7 @@ export default function HistoricalCLVForm(props) {
                         recommendationNonOptical: e.target.value,
                       })
                     }
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1018,6 +1037,7 @@ export default function HistoricalCLVForm(props) {
                     value={data.costNonOptical}
                     onChange={(e) => handleChange(e)}
                     min="0"
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1037,6 +1057,7 @@ export default function HistoricalCLVForm(props) {
                     value={data.costToBeneficiaryNonOptical}
                     onChange={(e) => handleChange(e)}
                     min="0"
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1073,6 +1094,7 @@ export default function HistoricalCLVForm(props) {
                         dispensedNonOptical: e.target.value,
                       })
                     }
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1091,6 +1113,7 @@ export default function HistoricalCLVForm(props) {
                     name="trainingGivenNonOptical"
                     value={data.trainingGivenNonOptical}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1135,6 +1158,7 @@ export default function HistoricalCLVForm(props) {
                         recommendationElectronic: e.target.value,
                       })
                     }
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1177,6 +1201,7 @@ export default function HistoricalCLVForm(props) {
                     value={data.costElectronic}
                     onChange={(e) => handleChange(e)}
                     min="0"
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1196,6 +1221,7 @@ export default function HistoricalCLVForm(props) {
                     value={data.costToBeneficiaryElectronic}
                     onChange={(e) => handleChange(e)}
                     min="0"
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1232,6 +1258,7 @@ export default function HistoricalCLVForm(props) {
                         dispensedElectronic: e.target.value,
                       })
                     }
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1250,6 +1277,7 @@ export default function HistoricalCLVForm(props) {
                     name="trainingGivenElectronic"
                     value={data.trainingGivenElectronic}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1268,6 +1296,7 @@ export default function HistoricalCLVForm(props) {
                     name="colourVisionRE"
                     value={data.colourVisionRE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1286,6 +1315,7 @@ export default function HistoricalCLVForm(props) {
                     name="colourVisionLE"
                     value={data.colourVisionLE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1304,6 +1334,7 @@ export default function HistoricalCLVForm(props) {
                     name="contrastSensitivityRE"
                     value={data.contrastSensitivityRE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1322,6 +1353,7 @@ export default function HistoricalCLVForm(props) {
                     name="contrastSensitivityLE"
                     value={data.contrastSensitivityLE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1340,6 +1372,7 @@ export default function HistoricalCLVForm(props) {
                     name="visualFieldsRE"
                     value={data.visualFieldsRE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1358,6 +1391,7 @@ export default function HistoricalCLVForm(props) {
                     name="visualFieldsLE"
                     value={data.visualFieldsLE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -1376,6 +1410,7 @@ export default function HistoricalCLVForm(props) {
                     name="extraInformation"
                     value={data.extraInformation}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}

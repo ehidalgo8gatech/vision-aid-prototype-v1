@@ -369,6 +369,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                     name="diagnosis"
                     value={data.diagnosis}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -407,8 +408,9 @@ export default function HistoricalLowVisionScreeningForm(props) {
                     type="number"
                     name="sessionNumber"
                     value={data.sessionNumber}
-                      onChange={(e) => handleChange(e)}
-                      min="1"
+                    onChange={(e) => handleChange(e)}
+                    min="1"
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -427,6 +429,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                     name="distanceVisualAcuityRE"
                     value={data.distanceVisualAcuityRE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -445,6 +448,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                     name="distanceVisualAcuityLE"
                     value={data.distanceVisualAcuityLE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -463,6 +467,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                     name="distanceBinocularVisionBE"
                     value={data.distanceBinocularVisionBE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -481,6 +486,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                     name="nearVisualAcuityRE"
                     value={data.nearVisualAcuityRE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -499,6 +505,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                     name="nearVisualAcuityLE"
                     value={data.nearVisualAcuityLE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -517,6 +524,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                     name="nearBinocularVisionBE"
                     value={data.nearBinocularVisionBE}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -561,6 +569,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                         recommendationSpectacle: e.target.value,
                       })
                     }
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -605,6 +614,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                         recommendationOptical: e.target.value,
                       })
                     }
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -649,6 +659,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                         recommendationNonOptical: e.target.value,
                       })
                     }
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -693,6 +704,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                         recommendationElectronic: e.target.value,
                       })
                     }
+                    autoComplete="off"
                   />
                 </FormControl>
               )}
@@ -711,6 +723,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                     name="extraInformation"
                     value={data.extraInformation}
                     onChange={(e) => handleChange(e)}
+                    autoComplete="off"
                   />
                 </FormControl>
               )}

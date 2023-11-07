@@ -97,6 +97,7 @@ export default function HistoricalVisionEnhancementForm(props) {
                   name="MDVI"
                   value={data.MDVI}
                   onChange={(e) => handleChange(e)}
+                  autoComplete="off"
                 />
               )}
             </td>
@@ -112,8 +113,9 @@ export default function HistoricalVisionEnhancementForm(props) {
                   type="number"
                   name="sessionNumber"
                   value={data.sessionNumber}
-                    onChange={(e) => handleChange(e)}
-                    min="1"
+                  onChange={(e) => handleChange(e)}
+                  min="1"
+                  autoComplete="off"
                 />
               )}
             </td>
@@ -130,6 +132,7 @@ export default function HistoricalVisionEnhancementForm(props) {
                   name="Diagnosis"
                   value={data.Diagnosis}
                   onChange={(e) => handleChange(e)}
+                  autoComplete="off"
                 />
               )}
             </td>
@@ -146,6 +149,7 @@ export default function HistoricalVisionEnhancementForm(props) {
                   name="extraInformation"
                   value={data.extraInformation}
                   onChange={(e) => handleChange(e)}
+                  autoComplete="off"
                 />
               )}
             </td>

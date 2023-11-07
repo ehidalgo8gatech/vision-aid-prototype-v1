@@ -169,6 +169,7 @@ export default function HistoricalCounselingForm(props) {
                   name="otherType"
                   value={otherType}
                   onChange={(e) => setOtherType(e.target.value)}
+                  autoComplete="off"
                 />
               </td>
             </tr>
@@ -185,6 +186,7 @@ export default function HistoricalCounselingForm(props) {
                   name="extraInformation"
                   value={data.extraInformation}
                   onChange={(e) => handleChange(e)}
+                  autoComplete="off"
                 />
               )}
             </td>
