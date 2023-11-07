@@ -281,7 +281,7 @@ function Users(props) {
                     htmlFor="manager"
                     className="col-md-5 flex-container-vertical"
                   >
-                    Role Type
+                    Role
                   </td>
                   <td className="col-md-7">
                     <FormControl fullWidth size="small">
