@@ -29,8 +29,23 @@ export default function HistoricalEvaluationPage(props) {
 
   const service = user[serviceToFetch];
   const currentUser = props.currentUser;
-  const [formData, setFormData] = useState({});
-  const [expanded, setExpanded] = useState(false);
+
+  service.sort(function (record1, record2) {
+    var date1 = new Date(record1.date).getTime();
+    var date2 = new Date(record2.date).getTime();
+    if (date1 > date2) {
+      return -1;
+    } else if (date1 == date2) {
+      if (record1.sessionNumber > record2.sessionNumber) {
+        return -1;
+      } else if (record1.sessionNumber < record2.sessionNumber) {
+        return 1;
+      }
+      return 0;
+    } else {
+      return 1;
+    }
+  });
 
   const refetchUser = async () => {
     let user = {};
@@ -64,7 +79,8 @@ export default function HistoricalEvaluationPage(props) {
       if (serviceIsATraining) {
         return (
           formatDate(value["service"].date) === formatDate(entry.date) &&
-          value["service"].type == entry.suppInfo
+          value["service"].type == entry.suppInfo.type &&
+          value["service"].sessionNumber == entry.suppInfo.sessionNumber
         );
       } else {
         return (
@@ -129,24 +145,14 @@ export default function HistoricalEvaluationPage(props) {
     return historicalDashboard;
   };
 
-  service.sort(function (record1, record2) {
-    var date1 = new Date(record1.date);
-    var date2 = new Date(record2.date);
-
-    if (date1 > date2) {
-      return -1;
-    } else if (date1 === date2) {
-      return 0;
-    } else {
-      return 1;
-    }
-  });
-
   const historicalDates = service
     .filter((item) => item.date !== null)
     .map((item) => {
       if (serviceIsATraining) {
-        return { date: formatDate(item.date), suppInfo: item.type };
+        return {
+          date: formatDate(item.date),
+          suppInfo: { type: item.type, sessionNumber: item.sessionNumber },
+        };
       } else {
         return {
           date: formatDate(item.date),
@@ -222,7 +228,8 @@ export default function HistoricalEvaluationPage(props) {
                             aria-controls={"panelsStayOpen-collapse" + index}
                           >
                             <strong>
-                              {entry.date} (Type: {entry.suppInfo})
+                              {entry.date} (Type: {entry.suppInfo.type},
+                              Session: {entry.suppInfo.sessionNumber})
                             </strong>
                           </button>
                         </h2>
