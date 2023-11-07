@@ -188,7 +188,7 @@ const TrainingForm = ({
             <Col>
               <Form.Group controlId="sessionNumber">
                 <Form.Label>Session Number</Form.Label>
-                <Form.Control type="number" min={1} />
+                <Form.Control type="number" min={1} autoComplete="off" />
               </Form.Group>
             </Col>
           </Row>
@@ -196,7 +196,7 @@ const TrainingForm = ({
             customFields.map((field) => (
               <Form.Group controlId={field} key={field}>
                 <Form.Label>{field}</Form.Label>
-                <Form.Control type="text" />
+                <Form.Control type="text" autoComplete="off" />
               </Form.Group>
             ))}
           {mdvi == true && (
@@ -224,7 +224,7 @@ const TrainingForm = ({
               <Col>
                 <Form.Group controlId="Diagnosis">
                   <Form.Label>Diagnosis</Form.Label>
-                  <Form.Control as="textarea" rows={1} />
+                  <Form.Control as="textarea" rows={1} autoComplete="off" />
                 </Form.Group>
               </Col>
             </Row>
@@ -240,7 +240,11 @@ const TrainingForm = ({
           {showTypeOther && typeList != null && subTypeList == null && (
             <Form.Group controlId="typeOther">
               <Form.Label>Type Other</Form.Label>
-              <Form.Control as="textarea" rows={1}></Form.Control>
+              <Form.Control
+                as="textarea"
+                rows={1}
+                autoComplete="off"
+              ></Form.Control>
             </Form.Group>
           )}
           {typeList != null && subTypeList != null && (
@@ -258,12 +262,16 @@ const TrainingForm = ({
           {showTypeOtherSub && typeList != null && subTypeList != null && (
             <Form.Group controlId="subTypeOther">
               <Form.Label>Type Sub Other</Form.Label>
-              <Form.Control as="textarea" rows={1}></Form.Control>
+              <Form.Control
+                as="textarea"
+                rows={1}
+                autoComplete="off"
+              ></Form.Control>
             </Form.Group>
           )}
           <Form.Group controlId="extraInformation">
             <Form.Label>Extra Information</Form.Label>
-            <Form.Control as="textarea" rows={3} />
+            <Form.Control as="textarea" rows={3} autoComplete="off" />
           </Form.Group>
           <br />
           <Button className="btn btn-success border-0 btn-block" type="submit">

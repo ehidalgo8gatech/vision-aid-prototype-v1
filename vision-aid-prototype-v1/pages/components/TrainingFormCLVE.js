@@ -554,7 +554,7 @@ const TrainingFormCLVE = ({
             <Col>
               <Form.Group controlId="diagnosisOther">
                 <Form.Label>Diagnosis Other</Form.Label>
-                <Form.Control type="text" />
+                <Form.Control type="text" autoComplete="off" />
               </Form.Group>
             </Col>
           </Row>
@@ -569,7 +569,7 @@ const TrainingFormCLVE = ({
           <Col>
             <Form.Group controlId="sessionNumber">
               <Form.Label>Session Number</Form.Label>
-              <Form.Control type="number" min={1}/>
+              <Form.Control type="number" min={1} autoComplete="off" />
             </Form.Group>
           </Col>
         </Row>
@@ -638,7 +638,7 @@ const TrainingFormCLVE = ({
         {showOther.recommendationSpectacle && (
           <Form.Group controlId="recommendationSpectacleOther">
             <Form.Label>Other Recommendation Spectacle</Form.Label>
-            <Form.Control as="input" />
+            <Form.Control as="input" autoComplete="off" />
           </Form.Group>
         )}
 
@@ -652,13 +652,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="costSpectacle">
                   <Form.Label>Cost Spectacle</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" min={0} autoComplete="off" />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiarySpectacle">
                   <Form.Label>Cost to Beneficiary Spectacle</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" min={0} autoComplete="off" />
                 </Form.Group>
               </Col>
             </Row>
@@ -695,7 +695,7 @@ const TrainingFormCLVE = ({
             {showOther.dispensedSpectacle && (
               <Form.Group controlId="dispensedSpectacleOther">
                 <Form.Label>Other Dispensed Spectacle</Form.Label>
-                <Form.Control as="input" />
+                <Form.Control as="input" autoComplete="off" />
               </Form.Group>
             )}
           </div>
@@ -722,7 +722,7 @@ const TrainingFormCLVE = ({
         {showOther.recommendationOptical && (
           <Form.Group controlId="recommendationOpticalOther">
             <Form.Label>Other Recommendation Optical</Form.Label>
-            <Form.Control as="input" />
+            <Form.Control as="input" autoComplete="off" />
           </Form.Group>
         )}
 
@@ -736,13 +736,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="costOptical">
                   <Form.Label>Cost Optical</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" min={0} autoComplete="off" />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiaryOptical">
                   <Form.Label>Cost to Beneficiary Optical</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" min={0} autoComplete="off" />
                 </Form.Group>
               </Col>
             </Row>
@@ -779,7 +779,7 @@ const TrainingFormCLVE = ({
             {showOther.dispensedOptical && (
               <Form.Group controlId="dispensedOpticalOther">
                 <Form.Label>Other Dispensed Optical</Form.Label>
-                <Form.Control as="input" />
+                <Form.Control as="input" autoComplete="off" />
               </Form.Group>
             )}
           </div>
@@ -806,7 +806,7 @@ const TrainingFormCLVE = ({
         {showOther.recommendationNonOptical && (
           <Form.Group controlId="recommendationNonOpticalOther">
             <Form.Label>Other Recommendation NonOptical</Form.Label>
-            <Form.Control as="input" />
+            <Form.Control as="input" autoComplete="off" />
           </Form.Group>
         )}
 
@@ -820,13 +820,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="costNonOptical">
                   <Form.Label>Cost NonOptical</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" min={0} autoComplete="off" />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiaryNonOptical">
                   <Form.Label>Cost to Beneficiary NonOptical</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" min={0} autoComplete="off" />
                 </Form.Group>
               </Col>
             </Row>
@@ -863,7 +863,7 @@ const TrainingFormCLVE = ({
             {showOther.dispensedNonOptical && (
               <Form.Group controlId="dispensedNonOpticalOther">
                 <Form.Label>Other Dispensed NonOptical</Form.Label>
-                <Form.Control as="input" />
+                <Form.Control as="input" autoComplete="off" />
               </Form.Group>
             )}
           </div>
@@ -890,7 +890,7 @@ const TrainingFormCLVE = ({
         {showOther.recommendationElectronic && (
           <Form.Group controlId="recommendationElectronicOther">
             <Form.Label>Other Recommendation Electronic</Form.Label>
-            <Form.Control as="input" />
+            <Form.Control as="input" autoComplete="off" />
           </Form.Group>
         )}
 
@@ -904,13 +904,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="costElectronic">
                   <Form.Label>Cost Electronic</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" min={0} autoComplete="off" />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiaryElectronic">
                   <Form.Label>Cost to Beneficiary Electronic</Form.Label>
-                  <Form.Control type="number" min={0}/>
+                  <Form.Control type="number" min={0} autoComplete="off" />
                 </Form.Group>
               </Col>
             </Row>
@@ -948,7 +948,7 @@ const TrainingFormCLVE = ({
             {showOther.dispensedElectronic && (
               <Form.Group controlId="dispensedElectronicOther">
                 <Form.Label>Other Dispensed Electronic</Form.Label>
-                <Form.Control as="input" />
+                <Form.Control as="input" autoComplete="off" />
               </Form.Group>
             )}
           </div>
@@ -960,13 +960,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="colourVisionRE">
                   <Form.Label>Colour Vision Right Eye</Form.Label>
-                  <Form.Control as="textarea" rows={1} />
+                  <Form.Control as="textarea" rows={1} autoComplete="off" />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="colourVisionLE">
                   <Form.Label>Colour Vision Left Eye</Form.Label>
-                  <Form.Control as="textarea" rows={1} />
+                  <Form.Control as="textarea" rows={1} autoComplete="off" />
                 </Form.Group>
               </Col>
             </Row>
@@ -974,13 +974,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="contrastSensitivityRE">
                   <Form.Label>Contrast Sensitivity Right Eye</Form.Label>
-                  <Form.Control as="textarea" rows={1} />
+                  <Form.Control as="textarea" rows={1} autoComplete="off" />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="contrastSensitivityLE">
                   <Form.Label>Contrast Sensitivity Left Eye</Form.Label>
-                  <Form.Control as="textarea" rows={1} />
+                  <Form.Control as="textarea" rows={1} autoComplete="off" />
                 </Form.Group>
               </Col>
             </Row>
@@ -988,13 +988,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="visualFieldsRE">
                   <Form.Label>Visual Fields Right Eye</Form.Label>
-                  <Form.Control as="textarea" rows={1} />
+                  <Form.Control as="textarea" rows={1} autoComplete="off" />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="visualFieldsLE">
                   <Form.Label>Visual Fields Left Eye</Form.Label>
-                  <Form.Control as="textarea" rows={1} />
+                  <Form.Control as="textarea" rows={1} autoComplete="off" />
                 </Form.Group>
               </Col>
             </Row>
@@ -1002,13 +1002,10 @@ const TrainingFormCLVE = ({
         )}
         <Form.Group controlId="extraInformation">
           <Form.Label>Comments</Form.Label>
-          <Form.Control as="textarea" rows={3} />
+          <Form.Control as="textarea" rows={3} autoComplete="off" />
         </Form.Group>
         <br />
-        <Button
-          className="btn btn-success border-0 btn-block"
-          type="submit"
-        >
+        <Button className="btn btn-success border-0 btn-block" type="submit">
           Submit Evaluation
         </Button>
       </Form>

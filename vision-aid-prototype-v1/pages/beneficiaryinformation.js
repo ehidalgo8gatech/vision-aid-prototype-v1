@@ -189,6 +189,7 @@ function RequiredFields(props) {
         className="form-control"
         id="mrn"
         placeholder="Enter beneficiary's MRN"
+        autoComplete="off"
       />
     </div>
   );
@@ -203,6 +204,7 @@ function RequiredFields(props) {
         placeholder="Enter beneficiary's full name"
         value={beneficiaryNameVal}
         onChange={(e) => setBeneficiaryNameVal(e.target.value)}
+        autoComplete="off"
       />
     </div>
   );
@@ -297,6 +299,7 @@ function RequiredFields(props) {
           maxLength={10}
           onChange={(e) => checkInput(e)}
           value={phone}
+          autoComplete="off"
         />
       </div>
     );
@@ -314,6 +317,7 @@ function RequiredFields(props) {
           className="form-control"
           id="education"
           placeholder="Enter beneficiary's educational qualifications"
+          autoComplete="off"
         />
       </div>
     );
@@ -331,6 +335,7 @@ function RequiredFields(props) {
           className="form-control"
           id="occupation"
           placeholder="Enter beneficiary's occupation"
+          autoComplete="off"
         />
       </div>
     );
@@ -348,6 +353,7 @@ function RequiredFields(props) {
           className="form-control"
           id="districts"
           placeholder="Enter beneficiary's district (location)"
+          autoComplete="off"
         />
       </div>
     );
@@ -365,6 +371,7 @@ function RequiredFields(props) {
           className="form-control"
           id="state"
           placeholder="Enter beneficiary's state (location)"
+          autoComplete="off"
         />
       </div>
     );
@@ -384,6 +391,7 @@ function RequiredFields(props) {
           className="form-control"
           id="diagnosis"
           placeholder="Enter beneficiary's diagnosis"
+          autoComplete="off"
         />
       </div>
     );
@@ -403,6 +411,7 @@ function RequiredFields(props) {
           className="form-control"
           id="vision"
           placeholder="Enter beneficiary's vision details"
+          autoComplete="off"
         />
       </div>
     );
@@ -441,6 +450,7 @@ function RequiredFields(props) {
           className="form-control"
           name="extraField"
           id={data.name}
+          autoComplete="off"
         />
       </div>
     );

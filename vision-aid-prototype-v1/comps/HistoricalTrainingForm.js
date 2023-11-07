@@ -152,8 +152,9 @@ export default function HistoricalTrainingForm(props) {
                   type="number"
                   name="sessionNumber"
                   value={data.sessionNumber}
-                    onChange={(e) => handleChange(e)}
-                    min="1"
+                  onChange={(e) => handleChange(e)}
+                  min="1"
+                  autoComplete="off"
                 />
               )}
             </td>
@@ -209,6 +210,7 @@ export default function HistoricalTrainingForm(props) {
                   name="subTypeOther"
                   value={otherType}
                   onChange={(e) => setOtherType(e.target.value)}
+                  autoComplete="off"
                 />
               </td>
             </tr>
@@ -225,6 +227,7 @@ export default function HistoricalTrainingForm(props) {
                   name="extraInformation"
                   value={data.extraInformation}
                   onChange={(e) => handleChange(e)}
+                  autoComplete="off"
                 />
               )}
             </td>
