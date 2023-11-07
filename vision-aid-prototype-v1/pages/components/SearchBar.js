@@ -48,7 +48,7 @@ function SearchBar({ onSearch }) {
         <br />
         <div>
           <button
-            type="button"
+            type="submit"
             onClick={(e) => handleSubmit(e)}
             className="btn btn-primary"
             id="search"
