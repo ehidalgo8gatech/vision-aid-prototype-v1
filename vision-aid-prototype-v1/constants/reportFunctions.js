@@ -43,6 +43,12 @@ const clveMainHeader = [
   "Dispensed Non-Optical Aid",
   "Dispensed Electronic Aid",
   "Dispensed Spectacles (Refractive Error Only)",
+  "Colour Vision",
+  "",
+  "Contrast Sensitivity",
+  "",
+  "Visual Fields",
+  "",
   "Cost of all the aids dispensed",
   "Cost to the Beneficiary",
 ];
@@ -58,7 +64,14 @@ clveSubHeader.push("Notation");
 clveSubHeader.push("RE");
 clveSubHeader.push("LE");
 clveSubHeader.push("BE");
-addEmptyElements(clveSubHeader, "", 10);
+addEmptyElements(clveSubHeader, "", 8);
+clveSubHeader.push("RE");
+clveSubHeader.push("LE");
+clveSubHeader.push("RE");
+clveSubHeader.push("LE");
+clveSubHeader.push("RE");
+clveSubHeader.push("LE");
+addEmptyElements(clveSubHeader, "", 2);
 
 // Excel header for Low Vision Screening Sheet
 const lveMainHeader = [
@@ -217,12 +230,18 @@ function getClveJson(commonData, clveIdx, clveData) {
     clveData["recommendationNonOptical"];
   clveJson["Recommended Electronic Aid"] = clveData["recommendationElectronic"];
   clveJson["Spectacles (Refractive Error Only)"] =
-    clveData["recommendationSpectacle"]; // check correctness?
+    clveData["recommendationSpectacle"];
   clveJson["Dispensed Optical Aid"] = clveData["dispensedOptical"];
   clveJson["Dispensed Non-Optical Aid"] = clveData["dispensedNonOptical"];
   clveJson["Dispensed Electronic Aid"] = clveData["dispensedElectronic"];
   clveJson["Dispensed Spectacles (Refractive Error Only)"] =
     clveData["dispensedSpectacle"];
+  clveJson["Colour Vision RE"] = clveData["colourVisionRE"];
+  clveJson["Colour Vision LE"] = clveData["colourVisionLE"];
+  clveJson["Contrast Sensitivity RE"] = clveData["contrastSensitivityRE"];
+  clveJson["Contrast Sensitivity LE"] = clveData["contrastSensitivityLE"];
+  clveJson["Visual Fields RE"] = clveData["visualFieldsRE"];
+  clveJson["Visual Fields LE"] = clveData["visualFieldsLE"];
   clveJson["Cost of all the aids dispensed"] =
     clveData["costOptical"] +
     clveData["costNonOptical"] +
@@ -730,8 +749,11 @@ export function setClveHeader(wclve) {
     mergeHeaderCells({ col: 24, rowSpan: 1 }), // Dispensed Non-Optical Aid
     mergeHeaderCells({ col: 25, rowSpan: 1 }), // Dispensed Electronic Aid
     mergeHeaderCells({ col: 26, rowSpan: 1 }), // Dispensed Spectacles (Refractive Error Only)
-    mergeHeaderCells({ col: 27, rowSpan: 1 }), // Cost of all the aids dispensed
-    mergeHeaderCells({ col: 28, rowSpan: 1 }), // Cost to the Beneficiary
+    mergeHeaderCells({ col: 27, colSpan: 1 }), // { s: { r: 0, c: 27 }, e: { r: 0, c: 28 } }, Title: Color Vision
+    mergeHeaderCells({ col: 29, colSpan: 1 }), // { s: { r: 0, c: 29 }, e: { r: 0, c: 30 } }, Title: Contrast Sensitivity
+    mergeHeaderCells({ col: 31, colSpan: 1 }), // { s: { r: 0, c: 31 }, e: { r: 0, c: 32 } }, Title: Visual Fields
+    mergeHeaderCells({ col: 33, rowSpan: 1 }), // Cost of all the aids dispensed
+    mergeHeaderCells({ col: 34, rowSpan: 1 }), // Cost to the Beneficiary
   ];
 
   return wclve;
