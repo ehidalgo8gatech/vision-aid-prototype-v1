@@ -542,3 +542,52 @@ h2 {
   height: 22.5px;
   width: 111.8px;
 }
+
+.sidenav {
+  /* height: 100%; */
+  width: 200px;
+  position: fixed;
+  z-index: 1;
+  /* top: 0; */
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.sidenav a {
+  padding: 6px 6px 6px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: flex;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.main {
+  margin-left: 200px; /* Same as the width of the sidenav */
+}
+
+.full-height {
+  height: 100vh;
+}
+
+.tab {
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.active-tab {
+  background-color: #04AA6D;
+  color: white;
+}
+
+.tab:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
