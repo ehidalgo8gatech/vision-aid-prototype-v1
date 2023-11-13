@@ -591,3 +591,56 @@ h2 {
   background-color: #555;
   color: white;
 }
+
+.right-align {
+  margin-left: auto;
+  margin-right: 0;
+  height: 100%;
+}
+
+.top {
+  top: 0;
+}
+
+.center {
+  top: auto;
+  bottom: auto;
+}
+
+.relative-parent {
+  position: relative;
+}
+
+.inherit-height {
+  /* height: inherit; */
+  align-items: stretch;
+  height: 100%;
+  position: relative;
+}
+
+.flex {
+  display: flex;
+}
+
+.left-auto-margin {
+  margin-left: auto;
+  padding-right: 16px;
+}
+
+.align-items-center {
+  display: flex;
+  float: right;
+  vertical-align: middle;
+  align-items: center;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
