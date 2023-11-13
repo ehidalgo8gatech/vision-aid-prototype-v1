@@ -105,11 +105,9 @@ function Navigation({ user } = props) {
         </div>
         {user && (
           <div className="left-auto-margin column">
-            {/* <p> */}
             <small className="top display text-light">
               Signed in as {user.email}
             </small>
-            {/* </p> */}
             <br />
             <div className="text-align-right">
               <button
@@ -122,24 +120,10 @@ function Navigation({ user } = props) {
                 Sign out
               </button>
             </div>
-            {/* <p className="text-align-right display text-light nopadding">
-              <small>Signed in as {user.email}</small>
-            </p>
-            <div className="h-100 right-align nopadding">
-              <button
-                type="button"
-                className="btn btn-sm btn-light"
-                onClick={() => {
-                  signOut();
-                }}
-              >
-                Sign out
-              </button>
-            </div> */}
           </div>
         )}
         {!user && (
-          <div className="text-align-right">
+          <div className="left-auto-margin column-center">
             <button
               type="button"
               className="btn btn-sm btn-light"
