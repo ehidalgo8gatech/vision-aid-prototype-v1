@@ -259,7 +259,7 @@ function Users(props) {
                         <MenuItem key="All" value="All">
                           ALL
                         </MenuItem>
-                        {createMenu(hospitalOptions, "hospitals", false)}
+                        {createMenu(hospitalOptions, false)}
                       </Select>
                     </FormControl>
                   </td>
@@ -289,7 +289,7 @@ function Users(props) {
                         value={role}
                         onChange={(e) => setRole(e.target.value)}
                       >
-                        {createMenu(roleOptions, "role", false)}
+                        {createMenu(roleOptions, false)}
                       </Select>
                     </FormControl>
                   </td>
