@@ -171,8 +171,10 @@ const TrainingForm = ({
 
   return (
     <div className="col-12">
-      <div className="d-flex justify-content-center align-items-center">
-        <h3>New Evaluation Form</h3>
+      <div className="row">
+        <div className="justify-content-center align-items-center">
+          <h3>New Evaluation Form</h3>
+        </div>
       </div>
       <>
         <Form onSubmit={handleSubmit} className="mt-3">

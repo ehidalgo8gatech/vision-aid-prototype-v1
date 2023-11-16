@@ -1,16 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import { ChevronDown, ChevronRight, Pencil } from "react-bootstrap-icons";
 import { v4 as uuidv4 } from "uuid";
 import Router from "next/router";
 import {
   Select,
-  MenuItem,
-  Checkbox,
-  ListItemText,
-  ListSubheader,
   FormControl,
-  Typography,
 } from "@mui/material";
 import {
   logMARValues,
@@ -32,9 +27,14 @@ import {
   electronicDevicesSubheadings,
   electronicDevicesIndices,
 } from "@/constants/devicesConstants";
-import { createMenu, createOptionMenu } from "@/constants/globalFunctions";
-import { comma, commaAndSpace } from "@/constants/generalConstants";
+import {
+  createMenu,
+  createOptionMenu,
+  parseInputDate,
+} from "@/constants/globalFunctions";
+import { comma, diagnosisValues } from "@/constants/generalConstants";
 import { jsonToCSV } from "react-papaparse";
+import moment from "moment";
 
 const TrainingFormCLVE = ({
   existingTrainings = [],
@@ -67,24 +67,37 @@ const TrainingFormCLVE = ({
     mdvi = "No";
   }
   const [mdviValue, setMdviValue] = useState(mdvi);
+  const [section, setSection] = useState("vision_evaluation");
+  const [diagnosis, setDiagnosis] = useState([]);
+  const today = new Date();
+  const [formData, setFormData] = useState({
+    unitDistance: "LogMAR",
+    unitNear: "LogMAR",
+    date: today,
+    dispensedDateSpectacle: today,
+    dispensedDateOptical: today,
+    dispensedDateNonOptical: today,
+    dispensedDateElectronic: today,
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(formData);
     const customDataDistance = customFieldsDistance.reduce((acc, field) => {
-      acc[field] =
-        e.target[field].value + " " + e.target[`unit-distance`].value;
+      acc[field] = formData[field] + " " + formData["unitDistance"];
       return acc;
     }, {});
     const customDataNear = customFieldsNear.reduce((acc, field) => {
-      acc[field] = e.target[field].value + " " + e.target[`unit-near`].value;
+      acc[field] = formData[field] + " " + formData["unitNear"];
       return acc;
     }, {});
-    var diagnosis = "";
-    e.target.diagnosis.forEach((diagnosisValue) => {
-      if (diagnosisValue.checked && diagnosisValue.value == "Other") {
-        diagnosis = diagnosis + " " + e.target.diagnosisOther.value;
-      } else if (diagnosisValue.checked) {
-        diagnosis = diagnosis + " " + diagnosisValue.value;
+    var allDiagnosis = "";
+
+    diagnosis.forEach((diagnosisValue) => {
+      if (diagnosisValue == "Other") {
+        allDiagnosis = allDiagnosis + " " + formData["diagnosisOther"];
+      } else {
+        allDiagnosis = allDiagnosis + " " + diagnosisValue;
       }
     });
 
@@ -94,7 +107,7 @@ const TrainingFormCLVE = ({
         1
       );
       devices.recommendationSpectacle.push(
-        e.target.recommendationSpectacleOther.value
+        formData["recommendationSpectacleOther"]
       );
     }
 
@@ -104,7 +117,7 @@ const TrainingFormCLVE = ({
         1
       );
       devices.recommendationOptical.push(
-        e.target.recommendationOpticalOther.value
+        formData["recommendationOpticalOther"]
       );
     }
 
@@ -114,7 +127,7 @@ const TrainingFormCLVE = ({
         1
       );
       devices.recommendationNonOptical.push(
-        e.target.recommendationNonOpticalOther.value
+        formData["recommendationNonOpticalOther"]
       );
     }
 
@@ -124,15 +137,17 @@ const TrainingFormCLVE = ({
         1
       );
       devices.recommendationElectronic.push(
-        e.target.recommendationElectronicOther.value
+        formData["recommendationElectronicOther"]
       );
     }
 
     const newTraining = {
-      diagnosis: diagnosis,
+      diagnosis: allDiagnosis,
       mdvi: mdviValue,
-      date: e.target.date.value,
-      sessionNumber: e.target.sessionNumber.value,
+      date: formData["date"] ? formData["date"] : null,
+      sessionNumber: formData["sessionNumber"]
+        ? formData["sessionNumber"]
+        : null,
       recommendationSpectacle:
         devices.recommendationSpectacle.length > 0
           ? jsonToCSV([devices.recommendationSpectacle], {
@@ -140,26 +155,22 @@ const TrainingFormCLVE = ({
               delimiter: comma,
             })
           : "",
-      dispensedDateSpectacle:
-        e.target.dispensedDateSpectacle == null
-          ? null
-          : new Date(e.target.dispensedDateSpectacle.value),
-      costSpectacle:
-        e.target.costSpectacle == null
-          ? null
-          : parseInt(e.target.costSpectacle.value),
-      costToBeneficiarySpectacle:
-        e.target.costToBeneficiarySpectacle == null
-          ? null
-          : parseInt(e.target.costToBeneficiarySpectacle.value),
+      dispensedDateSpectacle: formData["dispensedDateSpectacle"]
+        ? formData["dispensedDateSpectacle"]
+        : null,
+      costSpectacle: formData["costSpectacle"]
+        ? formData["costSpectacle"]
+        : null,
+      costToBeneficiarySpectacle: formData["costToBeneficiarySpectacle"]
+        ? formData["costToBeneficiarySpectacle"]
+        : null,
       dispensedSpectacle:
         devices.dispensedSpectacle === "Other"
-          ? e.target.dispensedSpectacleOther.value
+          ? formData["dispensedSpectacleOther"]
           : devices.dispensedSpectacle,
-      trainingGivenSpectacle:
-        e.target.trainingGivenSpectacle == null
-          ? null
-          : e.target.trainingGivenSpectacle.value,
+      trainingGivenSpectacle: formData["trainingGivenSpectacle"]
+        ? formData["trainingGivenSpectacle"]
+        : null,
       recommendationOptical:
         devices.recommendationOptical.length > 0
           ? jsonToCSV([devices.recommendationOptical], {
@@ -167,26 +178,20 @@ const TrainingFormCLVE = ({
               delimiter: comma,
             })
           : "",
-      dispensedDateOptical:
-        e.target.dispensedDateOptical == null
-          ? null
-          : new Date(e.target.dispensedDateOptical.value),
-      costOptical:
-        e.target.costOptical == null
-          ? null
-          : parseInt(e.target.costOptical.value),
-      costToBeneficiaryOptical:
-        e.target.costToBeneficiaryOptical == null
-          ? null
-          : parseInt(e.target.costToBeneficiaryOptical.value),
+      dispensedDateOptical: formData["dispensedDateOptical"]
+        ? formData["dispensedDateOptical"]
+        : null,
+      costOptical: formData["costOptical"] ? formData["costOptical"] : null,
+      costToBeneficiaryOptical: formData["costToBeneficiaryOptical"]
+        ? formData["costToBeneficiaryOptical"]
+        : null,
       dispensedOptical:
         devices.dispensedOptical === "Other"
-          ? e.target.dispensedOpticalOther.value
+          ? formData["dispensedOpticalOther"]
           : devices.dispensedOptical,
-      trainingGivenOptical:
-        e.target.trainingGivenOptical == null
-          ? null
-          : e.target.trainingGivenOptical.value,
+      trainingGivenOptical: formData["trainingGivenOptical"]
+        ? formData["trainingGivenOptical"]
+        : null,
       recommendationNonOptical:
         devices.recommendationNonOptical.length > 0
           ? jsonToCSV([devices.recommendationNonOptical], {
@@ -194,26 +199,22 @@ const TrainingFormCLVE = ({
               delimiter: comma,
             })
           : "",
-      dispensedDateNonOptical:
-        e.target.dispensedDateNonOptical == null
-          ? null
-          : new Date(e.target.dispensedDateNonOptical.value),
-      costNonOptical:
-        e.target.costNonOptical == null
-          ? null
-          : parseInt(e.target.costNonOptical.value),
-      costToBeneficiaryNonOptical:
-        e.target.costToBeneficiaryNonOptical == null
-          ? null
-          : parseInt(e.target.costToBeneficiaryNonOptical.value),
+      dispensedDateNonOptical: formData["dispensedDateNonOptical"]
+        ? formData["dispensedDateNonOptical"]
+        : null,
+      costNonOptical: formData["costNonOptical"]
+        ? formData["costNonOptical"]
+        : null,
+      costToBeneficiaryNonOptical: formData["costToBeneficiaryNonOptical"]
+        ? formData["costToBeneficiaryNonOptical"]
+        : null,
       dispensedNonOptical:
         devices.dispensedNonOptical === "Other"
-          ? e.target.dispensedNonOpticalOther.value
+          ? formData["dispensedNonOpticalOther"]
           : devices.dispensedNonOptical,
-      trainingGivenNonOptical:
-        e.target.trainingGivenNonOptical == null
-          ? null
-          : e.target.trainingGivenNonOptical.value,
+      trainingGivenNonOptical: formData["trainingGivenNonOptical"]
+        ? formData["trainingGivenNonOptical"]
+        : null,
       recommendationElectronic:
         devices.recommendationElectronic.length > 0
           ? jsonToCSV([devices.recommendationElectronic], {
@@ -221,26 +222,22 @@ const TrainingFormCLVE = ({
               delimiter: comma,
             })
           : "",
-      dispensedDateElectronic:
-        e.target.dispensedDateElectronic == null
-          ? null
-          : new Date(e.target.dispensedDateElectronic.value),
-      costElectronic:
-        e.target.costElectronic == null
-          ? null
-          : parseInt(e.target.costElectronic.value),
-      costToBeneficiaryElectronic:
-        e.target.costToBeneficiaryElectronic == null
-          ? null
-          : parseInt(e.target.costToBeneficiaryElectronic.value),
+      dispensedDateElectronic: formData["dispensedDateElectronic"]
+        ? formData["dispensedDateElectronic"]
+        : null,
+      costElectronic: formData["costElectronic"]
+        ? formData["costElectronic"]
+        : null,
+      costToBeneficiaryElectronic: formData["costToBeneficiaryElectronic"]
+        ? formData["costToBeneficiaryElectronic"]
+        : null,
       dispensedElectronic:
         devices.dispensedElectronic === "Other"
-          ? e.target.dispensedElectronicOther.value
+          ? formData["dispensedElectronicOther"]
           : devices.dispensedElectronic,
-      trainingGivenElectronic:
-        e.target.trainingGivenElectronic == null
-          ? null
-          : e.target.trainingGivenElectronic.value,
+      trainingGivenElectronic: formData["trainingGivenElectronic"]
+        ? formData["trainingGivenElectronic"]
+        : null,
       colourVisionRE:
         e.target.colourVisionRE == null ? null : e.target.colourVisionRE.value,
       colourVisionLE:
@@ -263,7 +260,6 @@ const TrainingFormCLVE = ({
     };
     updateMDVIForBeneficiary({ mDVI: mdviValue });
     addNewTraining(newTraining);
-    setShowForm(false);
   };
 
   const [devices, setDevices] = useState({
@@ -295,90 +291,108 @@ const TrainingFormCLVE = ({
   };
 
   const changeDvValues = (e) => {
+    setFormData((formData) => ({ ...formData, unitDistance: e.target.value }));
     if (e.target.value == "LogMAR") {
-      setDvAcuityValues(createOptionList(logMARValues));
+      setDvAcuityValues(logMARValues);
     } else if (e.target.value == "6m") {
-      setDvAcuityValues(createOptionList(sixmValues));
+      setDvAcuityValues(sixmValues);
     } else if (e.target.value == "20ft") {
-      setDvAcuityValues(createOptionList(twentyftValues));
+      setDvAcuityValues(twentyftValues);
     }
   };
 
   const changeNvValues = (e) => {
+    setFormData((formData) => ({ ...formData, unitNear: e.target.value }));
     if (e.target.value == "LogMAR") {
-      setNvAcuityValues(createOptionList(logMARNVValues));
+      setNvAcuityValues(logMARNVValues);
     } else if (e.target.value == "N-scale") {
-      setNvAcuityValues(createOptionList(nScaleValues));
+      setNvAcuityValues(nScaleValues);
     } else if (e.target.value == "M-units") {
-      setNvAcuityValues(createOptionList(mUnitsValues));
+      setNvAcuityValues(mUnitsValues);
     } else if (e.target.value == "Snellen - Imperial") {
-      setNvAcuityValues(createOptionList(snellenImperialValues));
+      setNvAcuityValues(snellenImperialValues);
     } else if (e.target.value == "Snellen - Metric") {
-      setNvAcuityValues(createOptionList(snellenMetricValues));
+      setNvAcuityValues(snellenMetricValues);
     }
   };
 
   const [dvAcuityValues, setDvAcuityValues] = useState(
-    createOptionList(logMARValues)
+    logMARValues
   );
   const [nvAcuityValues, setNvAcuityValues] = useState(
-    createOptionList(logMARNVValues)
+    logMARNVValues
   );
+
+  useEffect(() => {
+    customFieldsDistance.forEach((field) => {
+      console.log("entered dv");
+      setFormData((formData) => ({
+        ...formData,
+        [field]: dvAcuityValues[0],
+      }));
+    });
+    console.log(formData);
+  }, [dvAcuityValues]);
+
+  useEffect(() => {
+    console.log("entered nv");
+    customFieldsNear.forEach((field) => {
+      setFormData((formData) => ({
+        ...formData,
+        [field]: nvAcuityValues[0],
+      }));
+    });
+    console.log(formData);
+  }, [nvAcuityValues]);
+
+  const diagnosisOptions = createMenu(diagnosisValues, true, diagnosis);
   const recommendationSpectacleOptions = createMenu(
     spectacleDevices,
-    "recommendationSpectacle",
     true,
-    devices
+    devices["recommendationSpectacle"]
   );
   const dispensedSpectacleOptions = createMenu(
     spectacleDevices,
-    "dispensedSpectacle",
     false,
-    devices
+    devices["dispensedSpectacle"]
   );
   const recommendationOpticalOptions = createMenu(
     opticalDevices,
-    "recommendationOptical",
     true,
-    devices
+    devices["recommendationOptical"]
   );
   const dispensedOpticalOptions = createMenu(
     opticalDevices,
-    "dispensedOptical",
     false,
-    devices
+    devices["dispensedOptical"]
   );
   const recommendationNonOpticalOptions = createOptionMenu(
     nonOpticalDevices,
     nonOpticalDevicesSubheadings,
     nonOpticalDevicesIndices,
-    "recommendationNonOptical",
     true,
-    devices
+    devices["recommendationNonOptical"]
   );
   const dispensedNonOpticalOptions = createOptionMenu(
     nonOpticalDevices,
     nonOpticalDevicesSubheadings,
     nonOpticalDevicesIndices,
-    "dispensedNonOptical",
     false,
-    devices
+    devices["dispensedNonOptical"]
   );
   const recommendationElectronicOptions = createOptionMenu(
     electronicDevices,
     electronicDevicesSubheadings,
     electronicDevicesIndices,
-    "recommendationElectronic",
     true,
-    devices
+    devices["recommendationElectronic"]
   );
   const dispensedElectronicOptions = createOptionMenu(
     electronicDevices,
     electronicDevicesSubheadings,
     electronicDevicesIndices,
-    "dispensedElectronic",
     false,
-    devices
+    devices["dispensedElectronic"]
   );
 
   const [showOther, setShowOther] = useState({
@@ -405,6 +419,18 @@ const TrainingFormCLVE = ({
       setShowOther({ ...showOther, [fieldName]: true });
     } else {
       setShowOther({ ...showOther, [fieldName]: false });
+    }
+  };
+
+  const handleDiagnosisChange = (e) => {
+    const {
+      target: { value },
+    } = e;
+    setDiagnosis(value);
+    if (value.includes("Other")) {
+      setShowDiagnosisOther(true);
+    } else {
+      setShowDiagnosisOther(false);
     }
   };
 
@@ -488,177 +514,349 @@ const TrainingFormCLVE = ({
     }
   }
 
+  const updateFormData = (e, fieldName) => {
+    if (e.target.type == "date") {
+      setFormData((formData) => ({
+        ...formData,
+        [fieldName]: new Date(parseInputDate(e.target.value)),
+      }));
+      console.log(e.target.type, fieldName, formData[fieldName]);
+    } else if (e.target.type == "number") {
+      setFormData((formData) => ({
+        ...formData,
+        [fieldName]: parseInt(e.target.value),
+      }));
+      console.log(e.target.type, fieldName, formData[fieldName]);
+    } else {
+      setFormData((formData) => ({ ...formData, [fieldName]: e.target.value }));
+      console.log(e.target.type, fieldName, formData[fieldName]);
+    }
+  };
+
   return (
     <div className="col-12">
-      <div className="d-flex justify-content-center align-items-center">
-        <h3>New Evaluation Form</h3>
+      <div className="row">
+        <div className="justify-content-center align-items-center">
+          <h3>New Evaluation Form</h3>
+        </div>
       </div>
+      <hr />
+      <div className="row">
+        <div className="p-2 col">
+          <button
+            className={`w-100 text-align-left ${
+              section === "vision_evaluation"
+                ? "btn btn-success btn-block active-tab"
+                : "btn btn-light btn-block"
+            }`}
+            onClick={() => setSection("vision_evaluation")}
+          >
+            Vision Evaluation
+          </button>
+        </div>
+        <div className="p-2 col">
+          <button
+            className={`w-100 text-align-left ${
+              section === "spectacle"
+                ? "btn btn-success btn-block active-tab"
+                : "btn btn-light btn-block"
+            }`}
+            onClick={() => setSection("spectacle")}
+          >
+            Specatacle
+          </button>
+        </div>
+        <div className="p-2 col">
+          <button
+            className={`w-100 text-align-left ${
+              section === "optical"
+                ? "btn btn-success btn-block active-tab"
+                : "btn btn-light btn-block"
+            }`}
+            onClick={() => setSection("optical")}
+          >
+            Optical
+          </button>
+        </div>
+      </div>
+      <div className="row">
+        <div className="p-2 col">
+          <button
+            className={`w-100 text-align-left ${
+              section === "non_optical"
+                ? "btn btn-success btn-block active-tab"
+                : "btn btn-light btn-block"
+            }`}
+            onClick={() => setSection("non_optical")}
+          >
+            Non-Optical
+          </button>
+        </div>
+        <div className="p-2 col">
+          <button
+            className={`w-100 text-align-left ${
+              section === "electronic"
+                ? "btn btn-success btn-block active-tab"
+                : "btn btn-light btn-block"
+            }`}
+            onClick={() => setSection("electronic")}
+          >
+            Electronic
+          </button>
+        </div>
+        <div className="p-2 col">
+          <button
+            className={`w-100 text-align-left ${
+              section === "other"
+                ? "btn btn-success btn-block active-tab"
+                : "btn btn-light btn-block"
+            }`}
+            onClick={() => setSection("other")}
+          >
+            Other and Comments
+          </button>
+        </div>
+      </div>
+      <hr />
       <Form onSubmit={handleSubmit} className="mt-3">
-        <Row>
-          <Col>
-            <Form.Group controlId="diagnosis">
-              <Form.Label>Diagnosis</Form.Label>
-              <Form.Check
-                type="checkbox"
-                label="Anterior segment condition"
-                value="Anterior segment condition"
-              />
-              <Form.Check
-                type="checkbox"
-                label="Posterior eye disease"
-                value="Posterior eye disease"
-              />
-              <Form.Check
-                type="checkbox"
-                label="Hereditary eye disease"
-                value="Hereditary eye disease"
-              />
-              <Form.Check
-                type="checkbox"
-                label="Neuro-ophthalmic condition"
-                value="Neuro-ophthalmic condition"
-              />
-              <Form.Check
-                onChange={(event) => diagnosisOnChange(event)}
-                type="checkbox"
-                label="Other"
-                value="Other"
-              />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group controlId="mdvi">
-              <Form.Label>MDVI</Form.Label>
-              <Form.Control
-                as="select"
-                value={mdviValue}
-                onChange={(e) => {
-                  setMdviValue(e.target.value);
-                }}
-              >
-                <option key="Yes" value="Yes">
-                  Yes
-                </option>
-                <option key="No" value="No">
-                  No
-                </option>
-                <option key="At Risk" value="At Risk">
-                  At Risk
-                </option>
-              </Form.Control>
-            </Form.Group>
-          </Col>
-        </Row>
-        {showDiagnosisOther && (
+        {section === "vision_evaluation" && (
           <Row>
             <Col>
-              <Form.Group controlId="diagnosisOther">
-                <Form.Label>Diagnosis Other</Form.Label>
-                <Form.Control type="text" autoComplete="off" />
+              <Form.Label>Diagnosis</Form.Label>
+              <FormControl fullWidth size="small">
+                <Select
+                  value={diagnosis}
+                  onChange={(e) => {
+                    handleDiagnosisChange(e);
+                  }}
+                  multiple
+                  renderValue={(selected) => selected.join(", ")}
+                  MenuProps={MenuProps}
+                >
+                  {diagnosisOptions}
+                </Select>
+              </FormControl>
+            </Col>
+            <Col>
+              <Form.Group controlId="mdvi">
+                <Form.Label>MDVI</Form.Label>
+                <Form.Control
+                  as="select"
+                  value={mdviValue}
+                  onChange={(e) => {
+                    setMdviValue(e.target.value);
+                  }}
+                >
+                  <option key="Yes" value="Yes">
+                    Yes
+                  </option>
+                  <option key="No" value="No">
+                    No
+                  </option>
+                  <option key="At Risk" value="At Risk">
+                    At Risk
+                  </option>
+                </Form.Control>
               </Form.Group>
             </Col>
           </Row>
         )}
-        <Row>
-          <Col>
-            <Form.Group controlId="date">
-              <Form.Label>Date</Form.Label>
-              <Form.Control type="date" />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group controlId="sessionNumber">
-              <Form.Label>Session Number</Form.Label>
-              <Form.Control type="number" min={1} autoComplete="off" />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Form.Group controlId="unit-distance">
-          <Form.Label>Select Distance metric:</Form.Label>
-          <Form.Control as="select" onChange={changeDvValues}>
-            {/* <option defaultValue></option> */}
-            <option>LogMAR</option>
-            <option>6m</option>
-            <option>20ft</option>
-          </Form.Control>
-        </Form.Group>
-
-        <Row>
-          {customFieldsDistance &&
-            customFieldsDistance.map((field) => (
-              <Col key={field}>
-                <Form.Group controlId={field} key={field}>
-                  <Form.Label>{field}</Form.Label>
-                  <Form.Control as="select">{dvAcuityValues}</Form.Control>
-                </Form.Group>
-              </Col>
-            ))}
-        </Row>
-
-        <Form.Group controlId="unit-near">
-          <Form.Label>Select Near metric:</Form.Label>
-          <Form.Control as="select" onChange={changeNvValues}>
-            <option>LogMAR</option>
-            <option>N-scale</option>
-            <option>M-units</option>
-            <option>Snellen - Imperial</option>
-            <option>Snellen - Metric</option>
-          </Form.Control>
-        </Form.Group>
-        <Row>
-          {customFieldsNear &&
-            customFieldsNear.map((field) => (
-              <Col key={field}>
-                <Form.Group controlId={field} key={field}>
-                  <Form.Label>{field}</Form.Label>
-                  <Form.Control as="select">{nvAcuityValues}</Form.Control>
-                </Form.Group>
-              </Col>
-            ))}
-        </Row>
-        <Row>
-          <Form.Group controlId="recommendationSpectacle">
-            <Form.Label>Recommendation Spectacle</Form.Label>
+        {section === "vision_evaluation" && showDiagnosisOther && (
+          <Row>
+            <Col>
+              <Form.Group controlId="diagnosisOther">
+                <Form.Label>Diagnosis Other</Form.Label>
+                <Form.Control
+                  type="text"
+                  autoComplete="off"
+                  value={formData["diagnosisOther"]}
+                  onChange={(e) => updateFormData(e, "diagnosisOther")}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+        )}
+        {section === "vision_evaluation" && (
+          <Row>
+            <Col>
+              <Form.Group controlId="date">
+                <Form.Label>Date</Form.Label>
+                <Form.Control
+                  type="date"
+                  value={moment(formData["date"]).format("YYYY-MM-DD")}
+                  onChange={(e) => updateFormData(e, "date")}
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group controlId="sessionNumber">
+                <Form.Label>Session Number</Form.Label>
+                <Form.Control
+                  type="number"
+                  min={1}
+                  autoComplete="off"
+                  value={formData["sessionNumber"]}
+                  onChange={(e) => updateFormData(e, "sessionNumber")}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+        )}
+        {section === "vision_evaluation" && (
+          <Form.Group controlId="unit-distance">
+            <Form.Label>Select Distance metric:</Form.Label>
+            <Form.Control
+              as="select"
+              value={formData["unitDistance"]}
+              onChange={changeDvValues}
+            >
+              {/* <option defaultValue></option> */}
+              <option>LogMAR</option>
+              <option>6m</option>
+              <option>20ft</option>
+            </Form.Control>
           </Form.Group>
-        </Row>
-        <FormControl fullWidth>
-          <Select
-            value={devices.recommendationSpectacle}
-            onChange={(e) => {
-              handleMultiSelectChange(e, "recommendationSpectacle");
-            }}
-            multiple
-            renderValue={(selected) => selected.join(", ")}
-            MenuProps={MenuProps}
-          >
-            {recommendationSpectacleOptions}
-          </Select>
-        </FormControl>
+        )}
+        {section === "vision_evaluation" && (
+          <Row>
+            {customFieldsDistance &&
+              customFieldsDistance.map((field) => (
+                <Col key={field}>
+                  <Form.Group controlId={field} key={field}>
+                    <Form.Label>{field}</Form.Label>
+                    <Form.Control
+                      as="select"
+                      value={formData[field]}
+                      onChange={(e) => updateFormData(e, field)}
+                    >
+                      {createOptionList(dvAcuityValues)}
+                    </Form.Control>
+                  </Form.Group>
+                </Col>
+              ))}
+          </Row>
+        )}
+        {section === "vision_evaluation" && (
+          <Form.Group controlId="unit-near">
+            <Form.Label>Select Near metric:</Form.Label>
+            <Form.Control
+              as="select"
+              value={formData["unitNear"]}
+              onChange={changeNvValues}
+            >
+              <option>LogMAR</option>
+              <option>N-scale</option>
+              <option>M-units</option>
+              <option>Snellen - Imperial</option>
+              <option>Snellen - Metric</option>
+            </Form.Control>
+          </Form.Group>
+        )}
+        {section === "vision_evaluation" && (
+          <Row>
+            {customFieldsNear &&
+              customFieldsNear.map((field) => (
+                <Col key={field}>
+                  <Form.Group controlId={field} key={field}>
+                    <Form.Label>{field}</Form.Label>
+                    <Form.Control
+                      as="select"
+                      value={formData[field]}
+                      onChange={(e) => {
+                        updateFormData(e, field);
+                      }}
+                    >
+                      {createOptionList(nvAcuityValues)}
+                    </Form.Control>
+                  </Form.Group>
+                </Col>
+              ))}
+          </Row>
+        )}
+        {section === "vision_evaluation" && (
+          <div>
+            <br />
+            <Button
+              className="btn btn-success border-0 btn-block"
+              type="button"
+              onClick={() => setSection("spectacle")}
+            >
+              Continue
+            </Button>
+          </div>
+        )}
+        {section === "spectacle" && (
+          <Row>
+            <Form.Group controlId="recommendationSpectacle">
+              <Form.Label>Recommendation Spectacle</Form.Label>
+            </Form.Group>
+          </Row>
+        )}
+        {section === "spectacle" && (
+          <FormControl fullWidth size="small">
+            <Select
+              value={devices.recommendationSpectacle}
+              onChange={(e) => {
+                handleMultiSelectChange(e, "recommendationSpectacle");
+              }}
+              multiple
+              renderValue={(selected) => selected.join(", ")}
+              MenuProps={MenuProps}
+            >
+              {recommendationSpectacleOptions}
+            </Select>
+          </FormControl>
+        )}
 
-        {showOther.recommendationSpectacle && (
+        {section === "spectacle" && showOther.recommendationSpectacle && (
           <Form.Group controlId="recommendationSpectacleOther">
             <Form.Label>Other Recommendation Spectacle</Form.Label>
-            <Form.Control as="input" autoComplete="off" />
+            <Form.Control
+              as="input"
+              autoComplete="off"
+              value={formData["recommendationSpectacleOther"]}
+              onChange={updateFormData(e, "recommendationSpectacleOther")}
+            />
           </Form.Group>
         )}
 
-        {allfields && (
+        {section === "spectacle" && allfields && (
           <div>
             <Form.Group controlId="dispensedDateSpectacle">
               <Form.Label>Dispensed Date Spectacle</Form.Label>
-              <Form.Control type="date" />
+              <Form.Control
+                type="date"
+                value={moment(formData["dispensedDateSpectacle"]).format(
+                  "YYYY-MM-DD"
+                )}
+                onChange={(e) => updateFormData(e, "dispensedDateSpectacle")}
+              />
             </Form.Group>
             <Row>
               <Col>
                 <Form.Group controlId="costSpectacle">
                   <Form.Label>Cost Spectacle</Form.Label>
-                  <Form.Control type="number" min={0} autoComplete="off" />
+                  <Form.Control
+                    type="number"
+                    min={0}
+                    autoComplete="off"
+                    value={formData["costSpectacle"]}
+                    onChange={(e) => updateFormData(e, "costSpectacle")}
+                  />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiarySpectacle">
                   <Form.Label>Cost to Beneficiary Spectacle</Form.Label>
-                  <Form.Control type="number" min={0} autoComplete="off" />
+                  <Form.Control
+                    type="number"
+                    min={0}
+                    autoComplete="off"
+                    value={formData["costToBeneficiarySpectacle"]}
+                    onChange={(e) =>
+                      updateFormData(e, "costToBeneficiarySpectacle")
+                    }
+                  />
                 </Form.Group>
               </Col>
             </Row>
@@ -669,7 +867,7 @@ const TrainingFormCLVE = ({
                     <Form.Label>Dispensed Spectacle</Form.Label>
                   </Form.Group>
                 </Row>
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     value={devices.dispensedSpectacle}
                     onChange={(e) => {
@@ -684,7 +882,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="trainingGivenSpectacle">
                   <Form.Label>Training Given Spectacle</Form.Label>
-                  <Form.Control as="select">
+                  <Form.Control
+                    as="select"
+                    value={formData["trainingGivenSpectacle"]}
+                    onChange={(e) =>
+                      updateFormData(e, "trainingGivenSpectacle")
+                    }
+                  >
                     <option defaultValue></option>
                     <option>Yes</option>
                     <option>No</option>
@@ -695,54 +899,100 @@ const TrainingFormCLVE = ({
             {showOther.dispensedSpectacle && (
               <Form.Group controlId="dispensedSpectacleOther">
                 <Form.Label>Other Dispensed Spectacle</Form.Label>
-                <Form.Control as="input" autoComplete="off" />
+                <Form.Control
+                  as="input"
+                  autoComplete="off"
+                  value={formData["dispensedSpectacleOther"]}
+                  onChange={(e) => updateFormData(e, "dispensedSpectacleOther")}
+                />
               </Form.Group>
             )}
           </div>
         )}
-        <Row>
-          <Form.Group controlId="recommendationOptical">
-            <Form.Label>Recommendation Optical</Form.Label>
-          </Form.Group>
-        </Row>
-        <FormControl fullWidth>
-          <Select
-            value={devices.recommendationOptical}
-            onChange={(e) => {
-              handleMultiSelectChange(e, "recommendationOptical");
-            }}
-            multiple
-            renderValue={(selected) => selected.join(", ")}
-            MenuProps={MenuProps}
-          >
-            {recommendationOpticalOptions}
-          </Select>
-        </FormControl>
+        {section === "spectacle" && (
+          <div>
+            <br />
+            <Button
+              className="btn btn-success border-0 btn-block"
+              type="button"
+              onClick={() => setSection("optical")}
+            >
+              Continue
+            </Button>
+          </div>
+        )}
+        {section === "optical" && (
+          <Row>
+            <Form.Group controlId="recommendationOptical">
+              <Form.Label>Recommendation Optical</Form.Label>
+            </Form.Group>
+          </Row>
+        )}
+        {section === "optical" && (
+          <FormControl fullWidth size="small">
+            <Select
+              value={devices.recommendationOptical}
+              onChange={(e) => {
+                handleMultiSelectChange(e, "recommendationOptical");
+              }}
+              multiple
+              renderValue={(selected) => selected.join(", ")}
+              MenuProps={MenuProps}
+            >
+              {recommendationOpticalOptions}
+            </Select>
+          </FormControl>
+        )}
 
-        {showOther.recommendationOptical && (
+        {section === "optical" && showOther.recommendationOptical && (
           <Form.Group controlId="recommendationOpticalOther">
             <Form.Label>Other Recommendation Optical</Form.Label>
-            <Form.Control as="input" autoComplete="off" />
+            <Form.Control
+              as="input"
+              autoComplete="off"
+              value={formData["recommendationOpticalOther"]}
+              onChange={(e) => updateFormData(e, "recommendationOpticalOther")}
+            />
           </Form.Group>
         )}
 
-        {allfields && (
+        {section === "optical" && allfields && (
           <div>
             <Form.Group controlId="dispensedDateOptical">
               <Form.Label>Dispensed Date Optical</Form.Label>
-              <Form.Control type="date" />
+              <Form.Control
+                type="date"
+                value={moment(formData["dispensedDateOptical"]).format(
+                  "YYYY-MM-DD"
+                )}
+                onChange={(e) => updateFormData(e, "dispensedDateOptical")}
+              />
             </Form.Group>
             <Row>
               <Col>
                 <Form.Group controlId="costOptical">
                   <Form.Label>Cost Optical</Form.Label>
-                  <Form.Control type="number" min={0} autoComplete="off" />
+                  <Form.Control
+                    type="number"
+                    min={0}
+                    autoComplete="off"
+                    value={formData["costOptical"]}
+                    onChange={(e) => updateFormData(e, "costOptical")}
+                  />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiaryOptical">
                   <Form.Label>Cost to Beneficiary Optical</Form.Label>
-                  <Form.Control type="number" min={0} autoComplete="off" />
+                  <Form.Control
+                    type="number"
+                    min={0}
+                    autoComplete="off"
+                    value={formData["costToBeneficiaryOptical"]}
+                    onChange={(e) =>
+                      updateFormData(e, "costToBeneficiaryOptical")
+                    }
+                  />
                 </Form.Group>
               </Col>
             </Row>
@@ -753,7 +1003,7 @@ const TrainingFormCLVE = ({
                     <Form.Label>Dispensed Optical</Form.Label>
                   </Form.Group>
                 </Row>
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     value={devices.dispensedOptical}
                     onChange={(e) => {
@@ -768,7 +1018,11 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="trainingGivenOptical">
                   <Form.Label>Training Given Optical</Form.Label>
-                  <Form.Control as="select">
+                  <Form.Control
+                    as="select"
+                    value={formData["trainingGivenOptical"]}
+                    onChange={(e) => updateFormData(e, "trainingGivenOptical")}
+                  >
                     <option defaultValue></option>
                     <option>Yes</option>
                     <option>No</option>
@@ -779,54 +1033,102 @@ const TrainingFormCLVE = ({
             {showOther.dispensedOptical && (
               <Form.Group controlId="dispensedOpticalOther">
                 <Form.Label>Other Dispensed Optical</Form.Label>
-                <Form.Control as="input" autoComplete="off" />
+                <Form.Control
+                  as="input"
+                  autoComplete="off"
+                  value={formData["dispensedOpticalOther"]}
+                  onChange={(e) => updateFormData(e, "dispensedOpticalOther")}
+                />
               </Form.Group>
             )}
           </div>
         )}
-        <Row>
-          <Form.Group controlId="recommendationNonOptical">
-            <Form.Label>Recommendation Non-Optical</Form.Label>
-          </Form.Group>
-        </Row>
-        <FormControl fullWidth>
-          <Select
-            value={devices.recommendationNonOptical}
-            onChange={(e) => {
-              handleMultiSelectChange(e, "recommendationNonOptical");
-            }}
-            multiple
-            renderValue={(selected) => selected.join(", ")}
-            MenuProps={MenuProps}
-          >
-            {recommendationNonOpticalOptions}
-          </Select>
-        </FormControl>
+        {section === "optical" && (
+          <div>
+            <br />
+            <Button
+              className="btn btn-success border-0 btn-block"
+              type="button"
+              onClick={() => setSection("non_optical")}
+            >
+              Continue
+            </Button>
+          </div>
+        )}
+        {section === "non_optical" && (
+          <Row>
+            <Form.Group controlId="recommendationNonOptical">
+              <Form.Label>Recommendation Non-Optical</Form.Label>
+            </Form.Group>
+          </Row>
+        )}
+        {section === "non_optical" && (
+          <FormControl fullWidth size="small">
+            <Select
+              value={devices.recommendationNonOptical}
+              onChange={(e) => {
+                handleMultiSelectChange(e, "recommendationNonOptical");
+              }}
+              multiple
+              renderValue={(selected) => selected.join(", ")}
+              MenuProps={MenuProps}
+            >
+              {recommendationNonOpticalOptions}
+            </Select>
+          </FormControl>
+        )}
 
-        {showOther.recommendationNonOptical && (
+        {section === "non_optical" && showOther.recommendationNonOptical && (
           <Form.Group controlId="recommendationNonOpticalOther">
             <Form.Label>Other Recommendation NonOptical</Form.Label>
-            <Form.Control as="input" autoComplete="off" />
+            <Form.Control
+              as="input"
+              autoComplete="off"
+              value={formData["recommendationNonOpticalOther"]}
+              onChange={(e) =>
+                updateFormData(e, "recommendationNonOpticalOther")
+              }
+            />
           </Form.Group>
         )}
 
-        {allfields && (
+        {section === "non_optical" && allfields && (
           <div>
             <Form.Group controlId="dispensedDateNonOptical">
               <Form.Label>Dispensed Date NonOptical</Form.Label>
-              <Form.Control type="date" />
+              <Form.Control
+                type="date"
+                value={moment(formData["dispensedDateNonOptical"]).format(
+                  "YYYY-MM-DD"
+                )}
+                onChange={(e) => updateFormData(e, "dispensedDateNonOptical")}
+              />
             </Form.Group>
             <Row>
               <Col>
                 <Form.Group controlId="costNonOptical">
                   <Form.Label>Cost NonOptical</Form.Label>
-                  <Form.Control type="number" min={0} autoComplete="off" />
+                  <Form.Control
+                    type="number"
+                    min={0}
+                    autoComplete="off"
+                    value={formData["costNonOptical"]}
+                    onChange={(e) => updateFormData(e, "costNonOptical")}
+                  />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiaryNonOptical">
                   <Form.Label>Cost to Beneficiary NonOptical</Form.Label>
-                  <Form.Control type="number" min={0} autoComplete="off" />
+                  <Form.Control
+                    type="number"
+                    min={0}
+                    autoComplete="off"
+                    value={formData["costToBeneficiaryNonOptical"]}
+                    onChange={(e) =>
+                      updateFormData(e, "costToBeneficiaryNonOptical")
+                    }
+                  />
                 </Form.Group>
               </Col>
             </Row>
@@ -837,7 +1139,7 @@ const TrainingFormCLVE = ({
                     <Form.Label>Dispensed Non-Optical</Form.Label>
                   </Form.Group>
                 </Row>
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     value={devices.dispensedNonOptical}
                     onChange={(e) => {
@@ -852,7 +1154,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="trainingGivenNonOptical">
                   <Form.Label>Training Given Non Optical</Form.Label>
-                  <Form.Control as="select">
+                  <Form.Control
+                    as="select"
+                    value={formData["trainingGivenNonOptical"]}
+                    onChange={(e) =>
+                      updateFormData(e, "trainingGivenNonOptical")
+                    }
+                  >
                     <option defaultValue></option>
                     <option>Yes</option>
                     <option>No</option>
@@ -863,54 +1171,104 @@ const TrainingFormCLVE = ({
             {showOther.dispensedNonOptical && (
               <Form.Group controlId="dispensedNonOpticalOther">
                 <Form.Label>Other Dispensed NonOptical</Form.Label>
-                <Form.Control as="input" autoComplete="off" />
+                <Form.Control
+                  as="input"
+                  autoComplete="off"
+                  value={formData["dispensedNonOpticalOther"]}
+                  onChange={(e) =>
+                    updateFormData(e, "dispensedNonOpticalOther")
+                  }
+                />
               </Form.Group>
             )}
           </div>
         )}
-        <Row>
-          <Form.Group controlId="recommendationElectronic">
-            <Form.Label>Recommendation Electronic</Form.Label>
-          </Form.Group>
-        </Row>
-        <FormControl fullWidth>
-          <Select
-            value={devices.recommendationElectronic}
-            onChange={(e) => {
-              handleMultiSelectChange(e, "recommendationElectronic");
-            }}
-            multiple
-            renderValue={(selected) => selected.join(", ")}
-            MenuProps={MenuProps}
-          >
-            {recommendationElectronicOptions}
-          </Select>
-        </FormControl>
+        {section === "non_optical" && (
+          <div>
+            <br />
+            <Button
+              className="btn btn-success border-0 btn-block"
+              type="button"
+              onClick={() => setSection("electronic")}
+            >
+              Continue
+            </Button>
+          </div>
+        )}
+        {section === "electronic" && (
+          <Row>
+            <Form.Group controlId="recommendationElectronic">
+              <Form.Label>Recommendation Electronic</Form.Label>
+            </Form.Group>
+          </Row>
+        )}
+        {section === "electronic" && (
+          <FormControl fullWidth size="small">
+            <Select
+              value={devices.recommendationElectronic}
+              onChange={(e) => {
+                handleMultiSelectChange(e, "recommendationElectronic");
+              }}
+              multiple
+              renderValue={(selected) => selected.join(", ")}
+              MenuProps={MenuProps}
+            >
+              {recommendationElectronicOptions}
+            </Select>
+          </FormControl>
+        )}
 
-        {showOther.recommendationElectronic && (
+        {section === "electronic" && showOther.recommendationElectronic && (
           <Form.Group controlId="recommendationElectronicOther">
             <Form.Label>Other Recommendation Electronic</Form.Label>
-            <Form.Control as="input" autoComplete="off" />
+            <Form.Control
+              as="input"
+              autoComplete="off"
+              value={formData["recommendationElectronicOther"]}
+              onChange={(e) =>
+                updateFormData(e, "recommendationElectronicOther")
+              }
+            />
           </Form.Group>
         )}
 
-        {allfields && (
+        {section === "electronic" && allfields && (
           <div>
             <Form.Group controlId="dispensedDateElectronic">
               <Form.Label>Dispensed Date Electronic</Form.Label>
-              <Form.Control type="date" />
+              <Form.Control
+                type="date"
+                value={moment(formData["dispensedDateElectronic"]).format(
+                  "YYYY-MM-DD"
+                )}
+                onChange={(e) => updateFormData(e, "dispensedDateElectronic")}
+              />
             </Form.Group>
             <Row>
               <Col>
                 <Form.Group controlId="costElectronic">
                   <Form.Label>Cost Electronic</Form.Label>
-                  <Form.Control type="number" min={0} autoComplete="off" />
+                  <Form.Control
+                    type="number"
+                    min={0}
+                    autoComplete="off"
+                    value={formData["costElectronic"]}
+                    onChange={(e) => updateFormData(e, "costElectronic")}
+                  />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="costToBeneficiaryElectronic">
                   <Form.Label>Cost to Beneficiary Electronic</Form.Label>
-                  <Form.Control type="number" min={0} autoComplete="off" />
+                  <Form.Control
+                    type="number"
+                    min={0}
+                    autoComplete="off"
+                    value={formData["costToBeneficiaryElectronic"]}
+                    onChange={(e) =>
+                      updateFormData(e, "costToBeneficiaryElectronic")
+                    }
+                  />
                 </Form.Group>
               </Col>
             </Row>
@@ -921,7 +1279,7 @@ const TrainingFormCLVE = ({
                     <Form.Label>Dispensed Electronic</Form.Label>
                   </Form.Group>
                 </Row>
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     value={devices.dispensedElectronic}
                     onChange={(e) => {
@@ -937,7 +1295,13 @@ const TrainingFormCLVE = ({
               <Col>
                 <Form.Group controlId="trainingGivenElectronic">
                   <Form.Label>Training Given Electronic</Form.Label>
-                  <Form.Control as="select">
+                  <Form.Control
+                    as="select"
+                    value={formData["trainingGivenElectronic"]}
+                    onChange={(e) =>
+                      updateFormData(e, "trainingGivenElectronic")
+                    }
+                  >
                     <option defaultValue></option>
                     <option>Yes</option>
                     <option>No</option>
@@ -948,13 +1312,31 @@ const TrainingFormCLVE = ({
             {showOther.dispensedElectronic && (
               <Form.Group controlId="dispensedElectronicOther">
                 <Form.Label>Other Dispensed Electronic</Form.Label>
-                <Form.Control as="input" autoComplete="off" />
+                <Form.Control
+                  as="input"
+                  autoComplete="off"
+                  value={formData["dispensedElectronicOther"]}
+                  onChange={(e) =>
+                    updateFormData(e, "dispensedElectronicOther")
+                  }
+                />
               </Form.Group>
             )}
           </div>
         )}
-
-        {allfields && (
+        {section === "electronic" && (
+          <div>
+            <br />
+            <Button
+              className="btn btn-success border-0 btn-block"
+              type="button"
+              onClick={() => setSection("other")}
+            >
+              Continue
+            </Button>
+          </div>
+        )}
+        {section === "other" && allfields && (
           <div>
             <Row>
               <Col>
@@ -1000,14 +1382,23 @@ const TrainingFormCLVE = ({
             </Row>
           </div>
         )}
-        <Form.Group controlId="extraInformation">
-          <Form.Label>Comments</Form.Label>
-          <Form.Control as="textarea" rows={3} autoComplete="off" />
-        </Form.Group>
-        <br />
-        <Button className="btn btn-success border-0 btn-block" type="submit">
-          Submit Evaluation
-        </Button>
+        {section === "other" && (
+          <Form.Group controlId="extraInformation">
+            <Form.Label>Comments</Form.Label>
+            <Form.Control as="textarea" rows={3} autoComplete="off" />
+          </Form.Group>
+        )}
+        {section === "other" && (
+          <div>
+            <br />
+            <Button
+              className="btn btn-success border-0 btn-block"
+              type="submit"
+            >
+              Submit Evaluation
+            </Button>
+          </div>
+        )}
       </Form>
     </div>
   );
