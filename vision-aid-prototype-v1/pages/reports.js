@@ -696,7 +696,7 @@ export default function Summary({
               className="btn btn-success border-0 btn-block text-align-right"
               onClick={downloadFilteredReport}
             >
-              <Download></Download> Report
+              <Download></Download> Download Report
             </button>
           </div>
         </div>
@@ -705,7 +705,7 @@ export default function Summary({
           <div className="row">
             <div className="col-md-3">
               <p>
-                <strong>Basic Customization</strong>
+                <strong>Customization</strong>
               </p>
               <GraphCustomizer
                 summary={summary}
