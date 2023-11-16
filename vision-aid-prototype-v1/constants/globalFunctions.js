@@ -1,11 +1,11 @@
 import React from 'react';
 import { Checkbox, ListItemText, MenuItem, ListSubheader, Typography } from "@mui/material";
 
-export const createMenu = (values, fieldName, checkbox, devices = []) => {
+export const createMenu = (values, checkbox, selected = []) => {
     if (checkbox) {
       return values.map((value) => (
         <MenuItem key={value} value={value} style={{whiteSpace: 'normal'}}>
-          <Checkbox checked={devices[fieldName].indexOf(value) > -1} />
+          <Checkbox checked={selected.indexOf(value) > -1} />
           <ListItemText primary={
             <Typography align="left">
               {value}
@@ -28,11 +28,10 @@ export const createOptionMenu = (
     values,
     subheadings,
     indices,
-    fieldName,
     checkbox,
-    devices = []
+    selected = []
   ) => {
-    const fullMenu = createMenu(values, fieldName, checkbox, devices);
+    const fullMenu = createMenu(values, checkbox, selected);
     const optionGroups = [];
     for (var i = 0; i < subheadings.length; i++) {
       optionGroups.push(
@@ -45,3 +44,8 @@ export const createOptionMenu = (
   
 export const isNotNullEmptyOrUndefined = (variable) =>
   variable !== null && variable !== undefined && variable.length !== 0;
+
+export const parseInputDate = (dateString) => {
+  const date = dateString.replaceAll("-", "/");
+  return date;
+}
