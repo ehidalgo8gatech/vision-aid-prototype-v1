@@ -106,7 +106,7 @@ function Navigation({ user } = props) {
         {user && (
           <div className="left-auto-margin column">
             <small className="top display text-light">
-              Signed in as {user.email}
+              Signed in as: {user.email} ({role.toUpperCase()})
             </small>
             <br />
             <div className="text-align-right">
