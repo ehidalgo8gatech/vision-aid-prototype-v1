@@ -250,54 +250,40 @@ export default function HistoricalCLVForm(props) {
 
   const recommendationSpectacleOptions = createMenu(
     spectacleDevices,
-    "recommendationSpectacle",
     true,
-    devices
+    devices["recommendationSpectacle"]
   );
-  const dispensedSpectacleOptions = createMenu(
-    spectacleDevices,
-    "dispensedSpectacle",
-    false
-  );
+  const dispensedSpectacleOptions = createMenu(spectacleDevices, false);
   const recommendationOpticalOptions = createMenu(
     opticalDevices,
-    "recommendationOptical",
     true,
-    devices
+    devices["recommendationOptical"]
   );
-  const dispensedOpticalOptions = createMenu(
-    opticalDevices,
-    "dispensedOptical",
-    false
-  );
+  const dispensedOpticalOptions = createMenu(opticalDevices, false);
   const recommendationNonOpticalOptions = createOptionMenu(
     nonOpticalDevices,
     nonOpticalDevicesSubheadings,
     nonOpticalDevicesIndices,
-    "recommendationNonOptical",
     true,
-    devices
+    devices["recommendationNonOptical"]
   );
   const dispensedNonOpticalOptions = createOptionMenu(
     nonOpticalDevices,
     nonOpticalDevicesSubheadings,
     nonOpticalDevicesIndices,
-    "dispensedNonOptical",
     false
   );
   const recommendationElectronicOptions = createOptionMenu(
     electronicDevices,
     electronicDevicesSubheadings,
     electronicDevicesIndices,
-    "recommendationElectronic",
     true,
-    devices
+    devices["recommendationElectronic"]
   );
   const dispensedElectronicOptions = createOptionMenu(
     electronicDevices,
     electronicDevicesSubheadings,
     electronicDevicesIndices,
-    "dispensedElectronic",
     false
   );
 

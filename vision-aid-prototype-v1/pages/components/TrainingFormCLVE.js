@@ -377,8 +377,7 @@ const TrainingFormCLVE = ({
     nonOpticalDevices,
     nonOpticalDevicesSubheadings,
     nonOpticalDevicesIndices,
-    false,
-    devices["dispensedNonOptical"]
+    false
   );
   const recommendationElectronicOptions = createOptionMenu(
     electronicDevices,
@@ -391,8 +390,7 @@ const TrainingFormCLVE = ({
     electronicDevices,
     electronicDevicesSubheadings,
     electronicDevicesIndices,
-    false,
-    devices["dispensedElectronic"]
+    false
   );
 
   const [showOther, setShowOther] = useState({
@@ -563,7 +561,7 @@ const TrainingFormCLVE = ({
             }`}
             onClick={() => setSection("spectacle")}
           >
-            Specatacle
+            Spectacle
           </button>
         </div>
         <div className="p-2 col">

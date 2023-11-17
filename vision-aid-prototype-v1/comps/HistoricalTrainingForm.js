@@ -25,9 +25,9 @@ export default function HistoricalTrainingForm(props) {
   let trainingSubTypeList = props.trainingSubTypeList
     .filter((item) => item.trainingType.value === data.type)
     .map((item) => item.value);
-  const trainingTypeOptions = createMenu(props.trainingTypeList, "type", false);
+  const trainingTypeOptions = createMenu(props.trainingTypeList, false);
   const [trainingSubTypeOptions, setTrainingSubTypeOptions] = useState(
-    createMenu(trainingSubTypeList, "subType", false)
+    createMenu(trainingSubTypeList, false)
   );
 
   const [editMode, setEditMode] = useState(false);
@@ -58,7 +58,7 @@ export default function HistoricalTrainingForm(props) {
       .map((item) => item.value);
 
     setTrainingSubTypeOptions(
-      createMenu(trainingSubTypeList, "subType", false)
+      createMenu(trainingSubTypeList, false)
     );
 
     setData((data) => ({ ...data, subType: "" }));
