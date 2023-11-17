@@ -166,7 +166,7 @@ export default function HistoricalTrainingForm(props) {
             <td className="col-md-8">
               {!editMode && data.type}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) => handleTypeChange(e)}
                     value={data.type}
@@ -186,7 +186,7 @@ export default function HistoricalTrainingForm(props) {
             <td className="col-md-8">
               {!editMode && data.subType}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) => handleChange(e)}
                     value={data.subType}

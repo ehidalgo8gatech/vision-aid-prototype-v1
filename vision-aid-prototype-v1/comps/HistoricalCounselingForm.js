@@ -145,7 +145,7 @@ export default function HistoricalCounselingForm(props) {
             <td className="col-md-8">
               {!editMode && data.type}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) => handleChange(e)}
                     value={data.type}
