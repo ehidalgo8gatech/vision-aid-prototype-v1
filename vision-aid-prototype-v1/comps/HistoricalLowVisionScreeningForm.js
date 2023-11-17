@@ -197,31 +197,27 @@ export default function HistoricalLowVisionScreeningForm(props) {
 
   const recommendationSpectacleOptions = createMenu(
     spectacleDevices,
-    "recommendationSpectacle",
     true,
-    devices
+    devices["recommendationSpectacle"]
   );
   const recommendationOpticalOptions = createMenu(
     opticalDevices,
-    "recommendationOptical",
     true,
-    devices
+    devices["recommendationOptical"]
   );
   const recommendationNonOpticalOptions = createOptionMenu(
     nonOpticalDevices,
     nonOpticalDevicesSubheadings,
     nonOpticalDevicesIndices,
-    "recommendationNonOptical",
     true,
-    devices
+    devices["recommendationNonOptical"]
   );
   const recommendationElectronicOptions = createOptionMenu(
     electronicDevices,
     electronicDevicesSubheadings,
     electronicDevicesIndices,
-    "recommendationElectronic",
     true,
-    devices
+    devices["recommendationElectronic"]
   );
 
   const handleClick = (e) => {

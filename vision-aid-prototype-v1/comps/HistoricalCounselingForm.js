@@ -23,7 +23,7 @@ export default function HistoricalCounselingForm(props) {
   };
   const [data, setData] = useState(props.evaluationData.service);
   const counselingTypeList = props.counselingTypeList;
-  const counselingTypeOptions = createMenu(counselingTypeList, "type", false);
+  const counselingTypeOptions = createMenu(counselingTypeList, false);
 
   const [editMode, setEditMode] = useState(false);
 
