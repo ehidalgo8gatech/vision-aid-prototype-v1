@@ -270,7 +270,7 @@ function Users(props) {
                     User Email
                   </td>
                   <td className="col-md-7">
-                    <FormControl fullWidth>
+                    <FormControl fullWidth size="small">
                       <Input id="userEmail" autoComplete="off"></Input>
                     </FormControl>
                   </td>

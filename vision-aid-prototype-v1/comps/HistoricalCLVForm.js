@@ -448,7 +448,7 @@ export default function HistoricalCLVForm(props) {
             <td scope="row" className="col-md-8">
               {!editMode && data.diagnosis}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="diagnosis"
@@ -467,7 +467,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.mdvi}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) => handleChange(e)}
                     value={data.mdvi}
@@ -488,7 +488,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.sessionNumber}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="number"
                     name="sessionNumber"
@@ -508,7 +508,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.distanceVisualAcuityRE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="distanceVisualAcuityRE"
@@ -527,7 +527,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.distanceVisualAcuityLE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="distanceVisualAcuityLE"
@@ -546,7 +546,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.distanceBinocularVisionBE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="distanceBinocularVisionBE"
@@ -565,7 +565,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.nearVisualAcuityRE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="nearVisualAcuityRE"
@@ -601,7 +601,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.nearBinocularVisionBE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="nearBinocularVisionBE"
@@ -624,7 +624,7 @@ export default function HistoricalCLVForm(props) {
                   delimiter: commaAndSpace,
                 })}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) =>
                       handleMultiSelectChange(e, "recommendationSpectacle")
@@ -640,7 +640,7 @@ export default function HistoricalCLVForm(props) {
                 </FormControl>
               )}
               {editMode && showOther.recommendationSpectacle && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     id="recommendationSpectacleOther"
@@ -668,7 +668,7 @@ export default function HistoricalCLVForm(props) {
                 moment(data.dispensedDateSpectacle).format("DD MMMM YYYY")}
               {!editMode && data.dispensedDateSpectacle !== null && ""}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="date"
                     name="dispensedDateSpectacle"
@@ -688,7 +688,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.costSpectacle}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="number"
                     name="costSpectacle"
@@ -708,7 +708,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.costToBeneficiarySpectacle}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="number"
                     name="costToBeneficiarySpectacle"
@@ -728,7 +728,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.dispensedSpectacle}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) => handleChange(e)}
                     value={devices.dispensedSpectacle}
@@ -740,7 +740,7 @@ export default function HistoricalCLVForm(props) {
                 </FormControl>
               )}
               {editMode && showOther.dispensedSpectacle && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     id="dispensedSpectacleOther"
@@ -765,7 +765,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.trainingGivenSpectacle}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="trainingGivenSpectacle"
@@ -788,7 +788,7 @@ export default function HistoricalCLVForm(props) {
                   delimiter: commaAndSpace,
                 })}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) =>
                       handleMultiSelectChange(e, "recommendationOptical")
@@ -804,7 +804,7 @@ export default function HistoricalCLVForm(props) {
                 </FormControl>
               )}
               {editMode && showOther.recommendationOptical && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     id="recommendationOpticalOther"
@@ -832,7 +832,7 @@ export default function HistoricalCLVForm(props) {
                 moment(data.dispensedDateOptical).format("DD MMMM YYYY")}
               {!editMode && data.dispensedDateOptical !== null && ""}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="date"
                     name="dispensedDateOptical"
@@ -852,7 +852,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.costOptical}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="number"
                     name="costOptical"
@@ -872,7 +872,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.costToBeneficiaryOptical}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="number"
                     name="costToBeneficiaryOptical"
@@ -892,7 +892,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.dispensedOptical}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) => handleChange(e)}
                     value={devices.dispensedOptical}
@@ -904,7 +904,7 @@ export default function HistoricalCLVForm(props) {
                 </FormControl>
               )}
               {editMode && showOther.dispensedOptical && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     id="dispensedOpticalOther"
@@ -929,7 +929,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.trainingGivenOptical}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="trainingGivenOptical"
@@ -952,7 +952,7 @@ export default function HistoricalCLVForm(props) {
                   delimiter: commaAndSpace,
                 })}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) =>
                       handleMultiSelectChange(e, "recommendationNonOptical")
@@ -968,7 +968,7 @@ export default function HistoricalCLVForm(props) {
                 </FormControl>
               )}
               {editMode && showOther.recommendationNonOptical && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     id="recommendationNonOpticalOther"
@@ -996,7 +996,7 @@ export default function HistoricalCLVForm(props) {
                 moment(data.dispensedDateNonOptical).format("DD MMMM YYYY")}
               {!editMode && data.dispensedDateNonOptical !== null && ""}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="date"
                     name="dispensedDateNonOptical"
@@ -1016,7 +1016,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.costNonOptical}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="number"
                     name="costNonOptical"
@@ -1036,7 +1036,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.costToBeneficiaryNonOptical}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="number"
                     name="costToBeneficiaryNonOptical"
@@ -1056,7 +1056,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.dispensedNonOptical}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) => handleChange(e)}
                     value={devices.dispensedNonOptical}
@@ -1068,7 +1068,7 @@ export default function HistoricalCLVForm(props) {
                 </FormControl>
               )}
               {editMode && showOther.dispensedNonOptical && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     id="dispensedNonOpticalOther"
@@ -1093,7 +1093,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.trainingGivenNonOptical}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="trainingGivenNonOptical"
@@ -1116,7 +1116,7 @@ export default function HistoricalCLVForm(props) {
                   delimiter: commaAndSpace,
                 })}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) =>
                       handleMultiSelectChange(e, "recommendationElectronic")
@@ -1132,7 +1132,7 @@ export default function HistoricalCLVForm(props) {
                 </FormControl>
               )}
               {editMode && showOther.recommendationElectronic && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     id="recommendationElectronicOther"
@@ -1160,7 +1160,7 @@ export default function HistoricalCLVForm(props) {
                 moment(data.dispensedDateElectronic).format("DD MMMM YYYY")}
               {!editMode && data.dispensedDateElectronic !== null && ""}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="date"
                     name="dispensedDateElectronic"
@@ -1180,7 +1180,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.costElectronic}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="number"
                     name="costElectronic"
@@ -1200,7 +1200,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.costToBeneficiaryElectronic}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="number"
                     name="costToBeneficiaryElectronic"
@@ -1220,7 +1220,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.dispensedElectronic}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) => handleChange(e)}
                     value={devices.dispensedElectronic}
@@ -1232,7 +1232,7 @@ export default function HistoricalCLVForm(props) {
                 </FormControl>
               )}
               {editMode && showOther.dispensedElectronic && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     id="dispensedElectronicOther"
@@ -1257,7 +1257,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.trainingGivenElectronic}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="trainingGivenElectronic"
@@ -1276,7 +1276,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.colourVisionRE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="colourVisionRE"
@@ -1295,7 +1295,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.colourVisionLE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="colourVisionLE"
@@ -1314,7 +1314,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.contrastSensitivityRE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="contrastSensitivityRE"
@@ -1333,7 +1333,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.contrastSensitivityLE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="contrastSensitivityLE"
@@ -1352,7 +1352,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.visualFieldsRE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="visualFieldsRE"
@@ -1371,7 +1371,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.visualFieldsLE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="visualFieldsLE"
@@ -1390,7 +1390,7 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode && data.extraInformation}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="extraInformation"

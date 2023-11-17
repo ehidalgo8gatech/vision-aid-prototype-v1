@@ -359,7 +359,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
             <td className="col-md-8">
               {!editMode && data.diagnosis}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="diagnosis"
@@ -378,7 +378,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
             <td className="col-md-8">
               {!editMode && data.mdvi}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) => handleChange(e)}
                     value={data.mdvi}
@@ -399,7 +399,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
             <td className="col-md-8">
               {!editMode && data.sessionNumber}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="number"
                     name="sessionNumber"
@@ -419,7 +419,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
             <td className="col-md-8">
               {!editMode && data.distanceVisualAcuityRE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="distanceVisualAcuityRE"
@@ -438,7 +438,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
             <td className="col-md-8">
               {!editMode && data.distanceVisualAcuityLE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="distanceVisualAcuityLE"
@@ -457,7 +457,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
             <td className="col-md-8">
               {!editMode && data.distanceBinocularVisionBE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="distanceBinocularVisionBE"
@@ -476,7 +476,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
             <td className="col-md-8">
               {!editMode && data.nearVisualAcuityRE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="nearVisualAcuityRE"
@@ -495,7 +495,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
             <td className="col-md-8">
               {!editMode && data.nearVisualAcuityLE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="nearVisualAcuityLE"
@@ -514,7 +514,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
             <td className="col-md-8">
               {!editMode && data.nearBinocularVisionBE}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="nearBinocularVisionBE"
@@ -537,7 +537,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                   delimiter: commaAndSpace,
                 })}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) =>
                       handleMultiSelectChange(e, "recommendationSpectacle")
@@ -553,7 +553,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                 </FormControl>
               )}
               {editMode && showOther.recommendationSpectacle && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     id="recommendationSpectacleOther"
@@ -582,7 +582,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                   delimiter: commaAndSpace,
                 })}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) =>
                       handleMultiSelectChange(e, "recommendationOptical")
@@ -598,7 +598,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                 </FormControl>
               )}
               {editMode && showOther.recommendationOptical && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     id="recommendationOpticalOther"
@@ -627,7 +627,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                   delimiter: commaAndSpace,
                 })}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) =>
                       handleMultiSelectChange(e, "recommendationNonOptical")
@@ -643,7 +643,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                 </FormControl>
               )}
               {editMode && showOther.recommendationNonOptical && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     id="recommendationNonOpticalOther"
@@ -672,7 +672,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                   delimiter: commaAndSpace,
                 })}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <Select
                     onChange={(e) =>
                       handleMultiSelectChange(e, "recommendationElectronic")
@@ -688,7 +688,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
                 </FormControl>
               )}
               {editMode && showOther.recommendationElectronic && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     id="recommendationElectronicOther"
@@ -713,7 +713,7 @@ export default function HistoricalLowVisionScreeningForm(props) {
             <td className="col-md-8">
               {!editMode && data.extraInformation}
               {editMode && (
-                <FormControl fullWidth>
+                <FormControl fullWidth size="small">
                   <input
                     type="text"
                     name="extraInformation"
