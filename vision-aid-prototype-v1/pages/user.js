@@ -16,10 +16,6 @@ import { readUser } from "./api/user";
 import ConsentForm from "./components/ConsentForm";
 
 function UserPage(props) {
-  // console.log("props: ", JSON.stringify(props));
-  // const session = await getSession();
-  // const loggedInUser = getSessionUser();
-  // console.log("session.user: ", JSON.stringify(session.user));
   const router = useRouter();
 
   // State variable for form fields
@@ -199,9 +195,25 @@ function UserPage(props) {
     }
   };
 
+  const softDeleteBeneficiary = async () => {
+    // Update user data in the database
+    const response = await fetch(`/api/beneficiary`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ mrn: props.user.mrn, deleted: true }),
+    });
+    // Handle response from the API
+    if (response.ok) {
+      router.push("/beneficiary");
+    } else {
+      alert("An error occurred while deleting user. Please try again.");
+    }
+  };
+
   // Handle input changes
   const handleInputChange = (e) => {
-    console.log("Entered", e);
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -708,7 +720,51 @@ function UserPage(props) {
     <div>
       <Navigation user={props.currentUser} />
       <div className="container p-4 mb-3">
-        <h2 class="benficiary-heading">Beneficiary Details</h2>
+        <div className="d-flex">
+          <h2 className="nopadding">Beneficiary Details</h2>
+          <div className="left-auto-margin flex-container">
+            <button
+              className="btn btn-danger"
+              data-bs-toggle="modal"
+              data-bs-target="#deleteBeneficiary"
+            >
+              Delete Beneficiary
+            </button>
+          </div>
+          <div class="modal" id="deleteBeneficiary">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                {/* <!-- Modal Header --> */}
+                <div class="modal-header">
+                  <h4 class="modal-title">Delete Beneficiary</h4>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    id="close-revoke"
+                  ></button>
+                </div>
+
+                {/* <!-- Modal body --> */}
+                <div class="modal-body">
+                  Please confirm that you wish to delete this beneficiary permanently.
+                </div>
+
+                {/* <!-- Modal footer --> */}
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    data-bs-dismiss="modal"
+                    onClick={() => softDeleteBeneficiary()}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <hr class="horizontal-line" />
         <div className="row">
           <div className="col-md-5">
