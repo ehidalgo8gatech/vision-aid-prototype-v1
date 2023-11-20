@@ -53,6 +53,7 @@ async function readData(req, res) {
               },
             },
           ],
+          deleted: false,
         },
         include: {
           hospital: true,
@@ -70,6 +71,7 @@ async function readData(req, res) {
       beneficiary = await prisma.beneficiary.findUnique({
         where: {
           mrn: req.query.mrn,
+          deleted: false,
         },
         include: {
           hospital: true,
@@ -89,6 +91,7 @@ async function readData(req, res) {
           beneficiaryName: {
             contains: req.query.beneficiaryName,
           },
+          deleted: false,
         },
         include: {
           hospital: true,
@@ -115,6 +118,9 @@ async function readData(req, res) {
           Low_Vision_Evaluation: true,
           Training: true,
         },
+        where: {
+          deleted: false,
+        }
       });
     }
     return res.status(200).json(beneficiary, { success: true });
@@ -157,6 +163,7 @@ async function addData(req, res) {
       mDVI: body.mDVI,
       extraInformation: body.extraInformation,
       consent: body.consent,
+      deleted: false,
     },
     include: {
       hospital: true,
@@ -204,6 +211,9 @@ export async function findAllBeneficiary() {
       Mobile_Training: true,
       Orientation_Mobility_Training: true,
     },
+    where: {
+      deleted: false,
+    }
   });
 }
 
@@ -212,6 +222,7 @@ export async function findAllBeneficiaryForHospitalId(hospitalId) {
     const beneficiary = await prisma.beneficiary.findMany({
       where: {
         hospitalId: hospitalId,
+        deleted: false,
       },
       include: {
         hospital: true,
