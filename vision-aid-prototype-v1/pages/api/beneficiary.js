@@ -120,7 +120,7 @@ async function readData(req, res) {
         },
         where: {
           deleted: false,
-        }
+        },
       });
     }
     return res.status(200).json(beneficiary, { success: true });
@@ -185,16 +185,31 @@ async function addData(req, res) {
 }
 
 async function updateData(req, res) {
-  try {
-    const { mrn, ...data } = req.body;
-    const updatedUser = await prisma.beneficiary.update({
-      where: { mrn },
-      data,
-    });
-    res.status(200).json(updatedUser);
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ error: "Failed to update user data." });
+  if (req.body.mrn) {
+    try {
+      const { mrn, ...data } = req.body;
+      const updatedUser = await prisma.beneficiary.update({
+        where: { mrn },
+        data,
+      });
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      console.log(error);
+      res.status(400).json({ error: "Failed to update user data." });
+    }
+  } else if (req.body.hospitalId) {
+    try {
+      const { hospitalId, ...data } = req.body;
+      const updatedUser = await prisma.beneficiary.updateMany({
+        where: { hospitalId },
+        data,
+      });
+      res.status(200).json(updatedUser);
+      // return updatedUser;
+    } catch (error) {
+      console.log(error);
+      res.status(400).json({ error: "Failed to update user data." });
+    }
   }
 }
 
@@ -213,7 +228,7 @@ export async function findAllBeneficiary() {
     },
     where: {
       deleted: false,
-    }
+    },
   });
 }
 

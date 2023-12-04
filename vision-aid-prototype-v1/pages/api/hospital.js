@@ -5,6 +5,8 @@ export default async function handler(req, res) {
     return await addData(req, res);
   } else if (req.method == "GET") {
     return await readData(req, res);
+  } else if (req.method == "PATCH") {
+    return await updateData(req, res);
   } else {
     return res
       .status(405)
@@ -19,6 +21,7 @@ async function readData(req, res) {
       hospital = await prisma.hospital.findUnique({
         where: {
           name: req.query.name,
+          deleted: false,
         },
         include: {
           hospitalRole: true,
@@ -28,6 +31,7 @@ async function readData(req, res) {
       hospital = await prisma.hospital.findUnique({
         where: {
           id: req.query.id,
+          deleted: false,
         },
         include: {
           hospitalRole: true,
@@ -47,6 +51,15 @@ async function readData(req, res) {
 
 export async function findAllHospital() {
   return prisma.hospital.findMany({
+    where: { deleted: false },
+    include: {
+      hospitalRole: true,
+    },
+  });
+}
+
+export async function findAllHospitalsHistory() {
+  return prisma.hospital.findMany({
     include: {
       hospitalRole: true,
     },
@@ -59,6 +72,7 @@ export async function summaryHelper(hospital) {
     where: {
       beneficiary: {
         hospitalId: hospital.id,
+        deleted: false,
       },
     },
   });
@@ -67,6 +81,7 @@ export async function summaryHelper(hospital) {
     where: {
       beneficiary: {
         hospitalId: hospital.id,
+        deleted: false,
       },
     },
   });
@@ -76,6 +91,7 @@ export async function summaryHelper(hospital) {
       where: {
         beneficiary: {
           hospitalId: hospital.id,
+          deleted: false,
         },
       },
     });
@@ -84,6 +100,7 @@ export async function summaryHelper(hospital) {
     where: {
       beneficiary: {
         hospitalId: hospital.id,
+        deleted: false,
       },
     },
   });
@@ -92,6 +109,7 @@ export async function summaryHelper(hospital) {
     where: {
       beneficiary: {
         hospitalId: hospital.id,
+        deleted: false,
       },
     },
   });
@@ -101,6 +119,7 @@ export async function summaryHelper(hospital) {
       where: {
         beneficiary: {
           hospitalId: hospital.id,
+          deleted: false,
         },
       },
     });
@@ -109,6 +128,7 @@ export async function summaryHelper(hospital) {
     where: {
       beneficiary: {
         hospitalId: hospital.id,
+        deleted: false,
       },
     },
   });
@@ -116,6 +136,7 @@ export async function summaryHelper(hospital) {
   const beneficiary = await prisma.beneficiary.findMany({
     where: {
       hospitalId: hospital.id,
+      deleted: false,
     },
   });
 
@@ -123,6 +144,7 @@ export async function summaryHelper(hospital) {
     where: {
       beneficiary: {
         hospitalId: hospital.id,
+        deleted: false,
       },
     },
   });
@@ -148,6 +170,7 @@ export async function getSummaryForHospitalFromID(hospitalId) {
   const hospital = await prisma.hospital.findUnique({
     where: {
       id: hospitalId,
+      deleted: false,
     },
     include: {
       hospitalRole: true,
@@ -157,7 +180,9 @@ export async function getSummaryForHospitalFromID(hospitalId) {
 }
 
 export async function getSummaryForAllHospitals() {
-  const hospitals = await prisma.hospital.findMany();
+  const hospitals = await prisma.hospital.findMany({
+    where: { deleted: false },
+  });
   const result = [];
   for (const hospital of hospitals) {
     const hospitalResult = await summaryHelper(hospital);
@@ -191,5 +216,19 @@ async function addData(req, res) {
     return res
       .status(500)
       .json({ error: "Error adding user" + error, success: false });
+  }
+}
+
+async function updateData(req, res) {
+  try {
+    const { id, ...data } = req.body;
+    const updatedHospital = await prisma.hospital.update({
+      where: { id },
+      data,
+    });
+    res.status(200).json(updatedHospital);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error: "Failed to update user data." });
   }
 }
