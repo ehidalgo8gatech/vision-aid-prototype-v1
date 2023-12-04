@@ -1,12 +1,12 @@
 // This function gets called at build time
 import { readUser } from "./api/user";
-import { Row, Col } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { getSession } from "next-auth/react";
 import { readBeneficiaryMirror } from "@/pages/api/beneficiaryMirror";
 import { v4 as uuidv4 } from "uuid";
 import Router from "next/router";
 import Navigation from "./navigation/Navigation";
-import { findAllHospital } from "@/pages/api/hospital";
+import { findAllHospital, findAllHospitalsHistory } from "@/pages/api/hospital";
 import TrainingForm from "@/pages/components/TrainingForm";
 import { readMobileTrainingMirror } from "@/pages/api/mobileTrainingMirror";
 import { readComputerTrainingMirror } from "@/pages/api/computerTrainingMirror";
@@ -54,7 +54,7 @@ export async function getServerSideProps(ctx) {
       requiredComprehensiveLowVisionEvaluation:
         await readComprehensiveLowVisionEvaluationMirror(),
       requiredCounsellingEducation: await readCounsellingEducationMirror(),
-      hospitals: await findAllHospital(),
+      hospitals: await findAllHospitalsHistory(),
       counselingTypeList: await getCounsellingType(),
       trainingTypeList: await getTrainingTypes(),
       trainingSubTypeList: await getTrainingSubTypes(),
@@ -65,6 +65,7 @@ export async function getServerSideProps(ctx) {
 
 function RequiredFields(props) {
   const [section, setSection] = useState("");
+  const [hospitals, setHospitals] = useState(props.hospitals);
 
   function removeExtraField(fieldId) {
     return function () {
@@ -414,6 +415,21 @@ function RequiredFields(props) {
     );
   }
 
+  const hospitalCheckBoxes = props.hospitals.map((hospital) => (
+    <div>
+      <h6 style={{ marginLeft: "10px" }}>{hospital.name}</h6>
+      {!hospital.deleted && <button className="btn btn-danger">Hide</button>}
+      {hospital.deleted && <button className="btn btn-success">Show</button>}
+    </div>
+    // <>
+    //   <input type="checkbox" value={hospital.name} />
+    // <label className="form-check-label" style={{ marginLeft: "10px" }}>
+    //   {hospital.name}
+    // </label>
+    //   <br />
+    // </>
+  ));
+
   async function addHospital(e) {
     e.preventDefault();
     let hospitalName = document.getElementById("createHospitalName").value;
@@ -567,6 +583,73 @@ function RequiredFields(props) {
     Router.reload();
   }
 
+  const hideHospital = async (id, name) => {
+    const data = {
+      id: id,
+      name: name,
+      deleted: true,
+    };
+    const res = await fetch("/api/hospital", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const benData = { hospitalId: id, deleted: true };
+    const benRes = await fetch("/api/beneficiary", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(benData),
+    });
+    if (res.status == 200 && benRes.status == 200) {
+      alert("Hospital removed successfully!");
+      setHospitals((hospitals) =>
+        hospitals.map((hospital) =>
+          hospital.id === id ? { ...hospital, deleted: true } : hospital
+        )
+      );
+    } else {
+      alert("Failed to save data!");
+    }
+  };
+
+  const showHospital = async (id, name) => {
+    const data = {
+      id: id,
+      name: name,
+      deleted: false,
+    };
+    const res = await fetch("/api/hospital", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const benData = { hospitalId: id, deleted: false };
+    const benRes = await fetch("/api/beneficiary", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(benData),
+    });
+    if (res.status == 200 && benRes.status == 200) {
+      alert("Hospital restored successfully!");
+      setHospitals((hospitals) =>
+        hospitals.map((hospital) =>
+          hospital.id === id ? { ...hospital, deleted: false } : hospital
+        )
+      );
+    } else {
+      alert("Failed to save data!");
+    }
+  };
+
   return (
     <div className="full-height">
       <Navigation user={props.user} />
@@ -627,7 +710,7 @@ function RequiredFields(props) {
               <form action="#" method="POST" onSubmit={(e) => addHospital(e)}>
                 <div className="text-center">
                   <h2 className="text-center mt-4 mb-4">
-                    <strong>Add A Hospital</strong>
+                    <strong>Add Hospital</strong>
                   </h2>
                   <div>
                     <input
@@ -650,6 +733,53 @@ function RequiredFields(props) {
                   </button>
                 </div>
               </form>
+              <div>
+                <h2 className="text-center mt-4 mb-4">
+                  <strong>Remove Hospital</strong>
+                </h2>
+                <div>
+                  <Table striped bordered hover>
+                    <thead>
+                      <tr>
+                        <th>Hospital</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {hospitals.map((hospital) => (
+                        <tr key={hospital.id}>
+                          <td>{hospital.name}</td>
+                          <td>
+                            {!hospital.deleted && (
+                              <button
+                                className="btn btn-danger"
+                                type="button"
+                                onClick={(e) =>
+                                  hideHospital(hospital.id, hospital.name)
+                                }
+                              >
+                                Hide
+                              </button>
+                            )}
+                            {hospital.deleted && (
+                              <button
+                                className="btn btn-success"
+                                type="button"
+                                onClick={(e) =>
+                                  showHospital(hospital.id, hospital.name)
+                                }
+                              >
+                                Show
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </div>
+                <br />
+              </div>
               <br />
             </div>
           )}

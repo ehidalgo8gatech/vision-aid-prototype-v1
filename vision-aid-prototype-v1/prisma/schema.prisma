@@ -25,6 +25,7 @@ model Admin {
 model Hospital {
   id               Int                @id @default(autoincrement())
   name             String?            @unique
+  deleted          Boolean?           @default(false)
   hospitalRole     HospitalRole[]
   Beneficiary      Beneficiary[]
   Camps            Camps[]
