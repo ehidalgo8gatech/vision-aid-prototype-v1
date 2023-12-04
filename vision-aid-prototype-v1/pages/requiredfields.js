@@ -415,21 +415,6 @@ function RequiredFields(props) {
     );
   }
 
-  const hospitalCheckBoxes = props.hospitals.map((hospital) => (
-    <div>
-      <h6 style={{ marginLeft: "10px" }}>{hospital.name}</h6>
-      {!hospital.deleted && <button className="btn btn-danger">Hide</button>}
-      {hospital.deleted && <button className="btn btn-success">Show</button>}
-    </div>
-    // <>
-    //   <input type="checkbox" value={hospital.name} />
-    // <label className="form-check-label" style={{ marginLeft: "10px" }}>
-    //   {hospital.name}
-    // </label>
-    //   <br />
-    // </>
-  ));
-
   async function addHospital(e) {
     e.preventDefault();
     let hospitalName = document.getElementById("createHospitalName").value;
