@@ -1,13 +1,15 @@
 import { Table } from "react-bootstrap";
+import { FormControl, Select, MenuItem } from "@mui/material";
 import Link from "next/link";
 import moment from "moment";
+import { createMenu, createOptionMenu } from "@/constants/globalFunctions";
 
 export default function ReportsHospitalSelection(props) {
   const {
+    user,
     summary,
     selectedHospitals,
     handleHospitalSelection,
-    handleSelectAll,
     startDate,
     endDate,
     handleStartDateChange,
@@ -18,43 +20,68 @@ export default function ReportsHospitalSelection(props) {
 
   return (
     <div>
-      <div className="flex-container-vertical">
-        <div className="row">
-          <div className="col-md-5">
-            <label htmlFor="startDate">Start Date:</label>
-          </div>
-          <div className="col-md-5">
-            <input
-              type="date"
-              id="startDate"
-              name="startDate"
-              value={moment(startDate).format("YYYY-MM-DD")}
-              onChange={handleStartDateChange}
-              max={today}
-            />
-          </div>
-        </div>
-        <br />
-        <div className="row">
-          <div className="col-md-5">
-            <label htmlFor="endDate">End Date:</label>
-          </div>
-          <div className="col-md-5">
-            <input
-              type="date"
-              id="endDate"
-              name="endDate"
-              value={moment(endDate).format("YYYY-MM-DD")}
-              onChange={handleEndDateChange}
-              min={moment(startDate).format("YYYY-MM-DD")}
-              max={today}
-            />
-          </div>
-        </div>
-      </div>
-      <br />
       <div>
-        <Table striped bordered hover>
+        <p>
+          <strong>Customization</strong>
+        </p>
+        <div>
+          <div className="flex-container-vertical">
+            <div className="row">
+              <div className="col-md-5">
+                <label htmlFor="startDate">Start Date:</label>
+              </div>
+              <div className="col-md-5">
+                <input
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                  value={moment(startDate).format("YYYY-MM-DD")}
+                  onChange={handleStartDateChange}
+                  max={today}
+                />
+              </div>
+            </div>
+            <br />
+            <div className="row">
+              <div className="col-md-5">
+                <label htmlFor="endDate">End Date:</label>
+              </div>
+              <div className="col-md-5">
+                <input
+                  type="date"
+                  id="endDate"
+                  name="endDate"
+                  value={moment(endDate).format("YYYY-MM-DD")}
+                  onChange={handleEndDateChange}
+                  min={moment(startDate).format("YYYY-MM-DD")}
+                  max={today}
+                />
+              </div>
+            </div>
+          </div>
+          <br />
+          <br />
+          {user != undefined && user.admin && (
+            <div>
+              <p>Select hospitals: </p>
+              {/* <br /> */}
+              <FormControl fullWidth size="small">
+                <Select
+                  onChange={handleHospitalSelection}
+                  value={selectedHospitals}
+                  name="hospitals"
+                  multiple
+                  renderValue={(selected) => selected.join(", ")}
+                  // MenuProps={MenuProps}
+                >
+                  {createMenu(
+                    summary.map((hospital) => hospital.name),
+                    true,
+                    selectedHospitals
+                  )}
+                </Select>
+              </FormControl>
+              {/* <Table striped bordered hover>
           <thead>
             <tr>
               <th>Hospital</th>
@@ -86,7 +113,10 @@ export default function ReportsHospitalSelection(props) {
                 </tr>
               ))}
           </tbody>
-        </Table>
+        </Table> */}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

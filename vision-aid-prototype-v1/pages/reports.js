@@ -522,6 +522,7 @@ export default function Summary({
   const [endDate, setEndDate] = useState(moment().toDate());
 
   const [selectedHospitals, setSelectedHospitals] = useState([]);
+  const [selectedHospitalNames, setSelectedHospitalNames] = useState([]);
 
   const router = useRouter();
 
@@ -529,19 +530,20 @@ export default function Summary({
     setSelectedHospitals(summary.map((item) => item.id));
   }, []);
 
-  const handleHospitalSelection = (event) => {
-    const hospitalId = parseInt(event.target.value);
-    const isChecked = event.target.checked;
+  useEffect(() => {
+    setSelectedHospitalNames(summary.map((item) => item.name));
+  }, []);
 
-    if (isChecked) {
-      setSelectedHospitals([...selectedHospitals, hospitalId]);
-    } else {
-      setSelectedHospitals(selectedHospitals.filter((id) => id !== hospitalId));
-    }
-  };
-
-  const handleSelectAll = () => {
-    setSelectedHospitals(summary.map((item) => item.id));
+  const handleMultiSelectChange = (e) => {
+    const {
+      target: { value },
+    } = e;
+    setSelectedHospitalNames(value);
+    setSelectedHospitals(
+      summary
+        .filter((hospital) => value.includes(hospital.name))
+        .map((hospital) => hospital.id)
+    );
   };
 
   // filter summary data based on start and end date of the training
@@ -691,7 +693,7 @@ export default function Summary({
               </button>
             )}
           </div>
-          {user.admin && user.hospitalRole.admin && (
+          {(user.admin || user.hospitalRole.admin) && (
             <div className="offset-md-8 col-md-2">
               <button
                 className="btn btn-success border-0 btn-block text-align-right"
@@ -703,17 +705,14 @@ export default function Summary({
           )}
         </div>
         <br />
-        {user.admin != null && (
+        {(user.admin || user.hospitalRole.admin) && (
           <div className="row">
             <div className="col-md-3">
-              <p>
-                <strong>Customization</strong>
-              </p>
               <GraphCustomizer
+                user={user}
                 summary={summary}
-                selectedHospitals={selectedHospitals}
-                handleHospitalSelection={handleHospitalSelection}
-                handleSelectAll={handleSelectAll}
+                selectedHospitals={selectedHospitalNames}
+                handleHospitalSelection={handleMultiSelectChange}
                 startDate={startDate}
                 handleStartDateChange={handleStartDateChange}
                 endDate={endDate}
@@ -740,25 +739,23 @@ export default function Summary({
             </div>
           </div>
         )}
-        {user.admin == null && (
-          <div className="row">
-            <Paper>
-              <Tabs
-                value={activeGraphTab}
-                onChange={handleGraphTabChange}
-                indicatorColor="primary"
-                textColor="primary"
-                centered
-              >
-                <Tab label="Beneficiaries" />
-                <Tab label="All Activities" />
-                <Tab label="Training Activities" />
-                <Tab label="Counselling Activities" />
-                <Tab label="Devices" />
-              </Tabs>
-              {renderGraph(activeGraphTab)}
-            </Paper>
-          </div>
+        {user.hospitalRole != null && !user.hospitalRole.admin && (
+          <Paper>
+            <Tabs
+              value={activeGraphTab}
+              onChange={handleGraphTabChange}
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+            >
+              <Tab label="Beneficiaries" />
+              <Tab label="All Activities" />
+              <Tab label="Training Activities" />
+              <Tab label="Counselling Activities" />
+              <Tab label="Devices" />
+            </Tabs>
+            {renderGraph(activeGraphTab)}
+          </Paper>
         )}
       </Container>
       <br />
