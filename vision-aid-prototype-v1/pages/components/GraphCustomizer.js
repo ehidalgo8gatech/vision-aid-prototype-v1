@@ -61,7 +61,7 @@ export default function ReportsHospitalSelection(props) {
           </div>
           <br />
           <br />
-          {user.admin && (
+          {user != undefined && user.admin && (
             <div>
               <p>Select hospitals: </p>
               {/* <br /> */}
