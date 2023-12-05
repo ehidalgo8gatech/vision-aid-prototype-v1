@@ -165,14 +165,14 @@ export default function HistoricalEvaluationPage(props) {
   let serviceEditList = [];
 
   for (let i = 0; i < service.length; i++) {
-    if (currentUser.hospitalRole !== null) {
-      if (currentUser.hospitalRole.admin === true && i < 2) {
+    if (currentUser.admin) {
+      serviceEditList.push({ service: service[i], editable: true });
+    } else {
+      if (i < 2) {
         serviceEditList.push({ service: service[i], editable: true });
       } else {
         serviceEditList.push({ service: service[i], editable: false });
       }
-    } else {
-      serviceEditList.push({ service: service[i], editable: true });
     }
   }
 
