@@ -515,6 +515,7 @@ export default function Summary({
   beneficiaryFlatList,
   error,
 }) {
+  console.log(JSON.stringify(user));
   // create start date and end data states, start date is set to one year ago, end date is set to today
   const [startDate, setStartDate] = useState(
     moment().subtract(1, "year").toDate()
@@ -691,14 +692,16 @@ export default function Summary({
               </button>
             )}
           </div>
-          <div className="offset-md-8 col-md-2">
-            <button
-              className="btn btn-success border-0 btn-block text-align-right"
-              onClick={downloadFilteredReport}
-            >
-              <Download></Download> Download Report
-            </button>
-          </div>
+          {user.admin && user.hospitalRole.admin && (
+            <div className="offset-md-8 col-md-2">
+              <button
+                className="btn btn-success border-0 btn-block text-align-right"
+                onClick={downloadFilteredReport}
+              >
+                <Download></Download> Download Report
+              </button>
+            </div>
+          )}
         </div>
         <br />
         {user.admin != null && (
