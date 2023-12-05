@@ -515,7 +515,6 @@ export default function Summary({
   beneficiaryFlatList,
   error,
 }) {
-  console.log(JSON.stringify(user));
   // create start date and end data states, start date is set to one year ago, end date is set to today
   const [startDate, setStartDate] = useState(
     moment().subtract(1, "year").toDate()
