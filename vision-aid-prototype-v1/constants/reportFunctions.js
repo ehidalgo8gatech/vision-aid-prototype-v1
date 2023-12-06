@@ -171,6 +171,15 @@ function filterByDate(training, start, end) {
   );
 }
 
+// Get the latest dispensed device from descending sorted CLVE data
+function getLatestDispensedDevice(sortedClveData, deviceType) {
+  for (let clveRow of sortedClveData) {
+    if (isNotNullEmptyOrUndefined(clveRow[deviceType]))
+      return clveRow[deviceType];
+  }
+  return "";
+}
+
 // Returns common columns of all Excel sheets
 function getCommonData(beneficiaryIdx, beneficiary) {
   const commonData = {
@@ -199,6 +208,30 @@ function getBeneficiaryJson(commonData, beneficiary) {
   beneficiaryJson["Hospital Name"] = beneficiary["hospital"]["name"];
   beneficiaryJson["Vision"] = beneficiary["vision"];
   beneficiaryJson["MDVI"] = beneficiary["mDVI"];
+
+  // Sort beneficiary CLVE data in descending order of session numbers so that latest devices can be extracted
+  const sortedBeneficiaryClve = beneficiary[
+    "comprehensiveLowVisionEvaluation"
+  ].sort((a, b) => b.sessionNumber - a.sessionNumber);
+
+  beneficiaryJson["Dispensed Spectacle"] = getLatestDispensedDevice(
+    sortedBeneficiaryClve,
+    "dispensedSpectacle"
+  );
+  beneficiaryJson["Dispensed Optical"] = getLatestDispensedDevice(
+    sortedBeneficiaryClve,
+    "dispensedOptical"
+  );
+  beneficiaryJson["Dispensed Non-Optical"] = getLatestDispensedDevice(
+    sortedBeneficiaryClve,
+    "dispensedNonOptical"
+  );
+  beneficiaryJson["Dispensed Electronic"] = getLatestDispensedDevice(
+    sortedBeneficiaryClve,
+    "dispensedElectronic"
+  );
+  beneficiaryJson["Total Number of Trainings"] = sortedBeneficiaryClve.length;
+
   beneficiaryJson["Extra Information"] = beneficiary["rawExtraFields"];
 
   return beneficiaryJson;
