@@ -92,6 +92,17 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
     "Aggregated Hospital Data",
   ]);
   const today = moment(new Date()).format("YYYY-MM-DD");
+  const trainingTypes = Array.from(
+    new Set(
+      beneficiaryList
+        .map((beneficiary) => {
+          return beneficiary.training.map((training) => training.type);
+        })
+        .flat(Infinity)
+    )
+  );
+  const [selectedTrainingTypes, setSelectedTrainingTypes] =
+    useState(trainingTypes);
 
   const handleSelectAll = () => {
     setSelectedHospitals(summary.map((item) => item.id));
@@ -161,6 +172,19 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
     } else {
       setSelectedSheets((selectedSheets) =>
         selectedSheets.filter((sheetName) => sheetName !== e.target.id)
+      );
+    }
+  };
+
+  const updateTrainingTypes = (e) => {
+    if (e.target.checked) {
+      setSelectedTrainingTypes((selectedTrainingTypes) => [
+        ...selectedTrainingTypes,
+        e.target.id,
+      ]);
+    } else {
+      setSelectedTrainingTypes((selectedTrainingTypes) =>
+        selectedTrainingTypes.filter((type) => type !== e.target.id)
       );
     }
   };
@@ -275,7 +299,21 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
     }
 
     if (selectedSheets.includes("Training")) {
-      const wtd = XLSX.utils.json_to_sheet(trainingData);
+      let finalTrainingData = trainingData;
+      // Check if less number of training types are selected compared to the total number of training types
+      if (trainingTypes.length > selectedTrainingTypes.length) {
+        // "Type of Training" is a column title in the Training sheet
+        finalTrainingData = trainingData.filter((training) =>
+          selectedTrainingTypes.includes(training["Type of Training"])
+        );
+        // After removing the entries not corresponding to selected training types, re-arrange indices to prevent gaps
+        let index = 1;
+        for (let training of finalTrainingData) {
+          training["Index"] = index;
+          index += 1;
+        }
+      }
+      const wtd = XLSX.utils.json_to_sheet(finalTrainingData);
       XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
     }
 
@@ -707,6 +745,44 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
               </div>
             </div>
           </div>
+
+          {selectedSheets.includes("Training") && (
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="panelsStayOpen-headingSeven">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#panelsStayOpen-collapseSeven"
+                  aria-expanded="false"
+                  aria-controls="panelsStayOpen-collapseSeven"
+                >
+                  <strong>Training Types</strong>
+                </button>
+              </h2>
+              <div
+                id="panelsStayOpen-collapseSeven"
+                class="accordion-collapse collapse"
+                aria-labelledby="panelsStayOpen-headingSeven"
+              >
+                <div class="accordion-body">
+                  {trainingTypes.map((type) => (
+                    <div className="row">
+                      <div className="col-md-6 text-align-left">
+                        <input
+                          type="checkbox"
+                          id={type}
+                          onClick={(e) => updateTrainingTypes(e)}
+                          checked={selectedTrainingTypes.includes(type)}
+                        />
+                        <label className="margin-left">{type}</label>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <br />
