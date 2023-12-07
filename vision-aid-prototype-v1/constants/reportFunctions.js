@@ -378,10 +378,10 @@ function getOmtJson(commonData, omtIdx, omtData) {
 // Get Training Sheet data
 function getTrainingJson(commonData, tIdx, tData) {
   let tJson = { ...commonData };
-  tJson["Index"] = tIdx;
+  tJson["Index"] = tIdx; // has been referred in customizedReports. Please make necessary changes if this column name is changed.
   tJson["Date"] = new Date(tData["date"]).toLocaleDateString().split(",")[0];
   tJson["Session Number"] = tData["sessionNumber"];
-  tJson["Type of Training"] = tData["type"];
+  tJson["Type of Training"] = tData["type"]; // has been referred in customizedReports. Please make necessary changes if this column name is changed.
   tJson["Sub Type"] = tData["subType"];
   tJson["Extra Information"] = tData["extraInformation"];
 
@@ -529,7 +529,6 @@ function getAggregatedHospitalData(
       };
     });
   }
-  console.log(filteredSummary);
 
   // Add checks for empty arrays
   for (let hospital of filteredSummary) {
