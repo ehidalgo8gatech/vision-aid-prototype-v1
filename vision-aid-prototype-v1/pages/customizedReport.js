@@ -767,7 +767,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
               >
                 <div class="accordion-body">
                   {trainingTypes.map((type) => (
-                    <div className="row">
+                    <div className="row" key={type}>
                       <div className="col-md-6 text-align-left">
                         <input
                           type="checkbox"
