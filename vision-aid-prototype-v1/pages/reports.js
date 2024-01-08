@@ -588,9 +588,6 @@ export default function Summary({
       visionEnhancementData,
       lowVisionEvaluationData,
       comprehensiveLowVisionEvaluationData,
-      computerTrainingData,
-      mobileTrainingData,
-      orientationMobilityTrainingData,
       trainingData,
       counsellingEducationData,
       aggregatedHospitalData,
@@ -603,10 +600,7 @@ export default function Summary({
 
     const wlved = XLSX.utils.json_to_sheet([]);
     const wclve = XLSX.utils.json_to_sheet([]);
-
-    const wctd = XLSX.utils.json_to_sheet(computerTrainingData);
-    const wmtd = XLSX.utils.json_to_sheet(mobileTrainingData);
-    const womtd = XLSX.utils.json_to_sheet(orientationMobilityTrainingData);
+    
     const wtd = XLSX.utils.json_to_sheet(trainingData);
     const wced = XLSX.utils.json_to_sheet(counsellingEducationData);
 
@@ -616,9 +610,6 @@ export default function Summary({
     XLSX.utils.book_append_sheet(wb, wved, "Vision Enhancement Sheet");
     XLSX.utils.book_append_sheet(wb, wlved, "Low Vision Screening");
     XLSX.utils.book_append_sheet(wb, wclve, "CLVE Sheet");
-    XLSX.utils.book_append_sheet(wb, wctd, "Computer Training Sheet");
-    XLSX.utils.book_append_sheet(wb, wmtd, "Mobile Training Sheet");
-    XLSX.utils.book_append_sheet(wb, womtd, "Orientation Mobile Sheet");
     XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
     XLSX.utils.book_append_sheet(wb, wced, "Counselling Education Sheet");
     XLSX.utils.book_append_sheet(wb, wahd, "Aggregated Hospital Sheet");
