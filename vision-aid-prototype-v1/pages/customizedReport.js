@@ -84,9 +84,6 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
     "Vision Enhancement",
     "Low Vision Screening",
     "Comprehensive Low Vision Evaluation",
-    "Computer Training",
-    "Mobile Training",
-    "Orientation Mobility Training",
     "Training",
     "Counselling Education",
     "Aggregated Hospital Data",
@@ -239,9 +236,6 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
       visionEnhancementData,
       lowVisionEvaluationData,
       comprehensiveLowVisionEvaluationData,
-      computerTrainingData,
-      mobileTrainingData,
-      orientationMobilityTrainingData,
       trainingData,
       counsellingEducationData,
       aggregatedHospitalData,
@@ -281,21 +275,6 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
         skipHeader: true,
         origin: -1,
       });
-    }
-
-    if (selectedSheets.includes("Computer Training")) {
-      const wctd = XLSX.utils.json_to_sheet(computerTrainingData);
-      XLSX.utils.book_append_sheet(wb, wctd, "Computer Training Sheet");
-    }
-
-    if (selectedSheets.includes("Mobile Training")) {
-      const wmtd = XLSX.utils.json_to_sheet(mobileTrainingData);
-      XLSX.utils.book_append_sheet(wb, wmtd, "Mobile Training Sheet");
-    }
-
-    if (selectedSheets.includes("Orientation Mobility Training")) {
-      const womtd = XLSX.utils.json_to_sheet(orientationMobilityTrainingData);
-      XLSX.utils.book_append_sheet(wb, womtd, "Orientation Mobile Sheet");
     }
 
     if (selectedSheets.includes("Training")) {
@@ -660,45 +639,6 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
                     />
                     <label className="margin-left">
                       Comprehensive Low Vision Evaluation
-                    </label>
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-md-6 text-align-left">
-                    <input
-                      type="checkbox"
-                      id="Computer Training"
-                      onClick={(e) => updateSheets(e)}
-                      checked={selectedSheets.includes("Computer Training")}
-                    />
-                    <label className="margin-left">Computer Training</label>
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-md-6 text-align-left">
-                    <input
-                      type="checkbox"
-                      id="Mobile Training"
-                      onClick={(e) => updateSheets(e)}
-                      checked={selectedSheets.includes("Mobile Training")}
-                    />
-                    <label className="margin-left">Mobile Training</label>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-6 text-align-left">
-                    <input
-                      type="checkbox"
-                      id="Orientation Mobility Training"
-                      onClick={(e) => updateSheets(e)}
-                      checked={selectedSheets.includes(
-                        "Orientation Mobility Training"
-                      )}
-                    />
-                    <label className="margin-left">
-                      Orientation Mobility Training
                     </label>
                   </div>
                 </div>

@@ -334,47 +334,6 @@ function getLveJson(commonData, lveIdx, lveData) {
   return lveJson;
 }
 
-// Get Computer Training Sheet data
-function getCtJson(commonData, ctIdx, ctData) {
-  let ctJson = { ...commonData };
-  ctJson["Index"] = ctIdx;
-  ctJson["Date"] = new Date(ctData["date"]).toLocaleDateString().split(",")[0];
-  ctJson["Session Number"] = ctData["sessionNumber"];
-  ctJson["Vision Type"] = ctData["visionType"];
-  ctJson["Type of Training"] = ctData["typeOfTraining"];
-  ctJson["Extra Information"] = ctData["extraInformation"];
-
-  return ctJson;
-}
-
-// Get Mobile Training Sheet data
-function getMtJson(commonData, mtIdx, mtData) {
-  let mtJson = { ...commonData };
-  mtJson["Index"] = mtIdx;
-  mtJson["Date"] = new Date(mtData["date"]).toLocaleDateString().split(",")[0];
-  mtJson["Session Number"] = mtData["sessionNumber"];
-  mtJson["Vision Type"] = mtData["vision"];
-  mtJson["Type of Training"] = mtData["typeOfTraining"];
-  mtJson["Extra Information"] = mtData["extraInformation"];
-
-  return mtJson;
-}
-
-// Get Orientation & Mobility Sheet data
-function getOmtJson(commonData, omtIdx, omtData) {
-  let omtJson = { ...commonData };
-  omtJson["Index"] = omtIdx;
-  omtJson["Date"] = new Date(omtData["date"])
-    .toLocaleDateString()
-    .split(",")[0];
-  omtJson["Session Number"] = omtData["sessionNumber"];
-  omtJson["Vision Type"] = omtData["vision"];
-  omtJson["Type of Training"] = omtData["typeOfTraining"];
-  omtJson["Extra Information"] = omtData["extraInformation"];
-
-  return omtJson;
-}
-
 // Get Training Sheet data
 function getTrainingJson(commonData, tIdx, tData) {
   let tJson = { ...commonData };
@@ -519,16 +478,6 @@ function getAggregatedHospitalData(
           filteredBeneficiaryIds.includes(evaluation.beneficiaryId)
         ),
         visionEnhancement: hospital.visionEnhancement.filter((evaluation) =>
-          filteredBeneficiaryIds.includes(evaluation.beneficiaryId)
-        ),
-        orientationMobilityTraining:
-          hospital.orientationMobilityTraining.filter((evaluation) =>
-            filteredBeneficiaryIds.includes(evaluation.beneficiaryId)
-          ),
-        mobileTraining: hospital.mobileTraining.filter((evaluation) =>
-          filteredBeneficiaryIds.includes(evaluation.beneficiaryId)
-        ),
-        computerTraining: hospital.computerTraining.filter((evaluation) =>
           filteredBeneficiaryIds.includes(evaluation.beneficiaryId)
         ),
         counsellingEducation: hospital.counsellingEducation.filter(
@@ -747,20 +696,6 @@ export function filterTrainingSummaryByDateRange(
   summaryType
 ) {
   const filteredSummary = summary.map((element) => {
-    const mobileTraining = element.mobileTraining.filter((training) => {
-      // log data of each training
-      return filterByDate(training, startDate, endDate);
-    });
-    // log the difference in length before and after filter
-
-    const computerTraining = element.computerTraining.filter((training) => {
-      return filterByDate(training, startDate, endDate);
-    });
-
-    const orientationMobilityTraining =
-      element.orientationMobilityTraining.filter((training) => {
-        return filterByDate(training, startDate, endDate);
-      });
 
     const visionEnhancement = element.visionEnhancement.filter((training) => {
       return filterByDate(training, startDate, endDate);
@@ -785,9 +720,6 @@ export function filterTrainingSummaryByDateRange(
 
     let filteredElement = {
       ...element,
-      mobileTraining,
-      computerTraining,
-      orientationMobilityTraining,
       visionEnhancement,
       counsellingEducation,
       comprehensiveLowVisionEvaluation,
@@ -925,9 +857,6 @@ export function getReportData(
   let visionEnhancementData = [];
   let lowVisionEvaluationData = [];
   let comprehensiveLowVisionEvaluationData = [];
-  let computerTrainingData = [];
-  let mobileTrainingData = [];
-  let orientationMobilityTrainingData = [];
   let trainingData = [];
   let counsellingEducationData = [];
   let aggregatedHospitalData = getAggregatedHospitalData(
@@ -940,9 +869,6 @@ export function getReportData(
   let clveIdx = 1;
   let veIdx = 1;
   let lveIdx = 1;
-  let ctIdx = 1;
-  let mtIdx = 1;
-  let omtIdx = 1;
   let tIdx = 1;
   let ceIdx = 1;
 
@@ -980,30 +906,6 @@ export function getReportData(
       lveIdx += 1;
     }
 
-    // Computer Training Sheet
-    let beneficiaryCT = beneficiary["computerTraining"];
-    for (let ctData of beneficiaryCT) {
-      let ctJson = getCtJson(commonData, ctIdx, ctData);
-      computerTrainingData.push(ctJson);
-      ctIdx += 1;
-    }
-
-    // Mobile Training Sheet
-    let beneficiaryMT = beneficiary["mobileTraining"];
-    for (let mtData of beneficiaryMT) {
-      let mtJson = getMtJson(commonData, mtIdx, mtData);
-      mobileTrainingData.push(mtJson);
-      mtIdx += 1;
-    }
-
-    // Orientation Mobility Training Sheet
-    let beneficiaryOMT = beneficiary["orientationMobilityTraining"];
-    for (let omtData of beneficiaryOMT) {
-      let omtJson = getOmtJson(commonData, omtIdx, omtData);
-      orientationMobilityTrainingData.push(omtJson);
-      omtIdx += 1;
-    }
-
     // Training Sheet
     let beneficiaryT = beneficiary["training"];
     for (let tData of beneficiaryT) {
@@ -1026,9 +928,6 @@ export function getReportData(
     visionEnhancementData,
     lowVisionEvaluationData,
     comprehensiveLowVisionEvaluationData,
-    computerTrainingData,
-    mobileTrainingData,
-    orientationMobilityTrainingData,
     trainingData,
     counsellingEducationData,
     aggregatedHospitalData,
