@@ -942,7 +942,7 @@ function RequiredFields(props) {
                 <strong>Other Form Required Fields</strong>
               </h2>
               <br />
-              <div className="d-flex justify-content-center align-items-center">
+              <div className="d-flex justify-content-center">
                 {showForm["comprehensiveLowVisionEvaluation"] ? (
                   <ChevronDown
                     className="ml-2"
@@ -1042,7 +1042,7 @@ function RequiredFields(props) {
               </div>
               <br />
 
-              <div className="d-flex justify-content-center align-items-center">
+              <div className="d-flex justify-content-center">
                 {showForm["visionEnhancement"] ? (
                   <ChevronDown
                     className="ml-2"
@@ -1136,7 +1136,7 @@ function RequiredFields(props) {
               </div>
               <br />
 
-              <div className="d-flex justify-content-center align-items-center">
+              <div className="d-flex justify-content-center">
                 {showForm["mobile"] ? (
                   <ChevronDown
                     className="ml-2"
@@ -1152,7 +1152,6 @@ function RequiredFields(props) {
                 )}
                 <h2 className="text-center">Mobile Training</h2>
               </div>
-              <br />
               <div id="mobileTrainingRequiredFields">
                 <form
                   action="#"
@@ -1227,7 +1226,7 @@ function RequiredFields(props) {
               </div>
               <br />
 
-              <div className="d-flex justify-content-center align-items-center">
+              <div className="d-flex justify-content-center">
                 {showForm["counsellingEducation"] ? (
                   <ChevronDown
                     className="ml-2"
@@ -1322,7 +1321,7 @@ function RequiredFields(props) {
                 <strong>Add Types</strong>
               </h2>
               <br />
-              <div className="d-flex justify-content-center align-items-center">
+              <div className="d-flex justify-content-center">
                 {showForm["addCounsellingType"] ? (
                   <ChevronDown
                     className="ml-2"
@@ -1367,7 +1366,7 @@ function RequiredFields(props) {
                 </form>
               </div>
               <br />
-              <div className="d-flex justify-content-center align-items-center">
+              <div className="d-flex justify-content-center">
                 {showForm["addTrainingType"] ? (
                   <ChevronDown
                     className="ml-2"
@@ -1410,7 +1409,7 @@ function RequiredFields(props) {
                 </form>
               </div>
               <br />
-              <div className="d-flex justify-content-center align-items-center">
+              <div className="d-flex justify-content-center">
                 {showForm["addTrainingSubType"] ? (
                   <ChevronDown
                     className="ml-2"
