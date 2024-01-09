@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `beneficiary` ADD COLUMN `deleted` VARCHAR(191) NULL;
+ALTER TABLE `Beneficiary` ADD COLUMN `deleted` VARCHAR(191) NULL;
