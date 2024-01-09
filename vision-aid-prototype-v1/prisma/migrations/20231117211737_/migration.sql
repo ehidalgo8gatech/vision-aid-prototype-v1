@@ -5,4 +5,4 @@
 
 */
 -- AlterTable
-ALTER TABLE `beneficiary` MODIFY `deleted` BOOLEAN NULL DEFAULT false;
+ALTER TABLE `Beneficiary` MODIFY `deleted` BOOLEAN NULL DEFAULT false;

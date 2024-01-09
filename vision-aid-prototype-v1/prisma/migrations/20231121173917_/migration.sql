@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `hospital` ADD COLUMN `deleted` BOOLEAN NULL DEFAULT false;
+ALTER TABLE `Hospital` ADD COLUMN `deleted` BOOLEAN NULL DEFAULT false;
