@@ -450,6 +450,17 @@ function getAggregatedHospitalData(
   let otSessionsTotal = 0;
   let otBeneficiariesTotal = 0;
 
+  let clveWithoutDevicesRow = {
+    Programs1: "CLVE without dispensed devices",
+    Programs2: "",
+  };
+  let cwdSessionsTotal = 0;
+  let cwdBeneficiariesTotal = 0;
+
+  let clveDevicesRow = { Programs1: "CLVE + Dispensed Devices", Programs2: "" };
+  let cdSessionsTotal = 0;
+  let cdBeneficiariesTotal = 0;
+
   let clveCounselingRow = { Programs1: "CLVE + Counseling", Programs2: "" };
   let ccSessionsTotal = 0;
   let ccBeneficiariesTotal = 0;
@@ -590,14 +601,30 @@ function getAggregatedHospitalData(
     // Overall Training
     overallTrainingRow[hospital.name + " Sessions"] = hospital.training.length;
     overallTrainingRow[hospital.name + " Beneficiaries"] = Array.from(
-      new Set(
-        hospital.training.map(
-          (evaluation) => evaluation.beneficiaryId
-        )
-      )
+      new Set(hospital.training.map((evaluation) => evaluation.beneficiaryId))
     ).length;
     otSessionsTotal += overallTrainingRow[hospital.name + " Sessions"];
-    otBeneficiariesTotal += overallTrainingRow[hospital.name + " Beneficiaries"];
+    otBeneficiariesTotal +=
+      overallTrainingRow[hospital.name + " Beneficiaries"];
+
+    // CLVE Without Dispensed Devices
+    clveWithoutDevicesRow[hospital.name + " Sessions"] =
+      clveRow[hospital.name + " Sessions"] -
+      devicesRow[hospital.name + " Sessions"];
+    clveWithoutDevicesRow[hospital.name + " Beneficiaries"] =
+      clveRow[hospital.name + " Beneficiaries"] -
+      devicesRow[hospital.name + " Beneficiaries"];
+    cwdSessionsTotal += clveWithoutDevicesRow[hospital.name + " Sessions"];
+    cwdBeneficiariesTotal +=
+      clveWithoutDevicesRow[hospital.name + " Beneficiaries"];
+
+    // CLVE + Dispensed Devices
+    clveDevicesRow[hospital.name + " Sessions"] =
+      clveRow[hospital.name + " Sessions"];
+    clveDevicesRow[hospital.name + " Beneficiaries"] =
+      clveRow[hospital.name + " Beneficiaries"];
+    cdSessionsTotal += clveDevicesRow[hospital.name + " Sessions"];
+    cdBeneficiariesTotal += clveDevicesRow[hospital.name + " Beneficiaries"];
 
     // CLVE + Counselling
     clveCounselingRow[hospital.name + " Sessions"] =
@@ -626,9 +653,7 @@ function getAggregatedHospitalData(
         hospital.comprehensiveLowVisionEvaluation
           .map((evaluation) => evaluation.beneficiaryId)
           .concat(
-            hospital.training.map(
-              (evaluation) => evaluation.beneficiaryId
-            )
+            hospital.training.map((evaluation) => evaluation.beneficiaryId)
           )
       )
     ).length;
@@ -667,6 +692,12 @@ function getAggregatedHospitalData(
   overallTrainingRow["Number of Sessions"] = otSessionsTotal;
   overallTrainingRow["Number of Beneficiaries"] = otBeneficiariesTotal;
 
+  clveWithoutDevicesRow["Number of Sessions"] = cwdSessionsTotal;
+  clveWithoutDevicesRow["Number of Beneficiaries"] = cwdBeneficiariesTotal;
+
+  clveDevicesRow["Number of Sessions"] = cdSessionsTotal;
+  clveDevicesRow["Number of Beneficiaries"] = cdBeneficiariesTotal;
+
   clveCounselingRow["Number of Sessions"] = ccSessionsTotal;
   clveCounselingRow["Number of Beneficiaries"] = ccBeneficiariesTotal;
 
@@ -682,6 +713,8 @@ function getAggregatedHospitalData(
   aggregatedHospitalData.push(ceRow);
   aggregatedHospitalData.push(...trainingTypesList.map((item) => item.tRow));
   aggregatedHospitalData.push(overallTrainingRow);
+  aggregatedHospitalData.push(clveWithoutDevicesRow);
+  aggregatedHospitalData.push(clveDevicesRow)
   aggregatedHospitalData.push(clveCounselingRow);
   aggregatedHospitalData.push(clveTrainingRow);
 
@@ -696,7 +729,6 @@ export function filterTrainingSummaryByDateRange(
   summaryType
 ) {
   const filteredSummary = summary.map((element) => {
-
     const visionEnhancement = element.visionEnhancement.filter((training) => {
       return filterByDate(training, startDate, endDate);
     });
