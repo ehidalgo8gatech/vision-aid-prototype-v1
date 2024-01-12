@@ -279,7 +279,7 @@ label {
 }
 
 #mobileTrainingRequiredFields {
-  display: none;
+  display: block;
 }
 
 #computerTrainingRequiredFields {
@@ -291,23 +291,23 @@ label {
 }
 
 #visionEnhancementTrainingRequiredFields {
-  display: none;
+  display: block;
 }
 
 #comprehensiveLowVisionEvaluationTrainingRequiredFields {
-  display: none;
+  display: block;
 }
 
 #counsellingEducationTrainingRequiredFields {
-  display: none;
+  display: block;
 }
 
 #addCounsellingTypeContainer {
-  display: none;
+  display: block;
 }
 
 #addTrainingTypeContainer {
-  display: none;
+  display: block;
 }
 
 #removeCounsellingTypeContainer {
@@ -319,7 +319,7 @@ label {
 }
 
 #addTrainingSubTypeContainer {
-  display: none;
+  display: block;
 }
 
 .container {
