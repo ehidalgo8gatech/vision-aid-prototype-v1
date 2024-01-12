@@ -460,8 +460,9 @@ function RequiredFields(props) {
     }
     removeTypeCounseling.push(
       <div>
-        <span>Delete Counseling Type: {counselingType}</span>
+        <span>Delete Counseling Type: {counselingType}</span>&nbsp;
         <Trash
+          style={{ cursor: "pointer" }}
           onClick={() => deleteTraining("counsellingType", counselingType)}
         />
       </div>
@@ -494,8 +495,8 @@ function RequiredFields(props) {
     }
     removeTypeTraining.push(
       <div>
-        <span>Delete Training Type: {trainingType}</span>
-        <Trash onClick={() => deleteTraining("trainingType", trainingType)} />
+        <span>Delete Training Type: {trainingType}</span>&nbsp;
+        <Trash style={{ cursor: "pointer" }} onClick={() => deleteTraining("trainingType", trainingType)} />
       </div>
     );
   }
@@ -540,8 +541,8 @@ function RequiredFields(props) {
         <span>
           Delete Training Type: {trainingSubType.trainingType.value} Training
           Sub Type: {trainingSubType.value}
-        </span>
-        <Trash onClick={() => deleteTrainingSubType(trainingSubType.id)} />
+        </span>&nbsp;
+        <Trash style={{ cursor: "pointer" }} onClick={() => deleteTrainingSubType(trainingSubType.id)} />
       </div>
     );
   }
