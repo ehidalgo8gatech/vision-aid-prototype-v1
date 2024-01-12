@@ -249,7 +249,7 @@ function RequiredFields(props) {
     exInfoMobileTraining.push(
       <div class="col-md-12" id={data.name + "mobileTraining"}>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-10">
             <input
               type="text"
               name="extraFieldsMobileTraining"
@@ -257,7 +257,7 @@ function RequiredFields(props) {
               defaultValue={data.name}
             />
           </div>
-          <div class="col-md-6">
+          <div class="col-md-2">
             <button
               type="button"
               onClick={removeExtraField(data.name + "mobileTraining")}
@@ -283,7 +283,7 @@ function RequiredFields(props) {
         id={data.name + "comprehensiveLowVisionEvaluation"}
       >
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-10">
             <input
               type="text"
               name="extraFieldsComprehensiveLowVisionEvaluation"
@@ -291,7 +291,7 @@ function RequiredFields(props) {
               defaultValue={data.name}
             />
           </div>
-          <div class="col-md-6">
+          <div class="col-md-2">
             <button
               type="button"
               onClick={removeExtraField(
@@ -316,7 +316,7 @@ function RequiredFields(props) {
     exInfoVisionEnhancement.push(
       <div class="col-md-12" id={data.name + "visionEnhancement"}>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-10">
             <input
               type="text"
               name="extraFieldsVisionEnhancement"
@@ -324,7 +324,7 @@ function RequiredFields(props) {
               defaultValue={data.name}
             />
           </div>
-          <div class="col-md-6">
+          <div class="col-md-2">
             <button
               type="button"
               onClick={removeExtraField(data.name + "visionEnhancement")}
@@ -347,7 +347,7 @@ function RequiredFields(props) {
     exInfoCounsellingEducation.push(
       <div class="col-md-12" id={data.name + "counsellingEducation"}>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-10">
             <input
               type="text"
               name="extraFieldsCounsellingEducation"
@@ -355,7 +355,7 @@ function RequiredFields(props) {
               defaultValue={data.name}
             />
           </div>
-          <div class="col-md-6">
+          <div class="col-md-2">
             <button
               type="button"
               onClick={removeExtraField(data.name + "counsellingEducation")}
