@@ -179,7 +179,7 @@ function Users(props) {
 
   const roleOptions = [];
 
-  roleOptions.push("Technician");
+  roleOptions.push("Professional");
   if (props.user.admin !== null) {
     roleOptions.push("Manager");
     roleOptions.push("Admin");

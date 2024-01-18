@@ -11,7 +11,7 @@ function Navigation({ user } = props) {
       : user.hospitalRole.admin
       ? "manager"
       : user.hospitalRole
-      ? "technician"
+      ? "professional"
       : "invalid";
   }
 

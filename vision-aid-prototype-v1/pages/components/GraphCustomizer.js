@@ -1,5 +1,5 @@
 import { Table } from "react-bootstrap";
-import { FormControl, Select, MenuItem } from "@mui/material";
+import { FormControl, Select, MenuItem, Checkbox } from "@mui/material";
 import Link from "next/link";
 import moment from "moment";
 import { createMenu, createOptionMenu } from "@/constants/globalFunctions";
@@ -14,6 +14,7 @@ export default function ReportsHospitalSelection(props) {
     endDate,
     handleStartDateChange,
     handleEndDateChange,
+    handleAllSelect,
   } = props;
 
   const today = moment(new Date()).format("YYYY-MM-DD");
@@ -63,7 +64,14 @@ export default function ReportsHospitalSelection(props) {
           <br />
           {user != undefined && user.admin && (
             <div>
-              <p>Select hospitals: </p>
+              <div>
+                <div style={{display: "inline-block"}}>
+                  <Checkbox defaultChecked onChange={handleAllSelect} />
+                </div>
+                <div style={{display: "inline-block"}}>
+                  <p>Select hospitals: </p>
+                </div>
+              </div>
               {/* <br /> */}
               <FormControl fullWidth size="small">
                 <Select
