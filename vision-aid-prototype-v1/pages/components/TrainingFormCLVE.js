@@ -8,6 +8,7 @@ import {
   FormControl,
 } from "@mui/material";
 import {
+  otherField,
   logMARValues,
   sixmValues,
   twentyftValues,
@@ -84,11 +85,19 @@ const TrainingFormCLVE = ({
     e.preventDefault();
     console.log(formData);
     const customDataDistance = customFieldsDistance.reduce((acc, field) => {
-      acc[field] = formData[field] + " " + formData["unitDistance"];
+      if(formData[field] === otherField) {
+        acc[field] = formData[field];
+      } else {
+        acc[field] = formData[field] + " " + formData["unitDistance"];
+      }
       return acc;
     }, {});
     const customDataNear = customFieldsNear.reduce((acc, field) => {
-      acc[field] = formData[field] + " " + formData["unitNear"];
+      if(formData[field] === otherField) {
+        acc[field] = formData[field];
+      } else {
+        acc[field] = formData[field] + " " + formData["unitNear"];
+      }
       return acc;
     }, {});
     var allDiagnosis = "";
