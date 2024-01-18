@@ -546,6 +546,16 @@ export default function Summary({
     );
   };
 
+  const handleAllSelect = (e, allSelect) => {
+    if (allSelect) {
+      setSelectedHospitals(summary.map((item) => item.id))
+      setSelectedHospitalNames(summary.map((item) => item.name));
+    } else {
+      setSelectedHospitals([])
+      setSelectedHospitalNames([]);
+    }
+  };
+
   // filter summary data based on start and end date of the training
   const dateFilteredSummary = filterTrainingSummaryByDateRange(
     startDate,
@@ -717,6 +727,7 @@ export default function Summary({
                 handleStartDateChange={handleStartDateChange}
                 endDate={endDate}
                 handleEndDateChange={handleEndDateChange}
+                handleAllSelect={handleAllSelect}
               />
             </div>
             <div className="col-md-9">
