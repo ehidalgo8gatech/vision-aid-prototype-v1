@@ -548,10 +548,10 @@ export default function Summary({
 
   const handleAllSelect = (e, allSelect) => {
     if (allSelect) {
-      setSelectedHospitals(summary.map((item) => item.id))
+      setSelectedHospitals(summary.map((item) => item.id));
       setSelectedHospitalNames(summary.map((item) => item.name));
     } else {
-      setSelectedHospitals([])
+      setSelectedHospitals([]);
       setSelectedHospitalNames([]);
     }
   };
@@ -567,7 +567,7 @@ export default function Summary({
   const filteredSummary = dateFilteredSummary.filter((item) =>
     selectedHospitals.includes(item.id)
   );
-
+  
   const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
     startDate,
     endDate,
@@ -598,6 +598,7 @@ export default function Summary({
       visionEnhancementData,
       lowVisionEvaluationData,
       comprehensiveLowVisionEvaluationData,
+      electronicDevicesData,
       trainingData,
       counsellingEducationData,
       aggregatedHospitalData,
@@ -610,7 +611,8 @@ export default function Summary({
 
     const wlved = XLSX.utils.json_to_sheet([]);
     const wclve = XLSX.utils.json_to_sheet([]);
-    
+
+    const wed = XLSX.utils.json_to_sheet(electronicDevicesData);
     const wtd = XLSX.utils.json_to_sheet(trainingData);
     const wced = XLSX.utils.json_to_sheet(counsellingEducationData);
 
@@ -620,6 +622,7 @@ export default function Summary({
     XLSX.utils.book_append_sheet(wb, wved, "Vision Enhancement Sheet");
     XLSX.utils.book_append_sheet(wb, wlved, "Low Vision Screening");
     XLSX.utils.book_append_sheet(wb, wclve, "CLVE Sheet");
+    XLSX.utils.book_append_sheet(wb, wed, "Electronic Devices Break Up");
     XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
     XLSX.utils.book_append_sheet(wb, wced, "Counselling Education Sheet");
     XLSX.utils.book_append_sheet(wb, wahd, "Aggregated Hospital Sheet");

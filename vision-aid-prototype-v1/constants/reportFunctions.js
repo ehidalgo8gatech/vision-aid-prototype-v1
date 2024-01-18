@@ -714,7 +714,7 @@ function getAggregatedHospitalData(
   aggregatedHospitalData.push(...trainingTypesList.map((item) => item.tRow));
   aggregatedHospitalData.push(overallTrainingRow);
   aggregatedHospitalData.push(clveWithoutDevicesRow);
-  aggregatedHospitalData.push(clveDevicesRow)
+  aggregatedHospitalData.push(clveDevicesRow);
   aggregatedHospitalData.push(clveCounselingRow);
   aggregatedHospitalData.push(clveTrainingRow);
 
@@ -889,6 +889,7 @@ export function getReportData(
   let visionEnhancementData = [];
   let lowVisionEvaluationData = [];
   let comprehensiveLowVisionEvaluationData = [];
+  let electronicDevicesData = [];
   let trainingData = [];
   let counsellingEducationData = [];
   let aggregatedHospitalData = getAggregatedHospitalData(
@@ -899,10 +900,13 @@ export function getReportData(
 
   let beneficiaryIdx = 1;
   let clveIdx = 1;
+  let edIdx = 1;
   let veIdx = 1;
   let lveIdx = 1;
   let tIdx = 1;
   let ceIdx = 1;
+
+  let edMap = new Map();
 
   // Filtered Report Download
   for (let beneficiary of filteredBeneficiaryData) {
@@ -914,12 +918,22 @@ export function getReportData(
     beneficiaryData.push(beneficiaryJson);
     beneficiaryIdx += 1;
 
-    // CLVE sheet:
+    // CLVE sheet and electronic devices sheet:
     let beneficiaryCLVE = beneficiary["comprehensiveLowVisionEvaluation"];
     for (let clveData of beneficiaryCLVE) {
+      // CLVE row addition
       let clveJson = getClveJson(commonData, clveIdx, clveData);
       comprehensiveLowVisionEvaluationData.push(clveJson);
       clveIdx += 1;
+
+      // Electronic device addition to map
+      let dispensedElectronic = clveData["dispensedElectronic"].toUpperCase();
+      if (edMap.has(dispensedElectronic)) {
+        let currentCount = edMap.get(dispensedElectronic);
+        edMap.set(dispensedElectronic, currentCount + 1);
+      } else if (isNotNullEmptyOrUndefined(dispensedElectronic)) {
+        edMap.set(dispensedElectronic, 1);
+      }
     }
 
     // Vision Enhancement Sheet
@@ -955,11 +969,18 @@ export function getReportData(
     }
   }
 
+  for (let [device, count] of edMap) {
+    let edJson = { Index: edIdx, "Device Name": device, Count: count };
+    electronicDevicesData.push(edJson);
+    edIdx += 1;
+  }
+
   return {
     beneficiaryData,
     visionEnhancementData,
     lowVisionEvaluationData,
     comprehensiveLowVisionEvaluationData,
+    electronicDevicesData,
     trainingData,
     counsellingEducationData,
     aggregatedHospitalData,

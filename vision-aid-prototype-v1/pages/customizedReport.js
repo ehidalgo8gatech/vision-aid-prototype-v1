@@ -84,6 +84,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
     "Vision Enhancement",
     "Low Vision Screening",
     "Comprehensive Low Vision Evaluation",
+    "Electronic Devices Break Up",
     "Training",
     "Counselling Education",
     "Aggregated Hospital Data",
@@ -236,6 +237,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
       visionEnhancementData,
       lowVisionEvaluationData,
       comprehensiveLowVisionEvaluationData,
+      electronicDevicesData,
       trainingData,
       counsellingEducationData,
       aggregatedHospitalData,
@@ -275,6 +277,11 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
         skipHeader: true,
         origin: -1,
       });
+    }
+
+    if (selectedSheets.includes("Electronic Devices Break Up")) {
+      const wed = XLSX.utils.json_to_sheet(electronicDevicesData);
+      XLSX.utils.book_append_sheet(wb, wed, "Electronic Devices Break Up");
     }
 
     if (selectedSheets.includes("Training")) {
@@ -627,6 +634,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
                     <label className="margin-left">Low Vision Screening</label>
                   </div>
                 </div>
+
                 <div className="row">
                   <div className="col-md-6 text-align-left">
                     <input
@@ -639,6 +647,22 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
                     />
                     <label className="margin-left">
                       Comprehensive Low Vision Evaluation
+                    </label>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-md-6 text-align-left">
+                    <input
+                      type="checkbox"
+                      id="Electronic Devices Break Up"
+                      onClick={(e) => updateSheets(e)}
+                      checked={selectedSheets.includes(
+                        "Electronic Devices Break Up"
+                      )}
+                    />
+                    <label className="margin-left">
+                      Electronic Devices Break Up
                     </label>
                   </div>
                 </div>
