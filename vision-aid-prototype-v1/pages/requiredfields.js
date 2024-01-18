@@ -249,7 +249,7 @@ function RequiredFields(props) {
     exInfoMobileTraining.push(
       <div class="col-md-12" id={data.name + "mobileTraining"}>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-10">
             <input
               type="text"
               name="extraFieldsMobileTraining"
@@ -257,7 +257,7 @@ function RequiredFields(props) {
               defaultValue={data.name}
             />
           </div>
-          <div class="col-md-6">
+          <div class="col-md-2">
             <button
               type="button"
               onClick={removeExtraField(data.name + "mobileTraining")}
@@ -283,7 +283,7 @@ function RequiredFields(props) {
         id={data.name + "comprehensiveLowVisionEvaluation"}
       >
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-10">
             <input
               type="text"
               name="extraFieldsComprehensiveLowVisionEvaluation"
@@ -291,7 +291,7 @@ function RequiredFields(props) {
               defaultValue={data.name}
             />
           </div>
-          <div class="col-md-6">
+          <div class="col-md-2">
             <button
               type="button"
               onClick={removeExtraField(
@@ -316,7 +316,7 @@ function RequiredFields(props) {
     exInfoVisionEnhancement.push(
       <div class="col-md-12" id={data.name + "visionEnhancement"}>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-10">
             <input
               type="text"
               name="extraFieldsVisionEnhancement"
@@ -324,7 +324,7 @@ function RequiredFields(props) {
               defaultValue={data.name}
             />
           </div>
-          <div class="col-md-6">
+          <div class="col-md-2">
             <button
               type="button"
               onClick={removeExtraField(data.name + "visionEnhancement")}
@@ -347,7 +347,7 @@ function RequiredFields(props) {
     exInfoCounsellingEducation.push(
       <div class="col-md-12" id={data.name + "counsellingEducation"}>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-10">
             <input
               type="text"
               name="extraFieldsCounsellingEducation"
@@ -355,7 +355,7 @@ function RequiredFields(props) {
               defaultValue={data.name}
             />
           </div>
-          <div class="col-md-6">
+          <div class="col-md-2">
             <button
               type="button"
               onClick={removeExtraField(data.name + "counsellingEducation")}
@@ -460,8 +460,9 @@ function RequiredFields(props) {
     }
     removeTypeCounseling.push(
       <div>
-        <span>Delete Counseling Type: {counselingType}</span>
+        <span>Delete Counseling Type: {counselingType}</span>&nbsp;
         <Trash
+          style={{ cursor: "pointer" }}
           onClick={() => deleteTraining("counsellingType", counselingType)}
         />
       </div>
@@ -494,8 +495,8 @@ function RequiredFields(props) {
     }
     removeTypeTraining.push(
       <div>
-        <span>Delete Training Type: {trainingType}</span>
-        <Trash onClick={() => deleteTraining("trainingType", trainingType)} />
+        <span>Delete Training Type: {trainingType}</span>&nbsp;
+        <Trash style={{ cursor: "pointer" }} onClick={() => deleteTraining("trainingType", trainingType)} />
       </div>
     );
   }
@@ -540,8 +541,8 @@ function RequiredFields(props) {
         <span>
           Delete Training Type: {trainingSubType.trainingType.value} Training
           Sub Type: {trainingSubType.value}
-        </span>
-        <Trash onClick={() => deleteTrainingSubType(trainingSubType.id)} />
+        </span>&nbsp;
+        <Trash style={{ cursor: "pointer" }} onClick={() => deleteTrainingSubType(trainingSubType.id)} />
       </div>
     );
   }
@@ -942,377 +943,338 @@ function RequiredFields(props) {
                 <strong>Other Form Required Fields</strong>
               </h2>
               <br />
-              <div className="d-flex justify-content-center align-items-center">
-                {showForm["comprehensiveLowVisionEvaluation"] ? (
-                  <ChevronDown
-                    className="ml-2"
-                    onClick={() =>
-                      handleToggle("comprehensiveLowVisionEvaluation")
-                    }
-                    style={{ cursor: "pointer" }}
-                  />
-                ) : (
-                  <ChevronRight
-                    className="ml-2"
-                    onClick={() =>
-                      handleToggle("comprehensiveLowVisionEvaluation")
-                    }
-                    style={{ cursor: "pointer" }}
-                  />
-                )}
-                <h2 className="text-center">
-                  Comprehensive Low Vision Evaluation
-                </h2>
-              </div>
-              <div
-                // className="container"
-                id="comprehensiveLowVisionEvaluationTrainingRequiredFields"
-              >
-                <br />
-                <form
-                  action="#"
-                  method="POST"
-                  onSubmit={(e) =>
-                    addFieldsTrainingSubmit(
-                      e,
-                      "ComprehensiveLowVisionEvaluation",
-                      "comprehensiveLowVisionEvaluationMirror"
-                    )
-                  }
-                >
-                  {/* <div className="container"> */}
-                  <div class="row justify-content-center">
-                    <div className="col-md-6 mx-auto">
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <label
-                          htmlFor="hospitalNameOverrideComprehensiveLowVisionEvaluation"
-                          style={{ marginRight: "10px" }}
-                        >
-                          Select a hospital
-                        </label>
-                        <select
-                          id="hospitalNameOverrideComprehensiveLowVisionEvaluation"
-                          style={{
-                            border: "1px solid #ccc",
-                            borderRadius: "0.25rem",
-                            color: "#495057",
-                            backgroundColor: "#fff",
-                            boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-                            transition:
-                              "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
-                          }}
-                        >
-                          <option value="">All</option>
-                          {hospitalOptions}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  {/* </div> */}
-                  <div id="extraFieldsComprehensiveLowVisionEvaluation">
-                    <strong>Extra Fields</strong>
-                    <br />
-                    <br />
-                    {exInfoComprehensiveLowVisionEvaluation}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      addField(
-                        "extraFieldsComprehensiveLowVisionEvaluation",
-                        "extraFieldsComprehensiveLowVisionEvaluation"
-                      )
-                    }
-                    className="btn btn-success border-0 btn-block"
-                  >
-                    Add Required Field
-                  </button>
-                  <br />
-                  <br />
-                  <button type="submit" className="btn btn-primary">
-                    Submit
-                  </button>
-                </form>
-              </div>
-              <br />
 
-              <div className="d-flex justify-content-center align-items-center">
-                {showForm["visionEnhancement"] ? (
-                  <ChevronDown
-                    className="ml-2"
-                    onClick={() => handleToggle("visionEnhancement")}
-                    style={{ cursor: "pointer" }}
-                  />
-                ) : (
-                  <ChevronRight
-                    className="ml-2"
-                    onClick={() => handleToggle("visionEnhancement")}
-                    style={{ cursor: "pointer" }}
-                  />
-                )}
-                <h2 className="text-center">Vision Enhancement</h2>
-              </div>
-              <div
-                // className="container"
-                id="visionEnhancementTrainingRequiredFields"
-              >
-                <br />
-                <form
-                  action="#"
-                  method="POST"
-                  onSubmit={(e) =>
-                    addFieldsTrainingSubmit(
-                      e,
-                      "VisionEnhancement",
-                      "visionEnhancementMirror"
-                    )
-                  }
-                >
-                  {/* <div className="container"> */}
-                  <div class="row justify-content-center">
-                    <div className="col-md-6 mx-auto">
+              <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      <strong>Comprehensive Low Vision Evaluation</strong>
+                    </button>
+                  </h2>
+                  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
                       <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
+                        // className="container"
+                        id="comprehensiveLowVisionEvaluationTrainingRequiredFields"
                       >
-                        <label
-                          htmlFor="hospitalNameOverrideVisionEnhancement"
-                          style={{ marginRight: "10px" }}
+                        <form
+                          action="#"
+                          method="POST"
+                          onSubmit={(e) =>
+                            addFieldsTrainingSubmit(
+                              e,
+                              "ComprehensiveLowVisionEvaluation",
+                              "comprehensiveLowVisionEvaluationMirror"
+                            )
+                          }
                         >
-                          Select a hospital
-                        </label>
-                        <select
-                          id="hospitalNameOverrideVisionEnhancement"
-                          style={{
-                            border: "1px solid #ccc",
-                            borderRadius: "0.25rem",
-                            color: "#495057",
-                            backgroundColor: "#fff",
-                            boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-                            transition:
-                              "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
-                          }}
-                        >
-                          <option value="">All</option>
-                          {hospitalOptions}
-                        </select>
+                          <div class="row justify-content-center">
+                            <div className="col-md-6 mx-auto">
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <label
+                                  htmlFor="hospitalNameOverrideComprehensiveLowVisionEvaluation"
+                                  style={{ marginRight: "10px" }}
+                                >
+                                  Select a hospital
+                                </label>
+                                <select
+                                  id="hospitalNameOverrideComprehensiveLowVisionEvaluation"
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "0.25rem",
+                                    color: "#495057",
+                                    backgroundColor: "#fff",
+                                    boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
+                                    transition:
+                                      "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
+                                  }}
+                                >
+                                  <option value="">All</option>
+                                  {hospitalOptions}
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div id="extraFieldsComprehensiveLowVisionEvaluation">
+                            <strong>Extra Fields</strong>
+                            <br />
+                            <br />
+                            {exInfoComprehensiveLowVisionEvaluation}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              addField(
+                                "extraFieldsComprehensiveLowVisionEvaluation",
+                                "extraFieldsComprehensiveLowVisionEvaluation"
+                              )
+                            }
+                            className="btn btn-success border-0 btn-block"
+                          >
+                            Add Required Field
+                          </button>
+                          <br />
+                          <br />
+                          <button type="submit" className="btn btn-primary">
+                            Submit
+                          </button>
+                        </form>
                       </div>
                     </div>
                   </div>
-                  {/* </div> */}
-                  <div id="extraFieldsVisionEnhancement">
-                    <strong>Extra Fields</strong>
-                    <br />
-                    <br />
-                    {exInfoVisionEnhancement}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      addField(
-                        "extraFieldsVisionEnhancement",
-                        "extraFieldsVisionEnhancement"
-                      )
-                    }
-                    className="btn btn-success border-0 btn-block"
-                  >
-                    Add Required Field
-                  </button>
-                  <br />
-                  <br />
-                  <button type="submit" className="btn btn-primary">
-                    Submit
-                  </button>
-                </form>
-              </div>
-              <br />
-
-              <div className="d-flex justify-content-center align-items-center">
-                {showForm["mobile"] ? (
-                  <ChevronDown
-                    className="ml-2"
-                    onClick={() => handleToggle("mobile")}
-                    style={{ cursor: "pointer" }}
-                  />
-                ) : (
-                  <ChevronRight
-                    className="ml-2"
-                    onClick={() => handleToggle("mobile")}
-                    style={{ cursor: "pointer" }}
-                  />
-                )}
-                <h2 className="text-center">Mobile Training</h2>
-              </div>
-              <br />
-              <div id="mobileTrainingRequiredFields">
-                <form
-                  action="#"
-                  method="POST"
-                  onSubmit={(e) =>
-                    addFieldsTrainingSubmit(
-                      e,
-                      "MobileTraining",
-                      "mobileTrainingMirror"
-                    )
-                  }
-                >
-                  {/* <div className="container"> */}
-                  <div class="row justify-content-center">
-                    <div className="col-md-6 mx-auto">
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      <strong>Vision Enhancement</strong>
+                    </button>
+                  </h2>
+                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
                       <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
+                        // className="container"
+                        id="visionEnhancementTrainingRequiredFields"
                       >
-                        <label
-                          htmlFor="hospitalNameOverrideMobileTraining"
-                          style={{ marginRight: "10px" }}
+                        <form
+                          action="#"
+                          method="POST"
+                          onSubmit={(e) =>
+                            addFieldsTrainingSubmit(
+                              e,
+                              "VisionEnhancement",
+                              "visionEnhancementMirror"
+                            )
+                          }
                         >
-                          Select a hospital
-                        </label>
-                        <select
-                          id="hospitalNameOverrideMobileTraining"
-                          style={{
-                            border: "1px solid #ccc",
-                            borderRadius: "0.25rem",
-                            color: "#495057",
-                            backgroundColor: "#fff",
-                            boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-                            transition:
-                              "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
-                          }}
-                        >
-                          <option value="">All</option>
-                          {hospitalOptions}
-                        </select>
+                          <div class="row justify-content-center">
+                            <div className="col-md-6 mx-auto">
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <label
+                                  htmlFor="hospitalNameOverrideVisionEnhancement"
+                                  style={{ marginRight: "10px" }}
+                                >
+                                  Select a hospital
+                                </label>
+                                <select
+                                  id="hospitalNameOverrideVisionEnhancement"
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "0.25rem",
+                                    color: "#495057",
+                                    backgroundColor: "#fff",
+                                    boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
+                                    transition:
+                                      "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
+                                  }}
+                                >
+                                  <option value="">All</option>
+                                  {hospitalOptions}
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div id="extraFieldsVisionEnhancement">
+                            <strong>Extra Fields</strong>
+                            <br />
+                            <br />
+                            {exInfoVisionEnhancement}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              addField(
+                                "extraFieldsVisionEnhancement",
+                                "extraFieldsVisionEnhancement"
+                              )
+                            }
+                            className="btn btn-success border-0 btn-block"
+                          >
+                            Add Required Field
+                          </button>
+                          <br />
+                          <br />
+                          <button type="submit" className="btn btn-primary">
+                            Submit
+                          </button>
+                        </form>
                       </div>
                     </div>
                   </div>
-                  {/* </div> */}
-                  <div id="extraFieldsMobileTraining">
-                    <strong>Extra Fields</strong>
-                    <br />
-                    <br />
-                    {exInfoMobileTraining}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      addField(
-                        "extraFieldsMobileTraining",
-                        "extraFieldsMobileTraining"
-                      )
-                    }
-                    className="btn btn-success border-0 btn-block"
-                  >
-                    Add Required Field
-                  </button>
-                  <br />
-                  <br />
-                  <button type="submit" className="btn btn-primary">
-                    Submit
-                  </button>
-                </form>
-              </div>
-              <br />
-
-              <div className="d-flex justify-content-center align-items-center">
-                {showForm["counsellingEducation"] ? (
-                  <ChevronDown
-                    className="ml-2"
-                    onClick={() => handleToggle("counsellingEducation")}
-                    style={{ cursor: "pointer" }}
-                  />
-                ) : (
-                  <ChevronRight
-                    className="ml-2"
-                    onClick={() => handleToggle("counsellingEducation")}
-                    style={{ cursor: "pointer" }}
-                  />
-                )}
-                <h2 className="text-center">Counselling Education</h2>
-              </div>
-              <br />
-              <div id="counsellingEducationTrainingRequiredFields">
-                <form
-                  action="#"
-                  method="POST"
-                  onSubmit={(e) =>
-                    addFieldsTrainingSubmit(
-                      e,
-                      "CounsellingEducation",
-                      "counsellingEducationMirror"
-                    )
-                  }
-                >
-                  <div class="row justify-content-center">
-                    <div className="col-md-6 mx-auto">
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <label
-                          htmlFor="hospitalNameOverrideCounsellingEducation"
-                          style={{ marginRight: "10px" }}
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      <strong>Mobile Training</strong>
+                    </button>
+                  </h2>
+                  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <div id="mobileTrainingRequiredFields">
+                        <form
+                          action="#"
+                          method="POST"
+                          onSubmit={(e) =>
+                            addFieldsTrainingSubmit(
+                              e,
+                              "MobileTraining",
+                              "mobileTrainingMirror"
+                            )
+                          }
                         >
-                          Select a hospital
-                        </label>
-                        <select
-                          id="hospitalNameOverrideCounsellingEducation"
-                          style={{
-                            border: "1px solid #ccc",
-                            borderRadius: "0.25rem",
-                            color: "#495057",
-                            backgroundColor: "#fff",
-                            boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-                            transition:
-                              "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
-                          }}
-                        >
-                          <option value="">All</option>
-                          {hospitalOptions}
-                        </select>
+                          <div class="row justify-content-center">
+                            <div className="col-md-6 mx-auto">
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <label
+                                  htmlFor="hospitalNameOverrideMobileTraining"
+                                  style={{ marginRight: "10px" }}
+                                >
+                                  Select a hospital
+                                </label>
+                                <select
+                                  id="hospitalNameOverrideMobileTraining"
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "0.25rem",
+                                    color: "#495057",
+                                    backgroundColor: "#fff",
+                                    boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
+                                    transition:
+                                      "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
+                                  }}
+                                >
+                                  <option value="">All</option>
+                                  {hospitalOptions}
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div id="extraFieldsMobileTraining">
+                            <strong>Extra Fields</strong>
+                            <br />
+                            <br />
+                            {exInfoMobileTraining}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              addField(
+                                "extraFieldsMobileTraining",
+                                "extraFieldsMobileTraining"
+                              )
+                            }
+                            className="btn btn-success border-0 btn-block"
+                          >
+                            Add Required Field
+                          </button>
+                          <br />
+                          <br />
+                          <button type="submit" className="btn btn-primary">
+                            Submit
+                          </button>
+                        </form>
                       </div>
                     </div>
                   </div>
-                  <div id="extraFieldsCounsellingEducation">
-                    <strong>Extra Fields</strong>
-                    <br />
-                    <br />
-                    {exInfoCounsellingEducation}
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingFour">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                      <strong>Counselling Education</strong>
+                    </button>
+                  </h2>
+                  <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <div id="counsellingEducationTrainingRequiredFields">
+                        <form
+                          action="#"
+                          method="POST"
+                          onSubmit={(e) =>
+                            addFieldsTrainingSubmit(
+                              e,
+                              "CounsellingEducation",
+                              "counsellingEducationMirror"
+                            )
+                          }
+                        >
+                          <div class="row justify-content-center">
+                            <div className="col-md-6 mx-auto">
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <label
+                                  htmlFor="hospitalNameOverrideCounsellingEducation"
+                                  style={{ marginRight: "10px" }}
+                                >
+                                  Select a hospital
+                                </label>
+                                <select
+                                  id="hospitalNameOverrideCounsellingEducation"
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "0.25rem",
+                                    color: "#495057",
+                                    backgroundColor: "#fff",
+                                    boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
+                                    transition:
+                                      "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
+                                  }}
+                                >
+                                  <option value="">All</option>
+                                  {hospitalOptions}
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div id="extraFieldsCounsellingEducation">
+                            <strong>Extra Fields</strong>
+                            <br />
+                            <br />
+                            {exInfoCounsellingEducation}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              addField(
+                                "extraFieldsCounsellingEducation",
+                                "extraFieldsCounsellingEducation"
+                              )
+                            }
+                            className="btn btn-success border-0 btn-block"
+                          >
+                            Add Required Field
+                          </button>
+                          <br />
+                          <br />
+                          <button type="submit" className="btn btn-primary">
+                            Submit
+                          </button>
+                        </form>
+                      </div>
+                    </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      addField(
-                        "extraFieldsCounsellingEducation",
-                        "extraFieldsCounsellingEducation"
-                      )
-                    }
-                    className="btn btn-success border-0 btn-block"
-                  >
-                    Add Required Field
-                  </button>
-                  <br />
-                  <br />
-                  <button type="submit" className="btn btn-primary">
-                    Submit
-                  </button>
-                </form>
+                </div>
               </div>
             </div>
           )}
@@ -1322,143 +1284,115 @@ function RequiredFields(props) {
                 <strong>Add Types</strong>
               </h2>
               <br />
-              <div className="d-flex justify-content-center align-items-center">
-                {showForm["addCounsellingType"] ? (
-                  <ChevronDown
-                    className="ml-2"
-                    onClick={() =>
-                      handleToggleByType("addCounsellingTypeContainer")
-                    }
-                    style={{ cursor: "pointer" }}
-                  />
-                ) : (
-                  <ChevronRight
-                    className="ml-2"
-                    onClick={() =>
-                      handleToggleByType("addCounsellingTypeContainer")
-                    }
-                    style={{ cursor: "pointer" }}
-                  />
-                )}
-                <h2 className="text-center">Add/Delete Counseling Education</h2>
-              </div>
-              <div id="addCounsellingTypeContainer">
-                {removeTypeCounseling}
-                <form
-                  action="#"
-                  method="POST"
-                  onSubmit={(e) =>
-                    addTypesSubmit(e, "counsellingType", "addCounsellingType")
-                  }
-                >
-                  <br />
-                  <label htmlFor="addCounsellingType">
-                    Add Counseling Type:
-                  </label>
-                  <input
-                    type="text"
-                    id="addCounsellingType"
-                    name="addCounsellingType"
-                  />
-                  <br /> <br />
-                  <button type="submit" className="btn btn-success">
-                    Submit
-                  </button>
-                </form>
-              </div>
-              <br />
-              <div className="d-flex justify-content-center align-items-center">
-                {showForm["addTrainingType"] ? (
-                  <ChevronDown
-                    className="ml-2"
-                    onClick={() =>
-                      handleToggleByType("addTrainingTypeContainer")
-                    }
-                    style={{ cursor: "pointer" }}
-                  />
-                ) : (
-                  <ChevronRight
-                    className="ml-2"
-                    onClick={() =>
-                      handleToggleByType("addTrainingTypeContainer")
-                    }
-                    style={{ cursor: "pointer" }}
-                  />
-                )}
-                <h2 className="text-center">Add/Delete Training Type</h2>
-              </div>
-              <div id="addTrainingTypeContainer">
-                {removeTypeTraining}
-                <form
-                  action="#"
-                  method="POST"
-                  onSubmit={(e) =>
-                    addTypesSubmit(e, "trainingType", "addTrainingType")
-                  }
-                >
-                  <br />
-                  <label htmlFor="addTrainingType">Add Training Type:</label>
-                  <input
-                    type="text"
-                    id="addTrainingType"
-                    name="addTrainingType"
-                  />
-                  <br /> <br />
-                  <button type="submit" className="btn btn-success">
-                    Submit
-                  </button>
-                </form>
-              </div>
-              <br />
-              <div className="d-flex justify-content-center align-items-center">
-                {showForm["addTrainingSubType"] ? (
-                  <ChevronDown
-                    className="ml-2"
-                    onClick={() =>
-                      handleToggleByType("addTrainingSubTypeContainer")
-                    }
-                    style={{ cursor: "pointer" }}
-                  />
-                ) : (
-                  <ChevronRight
-                    className="ml-2"
-                    onClick={() =>
-                      handleToggleByType("addTrainingSubTypeContainer")
-                    }
-                    style={{ cursor: "pointer" }}
-                  />
-                )}
-                <h2 className="text-center">Add/Delete Training Sub Type</h2>
-              </div>
-              <div id="addTrainingSubTypeContainer">
-                {removeSubTypeTraining}
-                <form
-                  action="#"
-                  method="POST"
-                  onSubmit={(e) => addSubTypesSubmit(e)}
-                >
-                  <br />
-                  <label htmlFor="addTrainingSubType">
-                    Add Training Sub Type:
-                  </label>
-                  <select name="training" id="training">
-                    {trainingTypesOption}
-                  </select>
-                  <input
-                    type="text"
-                    id="addTrainingSubType"
-                    name="addTrainingSubType"
-                  />
-                  <br /> <br />
-                  <button type="submit" className="btn btn-success">
-                    Submit
-                  </button>
-                </form>
-                <br />
+
+              <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      <strong>Add/Delete Counseling Education</strong>
+                    </button>
+                  </h2>
+                  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <div id="addCounsellingTypeContainer">
+                        {removeTypeCounseling}
+                        <form
+                          action="#"
+                          method="POST"
+                          onSubmit={(e) =>
+                            addTypesSubmit(e, "counsellingType", "addCounsellingType")
+                          }
+                        >
+                          <br/>
+                          <label htmlFor="addCounsellingType">
+                            Add Counseling Type:&nbsp;
+                          </label>
+                          <input
+                            type="text"
+                            id="addCounsellingType"
+                            name="addCounsellingType"
+                          />
+                          <br /> <br />
+                          <button type="submit" className="btn btn-success">
+                            Submit
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      <strong>Add/Delete Training Type</strong>
+                    </button>
+                  </h2>
+                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <div id="addTrainingTypeContainer">
+                        {removeTypeTraining}
+                        <form
+                          action="#"
+                          method="POST"
+                          onSubmit={(e) =>
+                            addTypesSubmit(e, "trainingType", "addTrainingType")
+                          }
+                        >
+                          <br />
+                          <label htmlFor="addTrainingType">Add Training Type:&nbsp;</label>
+                          <input
+                            type="text"
+                            id="addTrainingType"
+                            name="addTrainingType"
+                          />
+                          <br /> <br />
+                          <button type="submit" className="btn btn-success">
+                            Submit
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      <strong>Add/Delete Training Sub Type</strong>
+                    </button>
+                  </h2>
+                  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <div id="addTrainingSubTypeContainer">
+                        {removeSubTypeTraining}
+                        <form
+                          action="#"
+                          method="POST"
+                          onSubmit={(e) => addSubTypesSubmit(e)}
+                        >
+                          <br />
+                          <label htmlFor="addTrainingSubType">
+                            Add Training Sub Type:&nbsp;
+                          </label>
+                          <select name="training" id="training">
+                            {trainingTypesOption}
+                          </select>&nbsp;
+                          <input
+                            type="text"
+                            id="addTrainingSubType"
+                            name="addTrainingSubType"
+                          />
+                          <br /> <br />
+                          <button type="submit" className="btn btn-success">
+                            Submit
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
-          <br />
         </div>
       </div>
       {/* <div className="row">
