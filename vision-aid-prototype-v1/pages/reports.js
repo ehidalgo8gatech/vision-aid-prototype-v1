@@ -1,11 +1,10 @@
-import { readUser } from "./api/user";
+import { readUser, allHospitalRoles } from "./api/user";
 import { getSession } from "next-auth/react";
 import { Chart as ChartJS } from "chart.js/auto";
 import { Chart } from "react-chartjs-2";
 import { Bar } from "react-chartjs-2";
 import {
   getSummaryForAllHospitals,
-  getSummaryForHospitalFromID,
 } from "@/pages/api/hospital";
 import { Container } from "react-bootstrap";
 import Navigation from "./navigation/Navigation";
@@ -15,7 +14,6 @@ import moment from "moment";
 import { useState, useEffect } from "react";
 import {
   findAllBeneficiary,
-  findAllBeneficiaryForHospitalId,
 } from "@/pages/api/beneficiary";
 import { CSVLink, CSVDownload } from "react-csv";
 import GraphCustomizer from "./components/GraphCustomizer";
@@ -47,63 +45,27 @@ export async function getServerSideProps(ctx) {
     };
   }
 
-  // If it's a non admin user, we only want to show the summary for their hospital
-  const user = await readUser(session.user.email);
-  if (user.admin == null) {
-    const hospitalSummary = await getSummaryForHospitalFromID(
-      user.hospitalRole.hospitalId
-    );
-
-    let hospitalBeneficiaryListFromAPI = [];
-    hospitalBeneficiaryListFromAPI = await findAllBeneficiaryForHospitalId(
-      user.hospitalRole.hospitalId
-    );
-
-    let hospitalBeneficiaryList = [];
-
-    hospitalBeneficiaryList = hospitalBeneficiaryListFromAPI.map(
-      (beneficiary) => ({
-        mrn: beneficiary.mrn,
-        beneficiaryName: beneficiary.beneficiaryName,
-        hospitalId: beneficiary.hospitalId,
-        dateOfBirth: beneficiary.dateOfBirth,
-        gender: beneficiary.gender,
-        phoneNumber: beneficiary.phoneNumber,
-        education: beneficiary.education,
-        occupation: beneficiary.occupation,
-        districts: beneficiary.districts,
-        state: beneficiary.state,
-        diagnosis: beneficiary.diagnosis,
-        vision: beneficiary.vision,
-        mDVI: beneficiary.mDVI,
-        extraInformation: beneficiary.extraInformation,
-        hospital: beneficiary.hospital,
-        visionEnhancement: beneficiary.Vision_Enhancement,
-        counsellingEducation: beneficiary.Counselling_Education,
-        comprehensiveLowVisionEvaluation:
-          beneficiary.Comprehensive_Low_Vision_Evaluation,
-        lowVisionEvaluation: beneficiary.Low_Vision_Evaluation,
-        training: beneficiary.Training,
-        computerTraining: beneficiary.Computer_Training,
-        mobileTraining: beneficiary.Mobile_Training,
-        orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
-      })
-    );
-
-    return {
-      props: {
-        user: user,
-        summary: JSON.parse(JSON.stringify([hospitalSummary])),
-        beneficiaryList: JSON.parse(JSON.stringify(hospitalBeneficiaryList)),
-        error: null,
-      },
-    };
+  const getHospitalIdsByUsers = (id, users) => {
+    let hospitalIds = [];
+    for (const user of users ) {
+      if (user.userId === id) {
+        hospitalIds.push(user.hospitalId);
+      }
+    }
+    return hospitalIds;
   }
 
-  // The user is an admin, so we want to show the summary for all hospitals
+  // If it's a non admin user, we only want to show the summary for their hospital
+  const user = await readUser(session.user.email);
+  const roles = await allHospitalRoles();
+  let hospitalIds;
+  const isAdmin = user.admin != null;
+  if (!isAdmin) {
+    hospitalIds = getHospitalIdsByUsers(user.id, roles);
+  }
 
   // The following is code to download summary data as a CSV file
-  const beneficiaryListFromAPI = await findAllBeneficiary();
+  const beneficiaryListFromAPI = await findAllBeneficiary(isAdmin, hospitalIds);
 
   let beneficiaryList = [];
 
@@ -285,19 +247,17 @@ export async function getServerSideProps(ctx) {
   }
 
   // We finally return all the data to the page
-  if (user.admin != null) {
-    const summary = await getSummaryForAllHospitals();
+  const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds);
 
-    return {
-      props: {
-        user: user,
-        summary: JSON.parse(JSON.stringify(summary)),
-        beneficiaryList: JSON.parse(JSON.stringify(beneficiaryList)),
-        beneficiaryFlatList: flatList,
-        error: null,
-      },
-    };
-  }
+  return {
+    props: {
+      user: user,
+      summary: JSON.parse(JSON.stringify(summary)),
+      beneficiaryList: JSON.parse(JSON.stringify(beneficiaryList)),
+      beneficiaryFlatList: flatList,
+      error: null,
+    },
+  };
 }
 
 // Graph Options that are constant for all graphs
@@ -703,7 +663,7 @@ export default function Summary({
               </button>
             )}
           </div>
-          {(user.admin || user.hospitalRole.admin) && (
+          {(user.admin || user.hospitalRole[0].admin) && (
             <div className="offset-md-8 col-md-2">
               <button
                 className="btn btn-success border-0 btn-block text-align-right"
@@ -715,7 +675,7 @@ export default function Summary({
           )}
         </div>
         <br />
-        {(user.admin || user.hospitalRole.admin) && (
+        {(user.admin || user.hospitalRole[0].admin) && (
           <div className="row">
             <div className="col-md-3">
               <GraphCustomizer
@@ -750,7 +710,7 @@ export default function Summary({
             </div>
           </div>
         )}
-        {user.hospitalRole != null && !user.hospitalRole.admin && (
+        {user.hospitalRole.length != 0 && !user.hospitalRole[0].admin && (
           <Paper>
             <Tabs
               value={activeGraphTab}

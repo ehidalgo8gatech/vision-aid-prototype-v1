@@ -143,9 +143,6 @@ function RequiredFields(props) {
       };
       extraInformation.push(body);
     }
-    if (props.user.hospitalRole != null) {
-      hospitalId = props.user.hospitalRole.hospitalId; // set by default to user's hospital ID
-    }
     let extraInfo = JSON.stringify(extraInformation);
     console.log("extra fields " + extraInfo);
     let response = await fetch("/api/beneficiary", {
@@ -210,7 +207,7 @@ function RequiredFields(props) {
   );
 
   var hospitalName;
-  if (props.user.hospitalRole == null) {
+  if (props.user.hospitalRole.length == 0) {
     const hospitalOptions = [];
     for (let i = 0; i < props.hospitals.length; i++) {
       const hospital = props.hospitals[i];
@@ -233,21 +230,25 @@ function RequiredFields(props) {
       </div>
     );
   } else {
+    const hospitalOptions = [];
+    for (const hospital of props.user.hospitalRole) {
+      const name = props.hospitals.find(
+        (h) => h.id == hospital.hospitalId
+      ).name;
+      hospitalOptions.push(
+        <option key={name} value={hospital.hospitalId}>
+          {name} (ID {hospital.hospitalId})
+        </option>
+      );
+    }
     hospitalName = (
       <div className="form-group">
         <label className="form-check-label" htmlFor="hospitalName">
           Hospital Name
         </label>
 
-        <select className="form-select" id="hospitalName" disabled>
-          <option selected key="" value="">
-            {
-              props.hospitals.find(
-                (hospital) => hospital.id == props.user.hospitalRole.hospitalId
-              ).name
-            }{" "}
-            (ID {props.user.hospitalRole.hospitalId})
-          </option>
+        <select className="form-select" id="hospitalName">
+            {hospitalOptions}
         </select>
       </div>
     );

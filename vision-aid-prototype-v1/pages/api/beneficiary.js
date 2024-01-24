@@ -213,23 +213,46 @@ async function updateData(req, res) {
   }
 }
 
-export async function findAllBeneficiary() {
-  return prisma.beneficiary.findMany({
-    include: {
-      hospital: true,
-      Vision_Enhancement: true,
-      Counselling_Education: true,
-      Comprehensive_Low_Vision_Evaluation: true,
-      Low_Vision_Evaluation: true,
-      Training: true,
-      Computer_Training: true,
-      Mobile_Training: true,
-      Orientation_Mobility_Training: true,
-    },
-    where: {
-      deleted: false,
-    },
-  });
+export async function findAllBeneficiary(isAdmin, hospitalIds) {
+  let beneficiaries;
+  if (isAdmin) {
+    beneficiaries = prisma.beneficiary.findMany({
+      include: {
+        hospital: true,
+        Vision_Enhancement: true,
+        Counselling_Education: true,
+        Comprehensive_Low_Vision_Evaluation: true,
+        Low_Vision_Evaluation: true,
+        Training: true,
+        Computer_Training: true,
+        Mobile_Training: true,
+        Orientation_Mobility_Training: true,
+      },
+      where: {
+        deleted: false,
+      },
+    });
+  } else {
+    beneficiaries = prisma.beneficiary.findMany({
+      include: {
+        hospital: true,
+        Vision_Enhancement: true,
+        Counselling_Education: true,
+        Comprehensive_Low_Vision_Evaluation: true,
+        Low_Vision_Evaluation: true,
+        Training: true,
+        Computer_Training: true,
+        Mobile_Training: true,
+        Orientation_Mobility_Training: true,
+      },
+      where: {
+        deleted: false,
+        hospitalId: {in: hospitalIds}
+      },
+    });
+  }
+
+  return beneficiaries;
 }
 
 export async function findAllBeneficiaryForHospitalId(hospitalId) {

@@ -45,7 +45,6 @@ const TrainingForm = ({
       updateMDVIForBeneficiary({ mDVI: mdviVal });
     }
     addNewTraining(newTraining);
-    setShowForm(false);
   };
 
   const [editableField, setEditableField] = useState("");
