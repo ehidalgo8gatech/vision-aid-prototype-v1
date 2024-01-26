@@ -468,6 +468,40 @@ function buildDevicesGraph(data) {
   return chartData;
 }
 
+// Function that builds a bar graph at a sublevel. This function is called
+// with different devices types as the breakdownType
+function buildDevicesBreakdownGraph(data, breakdownType) {
+  // Future improvement:
+  // Can make use of breakdownType, to selectively change the filter parameter
+  // Same function to be used for other device types
+  // Variable to change: item.dispensedElectronics
+  const types = data.reduce((types, hospital) => {
+    const deviceTypes = hospital.comprehensiveLowVisionEvaluation.map((item) => item.dispensedElectronic);
+    return [...types, ...deviceTypes];
+  }, []);
+
+  const typeCounts = types.reduce((counts, type) => {
+    const count = counts[type] || 0;
+    return {
+      ...counts,
+      [type]: count + 1,
+    };
+  }, {});
+
+  const chartData = {
+    labels: Object.keys(typeCounts),
+    datasets: [
+      {
+        label: "Cumulative Counts",
+        data: Object.values(typeCounts),
+        ...graphOptions,
+      },
+    ],
+  };
+
+  return chartData;
+}
+
 export default function Summary({
   user,
   summary,
@@ -551,6 +585,7 @@ export default function Summary({
     "counsellingEducation"
   );
   const devicesGraphData = buildDevicesGraph(filteredSummary);
+  const electronicDevicesGraphData =  buildDevicesBreakdownGraph(filteredSummary, "Electronic");
 
   const downloadFilteredReport = () => {
     const {
@@ -626,22 +661,43 @@ export default function Summary({
   };
 
   const [activeGraphTab, setActiveGraphTab] = useState(0);
+  const [activeSubGraphTab, setActiveSubGraphTab] = useState(0);
   const handleGraphTabChange = (event, newValue) => {
     setActiveGraphTab(newValue);
+    setActiveSubGraphTab(0);
   };
 
-  const renderGraph = (activeTab) => {
+  const handleDevicesGraphTabChange = (event, newValue) => {
+    setActiveSubGraphTab(newValue);
+  };
+
+  const options={
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  };
+
+  const renderGraph = (activeTab, activeSubTab) => {
     switch (activeTab) {
       case 0:
-        return <Bar data={beneficiaryGraphData} />;
+        return <Bar data={beneficiaryGraphData} options={options} />;
       case 1:
-        return <Bar data={activitiesGraphData} />;
+        return <Bar data={activitiesGraphData} options={options} />;
       case 2:
-        return <Bar data={trainingBreakdownGraphData} />;
+        return <Bar data={trainingBreakdownGraphData} options={options} />;
       case 3:
-        return <Bar data={counsellingBreakdownGraphData} />;
+        return <Bar data={counsellingBreakdownGraphData} options={options} />;
       case 4:
-        return <Bar data={devicesGraphData} />;
+        switch (activeSubTab) {
+          case 0:
+            return <Bar data={devicesGraphData} options={options} />;
+          case 1:
+            return <Bar data={electronicDevicesGraphData} options={options} />;
+          default:
+            return null;
+        }
       default:
         return null;
     }
@@ -705,7 +761,20 @@ export default function Summary({
                   <Tab label="Counselling Activities" />
                   <Tab label="Devices" />
                 </Tabs>
-                {renderGraph(activeGraphTab)}
+                {activeGraphTab == 4 ?
+                <Tabs
+                  value={activeSubGraphTab}
+                  onChange={handleDevicesGraphTabChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
+                  <Tab label="All Devices" />
+                  <Tab label="Electronic" />
+                </Tabs>
+                : <></>
+                }
+                {renderGraph(activeGraphTab, activeSubGraphTab)}
               </Paper>
             </div>
           </div>
@@ -725,7 +794,7 @@ export default function Summary({
               <Tab label="Counselling Activities" />
               <Tab label="Devices" />
             </Tabs>
-            {renderGraph(activeGraphTab)}
+            {renderGraph(activeGraphTab, activeSubGraphTab)}
           </Paper>
         )}
       </Container>
