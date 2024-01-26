@@ -25,7 +25,7 @@ async function readData(req, res) {
 }
 
 export async function getHospitalRoleByUserId(userId) {
-  return prisma.hospitalRole.findUnique({
+  return prisma.hospitalRole.findMany({
     where: {
       userId: userId,
     },
@@ -38,19 +38,12 @@ export async function getHospitalRoleByUserId(userId) {
 
 async function addData(req, res) {
   const body = req.body;
-  const hospitalRole = await prisma.hospitalRole.findUnique({
+  const hospitalRole = await prisma.hospitalRole.findMany({
     where: {
       userId: req.body.userId,
+      hospitalId: req.body.hospitalId,
     },
   });
-  const update = {
-    where: {
-      id: hospitalRole == null ? null : hospitalRole.id,
-    },
-    data: {
-      admin: req.body.admin,
-    },
-  };
   const create = {
     data: {
       userId: body.userId,
@@ -61,9 +54,7 @@ async function addData(req, res) {
 
   try {
     var newEntry;
-    if (hospitalRole != null) {
-      newEntry = await prisma.hospitalRole.update(update);
-    } else {
+    if (hospitalRole.length === 0) {
       newEntry = await prisma.hospitalRole.create(create);
     }
     return res.status(200).json(newEntry, { success: true });

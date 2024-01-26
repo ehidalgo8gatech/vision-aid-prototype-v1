@@ -179,10 +179,18 @@ export async function getSummaryForHospitalFromID(hospitalId) {
   return await summaryHelper(hospital);
 }
 
-export async function getSummaryForAllHospitals() {
-  const hospitals = await prisma.hospital.findMany({
-    where: { deleted: false },
-  });
+export async function getSummaryForAllHospitals(isAdmin, hospitalIds) {
+  let hospitals;
+  if (isAdmin) {
+    hospitals = await prisma.hospital.findMany({
+      where: { deleted: false },
+    });
+  } else {
+    hospitals = await prisma.hospital.findMany({
+      where: { deleted: false, id: {in: hospitalIds} },
+    });
+  }
+
   const result = [];
   for (const hospital of hospitals) {
     const hospitalResult = await summaryHelper(hospital);
