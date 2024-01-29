@@ -476,7 +476,10 @@ function buildDevicesBreakdownGraph(data, breakdownType) {
   // Same function to be used for other device types
   // Variable to change: item.dispensedElectronics
   const types = data.reduce((types, hospital) => {
-    const deviceTypes = hospital.comprehensiveLowVisionEvaluation.map((item) => item.dispensedElectronic);
+    const filteredEvaluations = hospital.comprehensiveLowVisionEvaluation.filter(
+      (evaluation) => evaluation.dispensedElectronic !== ""
+    )
+    const deviceTypes = filteredEvaluations.map((item) => item.dispensedElectronic);
     return [...types, ...deviceTypes];
   }, []);
 
