@@ -224,6 +224,11 @@ function Users(props) {
     roleOptions.push("Admin");
   }
 
+  let hospitalList = [];
+  for (const hRole of props.user.hospitalRole) {
+    hospitalList.push(hRole.hospitalId);
+  }
+
   let usersList = [];
   for (let i = 0; i < props.users.length; i++) {
     const data = props.users[i];
@@ -232,19 +237,19 @@ function Users(props) {
     var hospital, hospitalNames = "";
     var hospitalId = null;
     var hospitalIds = [];
-    var manager = "FALSE";
+    var manager = false;
     if (data.admin != null) {
-      admin = "TRUE";
-      manager = "TRUE";
+      admin = true;
+      manager = true;
       hospital = "ALL";
     } else {
-      admin = "FALSE";
+      admin = false;
       hospital = "NONE";
       if (data.hospitalRole.length != 0) {
         hospitalIds = getHospitalIdsByUsers(data.id, props.roles);
         hospitalId = data.hospitalRole.hospitalId;
         if (data.hospitalRole[0].admin == true) {
-          manager = "TRUE";
+          manager = true;
         }
         for (const hospitalIdIter of hospitalIds) {
           props.hospitals.forEach((hospitalLoop) => {
@@ -262,12 +267,29 @@ function Users(props) {
     ) {
       continue;
     }
+
+    if (props.user.admin === null) {
+      // dont show admins to managers
+      if (data.hospitalRole.length === 0) continue;
+
+      // only show the users assigned the same hospital as the manager
+      let hospitalMatch = false;
+      for (const hRole of data.hospitalRole) {
+        if (hospitalList.includes(hRole.hospitalId)) {
+          hospitalMatch = true;
+        }
+      }
+      if (!hospitalMatch) continue;
+    }
+
     usersList.push(
       <tr>
         <td>{data.id}</td>
         <td>{data.email}</td>
-        <td>{admin}</td>
-        <td>{manager}</td>
+        {props.user.admin != null ?
+        (admin ? <td style={{color: "green"}}>&#10004;</td> : <td style={{color: "red"}}>&#10008;</td>)
+        : <></>}
+        {manager ? <td style={{color: "green"}}>&#10004;</td> : <td style={{color: "red"}}>&#10008;</td>}
         <td>{hospital}</td>
       </tr>
     );
@@ -383,9 +405,11 @@ function Users(props) {
                 <th>
                   <i>User Email</i>
                 </th>
+                {props.user.admin != null ?
                 <th>
                   <i>Admin</i>
                 </th>
+                :<></>}
                 <th>
                   <i>Manager</i>
                 </th>
