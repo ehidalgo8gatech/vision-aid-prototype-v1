@@ -707,7 +707,7 @@ export default function Summary({
         <h1 className="text-center mt-4 mb-4">Visualization and Reports</h1>
         <div className="row">
           <div className="col-md-2 ">
-            {user.admin && (
+            {(user.admin || user.hospitalRole[0].admin) && (
               <button
                 onClick={() => router.push("/customizedReport")}
                 className="btn btn-success border-0 btn-block"
