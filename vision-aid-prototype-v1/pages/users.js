@@ -199,9 +199,21 @@ function Users(props) {
   });
 
   const hospitalOptions = [];
-  for (let i = 0; i < props.hospitals.length; i++) {
-    const hospital = props.hospitals[i];
-    hospitalOptions.push(hospital.name + " (ID " + hospital.id + ")");
+  if (props.user.admin != null) {
+    for (let i = 0; i < props.hospitals.length; i++) {
+      const hospital = props.hospitals[i];
+      hospitalOptions.push(hospital.name + " (ID " + hospital.id + ")");
+    }
+  } else {
+    for (let i = 0; i < props.hospitals.length; i++) {
+      const hospital = props.hospitals[i];
+      for (const hRole of hospital.hospitalRole) {
+        if (hRole.userId == props.user.id) {
+          hospitalOptions.push(hospital.name + " (ID " + hospital.id + ")");
+          break;
+        }
+      }
+    }
   }
 
   const roleOptions = [];
