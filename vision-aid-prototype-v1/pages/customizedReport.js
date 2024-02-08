@@ -15,7 +15,7 @@ import {
   getReportData,
 } from "@/constants/reportFunctions";
 import { getSession } from "next-auth/react";
-import { readUser } from "./api/user";
+import { readUser, allHospitalRoles } from "./api/user";
 
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx);
@@ -28,7 +28,24 @@ export async function getServerSideProps(ctx) {
       },
     };
   }
+
+  const getHospitalIdsByUsers = (id, users) => {
+    let hospitalIds = [];
+    for (const user of users ) {
+      if (user.userId === id) {
+        hospitalIds.push(user.hospitalId);
+      }
+    }
+    return hospitalIds;
+  }
+
   const user = await readUser(session.user.email);
+  const roles = await allHospitalRoles();
+  let hospitalIds;
+  const isAdmin = user.admin != null;
+  if (!isAdmin) {
+    hospitalIds = getHospitalIdsByUsers(user.id, roles);
+  }
   const beneficiaryListFromAPI = await findAllBeneficiary();
 
   let beneficiaryList = [];
@@ -60,7 +77,7 @@ export async function getServerSideProps(ctx) {
     orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
   }));
 
-  const summary = await getSummaryForAllHospitals();
+  const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds);
 
   return {
     props: {
