@@ -472,13 +472,6 @@ function getAggregatedHospitalData(
   };
   let screeningsVisionEnhancementBeneficiariesTotal = 0;
 
-  // Screenings + Functional Vision/Early Intervention + CLVE
-  let screeningsVisionEnhancementClveRow = {
-    Programs1: "Screenings + Functional Vision/Early Intervention",
-    Programs2: "",
-  };
-  let screeningsVisionEnhancementClveBeneficiariesTotal = 0;
-
   // Detailed splitup of all unique beneficiaries in the db
   let clveBeneficiaries, devicesBeneficiaries, counsellingBeneficiaries, trainingBeneficiaries;
   // CLVE Only
@@ -748,13 +741,6 @@ function getAggregatedHospitalData(
     ).length;
     screeningsVisionEnhancementBeneficiariesTotal += screeningsVisionEnhancementRow[hospital.name + " Beneficiaries"];
 
-    // Screenings + Functional Vision/Early Intervention + CLVE
-    screeningsVisionEnhancementClveRow[hospital.name + " Sessions"] = "";
-    screeningsVisionEnhancementClveRow[hospital.name + " Beneficiaries"] = Array.from(
-      intersect(intersect(visionEnhancementBeneficiaries, screeningsBeneficiaries), clveBeneficiaries)
-    ).length;
-    screeningsVisionEnhancementClveBeneficiariesTotal += screeningsVisionEnhancementClveRow[hospital.name + " Beneficiaries"];
-
     // CLVE only
     clveOnlyRow[hospital.name + " Sessions"] = "";
     clveOnlyRow[hospital.name + " Beneficiaries"] = Array.from(
@@ -855,9 +841,6 @@ function getAggregatedHospitalData(
   screeningsVisionEnhancementRow["Number of Sessions"] = "";
   screeningsVisionEnhancementRow["Number of Beneficiaries"] = screeningsVisionEnhancementBeneficiariesTotal;
 
-  screeningsVisionEnhancementClveRow["Number of Sessions"] = "";
-  screeningsVisionEnhancementClveRow["Number of Beneficiaries"] = screeningsVisionEnhancementClveBeneficiariesTotal;
-
   clveDevicesRow["Number of Sessions"] = "";
   clveDevicesRow["Number of Beneficiaries"] = clveDevicesBeneficiariesTotal;
 
@@ -891,7 +874,6 @@ function getAggregatedHospitalData(
   aggregatedHospitalData.push(screeningsOnlyRow);
   aggregatedHospitalData.push(visionEnhancementOnlyRow);
   aggregatedHospitalData.push(screeningsVisionEnhancementRow);
-  aggregatedHospitalData.push(screeningsVisionEnhancementClveRow);
   aggregatedHospitalData.push(clveOnlyRow);
   aggregatedHospitalData.push(clveDevicesRow);
   aggregatedHospitalData.push(clveCounsellingRow);
