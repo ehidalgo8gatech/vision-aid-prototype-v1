@@ -49,3 +49,15 @@ export const parseInputDate = (dateString) => {
   const date = dateString.replaceAll("-", "/");
   return date;
 }
+
+export const union = (...sets) => {
+  return new Set([].concat(...sets.map(set => [...set])));
+}
+
+export const difference = (a, b) => {
+  return new Set([...a].filter(i => !b.has(i)));
+}
+
+export const intersect = (a, b) => {
+  return new Set([...a].filter(i => b.has(i)));
+}
