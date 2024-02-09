@@ -737,7 +737,7 @@ function getAggregatedHospitalData(
     // Screenings + Functional Vision/Early Intervention
     screeningsVisionEnhancementRow[hospital.name + " Sessions"] = "";
     screeningsVisionEnhancementRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(intersect(visionEnhancementBeneficiaries, clveBeneficiaries), clveBeneficiaries)
+      difference(intersect(visionEnhancementBeneficiaries, screeningsBeneficiaries), clveBeneficiaries)
     ).length;
     screeningsVisionEnhancementBeneficiariesTotal += screeningsVisionEnhancementRow[hospital.name + " Beneficiaries"];
 
