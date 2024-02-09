@@ -474,7 +474,7 @@ function getAggregatedHospitalData(
 
   // Screenings + Functional Vision/Early Intervention + CLVE
   let screeningsVisionEnhancementClveRow = {
-    Programs1: "Screenings + Functional Vision/Early Intervention",
+    Programs1: "Screenings + Functional Vision/Early Intervention + CLVE",
     Programs2: "",
   };
   let screeningsVisionEnhancementClveBeneficiariesTotal = 0;
