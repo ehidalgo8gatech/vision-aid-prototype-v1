@@ -716,14 +716,14 @@ function getAggregatedHospitalData(
     // Screenings Only
     screeningsOnlyRow[hospital.name + " Sessions"] = "";
     screeningsOnlyRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(screeningsBeneficiaries, clveBeneficiaries)
+      difference(screeningsBeneficiaries, union(clveBeneficiaries, visionEnhancementBeneficiaries))
     ).length;
     screeningsOnlyBeneficiariesTotal += screeningsOnlyRow[hospital.name + " Beneficiaries"];
 
     // Functional Vision/Early Intervention only
     visionEnhancementOnlyRow[hospital.name + " Sessions"] = "";
     visionEnhancementOnlyRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(visionEnhancementBeneficiaries, clveBeneficiaries)
+      difference(visionEnhancementBeneficiaries, union(clveBeneficiaries, screeningsBeneficiaries))
     ).length;
     visionEnhancementOnlyBeneficiariesTotal += visionEnhancementOnlyRow[hospital.name + " Beneficiaries"];
 
