@@ -725,7 +725,7 @@ function getAggregatedHospitalData(
     visionEnhancementOnlyRow[hospital.name + " Beneficiaries"] = Array.from(
       difference(visionEnhancementBeneficiaries, clveBeneficiaries)
     ).length;
-    screeningsOnlyBeneficiariesTotal += visionEnhancementOnlyRow[hospital.name + " Beneficiaries"];
+    visionEnhancementOnlyBeneficiariesTotal += visionEnhancementOnlyRow[hospital.name + " Beneficiaries"];
 
     // CLVE only
     clveOnlyRow[hospital.name + " Sessions"] = "";
