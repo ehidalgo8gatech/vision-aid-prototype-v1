@@ -450,6 +450,21 @@ function getAggregatedHospitalData(
   let otSessionsTotal = 0;
   let otBeneficiariesTotal = 0;
 
+  // Screenings only
+  let screeningsBeneficiaries, visionEnhancementBeneficiaries;
+  let screeningsOnlyRow = {
+    Programs1: "Screenings Only",
+    Programs2: "",
+  };
+  let screeningsOnlyBeneficiariesTotal = 0;
+
+  // Functional Vision/Early Intervention only
+  let visionEnhancementOnlyRow = {
+    Programs1: "Functional Vision/Early Intervention Only",
+    Programs2: "",
+  };
+  let visionEnhancementOnlyBeneficiariesTotal = 0;
+
   // Detailed splitup of all unique beneficiaries in the db
   let clveBeneficiaries, devicesBeneficiaries, counsellingBeneficiaries, trainingBeneficiaries;
   // CLVE Only
@@ -646,6 +661,33 @@ function getAggregatedHospitalData(
     otBeneficiariesTotal +=
       overallTrainingRow[hospital.name + " Beneficiaries"];
 
+    // Unique beneficiaries who had Screenings (LVE or mDVI)
+    let tempSet1, tempSet2;
+    tempSet1 = new Set(
+      hospital.lowVisionEvaluation.map(
+        (evaluation) => evaluation.beneficiaryId
+      )
+    );
+    tempSet2 = new Set(
+      hospital.beneficiary.filter(
+        (beneficiary) => {
+          if (beneficiary.mDVI === "Yes" || beneficiary.mDVI === "At Risk") {
+            return beneficiary.mrn;
+          }
+        }
+      ).map(
+        (beneficiary) => beneficiary.mrn
+      )
+    );
+    screeningsBeneficiaries = union(tempSet1, tempSet2);
+
+    // Unique beneficiaries who had Vision Enhancements
+    visionEnhancementBeneficiaries = new Set(
+      hospital.visionEnhancement.map(
+        (evaluation) => evaluation.beneficiaryId
+      )
+    );
+
     // Unique beneficiaries with CLVE information
     clveBeneficiaries = new Set(
       hospital.comprehensiveLowVisionEvaluation.map(
@@ -670,6 +712,20 @@ function getAggregatedHospitalData(
         (evaluation) => evaluation.beneficiaryId
       )
     );
+
+    // Screenings Only
+    screeningsOnlyRow[hospital.name + " Sessions"] = "";
+    screeningsOnlyRow[hospital.name + " Beneficiaries"] = Array.from(
+      difference(screeningsBeneficiaries, clveBeneficiaries)
+    ).length;
+    screeningsOnlyBeneficiariesTotal += screeningsOnlyRow[hospital.name + " Beneficiaries"];
+
+    // Functional Vision/Early Intervention only
+    visionEnhancementOnlyRow[hospital.name + " Sessions"] = "";
+    visionEnhancementOnlyRow[hospital.name + " Beneficiaries"] = Array.from(
+      difference(visionEnhancementBeneficiaries, clveBeneficiaries)
+    ).length;
+    screeningsOnlyBeneficiariesTotal += visionEnhancementOnlyRow[hospital.name + " Beneficiaries"];
 
     // CLVE only
     clveOnlyRow[hospital.name + " Sessions"] = "";
@@ -762,6 +818,12 @@ function getAggregatedHospitalData(
   clveOnlyRow["Number of Sessions"] = "";
   clveOnlyRow["Number of Beneficiaries"] = clveOnlyBeneficiariesTotal;
 
+  screeningsOnlyRow["Number of Sessions"] = "";
+  screeningsOnlyRow["Number of Beneficiaries"] = screeningsOnlyBeneficiariesTotal;
+
+  visionEnhancementOnlyRow["Number of Sessions"] = "";
+  visionEnhancementOnlyRow["Number of Beneficiaries"] = visionEnhancementOnlyBeneficiariesTotal;
+
   clveDevicesRow["Number of Sessions"] = "";
   clveDevicesRow["Number of Beneficiaries"] = clveDevicesBeneficiariesTotal;
 
@@ -792,6 +854,8 @@ function getAggregatedHospitalData(
   aggregatedHospitalData.push(ceRow);
   aggregatedHospitalData.push(...trainingTypesList.map((item) => item.tRow));
   aggregatedHospitalData.push(overallTrainingRow);
+  aggregatedHospitalData.push(screeningsOnlyRow);
+  aggregatedHospitalData.push(visionEnhancementOnlyRow);
   aggregatedHospitalData.push(clveOnlyRow);
   aggregatedHospitalData.push(clveDevicesRow);
   aggregatedHospitalData.push(clveCounsellingRow);
