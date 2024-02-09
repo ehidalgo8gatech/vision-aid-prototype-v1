@@ -61,11 +61,11 @@ function RequiredFields(props) {
     e.preventDefault();
     let mrn =
       document.getElementById("mrn") != null
-        ? document.getElementById("mrn").value
+        ? document.getElementById("mrn").value.trim()
         : null;
     let beneficiaryName =
       document.getElementById("beneficiaryName") != null
-        ? document.getElementById("beneficiaryName").value
+        ? document.getElementById("beneficiaryName").value.trim()
         : null;
     let hospitalId =
       document.getElementById("hospitalName") != null &&
