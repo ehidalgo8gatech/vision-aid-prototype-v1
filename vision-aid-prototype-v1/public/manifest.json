@@ -1,0 +1,17 @@
+{
+  "name": "VISION_AID_P11",
+  "short_name": "VISION",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#317EFB",
+  "orientation": "portrait-primary",
+  "theme_color": "#317EFB",
+  "icons": [
+    {
+      "src": "/images/vision-aid-logo.jpg",
+      "sizes": "144x144",
+      "type": "image/jpg",
+      "purpose": "any maskable"
+    }
+  ]
+}
