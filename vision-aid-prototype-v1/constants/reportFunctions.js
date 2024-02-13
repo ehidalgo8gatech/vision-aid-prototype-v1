@@ -370,6 +370,9 @@ function getAggregatedHospitalData(
 ) {
   let aggregatedHospitalData = [];
 
+  // Blank row
+  let blankRow = { Programs1: "", Programs2: "" };
+
   // Low Vision Screening
   let lveRow = {
     Programs1: "Screening / Out reach activities",
@@ -922,6 +925,7 @@ function getAggregatedHospitalData(
   aggregatedHospitalData.push(ceRow);
   aggregatedHospitalData.push(...trainingTypesList.map((item) => item.tRow));
   aggregatedHospitalData.push(overallTrainingRow);
+  aggregatedHospitalData.push(blankRow);
   aggregatedHospitalData.push(screeningsOnlyRow);
   aggregatedHospitalData.push(visionEnhancementOnlyRow);
   aggregatedHospitalData.push(screeningsVisionEnhancementRow);
