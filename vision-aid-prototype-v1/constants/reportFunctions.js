@@ -838,21 +838,21 @@ function getAggregatedHospitalData(
     // Counselling only
     counsellingOnlyRow[hospital.name + " Sessions"] = "";
     counsellingOnlyRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(counsellingBeneficiaries, union(clveBeneficiaries, trainingBeneficiaries))
+      difference(counsellingBeneficiaries, union(clveBeneficiaries, trainingBeneficiaries, screeningsBeneficiaries, visionEnhancementBeneficiaries))
     ).length;
     counsellingOnlyBeneficiariesTotal += counsellingOnlyRow[hospital.name + " Beneficiaries"];
 
     // Training only
     trainingOnlyRow[hospital.name + " Sessions"] = "";
     trainingOnlyRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(trainingBeneficiaries, union(clveBeneficiaries, counsellingBeneficiaries))
+      difference(trainingBeneficiaries, union(clveBeneficiaries, counsellingBeneficiaries, screeningsBeneficiaries, visionEnhancementBeneficiaries))
     ).length;
     trainingOnlyBeneficiariesTotal += trainingOnlyRow[hospital.name + " Beneficiaries"];
 
     // Counselling + Training
     counsellingTrainingRow[hospital.name + " Sessions"] = "";
     counsellingTrainingRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(intersect(counsellingBeneficiaries, trainingBeneficiaries), clveBeneficiaries)
+      difference(intersect(counsellingBeneficiaries, trainingBeneficiaries), union(clveBeneficiaries, screeningsBeneficiaries, visionEnhancementBeneficiaries))
     ).length;
     counsellingTrainingBeneficiariesTotal += counsellingTrainingRow[hospital.name + " Beneficiaries"];
 
