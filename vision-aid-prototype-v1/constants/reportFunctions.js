@@ -554,6 +554,13 @@ function getAggregatedHospitalData(
   };
   let counsellingTrainingBeneficiariesTotal = 0;
 
+  // No activity
+  let noActivityRow = {
+    Programs1: "No Activity",
+    Programs2: "",
+  };
+  let noActivityBeneficiariesTotal = 0;
+
   // If all beneficiaries are not to be included in the report,
   // remove those beneficiaries from filteredSummary which do not meet selected criteria
   if (!includeAllBeneficiaries) {
@@ -691,6 +698,13 @@ function getAggregatedHospitalData(
     otSessionsTotal += overallTrainingRow[hospital.name + " Sessions"];
     otBeneficiariesTotal +=
       overallTrainingRow[hospital.name + " Beneficiaries"];
+
+    // All Unique beneficiaries
+    let allBeneficiaries = new Set(
+      hospital.beneficiary.map(
+        (beneficiary) => beneficiary.mrn
+      )
+    );
 
     // Unique beneficiaries who had Screenings (LVE or mDVI)
     let tempSet1, tempSet2;
@@ -841,6 +855,19 @@ function getAggregatedHospitalData(
       difference(intersect(counsellingBeneficiaries, trainingBeneficiaries), clveBeneficiaries)
     ).length;
     counsellingTrainingBeneficiariesTotal += counsellingTrainingRow[hospital.name + " Beneficiaries"];
+
+    // No Activity
+    noActivityRow[hospital.name + " Sessions"] = "";
+    noActivityRow[hospital.name + " Beneficiaries"] = Array.from(
+      difference(allBeneficiaries, union(
+        clveBeneficiaries,
+        counsellingBeneficiaries,
+        trainingBeneficiaries,
+        screeningsBeneficiaries,
+        visionEnhancementBeneficiaries
+      ))
+    ).length;
+    noActivityBeneficiariesTotal += noActivityRow[hospital.name + " Beneficiaries"];
   }
 
   // Push totals of each row
@@ -916,6 +943,9 @@ function getAggregatedHospitalData(
   counsellingTrainingRow["Number of Sessions"] = "";
   counsellingTrainingRow["Number of Beneficiaries"] = counsellingTrainingBeneficiariesTotal;
 
+  noActivityRow["Number of Sessions"] = "";
+  noActivityRow["Number of Beneficiaries"] = noActivityBeneficiariesTotal;
+
   // Add rows to the aggregated hospital data
   aggregatedHospitalData.push(lveRow);
   aggregatedHospitalData.push(mdviRow);
@@ -940,6 +970,7 @@ function getAggregatedHospitalData(
   aggregatedHospitalData.push(counsellingOnlyRow);
   aggregatedHospitalData.push(trainingOnlyRow);
   aggregatedHospitalData.push(counsellingTrainingRow);
+  aggregatedHospitalData.push(noActivityRow);
 
   return aggregatedHospitalData;
 }
