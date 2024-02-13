@@ -561,6 +561,13 @@ function getAggregatedHospitalData(
   };
   let noActivityBeneficiariesTotal = 0;
 
+  // Total beneficiaries
+  let totalBeneficiariesRow = {
+    Programs1: "",
+    Programs2: "Total Beneficiaries",
+  };
+  let totalBeneficiariesTotal = 0;
+
   // If all beneficiaries are not to be included in the report,
   // remove those beneficiaries from filteredSummary which do not meet selected criteria
   if (!includeAllBeneficiaries) {
@@ -868,6 +875,26 @@ function getAggregatedHospitalData(
       ))
     ).length;
     noActivityBeneficiariesTotal += noActivityRow[hospital.name + " Beneficiaries"];
+
+    // Total Beneficiaries
+    totalBeneficiariesRow[hospital.name + " Beneficiaries"] =
+      + screeningsOnlyRow[hospital.name + " Beneficiaries"]
+      + visionEnhancementOnlyRow[hospital.name + " Beneficiaries"]
+      + screeningsVisionEnhancementRow[hospital.name + " Beneficiaries"]
+      + clveOnlyRow[hospital.name + " Beneficiaries"]
+      + clveDevicesRow[hospital.name + " Beneficiaries"]
+      + clveCounsellingRow[hospital.name + " Beneficiaries"]
+      + clveTrainingRow[hospital.name + " Beneficiaries"]
+      + clveDevicesCounsellingRow[hospital.name + " Beneficiaries"]
+      + clveDevicesTrainingRow[hospital.name + " Beneficiaries"]
+      + clveCounsellingTrainingRow[hospital.name + " Beneficiaries"]
+      + clveDevicesCounsellingTrainingRow[hospital.name + " Beneficiaries"]
+      + counsellingOnlyRow[hospital.name + " Beneficiaries"]
+      + trainingOnlyRow[hospital.name + " Beneficiaries"]
+      + counsellingTrainingRow[hospital.name + " Beneficiaries"]
+      + noActivityRow[hospital.name + " Beneficiaries"]
+      ;
+    totalBeneficiariesTotal += totalBeneficiariesRow[hospital.name + " Beneficiaries"];
   }
 
   // Push totals of each row
@@ -946,6 +973,9 @@ function getAggregatedHospitalData(
   noActivityRow["Number of Sessions"] = "";
   noActivityRow["Number of Beneficiaries"] = noActivityBeneficiariesTotal;
 
+  totalBeneficiariesRow["Number of Sessions"] = "";
+  totalBeneficiariesRow["Number of Beneficiaries"] = totalBeneficiariesTotal;
+
   // Add rows to the aggregated hospital data
   aggregatedHospitalData.push(lveRow);
   aggregatedHospitalData.push(mdviRow);
@@ -971,6 +1001,7 @@ function getAggregatedHospitalData(
   aggregatedHospitalData.push(trainingOnlyRow);
   aggregatedHospitalData.push(counsellingTrainingRow);
   aggregatedHospitalData.push(noActivityRow);
+  aggregatedHospitalData.push(totalBeneficiariesRow);
 
   return aggregatedHospitalData;
 }
