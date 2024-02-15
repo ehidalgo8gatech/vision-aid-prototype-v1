@@ -3,6 +3,7 @@ import { getSession } from "next-auth/react";
 import { Chart as ChartJS } from "chart.js/auto";
 import { Chart } from "react-chartjs-2";
 import { Bar } from "react-chartjs-2";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import {
   getSummaryForAllHospitals,
 } from "@/pages/api/hospital";
@@ -259,6 +260,17 @@ export async function getServerSideProps(ctx) {
     },
   };
 }
+
+
+// Configure Chart data label plugin globally
+ChartJS.register(ChartDataLabels);
+ChartJS.defaults.plugins.datalabels.align = "start";
+ChartJS.defaults.plugins.datalabels.anchor = "start";
+ChartJS.defaults.plugins.datalabels.font.size = 16;
+ChartJS.defaults.plugins.datalabels.font.weight = "bold";
+ChartJS.defaults.plugins.datalabels.display = function(context){
+  return context.dataset.data[context.dataIndex] != 0;
+};
 
 // Graph Options that are constant for all graphs
 const graphOptions = {
@@ -672,6 +684,9 @@ export default function Summary({
     plugins: {
       legend: {
         display: false,
+      },
+      tooltip: {
+        enabled: false,
       },
     },
   };
