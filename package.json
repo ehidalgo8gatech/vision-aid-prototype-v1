@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "@mui/icons-material": "^5.14.16",
-    "chartjs-plugin-datalabels": "^2.2.0",
     "flat": "^5.0.2",
     "papaparse": "^5.4.1",
     "read-excel-file": "^5.6.1",
