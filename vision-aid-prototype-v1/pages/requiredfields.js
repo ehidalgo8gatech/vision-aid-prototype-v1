@@ -459,13 +459,10 @@ function RequiredFields(props) {
       continue;
     }
     removeTypeCounseling.push(
-      <div>
-        <span>Delete Counseling Type: {counselingType}</span>&nbsp;
-        <Trash
-          style={{ cursor: "pointer" }}
-          onClick={() => deleteTraining("counsellingType", counselingType)}
-        />
-      </div>
+      <tr>
+        <td>{counselingType}</td>
+        <td><Trash style={{ cursor: "pointer" }} onClick={() => deleteTraining("counsellingType", counselingType)} /></td>
+      </tr>
     );
   }
 
@@ -494,10 +491,10 @@ function RequiredFields(props) {
       continue;
     }
     removeTypeTraining.push(
-      <div>
-        <span>Delete Training Type: {trainingType}</span>&nbsp;
-        <Trash style={{ cursor: "pointer" }} onClick={() => deleteTraining("trainingType", trainingType)} />
-      </div>
+      <tr>
+        <td>{trainingType}</td>
+        <td><Trash style={{ cursor: "pointer" }} onClick={() => deleteTraining("trainingType", trainingType)} /></td>
+      </tr>
     );
   }
 
@@ -537,13 +534,11 @@ function RequiredFields(props) {
       continue;
     }
     removeSubTypeTraining.push(
-      <div>
-        <span>
-          Delete Training Type: {trainingSubType.trainingType.value} Training
-          Sub Type: {trainingSubType.value}
-        </span>&nbsp;
-        <Trash style={{ cursor: "pointer" }} onClick={() => deleteTrainingSubType(trainingSubType.id)} />
-      </div>
+      <tr>
+        <td>{trainingSubType.trainingType.value}</td>
+        <td>{trainingSubType.value}</td>
+        <td><Trash style={{ cursor: "pointer" }} onClick={() => deleteTrainingSubType(trainingSubType.id)} /></td>
+      </tr>
     );
   }
 
@@ -947,11 +942,11 @@ function RequiredFields(props) {
               <div class="accordion" id="accordionExample">
                 <div class="accordion-item">
                   <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                       <strong>Comprehensive Low Vision Evaluation</strong>
                     </button>
                   </h2>
-                  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                  <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                       <div
                         // className="container"
@@ -1288,14 +1283,24 @@ function RequiredFields(props) {
               <div class="accordion" id="accordionExample">
                 <div class="accordion-item">
                   <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                       <strong>Add/Delete Counseling Education</strong>
                     </button>
                   </h2>
-                  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                  <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                       <div id="addCounsellingTypeContainer">
-                        {removeTypeCounseling}
+                        <Table striped bordered hover size="sm">
+                          <thead>
+                            <tr>
+                              <th>Training Type</th>
+                              <th>Delete</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {removeTypeCounseling}
+                          </tbody>
+                        </Table>
                         <form
                           action="#"
                           method="POST"
@@ -1330,7 +1335,17 @@ function RequiredFields(props) {
                   <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                       <div id="addTrainingTypeContainer">
-                        {removeTypeTraining}
+                        <Table striped bordered hover size="sm">
+                          <thead>
+                            <tr>
+                              <th>Training Type</th>
+                              <th>Delete</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {removeTypeTraining}
+                          </tbody>
+                        </Table>
                         <form
                           action="#"
                           method="POST"
@@ -1363,7 +1378,18 @@ function RequiredFields(props) {
                   <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                       <div id="addTrainingSubTypeContainer">
-                        {removeSubTypeTraining}
+                        <Table striped bordered hover size="sm">
+                          <thead>
+                            <tr>
+                              <th>Training Type</th>
+                              <th>Sub Type</th>
+                              <th>Delete</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {removeSubTypeTraining}
+                          </tbody>
+                        </Table>
                         <form
                           action="#"
                           method="POST"
