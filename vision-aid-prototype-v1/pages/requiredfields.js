@@ -1293,7 +1293,7 @@ function RequiredFields(props) {
                         <Table striped bordered hover size="sm">
                           <thead>
                             <tr>
-                              <th>Training Type</th>
+                              <th>Counselling Type</th>
                               <th>Delete</th>
                             </tr>
                           </thead>
