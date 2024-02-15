@@ -264,8 +264,6 @@ export async function getServerSideProps(ctx) {
 
 // Configure Chart data label plugin globally
 ChartJS.register(ChartDataLabels);
-ChartJS.defaults.plugins.datalabels.align = "start";
-ChartJS.defaults.plugins.datalabels.anchor = "start";
 ChartJS.defaults.plugins.datalabels.font.size = 16;
 ChartJS.defaults.plugins.datalabels.font.weight = "bold";
 ChartJS.defaults.plugins.datalabels.display = function(context){
