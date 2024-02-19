@@ -1,9 +1,12 @@
-
+import Navigation from "./navigation/Navigation";
 
 export default function TeamInfo() {
   return (
-    <div>
-      Hello World!
-    </div>
+    <>
+      <Navigation />
+      <div>
+        Amber put our content here
+      </div>
+    </>
   );
 }
