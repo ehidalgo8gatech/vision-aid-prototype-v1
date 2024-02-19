@@ -106,10 +106,10 @@ function Navigation({ user } = props) {
             <div className="right auto-margin column-center">
               <ul className="navbar-nav">
                 <li className="nav-item p-4">
-                  <Link href="/teamInfo" legacyBehavior>
+                  <Link href="/teaminfo" legacyBehavior>
                     <a
                       className={`nav-link custom-link ${
-                        router.pathname === "/teamInfo" ? "active" : ""
+                        router.pathname === "/teaminfo" ? "active" : ""
                       }`}
                     >
                       Team Info
