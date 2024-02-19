@@ -102,6 +102,23 @@ function Navigation({ user } = props) {
               </ul>
             </div>
           )}
+          {!user && (
+            <div className="right auto-margin column-center">
+              <ul className="navbar-nav">
+                <li className="nav-item p-4">
+                  <Link href="/teamInfo" legacyBehavior>
+                    <a
+                      className={`nav-link custom-link ${
+                        router.pathname === "/teamInfo" ? "active" : ""
+                      }`}
+                    >
+                      Team Info
+                    </a>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
         {user && (
           <div className="left-auto-margin column">
