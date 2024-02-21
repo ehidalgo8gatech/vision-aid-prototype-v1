@@ -188,6 +188,7 @@ async function updateData(req, res) {
   if (req.body.mrn) {
     try {
       const { mrn, ...data } = req.body;
+      data.dateOfBirth = (new Date(data.dateOfBirth)).toISOString();
       const updatedUser = await prisma.beneficiary.update({
         where: { mrn },
         data,
