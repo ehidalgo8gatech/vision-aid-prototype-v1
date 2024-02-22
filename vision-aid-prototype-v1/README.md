@@ -6,7 +6,7 @@ with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/
 Start the mysql server
 
 ```
-docker-compose up -d --force-recreate
+docker compose up -d --force-recreate
 ```
 
 Migrate and seed the data
