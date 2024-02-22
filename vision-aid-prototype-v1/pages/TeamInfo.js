@@ -6,7 +6,7 @@ import chris from 'public/images/chris.webp';
 import nasa from 'public/images/nasa.webp';
 // import video from 'public/media/presentation.mp4';
 
-export default function TeamInfo() {
+export default function teaminfo() {
   return (
     <>
       <Navigation />
