@@ -1,0 +1,9 @@
+.scroller {
+    background-color: #f1f1f1;
+    height: 190px;
+    width: 500px;
+    overflow-y: scroll;
+    margin: 200px;
+    padding: 20px;
+  }
+  
