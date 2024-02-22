@@ -495,8 +495,8 @@ function buildDevicesBreakdownGraph(data, breakdownType) {
   }, []);
 
   const typeCounts = types.reduce((counts, type) => {
-    const count = counts[type] || 0;
     const typeLabel = devicesConstants.electronicDevices.includes(type) ? type : "Other: " + type;
+    const count = counts[typeLabel] || 0;
     return {
       ...counts,
       [typeLabel]: count + 1,
