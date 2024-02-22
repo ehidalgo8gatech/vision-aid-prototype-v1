@@ -32,6 +32,7 @@ import {
   filterTrainingSummaryByDateRange,
   getReportData,
 } from "@/constants/reportFunctions";
+import * as devicesConstants from "@/constants/devicesConstants";
 
 // This function is called to load data from the server side.
 export async function getServerSideProps(ctx) {
@@ -495,9 +496,10 @@ function buildDevicesBreakdownGraph(data, breakdownType) {
 
   const typeCounts = types.reduce((counts, type) => {
     const count = counts[type] || 0;
+    const typeLabel = devicesConstants.electronicDevices.includes(type) ? type : "Other: " + type;
     return {
       ...counts,
-      [type]: count + 1,
+      [typeLabel]: count + 1,
     };
   }, {});
 
