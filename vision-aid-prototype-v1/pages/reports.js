@@ -421,6 +421,7 @@ function buildDevicesGraph(data) {
   // The device information is stored inside the comprehensiveLowVisionEvaluation array
   // Inside the array, there are fields dispensedSpectacle, dispensedElectronic, dispensedOptical, dispensedNonOptical
   // We want to count the number of entries in which these fields are not empty
+  console.log(data);
   const dispensedSpectacleCount = data.reduce(
     (sum, item) =>
       sum +
@@ -430,11 +431,14 @@ function buildDevicesGraph(data) {
     0
   );
   const dispensedElectronicCount = data.reduce(
-    (sum, item) =>
+    (sum, item) =>{
+      console.log(item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => evaluation.dispensedElectronic !== ""
+      ));
       sum +
       item.comprehensiveLowVisionEvaluation.filter(
         (evaluation) => evaluation.dispensedElectronic !== ""
-      ).length,
+      ).length},
     0
   );
   const dispensedOpticalCount = data.reduce(
