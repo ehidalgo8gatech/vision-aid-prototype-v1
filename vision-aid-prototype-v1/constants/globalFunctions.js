@@ -41,7 +41,10 @@ export const createOptionMenu = (
     }
     return optionGroups;
 };
-  
+
+export const isNotNullBlankOrUndefined = (variable) =>
+  variable !== null && variable !== undefined && variable !== "";
+
 export const isNotNullEmptyOrUndefined = (variable) =>
   variable !== null && variable !== undefined && variable.length !== 0;
 

@@ -21,7 +21,7 @@ import GraphCustomizer from "./components/GraphCustomizer";
 import { Tab, Tabs, Paper } from "@mui/material";
 // import * as XLSX from "xlsx";
 import XLSX from "xlsx-js-style";
-import { isNotNullEmptyOrUndefined } from "@/constants/globalFunctions";
+import { isNotNullBlankOrUndefined } from "@/constants/globalFunctions";
 import { Orienta } from "@next/font/google";
 import { Download } from "react-bootstrap-icons";
 import { useRouter } from "next/router";
@@ -421,31 +421,27 @@ function buildDevicesGraph(data) {
   // The device information is stored inside the comprehensiveLowVisionEvaluation array
   // Inside the array, there are fields dispensedSpectacle, dispensedElectronic, dispensedOptical, dispensedNonOptical
   // We want to count the number of entries in which these fields are not empty
-  console.log(data);
   const dispensedSpectacleCount = data.reduce(
     (sum, item) =>
       sum +
       item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedSpectacle !== ""
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedSpectacle)
       ).length,
     0
   );
   const dispensedElectronicCount = data.reduce(
-    (sum, item) =>{
-      console.log(item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedElectronic !== ""
-      ));
+    (sum, item) =>
       sum +
       item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedElectronic !== ""
-      ).length},
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedElectronic)
+      ).length,
     0
   );
   const dispensedOpticalCount = data.reduce(
     (sum, item) =>
       sum +
       item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedOptical !== ""
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedOptical)
       ).length,
     0
   );
@@ -453,7 +449,7 @@ function buildDevicesGraph(data) {
     (sum, item) =>
       sum +
       item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedNonOptical !== ""
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedNonOptical)
       ).length,
     0
   );
@@ -491,7 +487,7 @@ function buildDevicesBreakdownGraph(data, breakdownType) {
   // Variable to change: item.dispensedElectronics
   const types = data.reduce((types, hospital) => {
     const filteredEvaluations = hospital.comprehensiveLowVisionEvaluation.filter(
-      (evaluation) => evaluation.dispensedElectronic !== ""
+      (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedElectronic)
     )
     const deviceTypes = filteredEvaluations.map((item) => item.dispensedElectronic);
     return [...types, ...deviceTypes];
