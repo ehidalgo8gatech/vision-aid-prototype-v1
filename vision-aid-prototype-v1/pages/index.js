@@ -5,6 +5,7 @@ import {
 } from "next-auth/react";
 import Navigation from "./navigation/Navigation";
 import { readUser } from "./api/user";
+import ProtoBox from "./ProtoBox.js";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,12 +13,14 @@ export default function Home(props) {
   const { data: session } = useSession();
   console.log(session);
   console.log(props);
+  
   return (
     <>
       <Navigation user={props.user} />
       {session && !props.user && (
         <strong>Please ask an admin to add you as user!</strong>
       )}
+      <ProtoBox user={props.user}></ProtoBox>
     </>
   );
 }
