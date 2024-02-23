@@ -5,7 +5,7 @@ import {
 } from "next-auth/react";
 import Navigation from "./navigation/Navigation";
 import { readUser } from "./api/user";
-import  LandingPage from "./ LandingPage.js";
+import  LandingPage from "./landingpage.js";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -17,6 +17,7 @@ export default function Home(props) {
   
   return (
     <>
+      
       <Navigation user={props.user} />
       {session && !props.user && (
         <strong>Please ask an admin to add you as user!</strong>
