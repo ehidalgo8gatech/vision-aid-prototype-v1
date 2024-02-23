@@ -15,6 +15,7 @@ export default function Home(props) {
   const { data: session } = useSession();
   console.log(session);
   console.log(props);
+  
   return (
     <Layout>
       <Navigation user={props.user} />
