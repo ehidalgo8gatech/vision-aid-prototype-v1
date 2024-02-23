@@ -41,7 +41,7 @@ export default function TeamInfo() {
           <ol>
             <li>Rewrite authentication system to be more seamless</li>
             <li>Integrate authorization into the authentication system</li>
-            <li>Design a customizable landing page that doesn't require dev assistance</li>
+            <li>Design a customizable landing page that doesn&apos;t require dev assistance</li>
             <li>Upgrade the UI to meet accessibility standards</li>
             <li>Implement a feedback form for users to report issues and bugs</li>
             <li>Add a footer to all pages</li>
