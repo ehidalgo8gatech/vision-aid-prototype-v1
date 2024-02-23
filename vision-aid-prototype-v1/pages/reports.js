@@ -394,8 +394,9 @@ function buildBreakdownGraph(data, breakdownType) {
     const hospitalTypes = hospital[breakdownType].map((item) => item.type);
     return [...types, ...hospitalTypes];
   }, []);
+  const filteredTypes = types.filter((type) => isNotNullBlankOrUndefined(type));
 
-  const typeCounts = types.reduce((counts, type) => {
+  const typeCounts = filteredTypes.reduce((counts, type) => {
     const count = counts[type] || 0;
     return {
       ...counts,
