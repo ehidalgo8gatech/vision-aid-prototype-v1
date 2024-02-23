@@ -4,11 +4,12 @@ import austin from 'public/images/austin.webp';
 import amber from 'public/images/amber.webp';
 import chris from 'public/images/chris.webp';
 import nasa from 'public/images/nasa.webp';
+import Layout from './components/layout';
 // import video from 'public/media/presentation.mp4';
 
-export default function teaminfo() {
+export default function TeamInfo() {
   return (
-    <>
+    <Layout>
       <Navigation />
       <div id="wrapper">
         <div className="team-info">
@@ -69,6 +70,6 @@ export default function teaminfo() {
           </ol>
         </div>
       </div>
-    </>
+    </Layout>
   );
 };
