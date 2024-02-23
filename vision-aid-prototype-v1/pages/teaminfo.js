@@ -4,11 +4,12 @@ import austin from 'public/images/austin.webp';
 import amber from 'public/images/amber.webp';
 import chris from 'public/images/chris.webp';
 import nasa from 'public/images/nasa.webp';
+import Layout from './components/layout';
 // import video from 'public/media/presentation.mp4';
 
-export default function teaminfo() {
+export default function TeamInfo() {
   return (
-    <>
+    <Layout>
       <Navigation />
       <div id="wrapper">
         <div className="team-info">
@@ -40,7 +41,7 @@ export default function teaminfo() {
           <ol>
             <li>Rewrite authentication system to be more seamless</li>
             <li>Integrate authorization into the authentication system</li>
-            <li>Design a customizable landing page that doesn&apos;t require dev assistance</li>
+            <li>Design a customizable landing page that doesn't require dev assistance</li>
             <li>Upgrade the UI to meet accessibility standards</li>
             <li>Implement a feedback form for users to report issues and bugs</li>
             <li>Add a footer to all pages</li>
@@ -69,6 +70,6 @@ export default function teaminfo() {
           </ol>
         </div>
       </div>
-    </>
+    </Layout>
   );
 };

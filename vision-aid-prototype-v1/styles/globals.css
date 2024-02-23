@@ -645,3 +645,10 @@ h2 {
   justify-content: center;
 }
 
+.footer {
+  background-color: #1B5E20;
+  border-bottom: 5px solid #ccc;
+  padding: 40px;
+  text-align: center;
+  color: #fff;
+}
