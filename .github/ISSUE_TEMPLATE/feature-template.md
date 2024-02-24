@@ -7,8 +7,6 @@ assignees: ''
 
 ---
 
-## FEATURE TITLE
-
 ### Description
 *Please fill out a generic description here*
 
