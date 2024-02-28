@@ -13,6 +13,15 @@ Migrate and seed the data
 
 ```
 npx prisma migrate dev
+
+npx prisma db seed
+```
+
+Update tables
+```
+INSERT INTO User (email) VALUES (<your_email_address>);
+
+INSERT INTO Admin (userId) VALUES (<id from User table above>);
 ```
 
 First, run the development server:
