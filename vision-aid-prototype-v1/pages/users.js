@@ -316,7 +316,7 @@ function Users(props) {
                     Role
                   </td>
                   <td className="col-md-7">
-                    <FormControl fullWidth size="small">
+                    <FormControl fullWidth size="small" required>
                       <Select
                         value={role}
                         onChange={(e) => handleRoleOption(e)}
@@ -335,7 +335,7 @@ function Users(props) {
                     Select a hospital
                   </td>
                   <td className="col-md-7">
-                    <FormControl fullWidth size="small">
+                    <FormControl fullWidth size="small" required>
                       {role === "Professional" ?
                       <Select
                         value={hosp}
@@ -373,7 +373,7 @@ function Users(props) {
                     User Email
                   </td>
                   <td className="col-md-7">
-                    <FormControl fullWidth size="small">
+                    <FormControl fullWidth size="small" required>
                       <Input id="userEmail" autoComplete="off"></Input>
                     </FormControl>
                   </td>
