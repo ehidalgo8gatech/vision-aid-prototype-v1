@@ -85,7 +85,7 @@ async function readData(req, res) {
           Training: true,
         },
       });
-    } else if (req.query.beneficiaryName != null) {
+    } else if (req.query.beneficiaryName != '') {
       beneficiary = await prisma.beneficiary.findMany({
         where: {
           beneficiaryName: {
@@ -106,22 +106,7 @@ async function readData(req, res) {
         },
       });
     } else {
-      beneficiary = await prisma.beneficiary.findMany({
-        include: {
-          hospital: true,
-          Computer_Training: true,
-          Mobile_Training: true,
-          Orientation_Mobility_Training: true,
-          Vision_Enhancement: true,
-          Comprehensive_Low_Vision_Evaluation: true,
-          Counselling_Education: true,
-          Low_Vision_Evaluation: true,
-          Training: true,
-        },
-        where: {
-          deleted: false,
-        },
-      });
+      beneficiary = [];
     }
     return res.status(200).json(beneficiary, { success: true });
   } catch (error) {
