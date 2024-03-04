@@ -17,6 +17,7 @@ import {
   mUnitsValues,
   snellenImperialValues,
   snellenMetricValues,
+  blankField,
 } from "../../constants/acuityConstants";
 import {
   spectacleDevices,
@@ -85,7 +86,8 @@ const TrainingFormCLVE = ({
     e.preventDefault();
     console.log(formData);
     const customDataDistance = customFieldsDistance.reduce((acc, field) => {
-      if(formData[field] === otherField) {
+      if(formData[field] === otherField || formData[field] === blankField) {
+        console.log(formData[field]);
         acc[field] = formData[field];
       } else {
         acc[field] = formData[field] + " " + formData["unitDistance"];
@@ -93,7 +95,7 @@ const TrainingFormCLVE = ({
       return acc;
     }, {});
     const customDataNear = customFieldsNear.reduce((acc, field) => {
-      if(formData[field] === otherField) {
+      if(formData[field] === otherField || formData[field] === blankField) {
         acc[field] = formData[field];
       } else {
         acc[field] = formData[field] + " " + formData["unitNear"];
