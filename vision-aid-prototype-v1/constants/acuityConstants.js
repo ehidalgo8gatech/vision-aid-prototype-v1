@@ -1,5 +1,7 @@
 export const otherField = "Unable To Assess";
+export const blankField = "";
 export const logMARValues = [
+    blankField,
     "4.0",
     "3.5",
     "2.7",
@@ -29,6 +31,7 @@ export const logMARValues = [
 ];
 
 export const sixmValues = [
+    blankField,
     "PL-",
     "PL+, PR inaccurate",
     "PL+, PR accurate",
@@ -59,6 +62,7 @@ export const sixmValues = [
 ];
 
 export const twentyftValues = [
+    blankField,
     "PL-",
     "PL+, PR inaccurate",
     "PL+, PR accurate",
@@ -89,6 +93,7 @@ export const twentyftValues = [
 ];
 
 export const logMARNVValues = [
+    blankField,
     "-0.10",
     "0.00",
     "0.10",
@@ -106,6 +111,7 @@ export const logMARNVValues = [
 ];
 
 export const nScaleValues = [
+    blankField,
     "2.5",
     "3",
     "4",
@@ -123,6 +129,7 @@ export const nScaleValues = [
 ];
 
 export const mUnitsValues = [
+    blankField,
     "0.32",
     "0.40",
     "0.50",
@@ -140,6 +147,7 @@ export const mUnitsValues = [
 ];
 
 export const snellenImperialValues = [
+    blankField,
     "20/16",
     "20/20",
     "20/25",
@@ -157,6 +165,7 @@ export const snellenImperialValues = [
 ];
 
 export const snellenMetricValues = [
+    blankField,
     "6/5",
     "6/6",
     "6/7.5",
