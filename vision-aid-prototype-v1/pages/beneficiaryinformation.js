@@ -43,6 +43,12 @@ export async function getServerSideProps(ctx) {
   };
 }
 
+function required() {
+  return(
+    <span style={{color: "red"}}> *</span>
+  );
+}
+
 function RequiredFields(props) {
   const router = useRouter();
 
@@ -180,20 +186,21 @@ function RequiredFields(props) {
 
   const mrn = (
     <div>
-      <label htmlFor="mrn">MRN</label>
+      <label htmlFor="mrn">MRN{required()}</label>
       <input
         type="text"
         className="form-control"
         id="mrn"
         placeholder="Enter beneficiary's MRN"
         autoComplete="off"
+        required
       />
     </div>
   );
 
   const beneficiaryName = (
     <div>
-      <label htmlFor="beneficiaryName">Beneficiary Name</label>
+      <label htmlFor="beneficiaryName">Beneficiary Name{required()}</label>
       <input
         type="text"
         className="form-control"
@@ -202,6 +209,7 @@ function RequiredFields(props) {
         value={beneficiaryNameVal}
         onChange={(e) => setBeneficiaryNameVal(e.target.value)}
         autoComplete="off"
+        required
       />
     </div>
   );
@@ -221,9 +229,10 @@ function RequiredFields(props) {
       <div className="form-group">
         <label className="form-check-label" htmlFor="hospitalName">
           Hospital Name
+          {required()}
         </label>
 
-        <select className="form-select" id="hospitalName">
+        <select className="form-select" id="hospitalName" required>
           <option value="">Select Hospital</option>
           {hospitalOptions}
         </select>
@@ -245,9 +254,10 @@ function RequiredFields(props) {
       <div className="form-group">
         <label className="form-check-label" htmlFor="hospitalName">
           Hospital Name
+          {required()}
         </label>
 
-        <select className="form-select" id="hospitalName">
+        <select className="form-select" id="hospitalName" required>
             {hospitalOptions}
         </select>
       </div>
@@ -257,20 +267,21 @@ function RequiredFields(props) {
 
   const dateOfBirth = (
     <div>
-      <label htmlFor="dateOfBirth">Date Of Birth</label>
+      <label htmlFor="dateOfBirth">Date Of Birth{required()}</label>
       <input
         type="date"
         className="form-control"
         id="dateOfBirth"
         max={today}
+        required
       />
     </div>
   );
 
   const gender = (
     <div>
-      <label htmlFor="gender">Gender</label>
-      <select className="form-select" id="gender">
+      <label htmlFor="gender">Gender{required()}</label>
+      <select className="form-select" id="gender" required>
         <option value="">Select Gender</option>
         <option key="M" value="M">
           Male
