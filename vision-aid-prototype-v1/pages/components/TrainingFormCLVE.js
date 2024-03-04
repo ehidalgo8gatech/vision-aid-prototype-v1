@@ -706,6 +706,7 @@ const TrainingFormCLVE = ({
                   autoComplete="off"
                   value={formData["sessionNumber"]}
                   onChange={(e) => updateFormData(e, "sessionNumber")}
+                  required
                 />
               </Form.Group>
             </Col>
@@ -788,7 +789,14 @@ const TrainingFormCLVE = ({
             <Button
               className="btn btn-success border-0 btn-block"
               type="button"
-              onClick={() => setSection("spectacle")}
+              onClick={() => {
+                var sNumber = document.getElementById("sessionNumber");
+                if (!sNumber.checkValidity()) {
+                  alert("Please fill the session number!");
+                } else {
+                  setSection("spectacle");
+                }
+              }}
             >
               Continue
             </Button>
