@@ -1,5 +1,16 @@
+import React, { useState } from 'react';
 
 function  LandingPage({ user } = props) {
+    const [userContent, setUserContent] = useState('');
+    
+    const handleSubmit = (e) => {
+    
+        e.preventDefault();
+
+        console.log(`Form submitted, ${userContent}`);    
+
+    }
+
     
     return (
         <div>
@@ -18,6 +29,11 @@ function  LandingPage({ user } = props) {
                 <br></br>
                 <br></br>
                 <br></br>
+                <form onSubmit = {handleSubmit}>
+                    <input onChange = {(e) => setUserContent(e.target.value)} value = {userContent}></input>
+                    <button type = 'submit'>Click to submit</button>
+                </form>
+
                 <br></br>
                 <br></br>
                 <div>
