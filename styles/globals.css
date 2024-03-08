@@ -645,10 +645,46 @@ h2 {
   justify-content: center;
 }
 
+/* SPRING 2024 CHANGES */
+/* Use to style pages consistently (esp. with minimal content, otherwise
+footer will be floating and page will be too short for styling) */
+.content {
+  flex: 1; /* Fill remaining vertical space */
+  min-height: calc(90vh - 36px); /* Adjust for footer height */
+}
+
 .footer {
   background-color: #1B5E20;
-  border-bottom: 5px solid #ccc;
+  border-bottom: 5px solid #fff;
   padding: 40px;
   text-align: center;
   color: #fff;
+  flex-shrink: 0; /* Prevent footer from shrinking */
+}
+.footer a {
+  color: #fff; /* Set hyperlink text color to white */
+}
+
+.textarea {
+  width: 100%;
+  height: 150px;
+  padding: 8px;
+  border: 1px solid #00000010;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  background-color: #fff;
+  color: #000;
+}
+
+.textarea-small{
+  max-width: 100%;
+  /* width: 30%; */
+  padding: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #000;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
 }

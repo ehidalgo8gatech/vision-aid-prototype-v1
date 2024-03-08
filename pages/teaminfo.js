@@ -5,13 +5,12 @@ import amber from 'public/images/amber.webp';
 import chris from 'public/images/chris.webp';
 import nasa from 'public/images/nasa.webp';
 import Layout from './components/layout';
-// import video from 'public/media/presentation.mp4';
 
 export default function TeamInfo() {
   return (
     <Layout>
       <Navigation />
-      <div id="wrapper">
+      <div className="container">
         <div className="team-info">
           <h1>Project Description</h1>
             <p>
