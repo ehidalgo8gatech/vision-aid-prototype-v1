@@ -1,1 +1,0 @@
-INSERT INTO USERS (ID, USER_NAME) VALUES(1, 'seth_username');
