@@ -684,6 +684,18 @@ function RequiredFields(props) {
               Trainings
             </button>
           </div>
+          <div className="p-2">
+            <button
+              className={`w-100 text-align-left ${
+                section === "posts"
+                  ? "btn btn-success btn-block active-tab"
+                  : "btn btn-light btn-block"
+              }`}
+              onClick={() => setSection("posts")}
+            >
+              Posts
+            </button>
+          </div>
         </div>
         <div className="col-md-8">
           {section === "hospitals" && (
@@ -1390,6 +1402,121 @@ function RequiredFields(props) {
                             {removeSubTypeTraining}
                           </tbody>
                         </Table>
+                        <form
+                          action="#"
+                          method="POST"
+                          onSubmit={(e) => addSubTypesSubmit(e)}
+                        >
+                          <br />
+                          <label htmlFor="addTrainingSubType">
+                            Add Training Sub Type:&nbsp;
+                          </label>
+                          <select name="training" id="training">
+                            {trainingTypesOption}
+                          </select>&nbsp;
+                          <input
+                            type="text"
+                            id="addTrainingSubType"
+                            name="addTrainingSubType"
+                          />
+                          <br /> <br />
+                          <button type="submit" className="btn btn-success">
+                            Submit
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          {section === "posts" && (
+            <div className="container mt-4">
+              <h2 className="text-center mt-4 mb-4">
+                <strong>Add Types</strong>
+              </h2>
+              <br />
+
+              <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      <strong>Add/Delete Counseling Education</strong>
+                    </button>
+                  </h2>
+                  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <div id="addCounsellingTypeContainer">
+                        {removeTypeCounseling}
+                        <form
+                          action="#"
+                          method="POST"
+                          onSubmit={(e) =>
+                            addTypesSubmit(e, "counsellingType", "addCounsellingType")
+                          }
+                        >
+                          <br/>
+                          <label htmlFor="addCounsellingType">
+                            Add Counseling Type:&nbsp;
+                          </label>
+                          <input
+                            type="text"
+                            id="addCounsellingType"
+                            name="addCounsellingType"
+                          />
+                          <br /> <br />
+                          <button type="submit" className="btn btn-success">
+                            Submit
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      <strong>Add/Delete Training Type</strong>
+                    </button>
+                  </h2>
+                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <div id="addTrainingTypeContainer">
+                        {removeTypeTraining}
+                        <form
+                          action="#"
+                          method="POST"
+                          onSubmit={(e) =>
+                            addTypesSubmit(e, "trainingType", "addTrainingType")
+                          }
+                        >
+                          <br />
+                          <label htmlFor="addTrainingType">Add Training Type:&nbsp;</label>
+                          <input
+                            type="text"
+                            id="addTrainingType"
+                            name="addTrainingType"
+                          />
+                          <br /> <br />
+                          <button type="submit" className="btn btn-success">
+                            Submit
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      <strong>Add/Delete Training Sub Type</strong>
+                    </button>
+                  </h2>
+                  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <div id="addTrainingSubTypeContainer">
+                        {removeSubTypeTraining}
                         <form
                           action="#"
                           method="POST"
