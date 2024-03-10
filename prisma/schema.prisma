@@ -324,3 +324,11 @@ model School_Screening {
   hospitalId            Int?
   hospital              Hospital? @relation(fields: [hospitalId], references: [id])
 }
+
+
+model Landing_Page {
+  id                   Int       @id @default(autoincrement())
+  userId               Int?
+  creationDate         DateTime?
+  content              String?
+}

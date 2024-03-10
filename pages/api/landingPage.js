@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   }
 }
 
-async function updateContent(req, res) {
+export async function updateContent(req, res) {
   try {
     const { id, ...content } = req.body;
     const updatedContent = await prisma.landing_Page.update({
@@ -28,7 +28,7 @@ async function updateContent(req, res) {
   }
 }
 
-async function readContent(req, res) {
+export async function readContent(req, res) {
   try {
     var pgeContent;
     if (req.query.userId != null) {
@@ -58,26 +58,83 @@ async function readContent(req, res) {
   }
 }
 
-async function addContent(req, res) {
-  const body = req.body;
-  
+export async function  addContent(uid, cnt) {
+  // return prisma.user.findUnique({
+  //   where: {
+  //     userId: uid,
+  //     content: cnt
+  //   },
+  //   include: {
+  //     hospitalRole: true,
+  //     admin: true,
+  //   },
+  // });
+
+  console.log("\n\n ************ addContent *********")
+
+  // const body = req.body;
   const create = {
-    content: {
-      userId: body.userId,
-      creationDate: date.now(),
-      content: body.content,
+    data: {
+      userId: uid,
+      content: cnt
     },
     include: {
-      content: true,
+      hospitalRole: true,
     },
   };
+  console.log( "........... ++++++ ........." );
+
   try {
-    const pgeContent = await prisma.landing_Page.create(create);
-    return res.status(200).json(pgeContent, { success: true });
+    const newEntry = await prisma.landing_Page.create(create);
+    console.log("Request success !!!!!!!");
   } catch (error) {
     console.log("Request error " + error);
-    res
-      .status(500)
-      .json({ error: "Error adding user" + error, success: false });
   }
+
+  // try {
+  //   const newEntry = await prisma.user.create(create);
+  //   return res.status(200).json(newEntry, { success: true });
+  // } catch (error) {
+  //   console.log("Request error " + error);
+  //   res
+  //     .status(500)
+  //     .json({ error: "Error adding user" + error, success: false });
+  // }
 }
+
+// async function addContent(req, res) {
+//   const body = req.body;
+//   const date = new Date()
+  
+//   const create = {
+//     content: {
+//       userId: body.userId,
+//       creationDate: date.getDate(),
+//       // content: body.content,
+//     },
+//     // include: {
+//     //   content: true,
+//     // },
+//   };
+
+
+//   console.log(
+//     "Request body " +
+//       JSON.stringify(body) +
+//       " create value " +
+//       JSON.stringify(create)
+//   );
+
+
+  
+//   try {
+//     const pgeContent = await prisma.landing_Page.create(create);
+//     return res.status(200).json(pgeContent, { success: true });
+//   } catch (error) {
+//     console.log("Request error " + error);
+//     res
+//       .status(500)
+//       .json({ error: "Error adding user" + error, success: false });
+//   }
+// }
+

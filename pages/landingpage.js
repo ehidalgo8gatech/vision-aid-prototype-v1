@@ -1,5 +1,6 @@
 import React, { use, useState } from 'react';
 import Router from "next/router";
+import { addContent } from  "./api/landingPage";
 
 import Image from 'next/image'
 import p1 from 'public/images/p1.webp';
@@ -7,24 +8,28 @@ import p2 from 'public/images/p2.webp';
 import p3 from 'public/images/p3.webp';
 
 
-async function addUserContent(userId,userContent ) {
-    console.log("adding content to user id" + userId);
-    const addConfirmation = await fetch("/landingpage", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: userId,
-        content: userContent,
-      }),
-    });
-    if (addConfirmation.status !== 200) {
-      console.log("something went wrong");
-    } else {
-      console.log("form submitted successfully !!!");
-    //   Router.reload();
-    }
+
+async function addUserContent(id,userContent ) {
+    console.log("adding content to user id" + id);
+    const cnt = await addContent(id, userContent );
+    // const addConfirmation = await fetch("/", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     userId: id,
+    //     content: userContent,
+    //   }),
+    // });
+    // if (addConfirmation.status !== 200) {
+    //   console.log("something went wrong");
+    // } else {
+    //   console.log("form submitted successfully !!!");
+    //   // Router.reload();
+    // }
   }
   
+
+
 
 
 const addUser = async (e) => {
@@ -162,6 +167,27 @@ function  LandingPage({ user } = props) {
             </div>
         </div>
     );
+}
+
+export async function getServerSideProps(ctx) {
+  const session = await getSession(ctx);
+
+  if (session == null) {
+    console.log("session is null");
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  console.log("adding content to user id" + id);
+  const cnt = await addContent(id, userContent );
+  return {
+    props: {
+      content:cnt,
+    },
+  };
 }
 
 export default  LandingPage;

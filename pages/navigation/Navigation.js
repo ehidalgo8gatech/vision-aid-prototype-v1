@@ -71,6 +71,21 @@ function Navigation({ user } = props) {
                     </a>
                   </Link>
                 </li>
+
+
+                <li className="nav-item p-4">
+                  <Link href="/" legacyBehavior>
+                    <a
+                      className={`nav-link custom-link ${
+                        router.pathname === "/" ? "active" : ""
+                      }`}
+                    >
+                      Main
+                    </a>
+                  </Link>
+                </li>
+
+
                 {/* don't display if technician */}
                 {(role === "admin" || role === "manager") && (
                   <li className="nav-item p-4">

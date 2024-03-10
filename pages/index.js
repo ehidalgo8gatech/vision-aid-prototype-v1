@@ -6,7 +6,7 @@ import {
 import Navigation from "./navigation/Navigation";
 import Layout from './components/layout';
 import { readUser } from "./api/user";
-import  LandingPage from "./landingpage.js";
+import  LandingPage from "./landingPage";
 
 
 const inter = Inter({ subsets: ["latin"] });
