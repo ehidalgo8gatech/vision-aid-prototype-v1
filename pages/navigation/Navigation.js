@@ -125,6 +125,10 @@ function Navigation({ user } = props) {
             <small className="top display text-light">
               Signed in as: {user.email} ({role.toUpperCase()})
             </small>
+            <small className="user-id">
+              user.id: {user.id}
+            </small>
+
             <br />
             <div className="text-align-right">
               <button

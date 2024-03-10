@@ -1,4 +1,5 @@
 import React, { use, useState } from 'react';
+import Router from "next/router";
 
 import Image from 'next/image'
 import p1 from 'public/images/p1.webp';
@@ -6,13 +7,13 @@ import p2 from 'public/images/p2.webp';
 import p3 from 'public/images/p3.webp';
 
 
-async function addUserContent(userId) {
-    console.log("add user content" + userId);
-    const addConfirmation = await fetch("/api/landingpage", {
+async function addUserContent(userId,userContent ) {
+    console.log("adding content to user id" + userId);
+    const addConfirmation = await fetch("/landingpage", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        id: props.userId,
+        id: userId,
         content: userContent,
       }),
     });
@@ -20,7 +21,7 @@ async function addUserContent(userId) {
       console.log("something went wrong");
     } else {
       console.log("form submitted successfully !!!");
-      Router.reload();
+    //   Router.reload();
     }
   }
   
@@ -28,10 +29,23 @@ async function addUserContent(userId) {
 
 const addUser = async (e) => {
     e.preventDefault();
-    console.log(".........addUser........")
-    console.log("........e is .......", e)
-//    const userEmail = document.getElementById("userId").value;
-    console.log(e)
+    const uid = document.getElementsByTagName("small")[1].innerHTML.split(": ")[1]
+    const ueml = document.getElementsByTagName("small")[0].innerText.split(" ")[3]
+    const ucnt = document.getElementsByClassName("user-content")[0].value
+
+    console.log("\n........u-id .......")
+    console.log(uid)
+    console.log("\n........u-email.......")
+    console.log(ueml)
+    console.log("\n........u-content .......")
+    console.log(ucnt)
+
+    // addUserContent(uid, ucnt)
+    addUserContent(2, ucnt)
+
+    
+
+
   };
 
 function  LandingPage({ user } = props) {
@@ -40,15 +54,8 @@ function  LandingPage({ user } = props) {
     
     const handleUserContent = (e) => {
         e.preventDefault();
-        console.log("\n ..... yyyyyyyaaaayyyyyyy ....... 1........")
         console.log(e.target.value)
-        setUserContent(e.target.value);
-        console.log(document.getElementsByClassName("text-light"));
-        // // console.log(e)
-        // // console.log(e.user)
-        // setlandingUser();
-     
-   
+        setUserContent(e.target.value);     
       };
 
     
@@ -71,7 +78,7 @@ function  LandingPage({ user } = props) {
                 <br></br>
                 <form action="#" method="POST" onSubmit={(e) => addUser(e)}>
                     <label>Add user content here: </label> 
-                    <input type="text" 
+                    <input type="text" className='user-content'
                      value={userContent} onChange={handleUserContent} 
                     />
                     <br /> 
