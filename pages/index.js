@@ -12,8 +12,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home(props) {
   const { data: session } = useSession();
-  console.log(session);
-  console.log(props);
+  // console.log(session);
+  // console.log(props);
   
   return (
     <>
