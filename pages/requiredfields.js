@@ -19,6 +19,7 @@ import { useState } from "react";
 import { getCounsellingType } from "@/pages/api/counsellingType";
 import { getTrainingTypes } from "@/pages/api/trainingType";
 import { getTrainingSubTypes } from "@/pages/api/trainingSubType";
+import { Modal, Button, Form } from 'react-bootstrap';
 
 // http://localhost:3000/requiredfields
 export async function getServerSideProps(ctx) {
@@ -66,6 +67,50 @@ export async function getServerSideProps(ctx) {
 function RequiredFields(props) {
   const [section, setSection] = useState("");
   const [hospitals, setHospitals] = useState(props.hospitals);
+
+  const [showModal, setShowModal] = useState(false);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [editMode, setEditMode] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const posts = [
+    { id: 1, title: 'Post 1', content: 'Content 1', date: '2022-03-08' },
+    { id: 2, title: 'Post 2', content: 'Content 2', date: '2022-03-09' },
+    { id: 3, title: 'Post 3', content: 'Content 3', date: '2022-03-07' },
+  ];
+
+  const handleShow = () => {
+    setShowModal(true);
+    setEditMode(false);
+  };
+
+  const handleClose = () => {
+    setShowModal(false);
+    setConfirmDelete(false);
+    setTitle('');
+    setContent('');
+    setSelectedPost(null);
+  };
+
+  const handleEdit = (post) => {
+    setSelectedPost(post);
+    setTitle(post.title);
+    setContent(post.content);
+    setShowModal(true);
+    setEditMode(true);
+  };
+
+  const handleDelete = (post) => {
+    setSelectedPost(post);
+    setConfirmDelete(true);
+  };
+
+  const handleSaveChanges = () => {
+    // Handle saving changes
+    handleClose();
+  };
 
   function removeExtraField(fieldId) {
     return function () {
@@ -692,13 +737,13 @@ function RequiredFields(props) {
           <div className="p-2">
             <button
               className={`w-100 text-align-left ${
-                section === "posts"
+                section === "landing-page"
                   ? "btn btn-success btn-block active-tab"
                   : "btn btn-light btn-block"
               }`}
-              onClick={() => setSection("posts")}
+              onClick={() => setSection("landing-page")}
             >
-              Posts
+              Landing Page
             </button>
           </div>
         </div>
@@ -1405,119 +1450,95 @@ function RequiredFields(props) {
               </div>
             </div>
           )}
-          {section === "posts" && (
+          {section === 'landing-page' && (
             <div className="container mt-4">
-              <h2 className="text-center mt-4 mb-4">
-                <strong>Add Types</strong>
-              </h2>
-              <br />
-
-              <div class="accordion" id="accordionExample">
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                      <strong>Add/Delete Counseling Education</strong>
-                    </button>
-                  </h2>
-                  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                      <div id="addCounsellingTypeContainer">
-                        {removeTypeCounseling}
-                        <form
-                          action="#"
-                          method="POST"
-                          onSubmit={(e) =>
-                            addTypesSubmit(e, "counsellingType", "addCounsellingType")
-                          }
-                        >
-                          <br/>
-                          <label htmlFor="addCounsellingType">
-                            Add Counseling Type:&nbsp;
-                          </label>
-                          <input
-                            type="text"
-                            id="addCounsellingType"
-                            name="addCounsellingType"
-                          />
-                          <br /> <br />
-                          <button type="submit" className="btn btn-success">
-                            Submit
-                          </button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
+                <div className="row">
+                  <div className="col text-end" style={{ marginTop: '10px' }}>
+                <button type="button" className="btn btn-success" onClick={handleShow}>
+                  Create a new post
+                </button>
                 </div>
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingTwo">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                      <strong>Add/Delete Training Type</strong>
-                    </button>
-                  </h2>
-                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                      <div id="addTrainingTypeContainer">
-                        {removeTypeTraining}
-                        <form
-                          action="#"
-                          method="POST"
-                          onSubmit={(e) =>
-                            addTypesSubmit(e, "trainingType", "addTrainingType")
-                          }
-                        >
-                          <br />
-                          <label htmlFor="addTrainingType">Add Training Type:&nbsp;</label>
-                          <input
-                            type="text"
-                            id="addTrainingType"
-                            name="addTrainingType"
-                          />
-                          <br /> <br />
-                          <button type="submit" className="btn btn-success">
-                            Submit
-                          </button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
                 </div>
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingThree">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                      <strong>Add/Delete Training Sub Type</strong>
-                    </button>
-                  </h2>
-                  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                      <div id="addTrainingSubTypeContainer">
-                        {removeSubTypeTraining}
-                        <form
-                          action="#"
-                          method="POST"
-                          onSubmit={(e) => addSubTypesSubmit(e)}
-                        >
-                          <br />
-                          <label htmlFor="addTrainingSubType">
-                            Add Training Sub Type:&nbsp;
-                          </label>
-                          <select name="training" id="training">
-                            {trainingTypesOption}
-                          </select>&nbsp;
-                          <input
-                            type="text"
-                            id="addTrainingSubType"
-                            name="addTrainingSubType"
-                          />
-                          <br /> <br />
-                          <button type="submit" className="btn btn-success">
-                            Submit
+                <br />
+                <div>
+                  {posts
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .map((post) => (
+                      <div key={post.id} className="mb-3">
+                        <h3>{post.title}</h3>
+                        <p>{new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                        <div>
+                          <button className="btn btn-primary me-2" onClick={() => handleEdit(post)}>
+                            Edit
                           </button>
-                        </form>
+                          <button className="btn btn-danger" onClick={() => handleDelete(post)}>
+                            Delete
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+                    ))}
                 </div>
-              </div>
+              <Modal show={showModal} onHide={handleClose} size="lg">
+                <Modal.Header closeButton>
+                  <Modal.Title style={{ textAlign: 'left' }}>
+                    {editMode ? 'Edit Post' : 'Create New Post'}
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Form>
+                    <Form.Group controlId="postTitle">
+                      <Form.Label className="text-left">Title</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Enter title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                      />
+                    </Form.Group>
+                    <Form.Group controlId="postContent">
+                      <Form.Label className="text-left">Content</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={3}
+                        placeholder="Enter content"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        style={{ textAlign: 'left' }}
+                      />
+                    </Form.Group>
+                  </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={handleClose}>
+                    Close
+                  </Button>
+                  {editMode ? (
+                    <Button variant="primary" onClick={handleSaveChanges}>
+                      Update
+                    </Button>
+                  ) : (
+                    <Button variant="primary" onClick={handleSaveChanges}>
+                      Save Changes
+                    </Button>
+                  )}
+                </Modal.Footer>
+              </Modal>
+              <Modal show={confirmDelete} onHide={() => setConfirmDelete(false)}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Confirm Delete</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  Are you sure you want to delete this post?
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={() => setConfirmDelete(false)}>
+                    Cancel
+                  </Button>
+                  <Button variant="danger" onClick={() => handleSaveChanges(selectedPost)}>
+                    Delete
+                  </Button>
+                </Modal.Footer>
+              </Modal>
             </div>
           )}
         </div>
