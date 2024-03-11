@@ -8,11 +8,16 @@ import p3 from 'public/images/p3.webp';
 
 async function addUserContent(id,userContent ) {
     const url = "/api/landingPage";
+    
+    if (userContent == "") {
+      console.log("\n empty content is not allowed");
+      return
+    }
     const addConfirmation = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        userId: id,
+        userId: 2,
         content: userContent,
       }),
     });

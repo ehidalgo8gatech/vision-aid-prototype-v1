@@ -31,15 +31,20 @@ async function updateContent(req, res) {
 async function readContent(req, res) {}
 
 async function addContent(req, res) {
-  
+  const dt = new Date();
   const body = req.body;
   console.log(body.userId)
   console.log(body.content)
   const create = {
     data: {
-      userId: parseInt(body.userId),
+      user: {
+        connect: {
+          id: parseInt(body.userId),
+        },
+      },
+      // userId: parseInt(body.userId),
       content:body.content,
-
+      creationDate: dt,
     },
   };
   try {
