@@ -73,8 +73,8 @@ function Navigation({ user } = props) {
                 </li>
 
 
-                <li className="nav-item p-4">
-                  <Link href="/" legacyBehavior>
+                {/* <li className="nav-item p-4">
+                  <Link href="/api/landingPage" legacyBehavior>
                     <a
                       className={`nav-link custom-link ${
                         router.pathname === "/" ? "active" : ""
@@ -83,7 +83,7 @@ function Navigation({ user } = props) {
                       Main
                     </a>
                   </Link>
-                </li>
+                </li> */}
 
 
                 {/* don't display if technician */}
@@ -140,8 +140,8 @@ function Navigation({ user } = props) {
             <small className="top display text-light">
               Signed in as: {user.email} ({role.toUpperCase()})
             </small>
-            <small className="user-id">
-              user.id: {user.id}
+            <small hidden className="user-id">
+              user.id:{user.id}
             </small>
 
             <br />

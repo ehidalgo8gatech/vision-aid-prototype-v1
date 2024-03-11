@@ -1,6 +1,4 @@
 import React, { use, useState } from 'react';
-import Router from "next/router";
-import { addContent } from  "./api/landingPage";
 
 import Image from 'next/image'
 import p1 from 'public/images/p1.webp';
@@ -8,62 +6,41 @@ import p2 from 'public/images/p2.webp';
 import p3 from 'public/images/p3.webp';
 
 
-
 async function addUserContent(id,userContent ) {
-    console.log("adding content to user id" + id);
-    const cnt = await addContent(id, userContent );
-    // const addConfirmation = await fetch("/", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     userId: id,
-    //     content: userContent,
-    //   }),
-    // });
-    // if (addConfirmation.status !== 200) {
-    //   console.log("something went wrong");
-    // } else {
-    //   console.log("form submitted successfully !!!");
-    //   // Router.reload();
-    // }
+    const url = "/api/landingPage";
+    const addConfirmation = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: id,
+        content: userContent,
+      }),
+    });
+    if (addConfirmation.status !== 200) {
+      console.log("something went wrong");
+    } else {
+      console.log("form submitted successfully !!!");
+    }
   }
   
 
-
-
-
-const addUser = async (e) => {
-    e.preventDefault();
-    const uid = document.getElementsByTagName("small")[1].innerHTML.split(": ")[1]
-    const ueml = document.getElementsByTagName("small")[0].innerText.split(" ")[3]
-    const ucnt = document.getElementsByClassName("user-content")[0].value
-
-    console.log("\n........u-id .......")
-    console.log(uid)
-    console.log("\n........u-email.......")
-    console.log(ueml)
-    console.log("\n........u-content .......")
-    console.log(ucnt)
-
-    // addUserContent(uid, ucnt)
-    addUserContent(2, ucnt)
-
-    
-
-
-  };
-
-function  LandingPage({ user } = props) {
+function  LandingPage(props) {
     const [userContent, setUserContent] = useState("");
-    // const [landingUser, setlandingUser] = useState("");
-    
+
     const handleUserContent = (e) => {
         e.preventDefault();
         console.log(e.target.value)
         setUserContent(e.target.value);     
       };
 
-    
+    const addUser = async (e) => {
+        e.preventDefault();
+        const uid = document.getElementsByTagName("small")[1].innerText.split(":")[1]
+        const ueml = document.getElementsByTagName("small")[0].innerText.split(" ")[3]
+        const ucnt = document.getElementsByClassName("user-content")[0].value
+        const ct = await addUserContent(uid,ucnt)
+      };
+
     return (
         <div>
             <div className={"scroller"}>
@@ -169,25 +146,5 @@ function  LandingPage({ user } = props) {
     );
 }
 
-export async function getServerSideProps(ctx) {
-  const session = await getSession(ctx);
 
-  if (session == null) {
-    console.log("session is null");
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-  console.log("adding content to user id" + id);
-  const cnt = await addContent(id, userContent );
-  return {
-    props: {
-      content:cnt,
-    },
-  };
-}
-
-export default  LandingPage;
+export default LandingPage;

@@ -19,6 +19,7 @@ import { useState } from "react";
 import { getCounsellingType } from "@/pages/api/counsellingType";
 import { getTrainingTypes } from "@/pages/api/trainingType";
 import { getTrainingSubTypes } from "@/pages/api/trainingSubType";
+import {addContent} from "@/pages/api/landingPage"
 
 // http://localhost:3000/requiredfields
 export async function getServerSideProps(ctx) {
