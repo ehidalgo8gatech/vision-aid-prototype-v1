@@ -17,7 +17,7 @@ async function addUserContent(id,userContent ) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        userId: 2,
+        userId: id,
         content: userContent,
       }),
     });
