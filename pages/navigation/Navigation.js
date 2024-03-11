@@ -49,6 +49,19 @@ function Navigation({ user } = props) {
           {user && role != "invalid" && (
             <div className="collapse navbar-collapse" id="navbarNav">
               <ul className="navbar-nav">
+
+              <li className="nav-item p-4">
+                  <Link href="/" legacyBehavior>
+                    <a
+                      className={`nav-link custom-link ${
+                        router.pathname === "/" ? "active" : ""
+                      }`}
+                    >
+                      Main
+                    </a>
+                  </Link>
+                </li>
+                
                 <li className="nav-item p-4">
                   <Link href="/beneficiary" legacyBehavior>
                     <a
@@ -71,20 +84,6 @@ function Navigation({ user } = props) {
                     </a>
                   </Link>
                 </li>
-
-
-                {/* <li className="nav-item p-4">
-                  <Link href="/api/landingPage" legacyBehavior>
-                    <a
-                      className={`nav-link custom-link ${
-                        router.pathname === "/" ? "active" : ""
-                      }`}
-                    >
-                      Main
-                    </a>
-                  </Link>
-                </li> */}
-
 
                 {/* don't display if technician */}
                 {(role === "admin" || role === "manager") && (
