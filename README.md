@@ -80,10 +80,3 @@ Manager@123
 Technician
 visionaidp11tech@gmail.com
 Technician@123
-
-CREATE TABLE LandingPageEntry (
-    userID int,
-    creationDate date,
-    content varchar(255),
-    FOREIGN KEY (userID) REFERENCES User(id)
-)
