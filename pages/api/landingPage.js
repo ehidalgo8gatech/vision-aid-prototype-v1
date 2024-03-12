@@ -16,15 +16,17 @@ export default async function handler(req, res) {
 
 async function updateContent(req, res) {
   try {
-    const { id, ...data } = req.body;
+    const body = req.body;
+    id = req.body;
+    content = req.content
     const updatedUser = await prisma.landing_Page.update({
       where: { id },
-      data,
+      content,
     });
     res.status(200).json(updatedUser);
   } catch (error) {
     console.log(error);
-    res.status(400).json({ error: "Failed to update user data." });
+    res.status(400).json({ error: "Failed to update content." });
   }
 }
 
@@ -42,8 +44,7 @@ async function addContent(req, res) {
           id: parseInt(body.userId),
         },
       },
-      // userId: parseInt(body.userId),
-      content:body.content,
+      content: body.content,
       creationDate: dt,
     },
   };
@@ -54,6 +55,6 @@ async function addContent(req, res) {
     console.log("Request error " + error);
     res
       .status(500)
-      .json({ error: "Error adding user" + error, success: false });
+      .json({ error: "Failed to add content." + error, success: false });
   }
 }
