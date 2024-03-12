@@ -57,11 +57,11 @@ function Navigation({ user } = props) {
                         router.pathname === "/" ? "active" : ""
                       }`}
                     >
-                      Main
+                      Home
                     </a>
                   </Link>
                 </li>
-                
+
                 <li className="nav-item p-4">
                   <Link href="/beneficiary" legacyBehavior>
                     <a
