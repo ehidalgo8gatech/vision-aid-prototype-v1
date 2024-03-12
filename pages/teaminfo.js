@@ -46,13 +46,17 @@ export default function TeamInfo(props) {
         <div className="team-info">
           <h1>Meet Our Team</h1>
             <Image src={amber} alt="Amber" />
-            <p>Amber Molina: Team Lead</p>
+            <h2>Amber Molina: Team Lead</h2>
+            <p>Current Contributions: Created Footer, Feedback Form, and Team Info UI.</p>
             <Image src={austin} alt="Austin" />
-            <p>Austin Bieber: Tech Lead</p>
+            <h2>Austin Bieber: Tech Lead</h2>
+            <p>Current Contributions: </p>
             <Image src={chris} alt="Chris" />
-            <p>Christin Lin: Fullstack Developer</p>
+            <h2>Christin Lin: Fullstack Developer</h2>
+            <p>Current Contributions: </p>
             <Image src={nasa} alt="Nasa" />
-            <p>Nasa Quba: Fullstack Developer</p>
+            <h2>Nasa Quba: Fullstack Developer</h2>
+            <p>Current Contributions: </p>
         </div>
         <div className="team-info">
           <h1>Project Goals:</h1>
@@ -80,11 +84,14 @@ export default function TeamInfo(props) {
           <h1>Important Links</h1>
           <ol>
             <p>
-              <a href="https://vimeo.com/913052661?share=copy">Presentation Video</a>
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLSek2sc5bzRulLRB4Y1GcieoLc0ThsxphofEv5U6SYoo5SU38w/viewform?usp=sf_link" target="_blank">Peer Review Survey</a>
+            </p>            
+            <p>
+              <a href="https://vimeo.com/913052661?share=copy" target="_blank">Presentation Video</a>
             </p>
             <p>
-              <a href="https://github.com/ajbieber/vision-aid-partners">Project GitHub</a>
-            </p>            
+              {/* <a href="https://github.com/ajbieber/vision-aid-partners" target="_blank">Project GitHub</a> */}
+            </p>
           </ol>
         </div>
       </div>
