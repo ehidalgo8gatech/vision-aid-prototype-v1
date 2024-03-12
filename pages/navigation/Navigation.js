@@ -151,11 +151,6 @@ function Navigation({ user } = props) {
             <span class="visually-hidden">Feedback</span>
           </a>
         </div>
-        <div>
-          <a href="/feedback">
-            <span class="visually-hidden">Feedback</span>
-          </a>
-        </div>
       </div>
 
       <style jsx>{`
