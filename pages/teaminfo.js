@@ -5,11 +5,30 @@ import amber from 'public/images/amber.webp';
 import chris from 'public/images/chris.webp';
 import nasa from 'public/images/nasa.webp';
 import Layout from './components/layout';
+import { getSession } from "next-auth/react";
+import { readUser } from "./api/user";
 
-export default function TeamInfo() {
+export async function getServerSideProps(ctx) {
+  const session = await getSession(ctx);
+  if (session == null) {
+    return {
+      props: {
+        user: null
+      }
+    };
+  }
+  const user = await readUser(session.user.email);
+  return {
+    props: {
+      user: user,
+    },
+  };
+}
+
+export default function TeamInfo(props) {
   return (
     <Layout>
-      <Navigation />
+      <Navigation user={props.user}/>
       <div className="container">
         <div className="team-info">
           <h1>Project Description</h1>
