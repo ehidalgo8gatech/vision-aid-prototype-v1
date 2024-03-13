@@ -8,6 +8,7 @@ import {
 } from "@/pages/api/hospital";
 import { Container } from "react-bootstrap";
 import Navigation from "./navigation/Navigation";
+import Layout from './components/layout';
 import { Table } from "react-bootstrap";
 import Link from "next/link";
 import moment from "moment";
@@ -701,7 +702,8 @@ export default function Summary({
   };
 
   return (
-    <div>
+    <Layout>
+    <div class="content">
       <Navigation user={user} />
       <Container className="p-3">
         <h1 className="text-center mt-4 mb-4">Visualization and Reports</h1>
@@ -797,5 +799,6 @@ export default function Summary({
       </Container>
       <br />
     </div>
+    </Layout>
   );
 }

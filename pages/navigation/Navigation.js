@@ -146,7 +146,6 @@ function Navigation({ user } = props) {
             </button>
           </div>
         )}
-        {/* </div> */}
       </div>
 
       <style jsx>{`

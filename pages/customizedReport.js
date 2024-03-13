@@ -1,6 +1,7 @@
 import moment from "moment";
 import { useState, useEffect } from "react";
 import Navigation from "./navigation/Navigation";
+import Layout from './components/layout';
 import { Table } from "react-bootstrap";
 import { findAllBeneficiary } from "./api/beneficiary";
 import { getSummaryForAllHospitals } from "./api/hospital";
@@ -342,7 +343,8 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
   };
 
   return (
-    <div>
+    <Layout>
+    <div class="content">
       <Navigation user={user} />
       <div className="container p-4 mb-3">
         <h1 className="mt-4 mb-4">Customize Report</h1>
@@ -778,6 +780,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
       </div>
       <br />
     </div>
+    </Layout>
   );
 }
 

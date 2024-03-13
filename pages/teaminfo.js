@@ -1,5 +1,5 @@
 import Navigation from "./navigation/Navigation";
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 import austin from 'public/images/austin.webp';
 import amber from 'public/images/amber.webp';
 import chris from 'public/images/chris.webp';
@@ -45,14 +45,18 @@ export default function TeamInfo(props) {
         </div>
         <div className="team-info">
           <h1>Meet Our Team</h1>
-            <Image src={amber} alt="Amber" />
-            <p>Amber Molina: Team Lead</p>
-            <Image src={austin} alt="Austin" />
-            <p>Austin Bieber: Tech Lead</p>
-            <Image src={chris} alt="Chris" />
-            <p>Christin Lin: Fullstack Developer</p>
-            <Image src={nasa} alt="Nasa" />
-            <p>Nasa Quba: Fullstack Developer</p>
+            <Image src={amber} alt="Amber" layout="fixed" width={150} height={150} />
+            <h2>Amber Molina: Team Lead</h2>
+            <p>Current Contributions: Created Footer, Feedback Form, and Team Info UI.</p>
+            <Image src={austin} alt="Austin" layout="fixed" width={150} height={150} />
+            <h2>Austin Bieber: Tech Lead</h2>
+            <p>Current Contributions: </p>
+            <Image src={chris} alt="Chris" layout="fixed" width={150} height={150} />
+            <h2>Christin Lin: Fullstack Developer</h2>
+            <p>Current Contributions: </p>
+            <Image src={nasa} alt="Nasa" layout="fixed" width={150} height={150} />
+            <h2>Nasa Quba: Fullstack Developer</h2>
+            <p>Current Contributions: </p>
         </div>
         <div className="team-info">
           <h1>Project Goals:</h1>
@@ -78,14 +82,15 @@ export default function TeamInfo(props) {
         </div>
         <div className="team-info">
           <h1>Important Links</h1>
-          <ol>
-            <p>
-              <a href="https://vimeo.com/913052661?share=copy">Presentation Video</a>
-            </p>
-            <p>
-              <a href="https://github.com/ajbieber/vision-aid-partners">Project GitHub</a>
-            </p>            
-          </ol>
+          <p>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSek2sc5bzRulLRB4Y1GcieoLc0ThsxphofEv5U6SYoo5SU38w/viewform?usp=sf_link" target="_blank" rel="noopener noreferrer">Peer Review Survey</a>
+          </p>            
+          <p>
+            <a href="https://vimeo.com/913052661?share=copy" target="_blank" rel="noopener noreferrer">Presentation Video</a>
+          </p>
+          <p>
+            {/* <a href="https://github.com/ajbieber/vision-aid-partners" target="_blank" rel="noopener noreferrer">Project GitHub</a> */}
+          </p>
         </div>
       </div>
     </Layout>
