@@ -50,7 +50,7 @@ export default function TeamInfo(props) {
             <p>Current Contributions: Created Footer, Feedback Form, and Team Info UI.</p>
             <Image src={austin} alt="Austin" layout="fixed" width={150} height={150} />
             <h2>Austin Bieber: Tech Lead</h2>
-            <p>Current Contributions: Cleaned repository for industry standards, deployed webiste and database, setup authentication connections</p>
+            <p>Current Contributions: Cleaned repository for industry standards, deployed website and database, setup authentication connections</p>
             <Image src={chris} alt="Chris" layout="fixed" width={150} height={150} />
             <h2>Christin Lin: Fullstack Developer</h2>
             <p>Current Contributions: </p>
