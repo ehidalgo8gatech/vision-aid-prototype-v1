@@ -1,5 +1,6 @@
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
+const cr_date = new Date();
 
 async function main() {
     const hospital = await prisma.hospital.create({
@@ -220,6 +221,21 @@ async function main() {
             trainingTypeId: 4,
             value: "Certificate course in Mobile technology - MT"
         },
+    })
+    await prisma.landing_Page.create({
+        data: {
+            id: 1,
+            // userId: 5,
+            // creationDate: cr_date,
+            // content: "seed_content",
+        },
+    })
+
+    await prisma.landing_Page.create({
+        id: 2,
+        // userId: 5,
+        // creationDate: cr_date,
+        // content: "seed_content",
     })
 }
 
