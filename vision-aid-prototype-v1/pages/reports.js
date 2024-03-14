@@ -1,11 +1,11 @@
-import { readUser } from "./api/user";
+import { readUser, allHospitalRoles } from "./api/user";
 import { getSession } from "next-auth/react";
 import { Chart as ChartJS } from "chart.js/auto";
 import { Chart } from "react-chartjs-2";
 import { Bar } from "react-chartjs-2";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import {
   getSummaryForAllHospitals,
-  getSummaryForHospitalFromID,
 } from "@/pages/api/hospital";
 import { Container } from "react-bootstrap";
 import Navigation from "./navigation/Navigation";
@@ -15,14 +15,13 @@ import moment from "moment";
 import { useState, useEffect } from "react";
 import {
   findAllBeneficiary,
-  findAllBeneficiaryForHospitalId,
 } from "@/pages/api/beneficiary";
 import { CSVLink, CSVDownload } from "react-csv";
 import GraphCustomizer from "./components/GraphCustomizer";
 import { Tab, Tabs, Paper } from "@mui/material";
 // import * as XLSX from "xlsx";
 import XLSX from "xlsx-js-style";
-import { isNotNullEmptyOrUndefined } from "@/constants/globalFunctions";
+import { isNotNullBlankOrUndefined } from "@/constants/globalFunctions";
 import { Orienta } from "@next/font/google";
 import { Download } from "react-bootstrap-icons";
 import { useRouter } from "next/router";
@@ -33,6 +32,7 @@ import {
   filterTrainingSummaryByDateRange,
   getReportData,
 } from "@/constants/reportFunctions";
+import * as devicesConstants from "@/constants/devicesConstants";
 
 // This function is called to load data from the server side.
 export async function getServerSideProps(ctx) {
@@ -47,63 +47,27 @@ export async function getServerSideProps(ctx) {
     };
   }
 
-  // If it's a non admin user, we only want to show the summary for their hospital
-  const user = await readUser(session.user.email);
-  if (user.admin == null) {
-    const hospitalSummary = await getSummaryForHospitalFromID(
-      user.hospitalRole.hospitalId
-    );
-
-    let hospitalBeneficiaryListFromAPI = [];
-    hospitalBeneficiaryListFromAPI = await findAllBeneficiaryForHospitalId(
-      user.hospitalRole.hospitalId
-    );
-
-    let hospitalBeneficiaryList = [];
-
-    hospitalBeneficiaryList = hospitalBeneficiaryListFromAPI.map(
-      (beneficiary) => ({
-        mrn: beneficiary.mrn,
-        beneficiaryName: beneficiary.beneficiaryName,
-        hospitalId: beneficiary.hospitalId,
-        dateOfBirth: beneficiary.dateOfBirth,
-        gender: beneficiary.gender,
-        phoneNumber: beneficiary.phoneNumber,
-        education: beneficiary.education,
-        occupation: beneficiary.occupation,
-        districts: beneficiary.districts,
-        state: beneficiary.state,
-        diagnosis: beneficiary.diagnosis,
-        vision: beneficiary.vision,
-        mDVI: beneficiary.mDVI,
-        extraInformation: beneficiary.extraInformation,
-        hospital: beneficiary.hospital,
-        visionEnhancement: beneficiary.Vision_Enhancement,
-        counsellingEducation: beneficiary.Counselling_Education,
-        comprehensiveLowVisionEvaluation:
-          beneficiary.Comprehensive_Low_Vision_Evaluation,
-        lowVisionEvaluation: beneficiary.Low_Vision_Evaluation,
-        training: beneficiary.Training,
-        computerTraining: beneficiary.Computer_Training,
-        mobileTraining: beneficiary.Mobile_Training,
-        orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
-      })
-    );
-
-    return {
-      props: {
-        user: user,
-        summary: JSON.parse(JSON.stringify([hospitalSummary])),
-        beneficiaryList: JSON.parse(JSON.stringify(hospitalBeneficiaryList)),
-        error: null,
-      },
-    };
+  const getHospitalIdsByUsers = (id, users) => {
+    let hospitalIds = [];
+    for (const user of users ) {
+      if (user.userId === id) {
+        hospitalIds.push(user.hospitalId);
+      }
+    }
+    return hospitalIds;
   }
 
-  // The user is an admin, so we want to show the summary for all hospitals
+  // If it's a non admin user, we only want to show the summary for their hospital
+  const user = await readUser(session.user.email);
+  const roles = await allHospitalRoles();
+  let hospitalIds;
+  const isAdmin = user.admin != null;
+  if (!isAdmin) {
+    hospitalIds = getHospitalIdsByUsers(user.id, roles);
+  }
 
   // The following is code to download summary data as a CSV file
-  const beneficiaryListFromAPI = await findAllBeneficiary();
+  const beneficiaryListFromAPI = await findAllBeneficiary(isAdmin, hospitalIds);
 
   let beneficiaryList = [];
 
@@ -285,20 +249,27 @@ export async function getServerSideProps(ctx) {
   }
 
   // We finally return all the data to the page
-  if (user.admin != null) {
-    const summary = await getSummaryForAllHospitals();
+  const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds);
 
-    return {
-      props: {
-        user: user,
-        summary: JSON.parse(JSON.stringify(summary)),
-        beneficiaryList: JSON.parse(JSON.stringify(beneficiaryList)),
-        beneficiaryFlatList: flatList,
-        error: null,
-      },
-    };
-  }
+  return {
+    props: {
+      user: user,
+      summary: JSON.parse(JSON.stringify(summary)),
+      beneficiaryList: JSON.parse(JSON.stringify(beneficiaryList)),
+      beneficiaryFlatList: flatList,
+      error: null,
+    },
+  };
 }
+
+
+// Configure Chart data label plugin globally
+ChartJS.register(ChartDataLabels);
+ChartJS.defaults.plugins.datalabels.font.size = 16;
+ChartJS.defaults.plugins.datalabels.font.weight = "bold";
+ChartJS.defaults.plugins.datalabels.display = function(context){
+  return context.dataset.data[context.dataIndex] != 0;
+};
 
 // Graph Options that are constant for all graphs
 const graphOptions = {
@@ -423,8 +394,9 @@ function buildBreakdownGraph(data, breakdownType) {
     const hospitalTypes = hospital[breakdownType].map((item) => item.type);
     return [...types, ...hospitalTypes];
   }, []);
+  const filteredTypes = types.filter((type) => isNotNullBlankOrUndefined(type));
 
-  const typeCounts = types.reduce((counts, type) => {
+  const typeCounts = filteredTypes.reduce((counts, type) => {
     const count = counts[type] || 0;
     return {
       ...counts,
@@ -455,7 +427,7 @@ function buildDevicesGraph(data) {
     (sum, item) =>
       sum +
       item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedSpectacle !== ""
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedSpectacle)
       ).length,
     0
   );
@@ -463,7 +435,7 @@ function buildDevicesGraph(data) {
     (sum, item) =>
       sum +
       item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedElectronic !== ""
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedElectronic)
       ).length,
     0
   );
@@ -471,7 +443,7 @@ function buildDevicesGraph(data) {
     (sum, item) =>
       sum +
       item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedOptical !== ""
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedOptical)
       ).length,
     0
   );
@@ -479,7 +451,7 @@ function buildDevicesGraph(data) {
     (sum, item) =>
       sum +
       item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedNonOptical !== ""
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedNonOptical)
       ).length,
     0
   );
@@ -500,6 +472,44 @@ function buildDevicesGraph(data) {
           dispensedOpticalCount,
           dispensedNonOpticalCount,
         ],
+        ...graphOptions,
+      },
+    ],
+  };
+
+  return chartData;
+}
+
+// Function that builds a bar graph at a sublevel. This function is called
+// with different devices types as the breakdownType
+function buildDevicesBreakdownGraph(data, breakdownType) {
+  // Future improvement:
+  // Can make use of breakdownType, to selectively change the filter parameter
+  // Same function to be used for other device types
+  // Variable to change: item.dispensedElectronics
+  const types = data.reduce((types, hospital) => {
+    const filteredEvaluations = hospital.comprehensiveLowVisionEvaluation.filter(
+      (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedElectronic)
+    )
+    const deviceTypes = filteredEvaluations.map((item) => item.dispensedElectronic);
+    return [...types, ...deviceTypes];
+  }, []);
+
+  const typeCounts = types.reduce((counts, type) => {
+    const typeLabel = devicesConstants.electronicDevices.includes(type) ? type : "Other: " + type;
+    const count = counts[typeLabel] || 0;
+    return {
+      ...counts,
+      [typeLabel]: count + 1,
+    };
+  }, {});
+
+  const chartData = {
+    labels: Object.keys(typeCounts),
+    datasets: [
+      {
+        label: "Cumulative Counts",
+        data: Object.values(typeCounts),
         ...graphOptions,
       },
     ],
@@ -591,6 +601,7 @@ export default function Summary({
     "counsellingEducation"
   );
   const devicesGraphData = buildDevicesGraph(filteredSummary);
+  const electronicDevicesGraphData =  buildDevicesBreakdownGraph(filteredSummary, "Electronic");
 
   const downloadFilteredReport = () => {
     const {
@@ -660,22 +671,46 @@ export default function Summary({
   };
 
   const [activeGraphTab, setActiveGraphTab] = useState(0);
+  const [activeSubGraphTab, setActiveSubGraphTab] = useState(0);
   const handleGraphTabChange = (event, newValue) => {
     setActiveGraphTab(newValue);
+    setActiveSubGraphTab(0);
   };
 
-  const renderGraph = (activeTab) => {
+  const handleDevicesGraphTabChange = (event, newValue) => {
+    setActiveSubGraphTab(newValue);
+  };
+
+  const options={
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        enabled: false,
+      },
+    },
+  };
+
+  const renderGraph = (activeTab, activeSubTab) => {
     switch (activeTab) {
       case 0:
-        return <Bar data={beneficiaryGraphData} />;
+        return <Bar data={beneficiaryGraphData} options={options} />;
       case 1:
-        return <Bar data={activitiesGraphData} />;
+        return <Bar data={activitiesGraphData} options={options} />;
       case 2:
-        return <Bar data={trainingBreakdownGraphData} />;
+        return <Bar data={trainingBreakdownGraphData} options={options} />;
       case 3:
-        return <Bar data={counsellingBreakdownGraphData} />;
+        return <Bar data={counsellingBreakdownGraphData} options={options} />;
       case 4:
-        return <Bar data={devicesGraphData} />;
+        switch (activeSubTab) {
+          case 0:
+            return <Bar data={devicesGraphData} options={options} />;
+          case 1:
+            return <Bar data={electronicDevicesGraphData} options={options} />;
+          default:
+            return null;
+        }
       default:
         return null;
     }
@@ -688,7 +723,7 @@ export default function Summary({
         <h1 className="text-center mt-4 mb-4">Visualization and Reports</h1>
         <div className="row">
           <div className="col-md-2 ">
-            {user.admin && (
+            {(user.admin || user.hospitalRole[0].admin) && (
               <button
                 onClick={() => router.push("/customizedReport")}
                 className="btn btn-success border-0 btn-block"
@@ -697,7 +732,7 @@ export default function Summary({
               </button>
             )}
           </div>
-          {(user.admin || user.hospitalRole.admin) && (
+          {(user.admin || user.hospitalRole[0].admin) && (
             <div className="offset-md-8 col-md-2">
               <button
                 className="btn btn-success border-0 btn-block text-align-right"
@@ -709,7 +744,7 @@ export default function Summary({
           )}
         </div>
         <br />
-        {(user.admin || user.hospitalRole.admin) && (
+        {(user.admin || user.hospitalRole[0].admin) && (
           <div className="row">
             <div className="col-md-3">
               <GraphCustomizer
@@ -739,12 +774,25 @@ export default function Summary({
                   <Tab label="Counselling Activities" />
                   <Tab label="Devices" />
                 </Tabs>
-                {renderGraph(activeGraphTab)}
+                {activeGraphTab == 4 ?
+                <Tabs
+                  value={activeSubGraphTab}
+                  onChange={handleDevicesGraphTabChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
+                  <Tab label="All Devices" />
+                  <Tab label="Electronic" />
+                </Tabs>
+                : <></>
+                }
+                {renderGraph(activeGraphTab, activeSubGraphTab)}
               </Paper>
             </div>
           </div>
         )}
-        {user.hospitalRole != null && !user.hospitalRole.admin && (
+        {user.hospitalRole.length != 0 && !user.hospitalRole[0].admin && (
           <Paper>
             <Tabs
               value={activeGraphTab}
@@ -759,7 +807,7 @@ export default function Summary({
               <Tab label="Counselling Activities" />
               <Tab label="Devices" />
             </Tabs>
-            {renderGraph(activeGraphTab)}
+            {renderGraph(activeGraphTab, activeSubGraphTab)}
           </Paper>
         )}
       </Container>

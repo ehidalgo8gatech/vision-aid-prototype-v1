@@ -1,10 +1,10 @@
 import Navigation from "./navigation/Navigation";
 import { getSession } from "next-auth/react";
-import { allUsers, readUser } from "@/pages/api/user";
+import { allUsers, allHospitalRoles, readUser } from "@/pages/api/user";
 import { findAllHospital } from "@/pages/api/hospital";
 import Router from "next/router";
 import { Table } from "react-bootstrap";
-import { FormControl, Select, MenuItem, Input, FormLabel } from "@mui/material";
+import { FormControl, Select, MenuItem, Input, Typography, FormLabel } from "@mui/material";
 import { createMenu } from "@/constants/globalFunctions";
 import { useState } from "react";
 
@@ -22,7 +22,7 @@ export async function getServerSideProps(ctx) {
   const user = await readUser(session.user.email);
   if (
     user.admin == null &&
-    (user.hospitalRole == null || user.hospitalRole.admin != true)
+    (user.hospitalRole.length == 0 || user.hospitalRole[0].admin != true)
   ) {
     console.log("user admin is null or is not a manager of hospital");
     return {
@@ -38,14 +38,35 @@ export async function getServerSideProps(ctx) {
       user: user,
       hospitals: await findAllHospital(),
       users: await allUsers(),
+      roles: await allHospitalRoles(),
       error: null,
     },
   };
 }
 
 function Users(props) {
-  const [hosp, setHosp] = useState("");
+  const [hosp, setHosp] = useState([]);
   const [role, setRole] = useState("");
+
+  const handleRoleOption = (e) => {
+    setRole(e.target.value);
+    if (e.target.value === "Admin") {
+      setHosp(["ALL"]);
+    } else {
+      setHosp([]);
+    }
+  };
+
+  const getHospitalIdsByUsers = (id, users) => {
+    let hospitalIds = [];
+    for (const user of users ) {
+      if (user.userId === id) {
+        hospitalIds.push(user.hospitalId);
+      }
+    }
+
+    return hospitalIds;
+  }
 
   const addUser = async (e) => {
     e.preventDefault();
@@ -54,82 +75,88 @@ function Users(props) {
     // console.log(hospitalElement);
     // const hosidx = hospitalElement.selectedIndex;
     console.log(hosp);
-    let hospitalId;
-    if (hosp === "All") {
-      hospitalId = 0;
-    } else {
-      hospitalId = parseInt(
-        hosp.substring(hosp.indexOf("("), hosp.indexOf(")")).substring(4)
-      );
+    let hospitalId = [];
+    for (const hospital of hosp) {
+      if (hospital === "ALL") {
+        hospitalId = [0];
+        break;
+      } else {
+        hospitalId.push(parseInt(
+          hospital.substring(hospital.indexOf("("), hospital.indexOf(")")).substring(4)
+        ));
+      }
     }
-    console.log(
-      hosp.substring(hosp.indexOf("("), hosp.indexOf(")")).substring(4)
-    );
     console.log(hospitalId);
     const [user, existed] = await insertUserIfRequiredByEmail(userEmail);
     // let role = document.getElementById("manager").selectedOptions[0].value;
     let roleIsAdmin = role === "Admin";
     let roleIsHospAdmin = role === "Manager";
 
-    if (hospitalId === 0) {
-      if (roleIsAdmin) {
-        // add admin in admin table
-        const response = await fetch("/api/admin", {
+    let isSuccessful = true;
+    for (const hospitalIdIter of hospitalId) {
+      if (hospitalIdIter === 0) {
+        if (roleIsAdmin) {
+          // add admin in admin table
+          const response = await fetch("/api/admin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: user.id,
+            }),
+          });
+          if (response.status !== 200) {
+            alert("Something went wrong");
+            console.log("something went wrong");
+
+            // remove entry from user table
+            if (!existed) {
+              console.log("Inside admin delete");
+              deleteUser(user.id);
+            }
+          } else {
+            console.log("form submitted successfully !!!");
+            alert("Form submitted success");
+            Router.reload();
+          }
+          return;
+        } else {
+          alert("Please select a hospital");
+
+          // remove entry from user table
+          if (!existed) deleteUser(user.id);
+        }
+      } else {
+        console.log("admin " + roleIsHospAdmin);
+        console.log(user.id + ": " + hospitalIdIter + ", " + roleIsHospAdmin);
+        if (user.admin != null || roleIsAdmin) {
+          alert("An admin can't be attached to a single hospital");
+          if (!existed) deleteUser(user.id);
+          return;
+        }
+        const response = await fetch("/api/hospitalRole", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             userId: user.id,
+            hospitalId: hospitalIdIter,
+            admin: roleIsHospAdmin,
           }),
         });
         if (response.status !== 200) {
-          alert("Something went wrong");
           console.log("something went wrong");
 
           // remove entry from user table
-          if (!existed) {
-            console.log("Inside admin delete");
-            deleteUser(user.id);
-          }
+          if (!existed) deleteUser(user.id);
         } else {
           console.log("form submitted successfully !!!");
-          alert("Form submitted success");
-          Router.reload();
         }
-        return;
-      } else {
-        alert("Please select a hospital");
-
-        // remove entry from user table
-        if (!existed) deleteUser(user.id);
       }
+    }
+    if (isSuccessful) {
+      alert("Form submitted success");
+      Router.reload();
     } else {
-      console.log("admin " + roleIsHospAdmin);
-      console.log(user.id + hospitalId + roleIsHospAdmin);
-      if (user.admin != null || roleIsAdmin) {
-        alert("An admin can't be attached to a single hospital");
-        if (!existed) deleteUser(user.id);
-        return;
-      }
-      const response = await fetch("/api/hospitalRole", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.id,
-          hospitalId: hospitalId,
-          admin: roleIsHospAdmin,
-        }),
-      });
-      if (response.status !== 200) {
-        alert("Something went wrong");
-        console.log("something went wrong");
-
-        // remove entry from user table
-        if (!existed) deleteUser(user.id);
-      } else {
-        console.log("form submitted successfully !!!");
-        alert("Form submitted success");
-        Router.reload();
-      }
+      alert("Something went wrong");
     }
   };
 
@@ -172,9 +199,21 @@ function Users(props) {
   });
 
   const hospitalOptions = [];
-  for (let i = 0; i < props.hospitals.length; i++) {
-    const hospital = props.hospitals[i];
-    hospitalOptions.push(hospital.name + " (ID " + hospital.id + ")");
+  if (props.user.admin != null) {
+    for (let i = 0; i < props.hospitals.length; i++) {
+      const hospital = props.hospitals[i];
+      hospitalOptions.push(hospital.name + " (ID " + hospital.id + ")");
+    }
+  } else {
+    for (let i = 0; i < props.hospitals.length; i++) {
+      const hospital = props.hospitals[i];
+      for (const hRole of hospital.hospitalRole) {
+        if (hRole.userId == props.user.id) {
+          hospitalOptions.push(hospital.name + " (ID " + hospital.id + ")");
+          break;
+        }
+      }
+    }
   }
 
   const roleOptions = [];
@@ -185,46 +224,72 @@ function Users(props) {
     roleOptions.push("Admin");
   }
 
+  let hospitalList = [];
+  for (const hRole of props.user.hospitalRole) {
+    hospitalList.push(hRole.hospitalId);
+  }
+
   let usersList = [];
   for (let i = 0; i < props.users.length; i++) {
     const data = props.users[i];
     console.log(data);
     var admin;
-    var hospital;
+    var hospital, hospitalNames = "";
     var hospitalId = null;
-    var manager = "FALSE";
+    var hospitalIds = [];
+    var manager = false;
     if (data.admin != null) {
-      admin = "TRUE";
-      manager = "TRUE";
+      admin = true;
+      manager = true;
       hospital = "ALL";
     } else {
-      admin = "FALSE";
+      admin = false;
       hospital = "NONE";
-      if (data.hospitalRole != null) {
+      if (data.hospitalRole.length != 0) {
+        hospitalIds = getHospitalIdsByUsers(data.id, props.roles);
         hospitalId = data.hospitalRole.hospitalId;
-        if (data.hospitalRole.admin == true) {
-          manager = "TRUE";
+        if (data.hospitalRole[0].admin == true) {
+          manager = true;
         }
-        props.hospitals.forEach((hospitalLoop) => {
-          if (hospitalLoop.id == hospitalId) {
-            console.log(hospitalLoop.id + " " + hospitalId);
-            hospital = hospitalLoop.name;
-          }
-        });
+        for (const hospitalIdIter of hospitalIds) {
+          props.hospitals.forEach((hospitalLoop) => {
+            if (hospitalLoop.id == hospitalIdIter) {
+              hospitalNames += hospitalLoop.name + "; ";
+            }
+          });
+        }
+        hospital = hospitalNames.slice(0, -2);;
       }
     }
     if (
-      props.user.hospitalRole != null &&
+      props.user.hospitalRole.length != 0 &&
       props.user.hospitalRole.hospitalId != hospitalId
     ) {
       continue;
     }
+
+    if (props.user.admin === null) {
+      // dont show admins to managers
+      if (data.hospitalRole.length === 0) continue;
+
+      // only show the users assigned the same hospital as the manager
+      let hospitalMatch = false;
+      for (const hRole of data.hospitalRole) {
+        if (hospitalList.includes(hRole.hospitalId)) {
+          hospitalMatch = true;
+        }
+      }
+      if (!hospitalMatch) continue;
+    }
+
     usersList.push(
       <tr>
         <td>{data.id}</td>
         <td>{data.email}</td>
-        <td>{admin}</td>
-        <td>{manager}</td>
+        {props.user.admin != null ?
+        (admin ? <td style={{color: "green"}}>&#10004;</td> : <td style={{color: "red"}}>&#10008;</td>)
+        : <></>}
+        {manager ? <td style={{color: "green"}}>&#10004;</td> : <td style={{color: "red"}}>&#10008;</td>}
         <td>{hospital}</td>
       </tr>
     );
@@ -245,22 +310,60 @@ function Users(props) {
               <table className="row">
                 <tr className="row">
                   <td
+                    htmlFor="manager"
+                    className="col-md-5 flex-container-vertical"
+                  >
+                    Role
+                  </td>
+                  <td className="col-md-7">
+                    <FormControl fullWidth size="small" required>
+                      <Select
+                        value={role}
+                        onChange={(e) => handleRoleOption(e)}
+                      >
+                        {createMenu(roleOptions, false)}
+                      </Select>
+                    </FormControl>
+                  </td>
+                </tr>
+                <br/>
+                <tr className="row">
+                  <td
                     htmlFor="hospitalSelect"
                     className="col-md-5 flex-container-vertical"
                   >
                     Select a hospital
                   </td>
                   <td className="col-md-7">
-                    <FormControl fullWidth size="small">
+                    <FormControl fullWidth size="small" required>
+                      {role === "Professional" ?
+                      <Select
+                        value={hosp}
+                        onChange={(e) => setHosp([e.target.value])}
+                      >
+                        {createMenu(hospitalOptions, false)}
+                      </Select>
+                      : (role === "Manager" ?
                       <Select
                         value={hosp}
                         onChange={(e) => setHosp(e.target.value)}
+                        multiple
+                        renderValue={(selected) => selected.join(", ")}
                       >
-                        <MenuItem key="All" value="All">
-                          ALL
-                        </MenuItem>
-                        {createMenu(hospitalOptions, false)}
+                        {createMenu(hospitalOptions, true, hosp)}
                       </Select>
+                      :
+                      <Select
+                        value={hosp}
+                        disabled
+                      >
+                        <MenuItem key="ALL" value="ALL">
+                          <Typography align="left">
+                              ALL
+                          </Typography>
+                        </MenuItem>
+                      </Select>
+                      )}
                     </FormControl>
                   </td>
                 </tr>
@@ -270,27 +373,8 @@ function Users(props) {
                     User Email
                   </td>
                   <td className="col-md-7">
-                    <FormControl fullWidth size="small">
+                    <FormControl fullWidth size="small" required>
                       <Input id="userEmail" autoComplete="off"></Input>
-                    </FormControl>
-                  </td>
-                </tr>
-                <br />
-                <tr className="row">
-                  <td
-                    htmlFor="manager"
-                    className="col-md-5 flex-container-vertical"
-                  >
-                    Role
-                  </td>
-                  <td className="col-md-7">
-                    <FormControl fullWidth size="small">
-                      <Select
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}
-                      >
-                        {createMenu(roleOptions, false)}
-                      </Select>
                     </FormControl>
                   </td>
                 </tr>
@@ -321,9 +405,11 @@ function Users(props) {
                 <th>
                   <i>User Email</i>
                 </th>
+                {props.user.admin != null ?
                 <th>
                   <i>Admin</i>
                 </th>
+                :<></>}
                 <th>
                   <i>Manager</i>
                 </th>

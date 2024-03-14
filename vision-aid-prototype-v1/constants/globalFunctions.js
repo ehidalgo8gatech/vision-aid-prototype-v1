@@ -41,11 +41,26 @@ export const createOptionMenu = (
     }
     return optionGroups;
 };
-  
+
+export const isNotNullBlankOrUndefined = (variable) =>
+  variable !== null && variable !== undefined && variable !== "";
+
 export const isNotNullEmptyOrUndefined = (variable) =>
   variable !== null && variable !== undefined && variable.length !== 0;
 
 export const parseInputDate = (dateString) => {
   const date = dateString.replaceAll("-", "/");
   return date;
+}
+
+export const union = (...sets) => {
+  return new Set([].concat(...sets.map(set => [...set])));
+}
+
+export const difference = (a, b) => {
+  return new Set([...a].filter(i => !b.has(i)));
+}
+
+export const intersect = (a, b) => {
+  return new Set([...a].filter(i => b.has(i)));
 }

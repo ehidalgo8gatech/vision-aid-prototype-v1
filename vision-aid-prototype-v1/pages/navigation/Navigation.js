@@ -8,7 +8,7 @@ function Navigation({ user } = props) {
   if (user) {
     role = user.admin
       ? "admin"
-      : user.hospitalRole.admin
+      : user.hospitalRole[0].admin
       ? "manager"
       : user.hospitalRole
       ? "professional"

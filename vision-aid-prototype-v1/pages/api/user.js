@@ -81,6 +81,10 @@ export async function allUsers() {
   });
 }
 
+export async function allHospitalRoles() {
+  return prisma.hospitalRole.findMany();
+}
+
 async function addData(req, res) {
   const body = req.body;
   const create = {
