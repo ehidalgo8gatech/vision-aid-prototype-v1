@@ -1,51 +1,11 @@
-import React, { use, useState } from 'react';
+import React  from 'react';
 
 import Image from 'next/image'
 import p1 from 'public/images/p1.webp';
 import p2 from 'public/images/p2.webp';
-import p3 from 'public/images/p3.webp';
-
-
-async function addUserContent(id,userContent ) {
-    const url = "/api/landingPage";
-    
-    if (userContent == "") {
-      console.log("\n empty content is not allowed");
-      return
-    }
-    const addConfirmation = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId: id,
-        content: userContent,
-      }),
-    });
-    if (addConfirmation.status !== 200) {
-      console.log("something went wrong");
-    } else {
-      console.log("form submitted successfully !!!");
-    }
-  }
-  
+import p3 from 'public/images/p3.webp';  
 
 function  LandingPage(props) {
-    const [userContent, setUserContent] = useState("");
-
-    const handleUserContent = (e) => {
-        e.preventDefault();
-        console.log(e.target.value)
-        setUserContent(e.target.value);     
-      };
-
-    const addUser = async (e) => {
-        e.preventDefault();
-        const uid = document.getElementsByTagName("small")[1].innerText.split(":")[1]
-        const ueml = document.getElementsByTagName("small")[0].innerText.split(" ")[3]
-        const ucnt = document.getElementsByClassName("user-content")[0].value
-        const ct = await addUserContent(uid,ucnt)
-      };
-
     return (
         <div>
             <div className={"scroller"}>
@@ -63,15 +23,6 @@ function  LandingPage(props) {
                 <br></br>
                 <br></br>
                 <br></br>
-                <form action="#" method="POST" onSubmit={(e) => addUser(e)}>
-                    <label>Add user content here: </label> 
-                    <input type="text" className='user-content'
-                     value={userContent} onChange={handleUserContent} 
-                    />
-                    <br /> 
-                    <br /> 
-                    <button type="submit">Submit</button> 
-                </form>
                 <br></br>
                 <br></br>
                 <div>
