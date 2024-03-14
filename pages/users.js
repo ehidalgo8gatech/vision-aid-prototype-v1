@@ -7,6 +7,8 @@ import { Table } from "react-bootstrap";
 import { FormControl, Select, MenuItem, Input, Typography, FormLabel } from "@mui/material";
 import { createMenu } from "@/constants/globalFunctions";
 import { useState } from "react";
+import Layout from './components/layout';
+
 
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx);
@@ -295,7 +297,8 @@ function Users(props) {
     );
   }
   return (
-    <div>
+    <Layout>
+    <div class="content">
       <Navigation user={props.user} />
       <div className="row">
         <div className="offset-md-1 col-md-4">
@@ -424,6 +427,7 @@ function Users(props) {
       </div>
       <br />
     </div>
+    </Layout>
   );
 }
 

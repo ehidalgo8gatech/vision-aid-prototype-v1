@@ -1,14 +1,12 @@
-// components/Footer.js
-
+// components/footer.js
 import Link from "next/link";
 
 const Footer = () => {
+
   return (
     <footer className="footer">
-      {/* Your footer content goes here */}
       <p>
-        To report an issue or provide feedback,{" "}
-        <Link href="/feedback">click here</Link>.
+        <Link href="/feedback">Provide Feedback</Link>
       </p>
       <p>VA-Partners Spring 2024</p>
     </footer>

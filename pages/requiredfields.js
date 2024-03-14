@@ -19,6 +19,8 @@ import { useState } from "react";
 import { getCounsellingType } from "@/pages/api/counsellingType";
 import { getTrainingTypes } from "@/pages/api/trainingType";
 import { getTrainingSubTypes } from "@/pages/api/trainingSubType";
+import { Modal, Button, Form } from 'react-bootstrap';
+import Layout from './components/layout';
 
 // http://localhost:3000/requiredfields
 export async function getServerSideProps(ctx) {
@@ -66,6 +68,50 @@ export async function getServerSideProps(ctx) {
 function RequiredFields(props) {
   const [section, setSection] = useState("");
   const [hospitals, setHospitals] = useState(props.hospitals);
+
+  const [showModal, setShowModal] = useState(false);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [editMode, setEditMode] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const posts = [
+    { id: 1, title: 'Post 1', content: 'Content 1', date: '2022-03-08' },
+    { id: 2, title: 'Post 2', content: 'Content 2', date: '2022-03-09' },
+    { id: 3, title: 'Post 3', content: 'Content 3', date: '2022-03-07' },
+  ];
+
+  const handleShow = () => {
+    setShowModal(true);
+    setEditMode(false);
+  };
+
+  const handleClose = () => {
+    setShowModal(false);
+    setConfirmDelete(false);
+    setTitle('');
+    setContent('');
+    setSelectedPost(null);
+  };
+
+  const handleEdit = (post) => {
+    setSelectedPost(post);
+    setTitle(post.title);
+    setContent(post.content);
+    setShowModal(true);
+    setEditMode(true);
+  };
+
+  const handleDelete = (post) => {
+    setSelectedPost(post);
+    setConfirmDelete(true);
+  };
+
+  const handleSaveChanges = () => {
+    // Handle saving changes
+    handleClose();
+  };
 
   function removeExtraField(fieldId) {
     return function () {
@@ -637,7 +683,8 @@ function RequiredFields(props) {
   };
 
   return (
-    <div className="full-height">
+    <Layout>
+    <div className="content">
       <Navigation user={props.user} />
       <div className="d-flex flex-row h-100 flex-grow-1">
         <div className="container col-md-3 m-4 p-4">
@@ -687,6 +734,18 @@ function RequiredFields(props) {
               onClick={() => setSection("trainings")}
             >
               Trainings
+            </button>
+          </div>
+          <div className="p-2">
+            <button
+              className={`w-100 text-align-left ${
+                section === "landing-page"
+                  ? "btn btn-success btn-block active-tab"
+                  : "btn btn-light btn-block"
+              }`}
+              onClick={() => setSection("landing-page")}
+            >
+              Landing Page
             </button>
           </div>
         </div>
@@ -1393,709 +1452,101 @@ function RequiredFields(props) {
               </div>
             </div>
           )}
-        </div>
-      </div>
-      {/* <div className="row">
-        <div className="sidenav col-md-3">
-          <a href="#">About</a>
-          <a href="#">Services</a>
-          <a href="#">Clients</a>
-          <a href="#">Contact</a>
-        </div>
-
-        <div class="main">
-          <h2>Sidenav Example</h2>
-          <p>This sidenav is always shown.</p>
-        </div>
-      </div>
-
-      <div className="row">
-        <div className="col-md-6">
-          <form action="#" method="POST" onSubmit={(e) => addHospital(e)}>
-            <h2 className="text-center mt-4 mb-4">
-              <strong>Add A Hospital</strong>
-            </h2>
-            <div className="col-md-6">
-              <input
-                type="text"
-                className="form-control"
-                id="createHospitalName"
-                style={{ marginLeft: "170px" }}
-              />
-              <label
-                className="form-label"
-                htmlFor="createHospitalName"
-                style={{ marginLeft: "325px" }}
-              >
-                Hospital Name
-              </label>
-            </div>
-            <br />
-            <button type="submit" className="btn btn-primary">
-              Submit
-            </button>
-          </form>
-          <form action="#" method="POST" onSubmit={(e) => addFieldsSubmit(e)}>
-            <h2 className="text-center mt-4 mb-4">
-              <strong>Required Beneficiary Fields</strong>
-            </h2>
-
-            <p>
-              MRN, Beneficiary Name, And Hospital Name Will Always Be Required
-            </p>
-
-            <div class="row justify-content-center">
-              <div className="col-md-6 mx-auto">
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <label
-                    htmlFor="hospitalSelect"
-                    style={{ marginRight: "10px" }}
-                  >
-                    Select a hospital
-                  </label>
-                  <select
-                    id="hospitalSelect"
-                    style={{
-                      border: "1px solid #ccc",
-                      borderRadius: "0.25rem",
-                      color: "#495057",
-                      backgroundColor: "#fff",
-                      boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-                      transition:
-                        "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
-                    }}
-                  >
-                    <option value="">All</option>
-                    {hospitalOptions}
-                  </select>
-                </div>
-              </div>
-            </div>
-            <br />
-            <strong>Required Fields</strong>
-            <br />
-            <br />
-            <div className="form-group">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="phoneNumberRequired"
-                defaultChecked={
-                  props.requiredBeneficiaryFields.phoneNumberRequired
-                }
-              />
-              <label
-                className="form-check-label"
-                htmlFor="phoneNumberRequired"
-                style={{ marginLeft: "10px" }}
-              >
-                Phone Number
-              </label>
-            </div>
-            <br />
-            <div className="form-group">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="educationRequired"
-                defaultChecked={
-                  props.requiredBeneficiaryFields.educationRequired
-                }
-              />
-              <label
-                className="form-check-label"
-                htmlFor="educationRequired"
-                style={{ marginLeft: "10px" }}
-              >
-                Education
-              </label>
-            </div>
-            <br />
-            <div className="form-group">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="occupationRequired"
-                defaultChecked={
-                  props.requiredBeneficiaryFields.occupationRequired
-                }
-              />
-              <label
-                className="form-check-label"
-                htmlFor="occupationRequired"
-                style={{ marginLeft: "10px" }}
-              >
-                Occupation
-              </label>
-            </div>
-            <br />
-            <div className="form-group">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="districtsRequired"
-                defaultChecked={
-                  props.requiredBeneficiaryFields.districtsRequired
-                }
-              />
-              <label
-                className="form-check-label"
-                htmlFor="districtsRequired"
-                style={{ marginLeft: "10px" }}
-              >
-                Districts
-              </label>
-            </div>
-            <br />
-            <div className="form-group">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="stateRequired"
-                defaultChecked={props.requiredBeneficiaryFields.stateRequired}
-              />
-              <label
-                className="form-check-label"
-                htmlFor="stateRequired"
-                style={{ marginLeft: "10px" }}
-              >
-                State
-              </label>
-              <br />
-              <br />
-              <div className="col-md-8 mx-auto">
-                <div id="extraFields">
-                  <strong>Extra Fields</strong>
-                  <br />
-                  <br />
-                  {exInfo}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => addField("extraFields", "extraField")}
-                  className="btn btn-success border-0 btn-block"
-                >
-                  Add Required Field
+          {section === 'landing-page' && (
+            <div className="container mt-4">
+                <div className="row">
+                  <div className="col text-end" style={{ marginTop: '10px' }}>
+                <button type="button" className="btn btn-success" onClick={handleShow}>
+                  Create new post
                 </button>
+                </div>
+                </div>
                 <br />
-              </div>
+                <div>
+                  {posts
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .map((post) => (
+                      <div key={post.id} className="mb-3">
+                        <h3>{post.title}</h3>
+                        <p>{new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                        <div>
+                          <button className="btn btn-primary me-2" onClick={() => handleEdit(post)}>
+                            Edit
+                          </button>
+                          <button className="btn btn-danger" onClick={() => handleDelete(post)}>
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              <Modal show={showModal} onHide={handleClose} size="lg">
+                <Modal.Header closeButton>
+                  <Modal.Title style={{ textAlign: 'left' }}>
+                    {editMode ? 'Edit Post' : 'Create New Post'}
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Form>
+                    <Form.Group controlId="postTitle">
+                      <Form.Label className="text-left">Title</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Enter title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                      />
+                    </Form.Group>
+                    <Form.Group controlId="postContent">
+                      <Form.Label className="text-left">Content</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={3}
+                        placeholder="Enter content"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        style={{ textAlign: 'left' }}
+                      />
+                    </Form.Group>
+                  </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={handleClose}>
+                    Close
+                  </Button>
+                  {editMode ? (
+                    <Button variant="primary" onClick={handleSaveChanges}>
+                      Update
+                    </Button>
+                  ) : (
+                    <Button variant="primary" onClick={handleSaveChanges}>
+                      Save Changes
+                    </Button>
+                  )}
+                </Modal.Footer>
+              </Modal>
+              <Modal show={confirmDelete} onHide={() => setConfirmDelete(false)}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Confirm Delete</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  Are you sure you want to delete this post?
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={() => setConfirmDelete(false)}>
+                    Cancel
+                  </Button>
+                  <Button variant="danger" onClick={() => handleSaveChanges(selectedPost)}>
+                    Delete
+                  </Button>
+                </Modal.Footer>
+              </Modal>
             </div>
-            <br />
-            <br />
-            <button type="submit" className="btn btn-primary">
-              Submit
-            </button>
-          </form>
+          )}
         </div>
-
-        <div className="col-md-6">
-          <h2 className="text-center mt-4 mb-4">
-            <strong>Other Form Required Fields</strong>
-          </h2>
-          <br />
-          <div className="d-flex justify-content-center align-items-center">
-            {showForm["comprehensiveLowVisionEvaluation"] ? (
-              <ChevronDown
-                className="ml-2"
-                onClick={() => handleToggle("comprehensiveLowVisionEvaluation")}
-                style={{ cursor: "pointer" }}
-              />
-            ) : (
-              <ChevronRight
-                className="ml-2"
-                onClick={() => handleToggle("comprehensiveLowVisionEvaluation")}
-                style={{ cursor: "pointer" }}
-              />
-            )}
-            <h2 className="text-center">Comprehensive Low Vision Evaluation</h2>
-          </div>
-          <div
-            className="container"
-            id="comprehensiveLowVisionEvaluationTrainingRequiredFields"
-          >
-            <form
-              action="#"
-              method="POST"
-              onSubmit={(e) =>
-                addFieldsTrainingSubmit(
-                  e,
-                  "ComprehensiveLowVisionEvaluation",
-                  "comprehensiveLowVisionEvaluationMirror"
-                )
-              }
-            >
-              <div className="container">
-                <div class="row justify-content-center">
-                  <div className="col-md-6 mx-auto">
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <label
-                        htmlFor="hospitalNameOverrideComprehensiveLowVisionEvaluation"
-                        style={{ marginRight: "10px" }}
-                      >
-                        Select a hospital
-                      </label>
-                      <select
-                        id="hospitalNameOverrideComprehensiveLowVisionEvaluation"
-                        style={{
-                          border: "1px solid #ccc",
-                          borderRadius: "0.25rem",
-                          color: "#495057",
-                          backgroundColor: "#fff",
-                          boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-                          transition:
-                            "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
-                        }}
-                      >
-                        <option value="">All</option>
-                        {hospitalOptions}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div id="extraFieldsComprehensiveLowVisionEvaluation">
-                <strong>Extra Fields</strong>
-                <br />
-                <br />
-                {exInfoComprehensiveLowVisionEvaluation}
-              </div>
-              <button
-                type="button"
-                onClick={() =>
-                  addField(
-                    "extraFieldsComprehensiveLowVisionEvaluation",
-                    "extraFieldsComprehensiveLowVisionEvaluation"
-                  )
-                }
-                className="btn btn-success border-0 btn-block"
-              >
-                Add Required Field
-              </button>
-              <br />
-              <button type="submit" className="btn btn-primary">
-                Submit
-              </button>
-            </form>
-          </div>
-          <br />
-
-          <div className="d-flex justify-content-center align-items-center">
-            {showForm["visionEnhancement"] ? (
-              <ChevronDown
-                className="ml-2"
-                onClick={() => handleToggle("visionEnhancement")}
-                style={{ cursor: "pointer" }}
-              />
-            ) : (
-              <ChevronRight
-                className="ml-2"
-                onClick={() => handleToggle("visionEnhancement")}
-                style={{ cursor: "pointer" }}
-              />
-            )}
-            <h2 className="text-center">Vision Enhancement</h2>
-          </div>
-          <div
-            className="container"
-            id="visionEnhancementTrainingRequiredFields"
-          >
-            <form
-              action="#"
-              method="POST"
-              onSubmit={(e) =>
-                addFieldsTrainingSubmit(
-                  e,
-                  "VisionEnhancement",
-                  "visionEnhancementMirror"
-                )
-              }
-            >
-              <div className="container">
-                <div class="row justify-content-center">
-                  <div className="col-md-6 mx-auto">
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <label
-                        htmlFor="hospitalNameOverrideVisionEnhancement"
-                        style={{ marginRight: "10px" }}
-                      >
-                        Select a hospital
-                      </label>
-                      <select
-                        id="hospitalNameOverrideVisionEnhancement"
-                        style={{
-                          border: "1px solid #ccc",
-                          borderRadius: "0.25rem",
-                          color: "#495057",
-                          backgroundColor: "#fff",
-                          boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-                          transition:
-                            "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
-                        }}
-                      >
-                        <option value="">All</option>
-                        {hospitalOptions}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div id="extraFieldsVisionEnhancement">
-                <strong>Extra Fields</strong>
-                <br />
-                <br />
-                {exInfoVisionEnhancement}
-              </div>
-              <button
-                type="button"
-                onClick={() =>
-                  addField(
-                    "extraFieldsVisionEnhancement",
-                    "extraFieldsVisionEnhancement"
-                  )
-                }
-                className="btn btn-success border-0 btn-block"
-              >
-                Add Required Field
-              </button>
-              <br />
-              <button type="submit" className="btn btn-primary">
-                Submit
-              </button>
-            </form>
-          </div>
-          <br />
-          <br />
-          <br />
-          <br />
-
-          <div className="d-flex justify-content-center align-items-center">
-            {showForm["mobile"] ? (
-              <ChevronDown
-                className="ml-2"
-                onClick={() => handleToggle("mobile")}
-                style={{ cursor: "pointer" }}
-              />
-            ) : (
-              <ChevronRight
-                className="ml-2"
-                onClick={() => handleToggle("mobile")}
-                style={{ cursor: "pointer" }}
-              />
-            )}
-            <h2 className="text-center">Mobile Training</h2>
-          </div>
-          <div className="container" id="mobileTrainingRequiredFields">
-            <form
-              action="#"
-              method="POST"
-              onSubmit={(e) =>
-                addFieldsTrainingSubmit(
-                  e,
-                  "MobileTraining",
-                  "mobileTrainingMirror"
-                )
-              }
-            >
-              <div className="container">
-                <div class="row justify-content-center">
-                  <div className="col-md-6 mx-auto">
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <label
-                        htmlFor="hospitalNameOverrideMobileTraining"
-                        style={{ marginRight: "10px" }}
-                      >
-                        Select a hospital
-                      </label>
-                      <select
-                        id="hospitalNameOverrideMobileTraining"
-                        style={{
-                          border: "1px solid #ccc",
-                          borderRadius: "0.25rem",
-                          color: "#495057",
-                          backgroundColor: "#fff",
-                          boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-                          transition:
-                            "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
-                        }}
-                      >
-                        <option value="">All</option>
-                        {hospitalOptions}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div id="extraFieldsMobileTraining">
-                <strong>Extra Fields</strong>
-                <br />
-                <br />
-                {exInfoMobileTraining}
-              </div>
-              <button
-                type="button"
-                onClick={() =>
-                  addField(
-                    "extraFieldsMobileTraining",
-                    "extraFieldsMobileTraining"
-                  )
-                }
-                className="btn btn-success border-0 btn-block"
-              >
-                Add Required Field
-              </button>
-              <br />
-              <button type="submit" className="btn btn-primary">
-                Submit
-              </button>
-            </form>
-          </div>
-          <br />
-
-          <div className="d-flex justify-content-center align-items-center">
-            {showForm["counsellingEducation"] ? (
-              <ChevronDown
-                className="ml-2"
-                onClick={() => handleToggle("counsellingEducation")}
-                style={{ cursor: "pointer" }}
-              />
-            ) : (
-              <ChevronRight
-                className="ml-2"
-                onClick={() => handleToggle("counsellingEducation")}
-                style={{ cursor: "pointer" }}
-              />
-            )}
-            <h2 className="text-center">Counselling Education</h2>
-          </div>
-          <div
-            className="container"
-            id="counsellingEducationTrainingRequiredFields"
-          >
-            <form
-              action="#"
-              method="POST"
-              onSubmit={(e) =>
-                addFieldsTrainingSubmit(
-                  e,
-                  "CounsellingEducation",
-                  "counsellingEducationMirror"
-                )
-              }
-            >
-              <div className="container">
-                <div class="row justify-content-center">
-                  <div className="col-md-6 mx-auto">
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <label
-                        htmlFor="hospitalNameOverrideCounsellingEducation"
-                        style={{ marginRight: "10px" }}
-                      >
-                        Select a hospital
-                      </label>
-                      <select
-                        id="hospitalNameOverrideCounsellingEducation"
-                        style={{
-                          border: "1px solid #ccc",
-                          borderRadius: "0.25rem",
-                          color: "#495057",
-                          backgroundColor: "#fff",
-                          boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-                          transition:
-                            "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
-                        }}
-                      >
-                        <option value="">All</option>
-                        {hospitalOptions}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div id="extraFieldsCounsellingEducation">
-                <strong>Extra Fields</strong>
-                <br />
-                <br />
-                {exInfoCounsellingEducation}
-              </div>
-              <button
-                type="button"
-                onClick={() =>
-                  addField(
-                    "extraFieldsCounsellingEducation",
-                    "extraFieldsCounsellingEducation"
-                  )
-                }
-                className="btn btn-success border-0 btn-block"
-              >
-                Add Required Field
-              </button>
-              <br />
-              <button type="submit" className="btn btn-primary">
-                Submit
-              </button>
-            </form>
-          </div>
-          <br />
-
-          <h2 className="text-center mt-4 mb-4">
-            <strong>Add Types</strong>
-          </h2>
-          <br />
-          <div className="d-flex justify-content-center align-items-center">
-            {showForm["addCounsellingType"] ? (
-              <ChevronDown
-                className="ml-2"
-                onClick={() =>
-                  handleToggleByType("addCounsellingTypeContainer")
-                }
-                style={{ cursor: "pointer" }}
-              />
-            ) : (
-              <ChevronRight
-                className="ml-2"
-                onClick={() =>
-                  handleToggleByType("addCounsellingTypeContainer")
-                }
-                style={{ cursor: "pointer" }}
-              />
-            )}
-            <h2 className="text-center">Add/Delete Counseling Education</h2>
-          </div>
-          <div className="container" id="addCounsellingTypeContainer">
-            {removeTypeCounseling}
-            <form
-              action="#"
-              method="POST"
-              onSubmit={(e) =>
-                addTypesSubmit(e, "counsellingType", "addCounsellingType")
-              }
-            >
-              <label htmlFor="addCounsellingType">Add Counseling Type:</label>
-              <input
-                type="text"
-                id="addCounsellingType"
-                name="addCounsellingType"
-              />
-              <br />
-              <button type="submit" className="btn btn-primary">
-                Submit
-              </button>
-            </form>
-          </div>
-
-          <br />
-          <div className="d-flex justify-content-center align-items-center">
-            {showForm["addTrainingType"] ? (
-              <ChevronDown
-                className="ml-2"
-                onClick={() => handleToggleByType("addTrainingTypeContainer")}
-                style={{ cursor: "pointer" }}
-              />
-            ) : (
-              <ChevronRight
-                className="ml-2"
-                onClick={() => handleToggleByType("addTrainingTypeContainer")}
-                style={{ cursor: "pointer" }}
-              />
-            )}
-            <h2 className="text-center">Add/Delete Training Type</h2>
-          </div>
-          <div className="container" id="addTrainingTypeContainer">
-            {removeTypeTraining}
-            <form
-              action="#"
-              method="POST"
-              onSubmit={(e) =>
-                addTypesSubmit(e, "trainingType", "addTrainingType")
-              }
-            >
-              <label htmlFor="addTrainingType">Add Training Type:</label>
-              <input type="text" id="addTrainingType" name="addTrainingType" />
-              <br />
-              <button type="submit" className="btn btn-primary">
-                Submit
-              </button>
-            </form>
-          </div>
-          <br />
-
-          <div className="d-flex justify-content-center align-items-center">
-            {showForm["addTrainingSubType"] ? (
-              <ChevronDown
-                className="ml-2"
-                onClick={() =>
-                  handleToggleByType("addTrainingSubTypeContainer")
-                }
-                style={{ cursor: "pointer" }}
-              />
-            ) : (
-              <ChevronRight
-                className="ml-2"
-                onClick={() =>
-                  handleToggleByType("addTrainingSubTypeContainer")
-                }
-                style={{ cursor: "pointer" }}
-              />
-            )}
-            <h2 className="text-center">Add/Delete Training Sub Type</h2>
-          </div>
-          <div className="container" id="addTrainingSubTypeContainer">
-            {removeSubTypeTraining}
-            <form
-              action="#"
-              method="POST"
-              onSubmit={(e) => addSubTypesSubmit(e)}
-            >
-              <label htmlFor="addTrainingSubType">Add Training Sub Type:</label>
-
-              <select name="training" id="training">
-                {trainingTypesOption}
-              </select>
-              <input
-                type="text"
-                id="addTrainingSubType"
-                name="addTrainingSubType"
-              />
-              <br />
-              <button type="submit" className="btn btn-primary">
-                Submit
-              </button>
-            </form>
-          </div>
-          <br />
-        </div>
-      </div> */}
+      </div>
     </div>
+    </Layout>
   );
 }
 
