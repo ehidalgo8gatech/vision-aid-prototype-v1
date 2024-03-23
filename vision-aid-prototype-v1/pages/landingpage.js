@@ -94,6 +94,7 @@ function  LandingPage({ user } = props) {
                             src={p1}
                             width={200}
                             height={100}
+                            alt=""
                             />
                     </div>                
                     <br></br>
@@ -113,6 +114,7 @@ function  LandingPage({ user } = props) {
                             src={p2}
                             width={300}
                             height={200}
+                            alt=""
                             />
                     </div>
                     <br></br>
@@ -132,6 +134,7 @@ function  LandingPage({ user } = props) {
                             src={p3}
                             width={200}
                             height={200}
+                            alt=""
                         />
                     </div>
                     
