@@ -31,7 +31,5 @@ jobs:
           npm install
 
       - name: Run ESLint
-        run: npx eslint .
-          --config .eslintrc.json
-          --ext .js,.jsx
+        run: npm run lint
         continue-on-error: false
