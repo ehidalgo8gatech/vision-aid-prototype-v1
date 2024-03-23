@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "test": "npx jest --runInBand  landingPage.test.js"
+    "test": "npx jest --runInBand"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",

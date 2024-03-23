@@ -17,7 +17,6 @@ export default async function handler(req, res) {
 }
 
 async function updateContent(req, res) {
-  console.log(" \n\n +++++++ inside updateContent ++++++ ")
   let  updatedUser
   try {
     if (req.body.userId != null || req.body.userId != '' ) {
@@ -58,7 +57,6 @@ async function readContent(req, res) {
 }
 
 async function addContent(req, res) {
-  console.log(" \n\n +++++++ inside addContent ++++++ ")
   const dt = new Date();
   const body = req.body;
   const create = {
@@ -103,7 +101,3 @@ async function deleteContent(req, res) {
   }
 }
 
-
-
-
-///////////////////
