@@ -38,30 +38,30 @@ export default function NewEvaluationDashboard(props) {
 
   useEffect(() => {
     setMobileTrainingData(props.user.Mobile_Training);
-  }, []);
+  }, [props.user.Mobile_Training]);
   useEffect(() => {
     setTrainingData(props.user.Training);
-  }, []);
+  }, [props.user.Training]);
   useEffect(() => {
     setComputerTrainingData(props.user.Computer_Training);
-  }, []);
+  }, [props.user.Computer_Training]);
   useEffect(() => {
     setVisionTrainingData(props.user.Vision_Enhancement);
-  }, []);
+  }, [props.user.Vision_Enhancement]);
   useEffect(() => {
     setComprehensiveLowVisionEvaluationData(
       props.user.Comprehensive_Low_Vision_Evaluation
     );
-  }, []);
+  }, [props.user.Comprehensive_Low_Vision_Evaluation]);
   useEffect(() => {
     setLowVisionEvaluationData(props.user.Low_Vision_Evaluation);
-  }, []);
+  }, [props.user.Low_Vision_Evaluation]);
   useEffect(() => {
     setCounsellingEducationData(props.user.Counselling_Education);
-  }, []);
+  }, [props.user.Counselling_Education]);
   useEffect(() => {
     setOrientationMobilityData(props.user.Orientation_Mobility_Training);
-  }, []);
+  }, [props.user.Orientation_Mobility_Training]);
 
   const updateMDVIForBeneficiary = async (data) => {
     data["mrn"] = props.user.mrn;
@@ -207,8 +207,8 @@ export default function NewEvaluationDashboard(props) {
     <div>
       <Navigation user={props.currentUser} />
       <div className="container p-4 mb-3">
-        <h2 class="benficiary-heading">{formatTitle(props.service)}</h2>
-        <hr class="horizontal-line" />
+        <h2 className="benficiary-heading">{formatTitle(props.service)}</h2>
+        <hr className="horizontal-line" />
         <div className="row">
           <div className="col-md-5">
             <UserProfileCard

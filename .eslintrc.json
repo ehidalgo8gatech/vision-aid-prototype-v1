@@ -1,3 +1,25 @@
 {
-  "extends": "next/core-web-vitals"
+  "env": {
+    "es6": true
+  },
+  "extends": [
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime"
+  ],
+  "rules": {
+    "no-unused-vars": "warn", // Would like to make this an error someday
+
+    // REACT RULES
+    "react/no-unknown-property": [
+      2,
+      {
+        "ignore": [
+          "jsx"
+        ]
+      }
+    ],
+    "react/prop-types": "off"
+  }
 }

@@ -260,7 +260,7 @@ function Users(props) {
             }
           });
         }
-        hospital = hospitalNames.slice(0, -2);;
+        hospital = hospitalNames.slice(0, -2);
       }
     }
     if (
@@ -298,7 +298,7 @@ function Users(props) {
   }
   return (
     <Layout>
-    <div class="content">
+    <div className="content">
       <Navigation user={props.user} />
       <div className="row">
         <div className="offset-md-1 col-md-4">

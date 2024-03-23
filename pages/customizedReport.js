@@ -89,7 +89,8 @@ export async function getServerSideProps(ctx) {
   };
 }
 
-function ReportCustomizer({ user, summary, beneficiaryList } = props) {
+function ReportCustomizer(props) {
+  const { user, summary, beneficiaryList } = props;
   const [startDate, setStartDate] = useState(
     moment().subtract(1, "year").toDate()
   );
@@ -126,7 +127,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
 
   useEffect(() => {
     handleSelectAll();
-  }, []);
+  }, [handleSelectAll]);
 
   const handleHospitalSelection = (event) => {
     const hospitalId = parseInt(event.target.value);
@@ -344,16 +345,16 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
 
   return (
     <Layout>
-    <div class="content">
+    <div className="content">
       <Navigation user={user} />
       <div className="container p-4 mb-3">
         <h1 className="mt-4 mb-4">Customize Report</h1>
 
-        <div class="accordion">
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+        <div className="accordion">
+          <div className="accordion-item">
+            <h2 className="accordion-header" id="panelsStayOpen-headingOne">
               <button
-                class="accordion-button collapsed"
+                className="accordion-button collapsed"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#panelsStayOpen-collapseOne"
@@ -365,10 +366,10 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
             </h2>
             <div
               id="panelsStayOpen-collapseOne"
-              class="accordion-collapse collapse"
+              className="accordion-collapse collapse"
               aria-labelledby="panelsStayOpen-headingOne"
             >
-              <div class="accordion-body">
+              <div className="accordion-body">
                 <div className="row">
                   <div className="col-md-4 text-align-left">
                     <label htmlFor="startDate">Start Date: </label>
@@ -403,10 +404,10 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
               </div>
             </div>
           </div>
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+          <div className="accordion-item">
+            <h2 className="accordion-header" id="panelsStayOpen-headingTwo">
               <button
-                class="accordion-button collapsed"
+                className="accordion-button collapsed"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#panelsStayOpen-collapseTwo"
@@ -418,10 +419,10 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
             </h2>
             <div
               id="panelsStayOpen-collapseTwo"
-              class="accordion-collapse collapse"
+              className="accordion-collapse collapse"
               aria-labelledby="panelsStayOpen-headingTwo"
             >
-              <div class="accordion-body">
+              <div className="accordion-body">
                 <div className="row">
                   <div className="col-md-6">
                     <Table striped bordered hover>
@@ -446,10 +447,10 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
               </div>
             </div>
           </div>
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+          <div className="accordion-item">
+            <h2 className="accordion-header" id="panelsStayOpen-headingThree">
               <button
-                class="accordion-button collapsed"
+                className="accordion-button collapsed"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#panelsStayOpen-collapseThree"
@@ -461,10 +462,10 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
             </h2>
             <div
               id="panelsStayOpen-collapseThree"
-              class="accordion-collapse collapse"
+              className="accordion-collapse collapse"
               aria-labelledby="panelsStayOpen-headingThree"
             >
-              <div class="accordion-body">
+              <div className="accordion-body">
                 <div className="row">
                   <div className="col-md-2 text-align-left">
                     <input
@@ -500,10 +501,10 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
             </div>
           </div>
 
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-headingFour">
+          <div className="accordion-item">
+            <h2 className="accordion-header" id="panelsStayOpen-headingFour">
               <button
-                class="accordion-button collapsed"
+                className="accordion-button collapsed"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#panelsStayOpen-collapseFour"
@@ -515,10 +516,10 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
             </h2>
             <div
               id="panelsStayOpen-collapseFour"
-              class="accordion-collapse collapse"
+              className="accordion-collapse collapse"
               aria-labelledby="panelsStayOpen-headingFour"
             >
-              <div class="accordion-body">
+              <div className="accordion-body">
                 <div className="row">
                   <div className="col-md-4 text-align-left">
                     <label>Minimum Age: </label>
@@ -545,10 +546,10 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
               </div>
             </div>
           </div>
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-headingFive">
+          <div className="accordion-item">
+            <h2 className="accordion-header" id="panelsStayOpen-headingFive">
               <button
-                class="accordion-button collapsed"
+                className="accordion-button collapsed"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#panelsStayOpen-collapseFive"
@@ -560,10 +561,10 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
             </h2>
             <div
               id="panelsStayOpen-collapseFive"
-              class="accordion-collapse collapse"
+              className="accordion-collapse collapse"
               aria-labelledby="panelsStayOpen-headingFive"
             >
-              <div class="accordion-body">
+              <div className="accordion-body">
                 <div className="row">
                   <div className="col-md-2 text-align-left">
                     <input
@@ -599,10 +600,10 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
             </div>
           </div>
 
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-headingSix">
+          <div className="accordion-item">
+            <h2 className="accordion-header" id="panelsStayOpen-headingSix">
               <button
-                class="accordion-button collapsed"
+                className="accordion-button collapsed"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#panelsStayOpen-collapseSix"
@@ -614,10 +615,10 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
             </h2>
             <div
               id="panelsStayOpen-collapseSix"
-              class="accordion-collapse collapse"
+              className="accordion-collapse collapse"
               aria-labelledby="panelsStayOpen-headingSix"
             >
-              <div class="accordion-body">
+              <div className="accordion-body">
                 <div className="row">
                   <div className="col-md-6 text-align-left">
                     <input
@@ -730,10 +731,10 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
           </div>
 
           {selectedSheets.includes("Training") && (
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="panelsStayOpen-headingSeven">
+            <div className="accordion-item">
+              <h2 className="accordion-header" id="panelsStayOpen-headingSeven">
                 <button
-                  class="accordion-button collapsed"
+                  className="accordion-button collapsed"
                   type="button"
                   data-bs-toggle="collapse"
                   data-bs-target="#panelsStayOpen-collapseSeven"
@@ -745,10 +746,10 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
               </h2>
               <div
                 id="panelsStayOpen-collapseSeven"
-                class="accordion-collapse collapse"
+                className="accordion-collapse collapse"
                 aria-labelledby="panelsStayOpen-headingSeven"
               >
-                <div class="accordion-body">
+                <div className="accordion-body">
                   {trainingTypes.map((type) => (
                     <div className="row" key={type}>
                       <div className="col-md-6 text-align-left">
@@ -770,7 +771,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
 
         <br />
         <button
-          class="btn btn-success border-0 btn-block"
+          className="btn btn-success border-0 btn-block"
           onClick={() => downloadFilteredReport()}
         >
           Download Customized Report
