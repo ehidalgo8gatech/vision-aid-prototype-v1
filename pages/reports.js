@@ -526,11 +526,11 @@ export default function Summary({
 
   useEffect(() => {
     setSelectedHospitals(summary.map((item) => item.id));
-  }, []);
+  }, [summary]);
 
   useEffect(() => {
     setSelectedHospitalNames(summary.map((item) => item.name));
-  }, []);
+  }, [summary]);
 
   const handleMultiSelectChange = (e) => {
     const {
