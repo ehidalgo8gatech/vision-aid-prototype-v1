@@ -703,7 +703,7 @@ export default function Summary({
 
   return (
     <Layout>
-    <div class="content">
+    <div className="content">
       <Navigation user={user} />
       <Container className="p-3">
         <h1 className="text-center mt-4 mb-4">Visualization and Reports</h1>

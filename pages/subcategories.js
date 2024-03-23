@@ -81,23 +81,23 @@ function requiredFields() {
             
             </style>
 
-            <div class="mt-3">
+            <div className="mt-3">
             <p>Select the field you want to add to the beneficiary. Then, enter the description and click on Submit</p>
             <p>Complementary Information:</p>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="mobileTraining" name="mobileTraining" value="Mobile Training">
-                <label class="form-check-label" for="mobileTraining">Mobile Training</label>
-                <input type="text" class="form-control" id="mobileTrainingInput" name="mobileTrainingInput" placeholder="Enter description">
+            <div className="form-check form-check-inline">
+                <input className="form-check-input" type="checkbox" id="mobileTraining" name="mobileTraining" value="Mobile Training">
+                <label className="form-check-label" for="mobileTraining">Mobile Training</label>
+                <input type="text" className="form-control" id="mobileTrainingInput" name="mobileTrainingInput" placeholder="Enter description">
             </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="computerTraining" name="computerTraining" value="Computer Training">
-                <label class="form-check-label" for="computerTraining">Computer Training</label>
-                <input type="text" class="form-control" id="computerTrainingInput" name="computerTrainingInput" placeholder="Enter description">
+            <div className="form-check form-check-inline">
+                <input className="form-check-input" type="checkbox" id="computerTraining" name="computerTraining" value="Computer Training">
+                <label className="form-check-label" for="computerTraining">Computer Training</label>
+                <input type="text" className="form-control" id="computerTrainingInput" name="computerTrainingInput" placeholder="Enter description">
             </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="orientationMobility" name="orientationMobility" value="Orientation & Mobility">
-                <label class="form-check-label" for="orientationMobility">Orientation & Mobility</label>
-                <input type="text" class="form-control" id="orientationMobilityInput" name="orientationMobilityInput" placeholder="Enter description">
+            <div className="form-check form-check-inline">
+                <input className="form-check-input" type="checkbox" id="orientationMobility" name="orientationMobility" value="Orientation & Mobility">
+                <label className="form-check-label" for="orientationMobility">Orientation & Mobility</label>
+                <input type="text" className="form-control" id="orientationMobilityInput" name="orientationMobilityInput" placeholder="Enter description">
             </div>
             <button type="submit" className="btn btn-primary mt-3">
               Submit
@@ -146,18 +146,18 @@ function requiredFields() {
           <br/>
           <br/>
           <p id="selectedBeneficiary">Selected Beneficiary:</p>
-            <div class="mt-3">
-            <label for="subcategories">Subcategories:</label>
+            <div className="mt-3">
+            <label htmlFor="subcategories">Subcategories:</label>
             <br/>
             <br/>
-            <select id="subcategories" class="form-select" onChange={displayTrainingOptions}>
+            <select id="subcategories" className="form-select" onChange={displayTrainingOptions}>
                 <option value="">Select a subcategory</option>
                 <option value="assistive-devices">Assistive Devices</option>
                 <option value="training">Training</option>
                 <option value="counselling-referrals">Counselling & Referrals</option>
             </select>
             </div>
-            <div id="trainingOptions" class="mt-3"></div>
+            <div id="trainingOptions" className="mt-3"></div>
         </div>
       );
 }      

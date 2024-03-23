@@ -822,7 +822,7 @@ const TrainingFormCLVE = ({
               as="input"
               autoComplete="off"
               value={formData["recommendationSpectacleOther"]}
-              onChange={updateFormData(e, "recommendationSpectacleOther")}
+              onChange={(e) => updateFormData(e, "recommendationSpectacleOther")}
             />
           </Form.Group>
         )}

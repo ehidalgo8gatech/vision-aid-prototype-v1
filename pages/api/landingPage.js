@@ -17,8 +17,8 @@ export default async function handler(req, res) {
 async function updateContent(req, res) {
   try {
     const body = req.body;
-    id = req.body;
-    content = req.content
+    const id = req.body;
+    const content = req.content
     const updatedUser = await prisma.landing_Page.update({
       where: { id },
       content,

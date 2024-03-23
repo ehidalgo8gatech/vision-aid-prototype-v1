@@ -26,7 +26,7 @@ export default function UserProfileCard({
         <img
           src="/vision-aid-logo.jpeg"
           alt="Profile Image"
-          class="profile-image"
+          className="profile-image"
         />
         <h2 className="user-name">{name}</h2>
       </div>
