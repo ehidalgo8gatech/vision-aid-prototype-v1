@@ -19,10 +19,10 @@ export default async function handler(req, res) {
 async function updateContent(req, res) {
   let  updatedUser
   try {
-    if (req.body.userId != null || req.body.userId != '' ) {
+    if (req.body.id != null || req.body.id != '' ) {
       updatedUser = await prisma.landing_Page.update({
         where: { 
-          userId: parseInt(req.body.userId),
+          id: parseInt(req.body.id),
         }, 
         data: {
           content: req.body.content,
@@ -40,10 +40,10 @@ async function updateContent(req, res) {
 async function readContent(req, res) {
   var userData;
   try {
-    if (req.query.userId != null || req.query.userId != '' ) {
+    if (req.query.id != null || req.query.id != '' ) {
       userData =  await prisma.landing_Page.findFirst({
         where: {
-          userId: parseInt(req.query.userId),
+          id: parseInt(req.query.id),
         },
       });
     } 
@@ -85,10 +85,10 @@ async function addContent(req, res) {
 async function deleteContent(req, res) {
   var userData;
   try {
-    if (req.query.userId != null || req.query.userId != '' ) {
+    if (req.query.id != null || req.query.id != '' ) {
       userData =  await prisma.landing_Page.delete({
         where: {
-          userId: parseInt(req.query.userId),
+          id: parseInt(req.query.id),
         },
       });
     } 

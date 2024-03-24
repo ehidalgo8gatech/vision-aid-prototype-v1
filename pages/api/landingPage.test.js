@@ -3,6 +3,7 @@ const apiUrl = 'http://localhost:3000/api/landingPage';
 
 describe('UserContent handler', () => {
     let uid = 2;
+    let id = 3
     test('should add content successfully', async () => {
         // Mock request body
         const requestBody = {
@@ -20,15 +21,15 @@ describe('UserContent handler', () => {
     test('should read content successfully', async () => {
         // Mock request body
         var requestData = {
-            userId: uid,
+            id: id,
         };
         const queryString = new URLSearchParams(requestData).toString();
         try {
-            // Send a GET request to the API endpoint /api/landingPage?userId=2
+            // Send a GET request to the API endpoint /api/landingPage?id=2
             const response = await axios.get(`${apiUrl}?${queryString}`);
             expect(response.status).toBe(200);
             if (response.data == null ) {
-                expect(response.data.userId).toBe(requestData.userId)
+                expect(response.data.id).toBe(requestData.id)
             }
         } catch (error) {
             throw new Error(error);
@@ -36,7 +37,7 @@ describe('UserContent handler', () => {
     });
     test('should update content successfully', async () => {
         const requestBody = {
-            userId: uid,
+            id: id,
             content: 'New updated content'
         };
         try {
@@ -50,15 +51,15 @@ describe('UserContent handler', () => {
     test('should delete content successfully', async () => {
         // Mock request body
         var requestData = {
-            userId: uid,
+            id: id,
         };
         const queryString = new URLSearchParams(requestData).toString();
         try {
-            // Send a DELETE request to the API endpoint /api/landingPage?userId=2
+            // Send a DELETE request to the API endpoint /api/landingPage?id=2
             const response = await axios.delete(`${apiUrl}?${queryString}`);
             expect(response.status).toBe(200);
             if (response.data == null ) {
-                expect(response.data.userId).toBe(requestData.userId)
+                expect(response.data.id).toBe(requestData.id)
             }
         } catch (error) {
             throw new Error(error);;
