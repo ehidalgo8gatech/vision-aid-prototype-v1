@@ -3,7 +3,7 @@ const apiUrl = 'http://localhost:3000/api/landingPage';
 
 describe('UserContent handler', () => {
     let uid = 2;
-    let id = 3
+    let id;
     test('should add content successfully', async () => {
         // Mock request body
         const requestBody = {
@@ -13,6 +13,8 @@ describe('UserContent handler', () => {
         try {
             // Send a POST request to the API endpoint
             const response = await axios.post(`${apiUrl}`, requestBody);
+            console.log("\n\n\n ---------- response.data---------")
+            id = response.data.id // created entry with id 
             expect(response.status).toBe(200);
         } catch (error) {
             throw new Error(error);;

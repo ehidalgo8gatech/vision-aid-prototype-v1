@@ -72,7 +72,7 @@ async function addContent(req, res) {
   };
   try {
     const data = await prisma.landing_Page.create(create);
-    return res.status(200).json({ success: true });
+    return res.status(200).json(data);
   } catch (error) {
     console.log("Request error " + error);
     res.status(500).json({ error: "Failed to add content." + error, success: false });
