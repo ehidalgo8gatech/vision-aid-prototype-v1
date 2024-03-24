@@ -181,7 +181,7 @@ export default function HistoricalEvaluationPage(props) {
       <Navigation user={currentUser} />
       <div className="container p-4 mb-3">
         <h2>{formatTitle(props.service)} History</h2>
-        <hr class="horizontal-line" />
+        <hr className="horizontal-line" />
         <div className="row">
           <div className="col-md-5">
             <UserProfileCard
@@ -211,16 +211,16 @@ export default function HistoricalEvaluationPage(props) {
                 </div>
               )}
               {historicalDates.length > 0 && (
-                <div class="accordion" id="historyAccordion">
+                <div className="accordion" id="historyAccordion">
                   {serviceIsATraining &&
                     historicalDates.map((entry, index) => (
-                      <div class="accordion-item" key={index}>
+                      <div className="accordion-item" key={index}>
                         <h2
-                          class="accordion-header"
+                          className="accordion-header"
                           id={"panelsStayOpen-heading" + index}
                         >
                           <button
-                            class="accordion-button collapsed"
+                            className="accordion-button collapsed"
                             type="button"
                             data-bs-toggle="collapse"
                             data-bs-target={"#panelsStayOpen-collapse" + index}
@@ -235,11 +235,11 @@ export default function HistoricalEvaluationPage(props) {
                         </h2>
                         <div
                           id={"panelsStayOpen-collapse" + index}
-                          class="accordion-collapse collapse"
+                          className="accordion-collapse collapse"
                           aria-labelledby={"panelsStayOpen-heading" + index}
                           data-bs-parent="#historyAccordion"
                         >
-                          <div class="accordion-body">
+                          <div className="accordion-body">
                             {handleServiceChange(entry, serviceEditList)}
                           </div>
                         </div>
@@ -247,13 +247,13 @@ export default function HistoricalEvaluationPage(props) {
                     ))}
                   {!serviceIsATraining &&
                     historicalDates.map((entry, index) => (
-                      <div class="accordion-item" key={index}>
+                      <div className="accordion-item" key={index}>
                         <h2
-                          class="accordion-header"
+                          className="accordion-header"
                           id={"panelsStayOpen-heading" + index}
                         >
                           <button
-                            class="accordion-button collapsed"
+                            className="accordion-button collapsed"
                             type="button"
                             data-bs-toggle="collapse"
                             data-bs-target={"#panelsStayOpen-collapse" + index}
@@ -267,11 +267,11 @@ export default function HistoricalEvaluationPage(props) {
                         </h2>
                         <div
                           id={"panelsStayOpen-collapse" + index}
-                          class="accordion-collapse collapse"
+                          className="accordion-collapse collapse"
                           aria-labelledby={"panelsStayOpen-heading" + index}
                           data-bs-parent="#historyAccordion"
                         >
-                          <div class="accordion-body">
+                          <div className="accordion-body">
                             {handleServiceChange(entry, serviceEditList)}
                           </div>
                         </div>

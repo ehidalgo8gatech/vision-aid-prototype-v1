@@ -58,7 +58,7 @@ function SearchBar({ onSearch }) {
           <button
             type="button"
             onClick={(e) => handleSubmit(e)}
-            class="btn btn-success border-0 btn-block"
+            className="btn btn-success border-0 btn-block"
             style={{ marginLeft: "10px" }}
             id="register"
           >

@@ -98,7 +98,7 @@ function HomePage(props) {
 
   return (
     <Layout>
-    <div class="content">
+    <div className="content">
       <Navigation user={props.user} />
       <div className="container">
         <h1 className="text-center mt-4 mb-4">Search / Register</h1>
@@ -123,7 +123,7 @@ function HomePage(props) {
                 as displayed below. Would you still like to continue?
               </p>
               <button
-                class="btn btn-success border-0 btn-block"
+                className="btn btn-success border-0 btn-block"
                 onClick={() => goToRegisterBeneficiary()}
               >
                 Continue
