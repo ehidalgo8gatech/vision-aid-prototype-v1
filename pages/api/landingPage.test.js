@@ -16,7 +16,7 @@ describe('Landing Page API Tests', () => {
             id = response.data.id // created entry with id 
             expect(response.status).toBe(200);
         } catch (error) {
-            throw new Error(error);;
+            throw new Error(error);
         }
     });
     test('should read content successfully', async () => {
@@ -46,7 +46,7 @@ describe('Landing Page API Tests', () => {
             const response = await axios.patch(`${apiUrl}`, requestBody);
             expect(response.status).toBe(200);
         } catch (error) {
-            throw new Error(error);;
+            throw new Error(error);
         }
     });
     test('should delete content successfully', async () => {
@@ -63,7 +63,7 @@ describe('Landing Page API Tests', () => {
                 expect(response.data.id).toBe(requestData.id)
             }
         } catch (error) {
-            throw new Error(error);;
+            throw new Error(error);
         }
     });
 });
