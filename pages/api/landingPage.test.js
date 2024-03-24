@@ -13,7 +13,6 @@ describe('Landing Page API Tests', () => {
         try {
             // Send a POST request to the API endpoint
             const response = await axios.post(`${apiUrl}`, requestBody);
-            console.log("\n\n\n ---------- response.data---------")
             id = response.data.id // created entry with id 
             expect(response.status).toBe(200);
         } catch (error) {
