@@ -218,21 +218,21 @@ function RequiredFields(props) {
   const exInfo = [];
   extraInformation.forEach((data) => {
     exInfo.push(
-      <div class="col-md-12" id={data.name + "Beneficiary"}>
-        <div class="row">
-          <div class="col-md-6">
+      <div className="col-md-12" id={data.name + "Beneficiary"}>
+        <div className="row">
+          <div className="col-md-6">
             <input
               type="text"
               name="extraField"
-              class="form-control"
+              className="form-control"
               defaultValue={data.name}
             />
           </div>
-          <div class="col-md-6">
+          <div className="col-md-6">
             <button
               type="button"
               onClick={removeExtraField(data.name + "Beneficiary")}
-              class="btn btn-danger border-0 btn-block"
+              className="btn btn-danger border-0 btn-block"
             >
               Remove Field
             </button>
@@ -293,21 +293,21 @@ function RequiredFields(props) {
   const exInfoMobileTraining = [];
   exInfoMobileTrainingPOJO.forEach((data) => {
     exInfoMobileTraining.push(
-      <div class="col-md-12" id={data.name + "mobileTraining"}>
-        <div class="row">
-          <div class="col-md-10">
+      <div className="col-md-12" id={data.name + "mobileTraining"}>
+        <div className="row">
+          <div className="col-md-10">
             <input
               type="text"
               name="extraFieldsMobileTraining"
-              class="form-control"
+              className="form-control"
               defaultValue={data.name}
             />
           </div>
-          <div class="col-md-2">
+          <div className="col-md-2">
             <button
               type="button"
               onClick={removeExtraField(data.name + "mobileTraining")}
-              class="btn btn-danger border-0 btn-block"
+              className="btn btn-danger border-0 btn-block"
             >
               Remove Field
             </button>
@@ -325,25 +325,25 @@ function RequiredFields(props) {
   exInfoComprehensiveLowVisionEvaluationPOJO.forEach((data) => {
     exInfoComprehensiveLowVisionEvaluation.push(
       <div
-        class="col-md-12"
+        className="col-md-12"
         id={data.name + "comprehensiveLowVisionEvaluation"}
       >
-        <div class="row">
-          <div class="col-md-10">
+        <div className="row">
+          <div className="col-md-10">
             <input
               type="text"
               name="extraFieldsComprehensiveLowVisionEvaluation"
-              class="form-control"
+              className="form-control"
               defaultValue={data.name}
             />
           </div>
-          <div class="col-md-2">
+          <div className="col-md-2">
             <button
               type="button"
               onClick={removeExtraField(
                 data.name + "comprehensiveLowVisionEvaluation"
               )}
-              class="btn btn-danger border-0 btn-block"
+              className="btn btn-danger border-0 btn-block"
             >
               Remove Field
             </button>
@@ -360,21 +360,21 @@ function RequiredFields(props) {
   const exInfoVisionEnhancement = [];
   exInfoVisionEnhancementPOJO.forEach((data) => {
     exInfoVisionEnhancement.push(
-      <div class="col-md-12" id={data.name + "visionEnhancement"}>
-        <div class="row">
-          <div class="col-md-10">
+      <div className="col-md-12" id={data.name + "visionEnhancement"}>
+        <div className="row">
+          <div className="col-md-10">
             <input
               type="text"
               name="extraFieldsVisionEnhancement"
-              class="form-control"
+              className="form-control"
               defaultValue={data.name}
             />
           </div>
-          <div class="col-md-2">
+          <div className="col-md-2">
             <button
               type="button"
               onClick={removeExtraField(data.name + "visionEnhancement")}
-              class="btn btn-danger border-0 btn-block"
+              className="btn btn-danger border-0 btn-block"
             >
               Remove Field
             </button>
@@ -391,21 +391,21 @@ function RequiredFields(props) {
   const exInfoCounsellingEducation = [];
   exInfoCounsellingEducationPOJO.forEach((data) => {
     exInfoCounsellingEducation.push(
-      <div class="col-md-12" id={data.name + "counsellingEducation"}>
-        <div class="row">
-          <div class="col-md-10">
+      <div className="col-md-12" id={data.name + "counsellingEducation"}>
+        <div className="row">
+          <div className="col-md-10">
             <input
               type="text"
               name="extraFieldsCounsellingEducation"
-              class="form-control"
+              className="form-control"
               defaultValue={data.name}
             />
           </div>
-          <div class="col-md-2">
+          <div className="col-md-2">
             <button
               type="button"
               onClick={removeExtraField(data.name + "counsellingEducation")}
-              class="btn btn-danger border-0 btn-block"
+              className="btn btn-danger border-0 btn-block"
             >
               Remove Field
             </button>
@@ -844,7 +844,7 @@ function RequiredFields(props) {
                   Required
                 </p>
 
-                <div class="row justify-content-center">
+                <div className="row justify-content-center">
                   <div className="col-md-6 mx-auto">
                     <div
                       style={{
@@ -1003,15 +1003,15 @@ function RequiredFields(props) {
               </h2>
               <br />
 
-              <div class="accordion" id="accordionExample">
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              <div className="accordion" id="accordionExample">
+                <div className="accordion-item">
+                  <h2 className="accordion-header" id="headingOne">
+                    <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                       <strong>Comprehensive Low Vision Evaluation</strong>
                     </button>
                   </h2>
-                  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
+                  <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div className="accordion-body">
                       <div
                         // className="container"
                         id="comprehensiveLowVisionEvaluationTrainingRequiredFields"
@@ -1027,7 +1027,7 @@ function RequiredFields(props) {
                             )
                           }
                         >
-                          <div class="row justify-content-center">
+                          <div className="row justify-content-center">
                             <div className="col-md-6 mx-auto">
                               <div
                                 style={{
@@ -1088,14 +1088,14 @@ function RequiredFields(props) {
                     </div>
                   </div>
                 </div>
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingTwo">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <div className="accordion-item">
+                  <h2 className="accordion-header" id="headingTwo">
+                    <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                       <strong>Vision Enhancement</strong>
                     </button>
                   </h2>
-                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
+                  <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div className="accordion-body">
                       <div
                         // className="container"
                         id="visionEnhancementTrainingRequiredFields"
@@ -1111,7 +1111,7 @@ function RequiredFields(props) {
                             )
                           }
                         >
-                          <div class="row justify-content-center">
+                          <div className="row justify-content-center">
                             <div className="col-md-6 mx-auto">
                               <div
                                 style={{
@@ -1172,14 +1172,14 @@ function RequiredFields(props) {
                     </div>
                   </div>
                 </div>
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingThree">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <div className="accordion-item">
+                  <h2 className="accordion-header" id="headingThree">
+                    <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                       <strong>Mobile Training</strong>
                     </button>
                   </h2>
-                  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
+                  <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                    <div className="accordion-body">
                       <div id="mobileTrainingRequiredFields">
                         <form
                           action="#"
@@ -1192,7 +1192,7 @@ function RequiredFields(props) {
                             )
                           }
                         >
-                          <div class="row justify-content-center">
+                          <div className="row justify-content-center">
                             <div className="col-md-6 mx-auto">
                               <div
                                 style={{
@@ -1253,14 +1253,14 @@ function RequiredFields(props) {
                     </div>
                   </div>
                 </div>
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingFour">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                <div className="accordion-item">
+                  <h2 className="accordion-header" id="headingFour">
+                    <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                       <strong>Counselling Education</strong>
                     </button>
                   </h2>
-                  <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
+                  <div id="collapseFour" className="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                    <div className="accordion-body">
                       <div id="counsellingEducationTrainingRequiredFields">
                         <form
                           action="#"
@@ -1273,7 +1273,7 @@ function RequiredFields(props) {
                             )
                           }
                         >
-                          <div class="row justify-content-center">
+                          <div className="row justify-content-center">
                             <div className="col-md-6 mx-auto">
                               <div
                                 style={{
@@ -1344,15 +1344,15 @@ function RequiredFields(props) {
               </h2>
               <br />
 
-              <div class="accordion" id="accordionExample">
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              <div className="accordion" id="accordionExample">
+                <div className="accordion-item">
+                  <h2 className="accordion-header" id="headingOne">
+                    <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                       <strong>Add/Delete Counseling Education</strong>
                     </button>
                   </h2>
-                  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
+                  <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div className="accordion-body">
                       <div id="addCounsellingTypeContainer">
                         {removeTypeCounseling}
                         <form
@@ -1380,14 +1380,14 @@ function RequiredFields(props) {
                     </div>
                   </div>
                 </div>
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingTwo">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <div className="accordion-item">
+                  <h2 className="accordion-header" id="headingTwo">
+                    <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                       <strong>Add/Delete Training Type</strong>
                     </button>
                   </h2>
-                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
+                  <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div className="accordion-body">
                       <div id="addTrainingTypeContainer">
                         {removeTypeTraining}
                         <form
@@ -1413,14 +1413,14 @@ function RequiredFields(props) {
                     </div>
                   </div>
                 </div>
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingThree">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <div className="accordion-item">
+                  <h2 className="accordion-header" id="headingThree">
+                    <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                       <strong>Add/Delete Training Sub Type</strong>
                     </button>
                   </h2>
-                  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
+                  <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                    <div className="accordion-body">
                       <div id="addTrainingSubTypeContainer">
                         {removeSubTypeTraining}
                         <form
