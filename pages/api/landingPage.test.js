@@ -1,7 +1,7 @@
 const axios = require('axios');
 const apiUrl = 'http://localhost:3000/api/landingPage'; 
 
-describe('UserContent handler', () => {
+describe('Landing Page API Tests', () => {
     let uid = 2;
     let id;
     test('should add content successfully', async () => {
