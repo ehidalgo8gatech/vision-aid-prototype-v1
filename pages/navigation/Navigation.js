@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { signIn, signOut } from "next-auth/react";
+import { Image } from 'next/image';
 
 function Navigation({ user } = props) {
   const router = useRouter();
@@ -25,7 +26,7 @@ function Navigation({ user } = props) {
         <div className="p-2">
           <Link href="/" legacyBehavior>
             <a className="navbar-brand p-2">
-              <img
+              <Image
                 src="/vision-aid-logo.jpeg"
                 alt="Logo"
                 height="80"
@@ -102,12 +103,33 @@ function Navigation({ user } = props) {
               </ul>
             </div>
           )}
+          {!user && (
+            <div className="right auto-margin column-center">
+              <ul className="navbar-nav">
+                <li className="nav-item p-4">
+                  <Link href="/teaminfo" legacyBehavior>
+                    <a
+                      className={`nav-link custom-link ${
+                        router.pathname === "/teaminfo" ? "active" : ""
+                      }`}
+                    >
+                      Team Info
+                    </a>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
         {user && (
           <div className="left-auto-margin column">
             <small className="top display text-light">
               Signed in as: {user.email} ({role.toUpperCase()})
             </small>
+            <small className="user-id">
+              user.id: {user.id}
+            </small>
+
             <br />
             <div className="text-align-right">
               <button

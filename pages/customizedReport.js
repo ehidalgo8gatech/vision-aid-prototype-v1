@@ -125,7 +125,7 @@ function ReportCustomizer({ user, summary, beneficiaryList } = props) {
 
   useEffect(() => {
     handleSelectAll();
-  }, []);
+  }, [handleSelectAll]);
 
   const handleHospitalSelection = (event) => {
     const hospitalId = parseInt(event.target.value);
