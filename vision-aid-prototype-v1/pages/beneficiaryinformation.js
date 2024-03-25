@@ -178,8 +178,7 @@ function RequiredFields(props) {
       router.push("/user?mrn=" + mrn);
     } else {
       alert(
-        "An error occurred while creating the user. Please try again. Error: " +
-          JSON.stringify(json)
+        "Beneficiary could not be added. MRN " + mrn + " already exists in the system."
       );
     }
   }
