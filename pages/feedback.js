@@ -2,25 +2,12 @@
 import Navigation from "./navigation/Navigation";
 import Layout from './components/layout';
 import Head from "next/head";
-import { getSession } from "next-auth/react";
-import { readUser } from "./api/user";
 import { useState } from "react";
+import { getUserFromSession } from "@/pages/api/user";
 
 export async function getServerSideProps(ctx) {
-  const session = await getSession(ctx);
-  if (session == null) {
-    return {
-      props: {
-        user: null
-      }
-    };
-  }
-  const user = await readUser(session.user.email);
-  return {
-    props: {
-      user: user,
-    },
-  };
+  const user = await getUserFromSession(ctx);
+  return { props: { user } };
 }
 
 export default function FeedbackPage(props) {
