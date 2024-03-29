@@ -207,8 +207,8 @@ export default function NewEvaluationDashboard(props) {
     <div>
       <Navigation user={props.currentUser} />
       <div className="container p-4 mb-3">
-        <h2 class="benficiary-heading">{formatTitle(props.service)}</h2>
-        <hr class="horizontal-line" />
+        <h2 className="benficiary-heading">{formatTitle(props.service)}</h2>
+        <hr className="horizontal-line" />
         <div className="row">
           <div className="col-md-5">
             <UserProfileCard

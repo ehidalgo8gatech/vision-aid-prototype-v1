@@ -1,3 +1,4 @@
+
 import prisma from "client";
 
 export default async function handler(req, res) {
@@ -7,6 +8,8 @@ export default async function handler(req, res) {
     return await readContent(req, res);
   } else if (req.method == "PATCH") {
     return await updateContent(req, res);
+  } else if (req.method == "DELETE") {
+    return await deleteContent(req, res);
   } else {
     return res
       .status(405)
@@ -15,69 +18,86 @@ export default async function handler(req, res) {
 }
 
 async function updateContent(req, res) {
+  let  updatedUser
   try {
-    const { id, ...content } = req.body;
-    const updatedContent = await prisma.landing_Page.update({
-      where: { id },
-      content,
-    });
-    res.status(200).json(updatedContent);
+    if (req.body.id != null || req.body.id != '' ) {
+      updatedUser = await prisma.landing_Page.update({
+        where: { 
+          id: parseInt(req.body.id),
+        }, 
+        data: {
+          content: req.body.content,
+        },
+      });
+  }
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.log(error);
-    res.status(400).json({ error: "Failed to update user content." });
+    res.status(500).json({ error: "Failed to update content." });
   }
 }
 
+
 async function readContent(req, res) {
+  var userData;
   try {
-    var pgeContent;
-    if (req.query.userId != null) {
-      pgeContent = await prisma.landing_Page.findMany({
+    if (req.query.id != null || req.query.id != '' ) {
+      userData =  await prisma.landing_Page.findFirst({
         where: {
-          userId: {
-            contains: req.query.userId,
-          },
-        },
-        include: {
-          content: true,
+          id: parseInt(req.query.id),
         },
       });
-    } else {
-      pgeContent = await prisma.landing_Page.findMany({
-        include: {
-          content: true,
-        },
-      });
-    }
-    return res.status(200).json(pgeContent, { success: true });
+    } 
+    return res.status(200).json(userData);
   } catch (error) {
     console.log(error);
-    res
+    return res
       .status(500)
-      .json({ error: "Error reading content" + error, success: false });
+      .json({ error: "Error reading from database", success: false });
   }
 }
 
 async function addContent(req, res) {
+  const dt = new Date();
   const body = req.body;
-  
   const create = {
-    content: {
-      userId: body.userId,
-      creationDate: date.now(),
+    data: {
+      user: {
+        connect: {
+          id: parseInt(body.userId),
+        },
+      },
       content: body.content,
-    },
-    include: {
-      content: true,
+      creationDate: dt,
     },
   };
   try {
-    const pgeContent = await prisma.landing_Page.create(create);
-    return res.status(200).json(pgeContent, { success: true });
+    const data = await prisma.landing_Page.create(create);
+    return res.status(200).json(data);
   } catch (error) {
     console.log("Request error " + error);
-    res
+    res.status(500).json({ error: "Failed to add content." + error, success: false });
+  }
+
+  return res
+}
+
+
+async function deleteContent(req, res) {
+  var userData;
+  try {
+    if (req.query.id != null || req.query.id != '' ) {
+      userData =  await prisma.landing_Page.delete({
+        where: {
+          id: parseInt(req.query.id),
+        },
+      });
+    } 
+    return res.status(200).json(userData);
+  } catch (error) {
+    console.log(error);
+    return res
       .status(500)
-      .json({ error: "Error adding user" + error, success: false });
+      .json({ error: "Error deleting from database", success: false });
   }
 }

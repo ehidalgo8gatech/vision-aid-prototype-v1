@@ -8,10 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "test": "npx jest --runInBand  landingPage.test.js"
+    "test": "npx jest --runInBand --passWithNoTests"
   },
   "dependencies": {
-    "@auth0/auth0-react": "^2.2.4",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",
@@ -20,7 +19,7 @@
     "@mui/icons-material": "^5.14.16",
     "@mui/material": "^5.14.10",
     "@mui/styled-engine-sc": "^5.12.0",
-    "@next-auth/prisma-adapter": "^0.4.4-canary.81",
+    "@next-auth/prisma-adapter": "^1.0.7",
     "@next/font": "13.1.6",
     "@nextui-org/react": "^2.1.13",
     "@prisma/client": "^5.6.0",
@@ -28,8 +27,6 @@
     "bootstrap": "^5.2.3",
     "chart.js": "^4.2.1",
     "chartjs-plugin-datalabels": "^2.2.0",
-    "eslint": "8.34.0",
-    "eslint-config-next": "13.1.6",
     "framer-motion": "^10.16.4",
     "import-google-fonts": "^0.0.2",
     "js-cookie": "^3.0.1",
@@ -37,6 +34,7 @@
     "next": "^13.1.6",
     "next-auth": "^4.19.2",
     "next-pwa": "^5.6.0",
+    "next-video": "^0.17.1",
     "react": "18.2.0",
     "react-bootstrap-icons": "^1.10.3",
     "react-bootstrap-multiselect": "^2.4.1",
@@ -52,17 +50,28 @@
     "read-excel-file": "^5.6.1",
     "styled-components": "^5.3.10",
     "uuid": "^9.0.0",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz",
     "xlsx-js-style": "^1.2.0"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^14.2.2",
     "autoprefixer": "^10.4.13",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "13.1.6",
+    "eslint-plugin-react": "^7.34.1",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8.4.21",
     "prisma": "^5.6.0",
     "tailwindcss": "^3.2.7"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   }
 }

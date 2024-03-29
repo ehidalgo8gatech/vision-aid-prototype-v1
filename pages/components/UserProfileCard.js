@@ -4,6 +4,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import { useSession, signIn, signOut, getSession } from "next-auth/react";
+import logo from 'public/images/vision-aid-logo.webp';
 
 export default function UserProfileCard({
   gender,
@@ -24,9 +25,9 @@ export default function UserProfileCard({
     <div className="user-profile-card">
       <div>
         <Image
-          src="/vision-aid-logo.jpeg"
+          src={logo}
           alt="Profile Image"
-          class="profile-image"
+          className="profile-image"
         />
         <h2 className="user-name">{name}</h2>
       </div>

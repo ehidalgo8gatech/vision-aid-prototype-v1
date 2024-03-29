@@ -1,0 +1,18 @@
+.wrapper {
+    height: 200px;
+    display: flex;
+    gap: 20px;
+  }
+  
+  .box {
+    border: 1px solid #a6a1a1;
+  }
+  
+  .box img {
+    width: 20%;
+    height: 20%;
+  }
+  
+  .box1 img {
+    object-fit: cover;
+  }
