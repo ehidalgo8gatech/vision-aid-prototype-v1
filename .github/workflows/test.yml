@@ -1,8 +1,10 @@
 name: Test
 
+env:
+  DATABASE_URL: mysql://root:root@localhost:3306/vision
+
 on:
   pull_request:
-    # The branches below must be a subset of the branches above
     branches: [ "main" ]
 
 jobs:
@@ -10,15 +12,25 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.3
+        ports:
+           - 3306:3306
+        env:
+          - MYSQL_DATABASE=vision
+          - MYSQL_ROOT_USER=root
+          - MYSQL_ROOT_PASSWORD=root
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # - name: Start containers
-      #   run: docker-compose -f "docker-compose.yaml" up -d --build
-
       - name: Install dependencies
         run: npm install
+
+      - name: Run database migrations
+        run: npx prisma migrate dev
 
       - name: Run tests
         run: npm run test
