@@ -32,6 +32,9 @@ jobs:
       - name: Run database migrations
         run: npx prisma migrate dev
 
+      - name: Run the server??
+        run: npm run dev
+
       - name: Run tests
         run: npm run test
 
