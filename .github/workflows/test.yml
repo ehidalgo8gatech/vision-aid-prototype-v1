@@ -1,5 +1,8 @@
 name: Test
 
+env:
+  DATABASE_URL: mysql://root:root@localhost:3306/vision
+
 on:
   pull_request:
     branches: [ "main" ]
@@ -18,26 +21,7 @@ jobs:
           MYSQL_DATABASE: vision
           MYSQL_ROOT_USER: root
           MYSQL_ROOT_PASSWORD: root
-      
-      server:
-        image: node:18
-        ports:
-          - 3000:3000
-        env:
-          DATABASE_URL: mysql://root:root@mysql:3306/vision
-        steps:
-          - name: Checkout code
-            uses: actions/checkout@v3
 
-          - name: Install dependencies
-            run: npm install
-
-          - name: Run database migrations
-            run: npx prisma migrate dev
-
-          - name: Run the server??
-            run: npm run dev
-            
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -45,5 +29,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests
-        run: npm run test
+      - name: Run database migrations
+        run: npx prisma migrate dev
+
+      - name: Run the server and tests
+        run: npm run dev & npm run test
