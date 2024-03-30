@@ -18,9 +18,9 @@ jobs:
         ports:
            - 3306:3306
         env:
-          - MYSQL_DATABASE=vision
-          - MYSQL_ROOT_USER=root
-          - MYSQL_ROOT_PASSWORD=root
+          MYSQL_DATABASE: vision
+          MYSQL_ROOT_USER: root
+          MYSQL_ROOT_PASSWORD: root
 
     steps:
       - name: Checkout code
