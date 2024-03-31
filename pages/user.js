@@ -40,30 +40,30 @@ function UserPage(props) {
 
   useEffect(() => {
     setMobileTrainingData(props.user.Mobile_Training);
-  }, []);
+  }, [props.user.Mobile_Training]);
   useEffect(() => {
     setTrainingData(props.user.Training);
-  }, []);
+  }, [props.user.Training]);
   useEffect(() => {
     setComputerTrainingData(props.user.Computer_Training);
-  }, []);
+  }, [props.user.Computer_Training]);
   useEffect(() => {
     setVisionTrainingData(props.user.Vision_Enhancement);
-  }, []);
+  }, [props.user.Vision_Enhancement]);
   useEffect(() => {
     setComprehensiveLowVisionEvaluationData(
       props.user.Comprehensive_Low_Vision_Evaluation
     );
-  }, []);
+  }, [props.user.Comprehensive_Low_Vision_Evaluation]);
   useEffect(() => {
     setLowVisionEvaluationData(props.user.Low_Vision_Evaluation);
-  }, []);
+  }, [props.user.Low_Vision_Evaluation]);
   useEffect(() => {
     setCounsellingEducationData(props.user.Counselling_Education);
-  }, []);
+  }, [props.user.Counselling_Education]);
   useEffect(() => {
     setOrientationMobilityData(props.user.Orientation_Mobility_Training);
-  }, []);
+  }, [props.user.Orientation_Mobility_Training]);
 
   const hospitalOptions = [];
   for (let i = 0; i < props.hospitals.length; i++) {
@@ -295,22 +295,22 @@ function UserPage(props) {
               </div>
             </div>
           </div>
-          <div class="modal" id="indicateConsent">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
+          <div className="modal" id="indicateConsent">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
                 {/* <!-- Modal Header --> */}
-                <div class="modal-header">
-                  <h4 class="modal-title">Consent Form</h4>
+                <div className="modal-header">
+                  <h4 className="modal-title">Consent Form</h4>
                   <button
                     type="button"
-                    class="btn-close"
+                    className="btn-close"
                     data-bs-dismiss="modal"
                     id="close-indicate"
                   ></button>
                 </div>
 
                 {/* <!-- Modal body --> */}
-                <div class="modal-body">
+                <div className="modal-body">
                   I hereby grant Vision-Aid the authority to use my photos,
                   videos or other media in their public campaigns.
                   <br />
@@ -328,10 +328,10 @@ function UserPage(props) {
                 </div>
 
                 {/* <!-- Modal footer --> */}
-                <div class="modal-footer">
+                <div className="modal-footer">
                   <button
                     type="button"
-                    class="btn btn-success"
+                    className="btn btn-success"
                     data-bs-dismiss="modal"
                     onClick={() => grantConsent()}
                   >
@@ -339,7 +339,7 @@ function UserPage(props) {
                   </button>
                   <button
                     type="button"
-                    class="btn btn-danger"
+                    className="btn btn-danger"
                     data-bs-dismiss="modal"
                     onClick={() => revokeConsent()}
                   >
@@ -370,30 +370,30 @@ function UserPage(props) {
               </div>
             </div>
           </div>
-          <div class="modal" id="revokeConsent">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
+          <div className="modal" id="revokeConsent">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
                 {/* <!-- Modal Header --> */}
-                <div class="modal-header">
-                  <h4 class="modal-title">Revoke Consent?</h4>
+                <div className="modal-header">
+                  <h4 className="modal-title">Revoke Consent?</h4>
                   <button
                     type="button"
-                    class="btn-close"
+                    className="btn-close"
                     data-bs-dismiss="modal"
                     id="close-revoke"
                   ></button>
                 </div>
 
                 {/* <!-- Modal body --> */}
-                <div class="modal-body">
+                <div className="modal-body">
                   Please confirm that you wish to revoke consent.
                 </div>
 
                 {/* <!-- Modal footer --> */}
-                <div class="modal-footer">
+                <div className="modal-footer">
                   <button
                     type="button"
-                    class="btn btn-danger"
+                    className="btn btn-danger"
                     data-bs-dismiss="modal"
                     onClick={() => revokeConsent()}
                   >
@@ -424,22 +424,22 @@ function UserPage(props) {
               </div>
             </div>
           </div>
-          <div class="modal" id="grantConsent">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
+          <div className="modal" id="grantConsent">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
                 {/* <!-- Modal Header --> */}
-                <div class="modal-header">
-                  <h4 class="modal-title">Grant Consent?</h4>
+                <div className="modal-header">
+                  <h4 className="modal-title">Grant Consent?</h4>
                   <button
                     type="button"
-                    class="btn-close"
+                    className="btn-close"
                     data-bs-dismiss="modal"
                     id="close-grant"
                   ></button>
                 </div>
 
                 {/* <!-- Modal body --> */}
-                <div class="modal-body">
+                <div className="modal-body">
                   <div>
                     Type the beneficiary&apos;s full name to grant consent to
                     Vision-Aid. Please do so only if you wish to give Vision-Aid
@@ -455,10 +455,10 @@ function UserPage(props) {
                 </div>
 
                 {/* <!-- Modal footer --> */}
-                <div class="modal-footer">
+                <div className="modal-footer">
                   <button
                     type="button"
-                    class="btn btn-success"
+                    className="btn btn-success"
                     data-bs-dismiss="modal"
                     onClick={() => grantConsent()}
                   >
@@ -647,8 +647,6 @@ function UserPage(props) {
           </form>
         </div>
       </div>
-    ) : "date" == "hidden" ? (
-      <div></div>
     ) : (
       <div className="text-align-left">
         <div className="flex-container">
@@ -697,8 +695,6 @@ function UserPage(props) {
           </form>
         </div>
       </div>
-    ) : "text" == "hidden" ? (
-      <div></div>
     ) : (
       <div className="text-align-left">
         <div className="flex-container">
@@ -731,30 +727,30 @@ function UserPage(props) {
               Delete Beneficiary
             </button>
           </div>
-          <div class="modal" id="deleteBeneficiary">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
+          <div className="modal" id="deleteBeneficiary">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
                 {/* <!-- Modal Header --> */}
-                <div class="modal-header">
-                  <h4 class="modal-title">Delete Beneficiary</h4>
+                <div className="modal-header">
+                  <h4 className="modal-title">Delete Beneficiary</h4>
                   <button
                     type="button"
-                    class="btn-close"
+                    className="btn-close"
                     data-bs-dismiss="modal"
                     id="close-revoke"
                   ></button>
                 </div>
 
                 {/* <!-- Modal body --> */}
-                <div class="modal-body">
+                <div className="modal-body">
                   Please confirm that you wish to delete this beneficiary permanently.
                 </div>
 
                 {/* <!-- Modal footer --> */}
-                <div class="modal-footer">
+                <div className="modal-footer">
                   <button
                     type="button"
-                    class="btn btn-danger"
+                    className="btn btn-danger"
                     data-bs-dismiss="modal"
                     onClick={() => softDeleteBeneficiary()}
                   >
@@ -765,7 +761,7 @@ function UserPage(props) {
             </div>
           </div>
         </div>
-        <hr class="horizontal-line" />
+        <hr className="horizontal-line" />
         <div className="row">
           <div className="col-md-5">
             <UserProfileCard

@@ -17,7 +17,6 @@ import {
   mUnitsValues,
   snellenImperialValues,
   snellenMetricValues,
-  blankField,
 } from "../../constants/acuityConstants";
 import {
   spectacleDevices,
@@ -86,8 +85,7 @@ const TrainingFormCLVE = ({
     e.preventDefault();
     console.log(formData);
     const customDataDistance = customFieldsDistance.reduce((acc, field) => {
-      if(formData[field] === otherField || formData[field] === blankField) {
-        console.log(formData[field]);
+      if(formData[field] === otherField) {
         acc[field] = formData[field];
       } else {
         acc[field] = formData[field] + " " + formData["unitDistance"];
@@ -95,7 +93,7 @@ const TrainingFormCLVE = ({
       return acc;
     }, {});
     const customDataNear = customFieldsNear.reduce((acc, field) => {
-      if(formData[field] === otherField || formData[field] === blankField) {
+      if(formData[field] === otherField) {
         acc[field] = formData[field];
       } else {
         acc[field] = formData[field] + " " + formData["unitNear"];
@@ -343,7 +341,7 @@ const TrainingFormCLVE = ({
       }));
     });
     console.log(formData);
-  }, [dvAcuityValues]);
+  }, [customFieldsDistance, formData, dvAcuityValues]);
 
   useEffect(() => {
     console.log("entered nv");
@@ -354,7 +352,7 @@ const TrainingFormCLVE = ({
       }));
     });
     console.log(formData);
-  }, [nvAcuityValues]);
+  }, [customFieldsNear, formData, nvAcuityValues]);
 
   const diagnosisOptions = createMenu(diagnosisValues, true, diagnosis);
   const recommendationSpectacleOptions = createMenu(
@@ -706,7 +704,6 @@ const TrainingFormCLVE = ({
                   autoComplete="off"
                   value={formData["sessionNumber"]}
                   onChange={(e) => updateFormData(e, "sessionNumber")}
-                  required
                 />
               </Form.Group>
             </Col>
@@ -789,14 +786,7 @@ const TrainingFormCLVE = ({
             <Button
               className="btn btn-success border-0 btn-block"
               type="button"
-              onClick={() => {
-                var sNumber = document.getElementById("sessionNumber");
-                if (!sNumber.checkValidity()) {
-                  alert("Please fill the session number!");
-                } else {
-                  setSection("spectacle");
-                }
-              }}
+              onClick={() => setSection("spectacle")}
             >
               Continue
             </Button>

@@ -31,8 +31,8 @@ export default function BeneficiaryServicesTable(props) {
   };
 
   return (
-    <table class="table beneficiary-table table-bordered">
-      <thead class="thead-dark">
+    <table className="table beneficiary-table table-bordered">
+      <thead className="thead-dark">
         <tr>
           <th scope="col">Services</th>
           <th scope="col">Evaluation Actions</th>
@@ -44,7 +44,7 @@ export default function BeneficiaryServicesTable(props) {
           <td>
             <button
               type="button"
-              class="btn btn-success border-0 btn-block"
+              className="btn btn-success border-0 btn-block"
               onClick={() =>
                 openUserHistoricalEvaluationPage(
                   props.user.mrn,
@@ -54,10 +54,10 @@ export default function BeneficiaryServicesTable(props) {
             >
               History
             </button>
-            <div class="divider" />
+            <div className="divider" />
             <button
               type="button"
-              class="btn btn-success border-0 btn-block"
+              className="btn btn-success border-0 btn-block"
               onClick={() =>
                 openNewEvalutaionPage(props.user.mrn, "Low_Vision_Screening")
               }
@@ -71,7 +71,7 @@ export default function BeneficiaryServicesTable(props) {
           <td>
             <button
               type="button"
-              class="btn btn-success border-0 btn-block"
+              className="btn btn-success border-0 btn-block"
               onClick={() =>
                 openUserHistoricalEvaluationPage(
                   props.user.mrn,
@@ -81,10 +81,10 @@ export default function BeneficiaryServicesTable(props) {
             >
               History
             </button>
-            <div class="divider" />
+            <div className="divider" />
             <button
               type="button"
-              class="btn btn-success border-0 btn-block"
+              className="btn btn-success border-0 btn-block"
               onClick={() =>
                 openNewEvalutaionPage(
                   props.user.mrn,
@@ -101,7 +101,7 @@ export default function BeneficiaryServicesTable(props) {
           <td>
             <button
               type="button"
-              class="btn btn-success border-0 btn-block"
+              className="btn btn-success border-0 btn-block"
               onClick={() =>
                 openUserHistoricalEvaluationPage(
                   props.user.mrn,
@@ -111,10 +111,10 @@ export default function BeneficiaryServicesTable(props) {
             >
               History
             </button>
-            <div class="divider" />
+            <div className="divider" />
             <button
               type="button"
-              class="btn btn-success border-0 btn-block"
+              className="btn btn-success border-0 btn-block"
               onClick={() =>
                 openNewEvalutaionPage(props.user.mrn, "Vision_Enhancement")
               }
@@ -128,7 +128,7 @@ export default function BeneficiaryServicesTable(props) {
           <td>
             <button
               type="button"
-              class="btn btn-success border-0 btn-block"
+              className="btn btn-success border-0 btn-block"
               onClick={() =>
                 openUserHistoricalEvaluationPage(
                   props.user.mrn,
@@ -138,10 +138,10 @@ export default function BeneficiaryServicesTable(props) {
             >
               History
             </button>
-            <div class="divider" />
+            <div className="divider" />
             <button
               type="button"
-              class="btn btn-success border-0 btn-block"
+              className="btn btn-success border-0 btn-block"
               onClick={() =>
                 openNewEvalutaionPage(props.user.mrn, "Counselling_Education")
               }
@@ -155,17 +155,17 @@ export default function BeneficiaryServicesTable(props) {
           <td>
             <button
               type="button"
-              class="btn btn-success border-0 btn-block"
+              className="btn btn-success border-0 btn-block"
               onClick={() =>
                 openUserHistoricalEvaluationPage(props.user.mrn, "Training")
               }
             >
               History
             </button>
-            <div class="divider" />
+            <div className="divider" />
             <button
               type="button"
-              class="btn btn-success border-0 btn-block"
+              className="btn btn-success border-0 btn-block"
               onClick={() => openNewEvalutaionPage(props.user.mrn, "Training")}
             >
               New Evaluation

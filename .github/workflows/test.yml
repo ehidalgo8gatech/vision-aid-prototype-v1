@@ -1,0 +1,28 @@
+name: Test
+
+on:
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "main" ]
+
+jobs:
+  test:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # - name: Start containers
+      #   run: docker-compose -f "docker-compose.yaml" up -d --build
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm run test
+
+      # - name: Stop containers
+      #   if: always()
+      #   run: docker-compose -f "docker-compose.yaml" down

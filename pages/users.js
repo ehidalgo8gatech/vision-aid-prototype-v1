@@ -1,3 +1,4 @@
+
 import Navigation from "./navigation/Navigation";
 import { getSession } from "next-auth/react";
 import { allUsers, allHospitalRoles, readUser } from "@/pages/api/user";
@@ -7,6 +8,8 @@ import { Table } from "react-bootstrap";
 import { FormControl, Select, MenuItem, Input, Typography, FormLabel } from "@mui/material";
 import { createMenu } from "@/constants/globalFunctions";
 import { useState } from "react";
+import Layout from './components/layout';
+
 
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx);
@@ -258,7 +261,7 @@ function Users(props) {
             }
           });
         }
-        hospital = hospitalNames.slice(0, -2);;
+        hospital = hospitalNames.slice(0, -2);
       }
     }
     if (
@@ -295,7 +298,8 @@ function Users(props) {
     );
   }
   return (
-    <div>
+    <Layout>
+    <div className="content">
       <Navigation user={props.user} />
       <div className="row">
         <div className="offset-md-1 col-md-4">
@@ -316,7 +320,7 @@ function Users(props) {
                     Role
                   </td>
                   <td className="col-md-7">
-                    <FormControl fullWidth size="small" required>
+                    <FormControl fullWidth size="small">
                       <Select
                         value={role}
                         onChange={(e) => handleRoleOption(e)}
@@ -335,7 +339,7 @@ function Users(props) {
                     Select a hospital
                   </td>
                   <td className="col-md-7">
-                    <FormControl fullWidth size="small" required>
+                    <FormControl fullWidth size="small">
                       {role === "Professional" ?
                       <Select
                         value={hosp}
@@ -373,7 +377,7 @@ function Users(props) {
                     User Email
                   </td>
                   <td className="col-md-7">
-                    <FormControl fullWidth size="small" required>
+                    <FormControl fullWidth size="small">
                       <Input id="userEmail" autoComplete="off"></Input>
                     </FormControl>
                   </td>
@@ -424,6 +428,7 @@ function Users(props) {
       </div>
       <br />
     </div>
+    </Layout>
   );
 }
 

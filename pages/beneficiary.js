@@ -6,6 +6,7 @@ import AddUserForm from "./components/AddUserForm";
 import SearchBar from "./components/SearchBar";
 import UserList from "./components/UserList";
 import Navigation from "./navigation/Navigation";
+import Layout from './components/layout';
 import Router, { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { readUser } from "./api/user";
@@ -96,7 +97,8 @@ function HomePage(props) {
   };
 
   return (
-    <div>
+    <Layout>
+    <div className="content">
       <Navigation user={props.user} />
       <div className="container">
         <h1 className="text-center mt-4 mb-4">Search / Register</h1>
@@ -121,7 +123,7 @@ function HomePage(props) {
                 as displayed below. Would you still like to continue?
               </p>
               <button
-                class="btn btn-success border-0 btn-block"
+                className="btn btn-success border-0 btn-block"
                 onClick={() => goToRegisterBeneficiary()}
               >
                 Continue
@@ -136,6 +138,7 @@ function HomePage(props) {
       </div>
       <br />
     </div>
+    </Layout>
   );
 }
 
