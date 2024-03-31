@@ -22,11 +22,16 @@ async function fetchData(req, res) {
               admin: true,
             },
         });
+
         const roles = await prisma.hospitalRole.findMany();
-        let hospitalIds;
+        let hospitalIds = [];
         const isAdmin = user.admin != null;
         if (!isAdmin) {
-            hospitalIds = getHospitalIdsByUsers(user.id, roles);
+            for (const user of roles ) {
+              if (user.userId === user.id) {
+                hospitalIds.push(user.hospitalId);
+              }
+            }
         }
 
         // get beneficiary list from the user information

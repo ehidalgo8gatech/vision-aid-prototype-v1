@@ -473,7 +473,7 @@ export default function Summary({
     });
 
     XLSX.writeFile(wb, "filtered_report.xlsx");
-  };
+  }
 
   const handleStartDateChange = (e) => {
     setStartDate(moment(e.target.value).toDate());
