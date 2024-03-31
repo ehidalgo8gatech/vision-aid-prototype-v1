@@ -276,10 +276,10 @@ const TrainingFormCLVE = ({
     recommendationOptical: [],
     recommendationNonOptical: [],
     recommendationElectronic: [],
-    dispensedSpectacle: "",
-    dispensedOptical: "",
-    dispensedNonOptical: "",
-    dispensedElectronic: "",
+    dispensedSpectacle: [],
+    dispensedOptical: [],
+    dispensedNonOptical: [],
+    dispensedElectronic: [],
   });
 
   const createOptionList = (values) => {
@@ -362,7 +362,7 @@ const TrainingFormCLVE = ({
   );
   const dispensedSpectacleOptions = createMenu(
     spectacleDevices,
-    false,
+    true,
     devices["dispensedSpectacle"]
   );
   const recommendationOpticalOptions = createMenu(
@@ -372,7 +372,7 @@ const TrainingFormCLVE = ({
   );
   const dispensedOpticalOptions = createMenu(
     opticalDevices,
-    false,
+    true,
     devices["dispensedOptical"]
   );
   const recommendationNonOpticalOptions = createOptionMenu(
@@ -386,7 +386,8 @@ const TrainingFormCLVE = ({
     nonOpticalDevices,
     nonOpticalDevicesSubheadings,
     nonOpticalDevicesIndices,
-    false
+    true,
+    devices["dispensedNonOptical"]
   );
   const recommendationElectronicOptions = createOptionMenu(
     electronicDevices,
@@ -399,7 +400,8 @@ const TrainingFormCLVE = ({
     electronicDevices,
     electronicDevicesSubheadings,
     electronicDevicesIndices,
-    false
+    true,
+    devices["dispensedElectronic"]
   );
 
   const [showOther, setShowOther] = useState({
@@ -878,8 +880,10 @@ const TrainingFormCLVE = ({
                   <Select
                     value={devices.dispensedSpectacle}
                     onChange={(e) => {
-                      handleSelectChange(e, "dispensedSpectacle");
+                      handleMultiSelectChange(e, "dispensedSpectacle");
                     }}
+                    multiple
+                    renderValue={(selected) => selected.join(", ")}
                     MenuProps={MenuProps}
                   >
                     {dispensedSpectacleOptions}
@@ -1014,8 +1018,10 @@ const TrainingFormCLVE = ({
                   <Select
                     value={devices.dispensedOptical}
                     onChange={(e) => {
-                      handleSelectChange(e, "dispensedOptical");
+                      handleMultiSelectChange(e, "dispensedOptical");
                     }}
+                    multiple
+                    renderValue={(selected) => selected.join(", ")}
                     MenuProps={MenuProps}
                   >
                     {dispensedOpticalOptions}
@@ -1150,8 +1156,10 @@ const TrainingFormCLVE = ({
                   <Select
                     value={devices.dispensedNonOptical}
                     onChange={(e) => {
-                      handleSelectChange(e, "dispensedNonOptical");
+                      handleMultiSelectChange(e, "dispensedNonOptical");
                     }}
+                    multiple
+                    renderValue={(selected) => selected.join(", ")}
                     MenuProps={MenuProps}
                   >
                     {dispensedNonOpticalOptions}
@@ -1290,8 +1298,10 @@ const TrainingFormCLVE = ({
                   <Select
                     value={devices.dispensedElectronic}
                     onChange={(e) => {
-                      handleSelectChange(e, "dispensedElectronic");
+                      handleMultiSelectChange(e, "dispensedElectronic");
                     }}
+                    multiple
+                    renderValue={(selected) => selected.join(", ")}
                     MenuProps={MenuProps}
                   >
                     {dispensedElectronicOptions}
