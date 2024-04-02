@@ -341,7 +341,7 @@ const TrainingFormCLVE = ({
       }));
     });
     console.log(formData);
-  }, [customFieldsDistance, formData, dvAcuityValues]);
+  }, [dvAcuityValues]);
 
   useEffect(() => {
     console.log("entered nv");
@@ -352,7 +352,7 @@ const TrainingFormCLVE = ({
       }));
     });
     console.log(formData);
-  }, [customFieldsNear, formData, nvAcuityValues]);
+  }, [nvAcuityValues]);
 
   const diagnosisOptions = createMenu(diagnosisValues, true, diagnosis);
   const recommendationSpectacleOptions = createMenu(
