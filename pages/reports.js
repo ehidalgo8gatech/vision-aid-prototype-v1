@@ -235,35 +235,51 @@ function buildDevicesGraph(data) {
   // Inside the array, there are fields dispensedSpectacle, dispensedElectronic, dispensedOptical, dispensedNonOptical
   // We want to count the number of entries in which these fields are not empty
   const dispensedSpectacleCount = data.reduce(
-    (sum, item) =>
-      sum +
-      item.comprehensiveLowVisionEvaluation.filter(
+    (sum, item) => {
+      const items = item.comprehensiveLowVisionEvaluation.filter(
         (evaluation) => evaluation.dispensedSpectacle !== ""
-      ).length,
+      );
+      const count = items.reduce((sum, evaluation) => {
+        return sum + evaluation.dispensedSpectacle.split("; ").length;
+      }, 0);
+      return sum + count;
+    },
     0
   );
   const dispensedElectronicCount = data.reduce(
-    (sum, item) =>
-      sum +
-      item.comprehensiveLowVisionEvaluation.filter(
+    (sum, item) => {
+      const items = item.comprehensiveLowVisionEvaluation.filter(
         (evaluation) => evaluation.dispensedElectronic !== ""
-      ).length,
+      );
+      const count = items.reduce((sum, evaluation) => {
+        return sum + evaluation.dispensedElectronic.split("; ").length;
+      }, 0);
+      return sum + count;
+    },
     0
   );
   const dispensedOpticalCount = data.reduce(
-    (sum, item) =>
-      sum +
-      item.comprehensiveLowVisionEvaluation.filter(
+    (sum, item) => {
+      const items = item.comprehensiveLowVisionEvaluation.filter(
         (evaluation) => evaluation.dispensedOptical !== ""
-      ).length,
+      );
+      const count = items.reduce((sum, evaluation) => {
+        return sum + evaluation.dispensedOptical.split("; ").length;
+      }, 0);
+      return sum + count;
+    },
     0
   );
   const dispensedNonOpticalCount = data.reduce(
-    (sum, item) =>
-      sum +
-      item.comprehensiveLowVisionEvaluation.filter(
+    (sum, item) => {
+      const items = item.comprehensiveLowVisionEvaluation.filter(
         (evaluation) => evaluation.dispensedNonOptical !== ""
-      ).length,
+      );
+      const count = items.reduce((sum, evaluation) => {
+        return sum + evaluation.dispensedNonOptical.split("; ").length;
+      }, 0);
+      return sum + count;
+    },
     0
   );
 
@@ -298,12 +314,16 @@ function buildDevicesBreakdownGraph(data, breakdownType) {
   // Can make use of breakdownType, to selectively change the filter parameter
   // Same function to be used for other device types
   // Variable to change: item.dispensedElectronics
-  const types = data.reduce((types, hospital) => {
+  const deviceList = data.reduce((types, hospital) => {
     const filteredEvaluations = hospital.comprehensiveLowVisionEvaluation.filter(
       (evaluation) => evaluation.dispensedElectronic !== ""
     )
-    const deviceTypes = filteredEvaluations.map((item) => item.dispensedElectronic);
+    const deviceTypes = filteredEvaluations.map((item) => item.dispensedElectronic.split("; "));
     return [...types, ...deviceTypes];
+  }, []);
+
+  const types = deviceList.reduce((accumulator, currentValue) => {
+    return accumulator.concat(currentValue);
   }, []);
 
   const typeCounts = types.reduce((counts, type) => {
