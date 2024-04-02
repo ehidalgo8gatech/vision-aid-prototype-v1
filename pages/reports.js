@@ -19,7 +19,7 @@ import GraphCustomizer from "./components/GraphCustomizer";
 import { Tab, Tabs, Paper } from "@mui/material";
 // import * as XLSX from "xlsx";
 import XLSX from "xlsx-js-style";
-import { isNotNullEmptyOrUndefined } from "@/constants/globalFunctions";
+import { isNotNullBlankOrUndefined } from "@/constants/globalFunctions";
 import { Orienta } from "@next/font/google";
 import { Download } from "react-bootstrap-icons";
 import { useRouter } from "next/router";
@@ -237,7 +237,7 @@ function buildDevicesGraph(data) {
   const dispensedSpectacleCount = data.reduce(
     (sum, item) => {
       const items = item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedSpectacle !== ""
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedSpectacle)
       );
       const count = items.reduce((sum, evaluation) => {
         return sum + evaluation.dispensedSpectacle.split("; ").length;
@@ -249,7 +249,7 @@ function buildDevicesGraph(data) {
   const dispensedElectronicCount = data.reduce(
     (sum, item) => {
       const items = item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedElectronic !== ""
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedElectronic)
       );
       const count = items.reduce((sum, evaluation) => {
         return sum + evaluation.dispensedElectronic.split("; ").length;
@@ -261,7 +261,7 @@ function buildDevicesGraph(data) {
   const dispensedOpticalCount = data.reduce(
     (sum, item) => {
       const items = item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedOptical !== ""
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedOptical)
       );
       const count = items.reduce((sum, evaluation) => {
         return sum + evaluation.dispensedOptical.split("; ").length;
@@ -273,7 +273,7 @@ function buildDevicesGraph(data) {
   const dispensedNonOpticalCount = data.reduce(
     (sum, item) => {
       const items = item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => evaluation.dispensedNonOptical !== ""
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedNonOptical)
       );
       const count = items.reduce((sum, evaluation) => {
         return sum + evaluation.dispensedNonOptical.split("; ").length;
