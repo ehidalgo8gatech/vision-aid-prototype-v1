@@ -52,17 +52,6 @@ function Navigation(props) {
         <div>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
-              <li className="nav-item p-4">
-                <Link href="/teaminfo" legacyBehavior>
-                  <a
-                    className={`nav-link custom-link ${
-                      router.pathname === "/teaminfo" ? "active" : ""
-                    }`}
-                  >
-                    Team Info
-                  </a>
-                </Link>
-              </li>
               {user && role != "invalid" && (
                 <li className="nav-item p-4">
                   <Link href="/beneficiary" legacyBehavior>
