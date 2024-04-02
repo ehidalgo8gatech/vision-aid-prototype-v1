@@ -316,7 +316,7 @@ function buildDevicesBreakdownGraph(data, breakdownType) {
   // Variable to change: item.dispensedElectronics
   const deviceList = data.reduce((types, hospital) => {
     const filteredEvaluations = hospital.comprehensiveLowVisionEvaluation.filter(
-      (evaluation) => evaluation.dispensedElectronic !== ""
+      (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedElectronic)
     )
     const deviceTypes = filteredEvaluations.map((item) => item.dispensedElectronic.split("; "));
     return [...types, ...deviceTypes];
