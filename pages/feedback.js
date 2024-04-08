@@ -59,10 +59,11 @@ export default function FeedbackPage(props) {
       </Head>
       <div className="content">
         <div className="container">
-          <h1>Provide Website Feedback</h1>
           {feedbackSubmitted ? (
-            <p>Thank you for your feedback!</p>
+            <h4>Thank you for your feedback!</h4>
           ) : (
+            <>
+            <h1>Provide Website Feedback</h1>
             <form id="feedbackForm" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="rating">Overall Satisfaction:</label><br />
@@ -85,6 +86,7 @@ export default function FeedbackPage(props) {
               </div>
               <button type="submit">Submit Feedback</button>
             </form>
+            </>
           )}
         </div>
       </div>
