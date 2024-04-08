@@ -8,7 +8,7 @@ const Footer = () => {
       <p>
         <Link href="/feedback">Provide Feedback</Link>
       </p>
-      <p>VA-Partners Spring 2024</p>
+      <p>VA-Partners and C4G Collaboration</p>
     </footer>
   );
 };
