@@ -308,17 +308,18 @@ function buildDevicesGraph(data) {
 }
 
 // Function that builds a bar graph at a sublevel. This function is called
-// with different devices types as the breakdownType
+// with different devices types as the breakdownType (can be one of the AllowedDevices)
+const allowedDevices = ["Electronic", "Spectacle", "Optical", "NonOptical"];
 function buildDevicesBreakdownGraph(data, breakdownType) {
-  // Future improvement:
-  // Can make use of breakdownType, to selectively change the filter parameter
-  // Same function to be used for other device types
-  // Variable to change: item.dispensedElectronics
+  if (!allowedDevices.includes(breakdownType)) {
+    breakdownType = "Electronic";
+  }
+  const dispensedKey = "dispensed" + breakdownType;
   const deviceList = data.reduce((types, hospital) => {
     const filteredEvaluations = hospital.comprehensiveLowVisionEvaluation.filter(
-      (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedElectronic)
+      (evaluation) => isNotNullBlankOrUndefined(evaluation[dispensedKey])
     )
-    const deviceTypes = filteredEvaluations.map((item) => item.dispensedElectronic.split("; "));
+    const deviceTypes = filteredEvaluations.map((item) => item[dispensedKey].split("; "));
     return [...types, ...deviceTypes];
   }, []);
 
@@ -419,6 +420,9 @@ export default function Summary({
   );
   const devicesGraphData = buildDevicesGraph(filteredSummary);
   const electronicDevicesGraphData =  buildDevicesBreakdownGraph(filteredSummary, "Electronic");
+  const spectacleDevicesGraphData =  buildDevicesBreakdownGraph(filteredSummary, "Spectacle");
+  const opticalDevicesGraphData =  buildDevicesBreakdownGraph(filteredSummary, "Optical");
+  const nonOpticalDevicesGraphData =  buildDevicesBreakdownGraph(filteredSummary, "NonOptical");
 
   async function downloadFilteredReport() {
     var beneficiaryListAPI;
@@ -513,14 +517,20 @@ export default function Summary({
   };
 
   const [activeGraphTab, setActiveGraphTab] = useState(0);
-  const [activeSubGraphTab, setActiveSubGraphTab] = useState(0);
+  const [activeDevicesGraphTab, setActiveDevicesGraphTab] = useState(0);
+  const [activeActivitiesGraphTab, setActiveActivitiesGraphTab] = useState(0);
   const handleGraphTabChange = (event, newValue) => {
     setActiveGraphTab(newValue);
-    setActiveSubGraphTab(0);
+    setActiveDevicesGraphTab(0);
+    setActiveActivitiesGraphTab(0);
   };
 
   const handleDevicesGraphTabChange = (event, newValue) => {
-    setActiveSubGraphTab(newValue);
+    setActiveDevicesGraphTab(newValue);
+  };
+
+  const handleActivitiesGraphTabChange = (event, newValue) => {
+    setActiveActivitiesGraphTab(newValue);
   };
 
   const options={
@@ -534,22 +544,33 @@ export default function Summary({
     },
   };
 
-  const renderGraph = (activeTab, activeSubTab) => {
-    switch (activeTab) {
+  const renderGraph = () => {
+    switch (activeGraphTab) {
       case 0:
         return <Bar data={beneficiaryGraphData} options={options} />;
       case 1:
-        return <Bar data={activitiesGraphData} options={options} />;
+        switch (activeActivitiesGraphTab) {
+          case 0:
+            return <Bar data={activitiesGraphData} options={options} />;
+          case 1:
+            return <Bar data={trainingBreakdownGraphData} options={options} />;
+          case 2:
+            return <Bar data={counsellingBreakdownGraphData} options={options} />;
+          default:
+            return null;
+        }
       case 2:
-        return <Bar data={trainingBreakdownGraphData} options={options} />;
-      case 3:
-        return <Bar data={counsellingBreakdownGraphData} options={options} />;
-      case 4:
-        switch (activeSubTab) {
+        switch (activeDevicesGraphTab) {
           case 0:
             return <Bar data={devicesGraphData} options={options} />;
           case 1:
             return <Bar data={electronicDevicesGraphData} options={options} />;
+          case 2:
+            return <Bar data={spectacleDevicesGraphData} options={options} />;
+          case 3:
+              return <Bar data={opticalDevicesGraphData} options={options} />;
+          case 4:
+              return <Bar data={nonOpticalDevicesGraphData} options={options} />;
           default:
             return null;
         }
@@ -612,14 +633,27 @@ export default function Summary({
                   centered
                 >
                   <Tab label="Beneficiaries" />
+                  <Tab label="Activities" />
+                  <Tab label="Dispensed Devices" />
+                  <Tab label="Recommended Devices" />
+                </Tabs>
+                {activeGraphTab == 1 ?
+                <Tabs
+                  value={activeActivitiesGraphTab}
+                  onChange={handleActivitiesGraphTabChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
                   <Tab label="All Activities" />
                   <Tab label="Training Activities" />
                   <Tab label="Counselling Activities" />
-                  <Tab label="Devices" />
                 </Tabs>
-                {activeGraphTab == 4 ?
+                : <></>
+                }
+                {activeGraphTab == 2 ?
                 <Tabs
-                  value={activeSubGraphTab}
+                  value={activeDevicesGraphTab}
                   onChange={handleDevicesGraphTabChange}
                   indicatorColor="primary"
                   textColor="primary"
@@ -627,10 +661,13 @@ export default function Summary({
                 >
                   <Tab label="All Devices" />
                   <Tab label="Electronic" />
+                  <Tab label="Spectacle" />
+                  <Tab label="Optical" />
+                  <Tab label="Non-Optical" />
                 </Tabs>
                 : <></>
                 }
-                {renderGraph(activeGraphTab, activeSubGraphTab)}
+                {renderGraph()}
               </Paper>
             </div>
           </div>
@@ -650,7 +687,7 @@ export default function Summary({
               <Tab label="Counselling Activities" />
               <Tab label="Devices" />
             </Tabs>
-            {renderGraph(activeGraphTab, activeSubGraphTab)}
+            {renderGraph()}
           </Paper>
         )}
       </Container>
