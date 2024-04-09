@@ -50,10 +50,10 @@ export default function TeamInfo(props) {
             <h2>Austin Bieber: Tech Lead</h2>
             <p>Current Contributions: Cleaned repository for industry standards, deployed website and database, setup authentication connections</p>
             <Image src={chris} alt="Chris" layout="fixed" width={150} height={150} />
-            <h2>Christin Lin: Fullstack Developer</h2>
+            <h2>Christin Lin: Front-end Developer</h2>
             <p>Current Contributions: </p>
             <Image src={nasa} alt="Nasa" layout="fixed" width={150} height={150} />
-            <h2>Nasa Quba: Fullstack Developer</h2>
+            <h2>Nasa Quba: Back-end Developer</h2>
             <p>Current Contributions: </p>
         </div>
         <div className="team-info">
