@@ -50,6 +50,19 @@ export async function getServerSideProps(ctx) {
 function Users(props) {
   const [hosp, setHosp] = useState([]);
   const [role, setRole] = useState("");
+  const [sortBy, setSortBy] = useState("");
+  const [sortDirection, setSortDirection] = useState("");
+
+  const handleSort = (columnName) => {
+    if (sortBy === columnName) {
+      // Reverse sort direction if already sorted by this column
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // Sort by the new column
+      setSortBy(columnName);
+      setSortDirection('asc');
+    }
+  };
 
   const handleRoleOption = (e) => {
     setRole(e.target.value);
@@ -285,18 +298,21 @@ function Users(props) {
       if (!hospitalMatch) continue;
     }
 
-    usersList.push(
-      <tr>
-        <td>{data.id}</td>
-        <td>{data.email}</td>
-        {props.user.admin != null ?
-        (admin ? <td style={{color: "green"}}>&#10004;</td> : <td style={{color: "red"}}>&#10008;</td>)
-        : <></>}
-        {manager ? <td style={{color: "green"}}>&#10004;</td> : <td style={{color: "red"}}>&#10008;</td>}
-        <td>{hospital}</td>
-      </tr>
-    );
+    data["administrator"] = admin;
+    data["manager"] = manager;
+    data["hospital"] = hospital;
+    usersList.push(data);
   }
+
+  // Sort users based on sortBy and sortDirection
+  if (sortBy) {
+    usersList.sort((a, b) => {
+      if (a[sortBy] < b[sortBy]) return sortDirection === 'asc' ? -1 : 1;
+      if (a[sortBy] > b[sortBy]) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
   return (
     <Layout>
     <div className="content">
@@ -403,26 +419,38 @@ function Users(props) {
           <Table striped bordered hover responsive>
             <thead>
               <tr>
-                <th>
-                  <i>User Id</i>
+                <th onClick={() => handleSort('id')}>
+                  <span style={{ cursor: 'pointer' }}>User Id</span>
                 </th>
-                <th>
-                  <i>User Email</i>
+                <th onClick={() => handleSort('email')}>
+                  <span style={{ cursor: 'pointer' }}>User Email</span>
                 </th>
                 {props.user.admin != null ?
-                <th>
-                  <i>Admin</i>
+                <th onClick={() => handleSort('administrator')}>
+                  <span style={{ cursor: 'pointer' }}>Admin</span>
                 </th>
                 :<></>}
-                <th>
-                  <i>Manager</i>
+                <th onClick={() => handleSort('manager')}>
+                  <span style={{ cursor: 'pointer' }}>Manager</span>
                 </th>
-                <th>
-                  <i>Hospital</i>
+                <th onClick={() => handleSort('hospital')}>
+                  <span style={{ cursor: 'pointer' }}>Hospital</span>
                 </th>
               </tr>
             </thead>
-            <tbody>{usersList}</tbody>
+            <tbody>
+              {usersList.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.id}</td>
+                  <td>{user.email}</td>
+                  {props.user.admin != null ?
+                  (user.administrator ? <td style={{color: "green"}}>&#10004;</td> : <td style={{color: "red"}}>&#10008;</td>)
+                  : <></>}
+                  {user.manager ? <td style={{color: "green"}}>&#10004;</td> : <td style={{color: "red"}}>&#10008;</td>}
+                  <td>{user.hospital}</td>
+                </tr>
+              ))}
+            </tbody>
           </Table>
         </div>
       </div>
