@@ -307,6 +307,85 @@ function buildDevicesGraph(data) {
   return chartData;
 }
 
+// Function that builds a bar graph to show the number of devices recommended
+function buildRecDevicesGraph(data) {
+  // The device information is stored inside the comprehensiveLowVisionEvaluation array
+  // Inside the array, there are fields dispensedSpectacle, dispensedElectronic, dispensedOptical, dispensedNonOptical
+  // We want to count the number of entries in which these fields are not empty
+  console.log(data);
+  const dispensedSpectacleCount = data.reduce(
+    (sum, item) => {
+      const items = item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.recommendationSpectacle)
+      );
+      const count = items.reduce((sum, evaluation) => {
+        return sum + evaluation.recommendationSpectacle.split(",").length;
+      }, 0);
+      return sum + count;
+    },
+    0
+  );
+  const dispensedElectronicCount = data.reduce(
+    (sum, item) => {
+      const items = item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.recommendationElectronic)
+      );
+      const count = items.reduce((sum, evaluation) => {
+        return sum + evaluation.recommendationElectronic.split(",").length;
+      }, 0);
+      return sum + count;
+    },
+    0
+  );
+  const dispensedOpticalCount = data.reduce(
+    (sum, item) => {
+      const items = item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.recommendationOptical)
+      );
+      const count = items.reduce((sum, evaluation) => {
+        return sum + evaluation.recommendationOptical.split(",").length;
+      }, 0);
+      return sum + count;
+    },
+    0
+  );
+  const dispensedNonOpticalCount = data.reduce(
+    (sum, item) => {
+      const items = item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => isNotNullBlankOrUndefined(evaluation.recommendationNonOptical)
+      );
+      const count = items.reduce((sum, evaluation) => {
+        return sum + evaluation.recommendationNonOptical.split(",").length;
+      }, 0);
+      return sum + count;
+    },
+    0
+  );
+
+  const chartData = {
+    labels: [
+      `Spectacle (${dispensedSpectacleCount})`,
+      `Electronic (${dispensedElectronicCount})`,
+      `Optical (${dispensedOpticalCount})`,
+      `Non-Optical (${dispensedNonOpticalCount})`,
+    ],
+    datasets: [
+      {
+        label: "Cumulative Counts",
+        data: [
+          dispensedSpectacleCount,
+          dispensedElectronicCount,
+          dispensedOpticalCount,
+          dispensedNonOpticalCount,
+        ],
+        ...graphOptions,
+      },
+    ],
+  };
+
+  return chartData;
+}
+
 // Function that builds a bar graph at a sublevel. This function is called
 // with different devices types as the breakdownType (can be one of the AllowedDevices)
 const allowedDevices = ["Electronic", "Spectacle", "Optical", "NonOptical"];
@@ -320,6 +399,47 @@ function buildDevicesBreakdownGraph(data, breakdownType) {
       (evaluation) => isNotNullBlankOrUndefined(evaluation[dispensedKey])
     )
     const deviceTypes = filteredEvaluations.map((item) => item[dispensedKey].split("; "));
+    return [...types, ...deviceTypes];
+  }, []);
+
+  const types = deviceList.reduce((accumulator, currentValue) => {
+    return accumulator.concat(currentValue);
+  }, []);
+
+  const typeCounts = types.reduce((counts, type) => {
+    const count = counts[type] || 0;
+    return {
+      ...counts,
+      [type]: count + 1,
+    };
+  }, {});
+
+  const chartData = {
+    labels: Object.keys(typeCounts),
+    datasets: [
+      {
+        label: "Cumulative Counts",
+        data: Object.values(typeCounts),
+        ...graphOptions,
+      },
+    ],
+  };
+
+  return chartData;
+}
+
+// Function that builds a bar graph at a sublevel for recommended devices. This function is called
+// with different devices types as the breakdownType (can be one of the AllowedDevices)
+function buildRecDevicesBreakdownGraph(data, breakdownType) {
+  if (!allowedDevices.includes(breakdownType)) {
+    breakdownType = "Electronic";
+  }
+  const dispensedKey = "recommendation" + breakdownType;
+  const deviceList = data.reduce((types, hospital) => {
+    const filteredEvaluations = hospital.comprehensiveLowVisionEvaluation.filter(
+      (evaluation) => isNotNullBlankOrUndefined(evaluation[dispensedKey])
+    )
+    const deviceTypes = filteredEvaluations.map((item) => item[dispensedKey].split(","));
     return [...types, ...deviceTypes];
   }, []);
 
@@ -424,6 +544,12 @@ export default function Summary({
   const opticalDevicesGraphData =  buildDevicesBreakdownGraph(filteredSummary, "Optical");
   const nonOpticalDevicesGraphData =  buildDevicesBreakdownGraph(filteredSummary, "NonOptical");
 
+  const recDevicesGraphData = buildRecDevicesGraph(filteredSummary);
+  const electronicRecDevicesGraphData =  buildRecDevicesBreakdownGraph(filteredSummary, "Electronic");
+  const spectacleRecDevicesGraphData =  buildRecDevicesBreakdownGraph(filteredSummary, "Spectacle");
+  const opticalRecDevicesGraphData =  buildRecDevicesBreakdownGraph(filteredSummary, "Optical");
+  const nonOpticalRecDevicesGraphData =  buildRecDevicesBreakdownGraph(filteredSummary, "NonOptical");
+
   async function downloadFilteredReport() {
     var beneficiaryListAPI;
     try {
@@ -518,15 +644,21 @@ export default function Summary({
 
   const [activeGraphTab, setActiveGraphTab] = useState(0);
   const [activeDevicesGraphTab, setActiveDevicesGraphTab] = useState(0);
+  const [activeRecDevicesGraphTab, setActiveRecDevicesGraphTab] = useState(0);
   const [activeActivitiesGraphTab, setActiveActivitiesGraphTab] = useState(0);
   const handleGraphTabChange = (event, newValue) => {
     setActiveGraphTab(newValue);
     setActiveDevicesGraphTab(0);
+    setActiveRecDevicesGraphTab(0);
     setActiveActivitiesGraphTab(0);
   };
 
   const handleDevicesGraphTabChange = (event, newValue) => {
     setActiveDevicesGraphTab(newValue);
+  };
+
+  const handleRecDevicesGraphTabChange = (event, newValue) => {
+    setActiveRecDevicesGraphTab(newValue);
   };
 
   const handleActivitiesGraphTabChange = (event, newValue) => {
@@ -574,6 +706,21 @@ export default function Summary({
           default:
             return null;
         }
+        case 3:
+          switch (activeRecDevicesGraphTab) {
+            case 0:
+              return <Bar data={recDevicesGraphData} options={options} />;
+            case 1:
+              return <Bar data={electronicRecDevicesGraphData} options={options} />;
+            case 2:
+              return <Bar data={spectacleRecDevicesGraphData} options={options} />;
+            case 3:
+                return <Bar data={opticalRecDevicesGraphData} options={options} />;
+            case 4:
+                return <Bar data={nonOpticalRecDevicesGraphData} options={options} />;
+            default:
+              return null;
+          }
       default:
         return null;
     }
@@ -658,6 +805,22 @@ export default function Summary({
                 <Tabs
                   value={activeDevicesGraphTab}
                   onChange={handleDevicesGraphTabChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
+                  <Tab label="All Devices" />
+                  <Tab label="Electronic" />
+                  <Tab label="Spectacle" />
+                  <Tab label="Optical" />
+                  <Tab label="Non-Optical" />
+                </Tabs>
+                : <></>
+                }
+                {activeGraphTab == 3 ?
+                <Tabs
+                  value={activeRecDevicesGraphTab}
+                  onChange={handleRecDevicesGraphTabChange}
                   indicatorColor="primary"
                   textColor="primary"
                   centered
