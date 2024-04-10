@@ -3,9 +3,7 @@ import React  from 'react';
 function  LandingPage(props) {
     return (
         <div>
-            <div className='wrapper'>
-            </div>
-            <div className='wrapper'>
+            <div className='wrapper' style={{height: '70vh'}}>
             </div>
         </div>
     );

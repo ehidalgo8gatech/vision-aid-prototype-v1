@@ -1212,15 +1212,17 @@ export function getReportData(
       clveIdx += 1;
 
       // Electronic device addition to map
-      let dispensedElectronic = clveData["dispensedElectronic"].split("; ");
-      for (let device of dispensedElectronic) {
-        if (isNotNullEmptyOrUndefined(device)) {
-          device = device.toUpperCase();
-          if (edMap.has(device)) {
-            let currentCount = edMap.get(device);
-            edMap.set(device, currentCount + 1);
-          } else {
-            edMap.set(device, 1);
+      if (isNotNullEmptyOrUndefined(clveData["dispensedElectronic"])) {
+        let dispensedElectronic = clveData["dispensedElectronic"].split("; ");
+        for (let device of dispensedElectronic) {
+          if (isNotNullEmptyOrUndefined(device)) {
+            device = device.toUpperCase();
+            if (edMap.has(device)) {
+              let currentCount = edMap.get(device);
+              edMap.set(device, currentCount + 1);
+            } else {
+              edMap.set(device, 1);
+            }
           }
         }
       }
