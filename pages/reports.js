@@ -579,6 +579,9 @@ export default function Summary({
     }
   };
 
+  const enableGraphs = (user.admin || user.hospitalRole[0].admin) ||
+    (user.hospitalRole.length != 0 && !user.hospitalRole[0].admin);
+
   return (
     <Layout>
     <div className="content">
@@ -608,7 +611,7 @@ export default function Summary({
           )}
         </div>
         <br />
-        {(user.admin || user.hospitalRole[0].admin) && (
+        {enableGraphs && (
           <div className="row">
             <div className="col-md-3">
               <GraphCustomizer
@@ -671,24 +674,6 @@ export default function Summary({
               </Paper>
             </div>
           </div>
-        )}
-        {user.hospitalRole.length != 0 && !user.hospitalRole[0].admin && (
-          <Paper>
-            <Tabs
-              value={activeGraphTab}
-              onChange={handleGraphTabChange}
-              indicatorColor="primary"
-              textColor="primary"
-              centered
-            >
-              <Tab label="Beneficiaries" />
-              <Tab label="All Activities" />
-              <Tab label="Training Activities" />
-              <Tab label="Counselling Activities" />
-              <Tab label="Devices" />
-            </Tabs>
-            {renderGraph()}
-          </Paper>
         )}
       </Container>
       <br />
