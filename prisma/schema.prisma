@@ -332,6 +332,7 @@ model Landing_Page {
   id              Int  @id @default(autoincrement())
   creationDate    DateTime?
   content         String?
+  title           String?
   user            User @relation(fields: [userId], references: [id])
   userId          Int
 }

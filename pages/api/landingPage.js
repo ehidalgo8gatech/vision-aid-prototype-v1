@@ -68,6 +68,7 @@ async function addContent(req, res) {
         },
       },
       content: body.content,
+      title: body.title,
       creationDate: dt,
     },
   };
