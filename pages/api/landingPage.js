@@ -17,16 +17,6 @@ export default async function handler(req, res) {
   }
 }
 
-export async function findAllLandingPagePosts() {
-  const posts = await prisma.landing_Page.findMany();
-  return posts.map(post => {
-    return {
-      ...post,
-      creationDate: new Date(post.creationDate).getTime(),
-    };
-  });
-}
-
 async function updateContent(req, res) {
   let  updatedUser
   try {
