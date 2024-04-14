@@ -58,18 +58,3 @@ the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=
 from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-
-User login
-
-Admin
-visionaidp11ad@gmail.com
-Admin@123
-
-Manager
-visionaidp11manager@gmail.com
-Manager@123
-
-Technician
-visionaidp11tech@gmail.com
-Technician@123
