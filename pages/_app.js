@@ -24,6 +24,8 @@ export default function MyApp({ Component, pageProps }) {
       <Head>
         <title>Vision Aid Partners</title>
         <meta name="description" content="vision-aid partners" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#1B5E20" />
       </Head>
       <SessionProvider session={pageProps.session}>
         <main className={`${inter.variable} font-sans`}>
