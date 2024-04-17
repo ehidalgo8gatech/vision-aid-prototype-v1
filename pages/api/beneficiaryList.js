@@ -27,9 +27,9 @@ async function fetchData(req, res) {
         let hospitalIds = [];
         const isAdmin = user.admin != null;
         if (!isAdmin) {
-            for (const user of roles ) {
-              if (user.userId === user.id) {
-                hospitalIds.push(user.hospitalId);
+            for (const role of roles) {
+              if (role.userId === user.id) {
+                hospitalIds.push(role.hospitalId);
               }
             }
         }
