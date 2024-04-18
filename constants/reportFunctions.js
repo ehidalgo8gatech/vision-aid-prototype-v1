@@ -1009,6 +1009,20 @@ function getAggregatedHospitalData(
   return aggregatedHospitalData;
 }
 
+// Sorting function
+function sortTrainingData(obj) {
+  obj.sort((a, b) => {
+      // Sort by "Type of Training"
+      if (a["Type of Training"] < b["Type of Training"]) return -1;
+      if (a["Type of Training"] > b["Type of Training"]) return 1;
+
+      // If "Type of Training" is the same, sort by "Date"
+      const dateA = new Date(a.Date);
+      const dateB = new Date(b.Date);
+      return dateA - dateB;
+  });
+}
+
 // This function is used to filter the entire summary data by date range
 export function filterTrainingSummaryByDateRange(
   startDate,
@@ -1263,6 +1277,9 @@ export function getReportData(
       ceIdx += 1;
     }
   }
+
+  // sort the training data
+  sortTrainingData(trainingData);
 
   for (let [device, count] of edMap) {
     let edJson = { Index: edIdx, "Device Name": device, Count: count };
