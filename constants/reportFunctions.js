@@ -1010,13 +1010,21 @@ function getAggregatedHospitalData(
 }
 
 // Sorting function
-function sortTrainingData(obj) {
+function sortDataByKeyAndDate(obj, key) {
   obj.sort((a, b) => {
-      // Sort by "Type of Training"
-      if (a["Type of Training"] < b["Type of Training"]) return -1;
-      if (a["Type of Training"] > b["Type of Training"]) return 1;
+      // Sort by key
+      if (a[key] < b[key]) return -1;
+      if (a[key] > b[key]) return 1;
 
-      // If "Type of Training" is the same, sort by "Date"
+      // If key is the same, sort by "Date"
+      const dateA = new Date(a.Date);
+      const dateB = new Date(b.Date);
+      return dateA - dateB;
+  });
+}
+
+function sortDataByDate(obj) {
+  obj.sort((a, b) => {
       const dateA = new Date(a.Date);
       const dateB = new Date(b.Date);
       return dateA - dateB;
@@ -1278,8 +1286,12 @@ export function getReportData(
     }
   }
 
-  // sort the training data
-  sortTrainingData(trainingData);
+  // Sort the different sheets
+  sortDataByDate(visionEnhancementData);
+  sortDataByDate(lowVisionEvaluationData);
+  sortDataByDate(comprehensiveLowVisionEvaluationData);
+  sortDataByDate(counsellingEducationData);
+  sortDataByKeyAndDate(trainingData, "Type of Training");
 
   for (let [device, count] of edMap) {
     let edJson = { Index: edIdx, "Device Name": device, Count: count };
