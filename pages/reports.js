@@ -497,19 +497,19 @@ export default function Summary({
   const refRows = refData.split('\n').map(row => row.split('\t'));
 
   const hospitalAbbr = {
-    "Aravind Eye Hospital, Madurai": "AEH,MDU",
-    "Aravind Eye Hospital, Coimbatore": "AEH,CBE",
-    "Aravind Eye Hospital, Pondicherry": "AEH,PY",
-    "Aravind Eye Hospital, Tirupati": "AEH,TPTY",
-    "Aravind Eye Hospital, Tirunelveli": "AEH,TVL",
-    "Sankara Nethralaya, Chennai": "SN,CHE",
-    "Sankara Nethralaya, Kolkata": "SN,KOL",
-    "Dr. Shroff's Charity Eye Hospital": "SCEH,DL",
-    "Narayana Nethralaya, Rajajinagar, Bangalore": "NN,BLR",
-    "Dr. Jawahar Lal Rohatgi Eye Hospital, Kanpur": "JLR,UP",
-    "Sitapur Eye Hospital, Sitapur, UP": "SEH,UP",
-    "Voluntary Health Services": "VHS,CHE",
-    "Community Eye Care Foundation": "CECF,PUN"
+    "Aravind Eye Hospital, Madurai": "AEH, MDU",
+    "Aravind Eye Hospital, Coimbatore": "AEH, CBE",
+    "Aravind Eye Hospital, Pondicherry": "AEH, PY",
+    "Aravind Eye Hospital, Tirupati": "AEH, TPTY",
+    "Aravind Eye Hospital, Tirunelveli": "AEH, TVL",
+    "Sankara Nethralaya, Chennai": "SN, CHE",
+    "Sankara Nethralaya, Kolkata": "SN, KOL",
+    "Dr. Shroff's Charity Eye Hospital": "SCEH, DL",
+    "Narayana Nethralaya, Rajajinagar, Bangalore": "NN, BLR",
+    "Dr. Jawahar Lal Rohatgi Eye Hospital, Kanpur": "JLR, UP",
+    "Sitapur Eye Hospital, Sitapur, UP": "SEH, UP",
+    "Voluntary Health Services": "VHS, CHE",
+    "Community Eye Care Foundation": "CECF, PUN"
   };
 
   // create start date and end data states, start date is set to one year ago, end date is set to today
@@ -679,18 +679,17 @@ export default function Summary({
     });
 
     // generate the filename based on the filter date range and the selected hospitals
+    let reportHospitalName = hospitalAbbr[selectedHospitalNames[0]];
+    if (selectedHospitalNames.length > 1) {
+      reportHospitalName = "ALL";
+    } else if (reportHospitalName === undefined) {
+      reportHospitalName = selectedHospitalNames[0];
+    }
     let fileNameComponents = [];
     fileNameComponents.push("Report");
+    fileNameComponents.push(reportHospitalName);
     fileNameComponents.push(startDate.toISOString().split('T')[0]);
     fileNameComponents.push(endDate.toISOString().split('T')[0]);
-    for (const hName of selectedHospitalNames) {
-      const abbreviation = hospitalAbbr[hName];
-      if (abbreviation !== undefined) {
-          fileNameComponents.push(abbreviation);
-      } else {
-          fileNameComponents.push(hName);
-      }
-    }
     const filename = fileNameComponents.join("_") + ".xlsx";
 
     XLSX.writeFile(wb, filename);
