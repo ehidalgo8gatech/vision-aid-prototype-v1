@@ -662,7 +662,16 @@ export default function Summary({
       origin: -1,
     });
 
-    XLSX.writeFile(wb, "filtered_report.xlsx");
+    // generate the filename based on the filter date range and the selected hospitals
+    const reportHospitalName = (selectedHospitalNames.length > 1) ? "ALL HOSPITALS" : selectedHospitalNames[0];
+    let fileNameComponents = [];
+    fileNameComponents.push("Report");
+    fileNameComponents.push(startDate.toISOString().split('T')[0]);
+    fileNameComponents.push(endDate.toISOString().split('T')[0]);
+    fileNameComponents.push(reportHospitalName);
+    const filename = fileNameComponents.join("_") + ".xlsx";
+
+    XLSX.writeFile(wb, filename);
   }
 
   const handleStartDateChange = (e) => {
