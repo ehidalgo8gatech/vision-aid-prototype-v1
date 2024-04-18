@@ -192,7 +192,7 @@ function getLatestDispensedDevice(sortedClveData, deviceType) {
 function getCommonData(beneficiaryIdx, beneficiary) {
   const commonData = {
     Index: beneficiaryIdx,
-    "Date of Evaluation": getFormattedDate(new Date(beneficiary["dateOfBirth"])),
+    "Date of Evaluation": new Date(beneficiary["dateOfBirth"]),
     MRN: beneficiary["mrn"],
     "Name of the Patient": beneficiary["beneficiaryName"],
     Age: getAge(beneficiary["dateOfBirth"]),
@@ -248,7 +248,7 @@ function getBeneficiaryJson(commonData, beneficiary) {
 function getClveJson(commonData, clveIdx, clveData) {
   let clveJson = { ...commonData };
   clveJson["Index"] = clveIdx;
-  clveJson["Date of Evaluation"] = getFormattedDate(new Date(clveData["date"]));
+  clveJson["Date of Evaluation"] = new Date(clveData["date"]);
   clveJson["Diagnosis"] = clveData["diagnosis"];
   clveJson["Acuity Notation"] =
     clveData["distanceVisualAcuityRE"].split(" ")[1]; // insert check for if [1] exists
@@ -298,7 +298,7 @@ function getClveJson(commonData, clveIdx, clveData) {
 function getVeJson(commonData, veIdx, veData) {
   let veJson = { ...commonData };
   veJson["Index"] = veIdx;
-  veJson["Date of Evaluation"] = getFormattedDate(new Date(veData["date"]));
+  veJson["Date of Evaluation"] = new Date(veData["date"]);
   veJson["Diagnosis"] = veData["Diagnosis"];
   veJson["Session Number"] = veData["sessionNumber"];
   veJson["MDVI"] = veData["MDVI"];
@@ -311,7 +311,7 @@ function getVeJson(commonData, veIdx, veData) {
 function getLveJson(commonData, lveIdx, lveData) {
   let lveJson = { ...commonData };
   lveJson["Index"] = lveIdx;
-  lveJson["Date of Evaluation"] = getFormattedDate(new Date(lveData["date"]));
+  lveJson["Date of Evaluation"] = new Date(lveData["date"]);
   lveJson["Diagnosis"] = lveData["diagnosis"];
   lveJson["Session Number"] = lveData["sessionNumber"];
   lveJson["MDVI"] = lveData["mdvi"];
@@ -341,7 +341,7 @@ function getLveJson(commonData, lveIdx, lveData) {
 function getTrainingJson(commonData, tIdx, tData) {
   let tJson = { ...commonData };
   tJson["Index"] = tIdx; // has been referred in customizedReports. Please make necessary changes if this column name is changed.
-  tJson["Date of Evaluation"] = getFormattedDate(new Date(tData["date"]));
+  tJson["Date of Evaluation"] = new Date(tData["date"]);
   tJson["Session Number"] = tData["sessionNumber"];
   tJson["Type of Training"] = tData["type"]; // has been referred in customizedReports. Please make necessary changes if this column name is changed.
   tJson["Sub Type"] = tData["subType"];
@@ -354,7 +354,7 @@ function getTrainingJson(commonData, tIdx, tData) {
 function getCeJson(commonData, ceIdx, ceData) {
   let ceJson = { ...commonData };
   ceJson["Index"] = ceIdx;
-  ceJson["Date of Evaluation"] = getFormattedDate(new Date(ceData["date"]));
+  ceJson["Date of Evaluation"] = new Date(ceData["date"]);
   ceJson["Session Number"] = ceData["sessionNumber"];
   ceJson["MDVI"] = ceData["MDVI"];
   ceJson["Vision Type"] = ceData["vision"];
@@ -1017,17 +1017,24 @@ function sortDataByKeyAndDate(obj, key) {
       if (a[key] > b[key]) return 1;
 
       // If key is the same, sort by "Date"
-      const dateA = new Date(a.Date);
-      const dateB = new Date(b.Date);
+      const dateA = new Date(a["Date of Evaluation"]);
+      const dateB = new Date(b["Date of Evaluation"]);
       return dateA - dateB;
   });
 }
 
 function sortDataByDate(obj) {
   obj.sort((a, b) => {
-      const dateA = new Date(a.Date);
-      const dateB = new Date(b.Date);
+      const dateA = new Date(a["Date of Evaluation"]);
+      const dateB = new Date(b["Date of Evaluation"]);
       return dateA - dateB;
+  });
+}
+
+// format the date elements in the given object
+function formatDateElements(obj) {
+  obj.map((item) => {
+    item["Date of Evaluation"] = getFormattedDate(item["Date of Evaluation"]);
   });
 }
 
@@ -1292,6 +1299,13 @@ export function getReportData(
   sortDataByDate(comprehensiveLowVisionEvaluationData);
   sortDataByDate(counsellingEducationData);
   sortDataByKeyAndDate(trainingData, "Type of Training");
+
+  // Change the date formats for all the sheets
+  formatDateElements(visionEnhancementData);
+  formatDateElements(lowVisionEvaluationData);
+  formatDateElements(comprehensiveLowVisionEvaluationData);
+  formatDateElements(counsellingEducationData);
+  formatDateElements(trainingData);
 
   for (let [device, count] of edMap) {
     let edJson = { Index: edIdx, "Device Name": device, Count: count };
