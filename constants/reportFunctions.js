@@ -2,6 +2,14 @@ import XLSX from "xlsx-js-style";
 import { isNotNullEmptyOrUndefined, union, difference, intersect } from "./globalFunctions";
 import moment from "moment";
 
+function getFormattedDate(date) {
+  const day = date.getDate();
+  const month = date.toLocaleString('default', { month: 'long' });
+  const year = date.getFullYear();
+
+  return `${day} ${month} ${year}`;
+}
+
 // Merge cells in Excel sheet header
 const mergeHeaderCells = ({ row = 0, col = 0, rowSpan = 0, colSpan = 0 }) => {
   return { s: { r: row, c: col }, e: { r: row + rowSpan, c: col + colSpan } };
@@ -17,7 +25,7 @@ const addEmptyElements = (array, element, count) => {
 // Excel header for CLVE sheet
 const clveMainHeader = [
   "Index",
-  "Date",
+  "Date of Evaluation",
   "MRN",
   "Name of the Patient",
   "Age",
@@ -76,7 +84,7 @@ addEmptyElements(clveSubHeader, "", 2);
 // Excel header for Low Vision Screening Sheet
 const lveMainHeader = [
   "Index",
-  "Date",
+  "Date of Evaluation",
   "MRN",
   "Name of the Patient",
   "Age",
@@ -184,9 +192,7 @@ function getLatestDispensedDevice(sortedClveData, deviceType) {
 function getCommonData(beneficiaryIdx, beneficiary) {
   const commonData = {
     Index: beneficiaryIdx,
-    Date: new Date(beneficiary["dateOfBirth"])
-      .toLocaleDateString()
-      .split(",")[0],
+    "Date of Evaluation": getFormattedDate(new Date(beneficiary["dateOfBirth"])),
     MRN: beneficiary["mrn"],
     "Name of the Patient": beneficiary["beneficiaryName"],
     Age: getAge(beneficiary["dateOfBirth"]),
@@ -204,6 +210,7 @@ function getCommonData(beneficiaryIdx, beneficiary) {
 // Get Beneficiary Sheet data
 function getBeneficiaryJson(commonData, beneficiary) {
   let beneficiaryJson = { ...commonData };
+  delete beneficiaryJson["Date of Evaluation"];
   beneficiaryJson["Phone Number"] = beneficiary["phoneNumber"];
   beneficiaryJson["Hospital Name"] = beneficiary["hospital"]["name"];
   beneficiaryJson["Vision"] = beneficiary["vision"];
@@ -241,9 +248,7 @@ function getBeneficiaryJson(commonData, beneficiary) {
 function getClveJson(commonData, clveIdx, clveData) {
   let clveJson = { ...commonData };
   clveJson["Index"] = clveIdx;
-  clveJson["Date"] = new Date(clveData["date"])
-    .toLocaleDateString()
-    .split(",")[0];
+  clveJson["Date of Evaluation"] = getFormattedDate(new Date(clveData["date"]));
   clveJson["Diagnosis"] = clveData["diagnosis"];
   clveJson["Acuity Notation"] =
     clveData["distanceVisualAcuityRE"].split(" ")[1]; // insert check for if [1] exists
@@ -293,7 +298,7 @@ function getClveJson(commonData, clveIdx, clveData) {
 function getVeJson(commonData, veIdx, veData) {
   let veJson = { ...commonData };
   veJson["Index"] = veIdx;
-  veJson["Date"] = new Date(veData["date"]).toLocaleDateString().split(",")[0];
+  veJson["Date of Evaluation"] = getFormattedDate(new Date(veData["date"]));
   veJson["Diagnosis"] = veData["Diagnosis"];
   veJson["Session Number"] = veData["sessionNumber"];
   veJson["MDVI"] = veData["MDVI"];
@@ -306,9 +311,7 @@ function getVeJson(commonData, veIdx, veData) {
 function getLveJson(commonData, lveIdx, lveData) {
   let lveJson = { ...commonData };
   lveJson["Index"] = lveIdx;
-  lveJson["Date"] = new Date(lveData["date"])
-    .toLocaleDateString()
-    .split(",")[0];
+  lveJson["Date of Evaluation"] = getFormattedDate(new Date(lveData["date"]));
   lveJson["Diagnosis"] = lveData["diagnosis"];
   lveJson["Session Number"] = lveData["sessionNumber"];
   lveJson["MDVI"] = lveData["mdvi"];
@@ -338,7 +341,7 @@ function getLveJson(commonData, lveIdx, lveData) {
 function getTrainingJson(commonData, tIdx, tData) {
   let tJson = { ...commonData };
   tJson["Index"] = tIdx; // has been referred in customizedReports. Please make necessary changes if this column name is changed.
-  tJson["Date"] = new Date(tData["date"]).toLocaleDateString().split(",")[0];
+  tJson["Date of Evaluation"] = getFormattedDate(new Date(tData["date"]));
   tJson["Session Number"] = tData["sessionNumber"];
   tJson["Type of Training"] = tData["type"]; // has been referred in customizedReports. Please make necessary changes if this column name is changed.
   tJson["Sub Type"] = tData["subType"];
@@ -351,7 +354,7 @@ function getTrainingJson(commonData, tIdx, tData) {
 function getCeJson(commonData, ceIdx, ceData) {
   let ceJson = { ...commonData };
   ceJson["Index"] = ceIdx;
-  ceJson["Date"] = new Date(ceData["date"]).toLocaleDateString().split(",")[0];
+  ceJson["Date of Evaluation"] = getFormattedDate(new Date(ceData["date"]));
   ceJson["Session Number"] = ceData["sessionNumber"];
   ceJson["MDVI"] = ceData["MDVI"];
   ceJson["Vision Type"] = ceData["vision"];
