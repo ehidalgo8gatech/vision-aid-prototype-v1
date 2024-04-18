@@ -474,6 +474,44 @@ export default function Summary({
   summary,
   error,
 }) {
+  // Downloaded reports reference sheet data
+  // TODO: this hardcoded information will be fetched from database in the future
+  // Your tab-separated data
+  const refData = `S.no\tPrograms\tTypes\tDescription
+  1\tScreening /Out reach activities/ Camp\tLow Vision Screening\tLow vision screening of the school of the blind and Identification of the visually impaired for assistive technology
+  2\t\tIdentification of MDVI\tBeneficiaries come under Multiple disabilities and vision impairment.
+  3\tFunctional Vision/Early Intervention/ Vision enhancement\t\tAge group less than 7 years. Training of infants,children and parents to improve the brain’s ability to use and interpret visual information especially in kids with Cortical visual impairment (CVI)
+  4\tLVD beneficiairies/Comprehensive Low Vision Evaluation - CLVE\t\tLow vision assessment / Functional vision assessment done by a Professional - Optometrist / Low vision care specialist / Rehabilitation Specialist
+  5\tAssistive devices and aids\tAssistive devices/aids/RLF tactile books/ Optical/ Non Optical/ Electronic\tDevices for individuals with low vision and total blindness
+  6\tLow vision device training\tTraining is given after dispensing devices\t
+  7\tCounseling & referrals/ Counseling and education\tEducation and counseling\tList of referrals
+  8\tOrientation & Mobility training (O and M)\t\tTraining to help the visually impaired orient to the environment around and navigate safely
+  9\tComputer training\t\tTraining programs are conducted to build proficiency in computer skills using assistive technology like screen readers, magnification and contrast modifcations
+  10\tMobile technologies \t\tEducating on various mobile app for navigation and other functions
+  11\tVisual skills training\tAll subtypes under it as a whole\tVisual skills training greater than 7 years and adults
+  12\tOther training\tCorporate skill development\tComputer Programming, Digital accessibility testing DAT
+  13\t\tBraille Training & resources and Training with Braille reader / ORBIT reader\tTraining on Braille devices for education and Braille literacy
+  14\t\tTraining for Life skills/ Money identification/ Home management / Kitchen skills\t
+  15\t\tJob Coaching /IBPS\tIntegrated training program for Institute of Banking Personnel Selection and other job coaching
+  16\t\tSpoken english training\tTraining to speak in English for both beginners and Intermediate.`;
+  const refRows = refData.split('\n').map(row => row.split('\t'));
+
+  const hospitalAbbr = {
+    "Aravind Eye Hospital, Madurai": "AEH,MDU",
+    "Aravind Eye Hospital, Coimbatore": "AEH,CBE",
+    "Aravind Eye Hospital, Pondicherry": "AEH,PY",
+    "Aravind Eye Hospital, Tirupati": "AEH,TPTY",
+    "Aravind Eye Hospital, Tirunelveli": "AEH,TVL",
+    "Sankara Nethralaya, Chennai": "SN,CHE",
+    "Sankara Nethralaya, Kolkata": "SN,KOL",
+    "Dr. Shroff's Charity Eye Hospital": "SCEH,DL",
+    "Narayana Nethralaya, Rajajinagar, Bangalore": "NN,BLR",
+    "Dr. Jawahar Lal Rohatgi Eye Hospital, Kanpur": "JLR,UP",
+    "Sitapur Eye Hospital, Sitapur, UP": "SEH,UP",
+    "Voluntary Health Services": "VHS,CHE",
+    "Community Eye Care Foundation": "CECF,PUN"
+  };
+
   // create start date and end data states, start date is set to one year ago, end date is set to today
   const [startDate, setStartDate] = useState(
     moment().subtract(1, "year").toDate()
@@ -551,6 +589,10 @@ export default function Summary({
   const nonOpticalRecDevicesGraphData =  buildRecDevicesBreakdownGraph(filteredSummary, "NonOptical");
 
   async function downloadFilteredReport() {
+    if (selectedHospitalNames.length === 0) {
+      alert("No hospital was selected! Please select at least one hospital to download the report.");
+      return;
+    }
     var beneficiaryListAPI;
     try {
       beneficiaryListAPI = await fetch(
@@ -589,6 +631,7 @@ export default function Summary({
 
     const wb = XLSX.utils.book_new();
 
+    const wref = XLSX.utils.aoa_to_sheet(refRows);
     const wben = XLSX.utils.json_to_sheet(beneficiaryData);
     const wved = XLSX.utils.json_to_sheet(visionEnhancementData);
 
@@ -601,14 +644,18 @@ export default function Summary({
 
     const wahd = XLSX.utils.json_to_sheet([]);
 
-    XLSX.utils.book_append_sheet(wb, wben, "Beneficiary Sheet");
+    XLSX.utils.book_append_sheet(wb, [], "Summary");
+    XLSX.utils.book_append_sheet(wb, [], "Summary of Finances");
+    XLSX.utils.book_append_sheet(wb, wref, "Reference");
+    XLSX.utils.book_append_sheet(wb, wclve, "CLVE_LVD Beneficiaries");
     XLSX.utils.book_append_sheet(wb, wved, "Vision Enhancement Sheet");
-    XLSX.utils.book_append_sheet(wb, wlved, "Low Vision Screening");
-    XLSX.utils.book_append_sheet(wb, wclve, "CLVE Sheet");
-    XLSX.utils.book_append_sheet(wb, wed, "Electronic Devices Break Up");
     XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
     XLSX.utils.book_append_sheet(wb, wced, "Counselling Education Sheet");
-    XLSX.utils.book_append_sheet(wb, wahd, "Aggregated Hospital Sheet");
+    XLSX.utils.book_append_sheet(wb, wlved, "Camp_Low Vision Screening");
+    XLSX.utils.book_append_sheet(wb, wahd, "Summary of Services");
+    XLSX.utils.book_append_sheet(wb, wben, "Overall Beneficiary Sheet");
+    XLSX.utils.book_append_sheet(wb, wed, "Electronic Devices Break Up");
+    XLSX.utils.book_append_sheet(wb, [], "Action items from prev quarter");
 
     setClveHeader(wclve);
     XLSX.utils.sheet_add_json(wclve, comprehensiveLowVisionEvaluationData, {
@@ -631,7 +678,22 @@ export default function Summary({
       origin: -1,
     });
 
-    XLSX.writeFile(wb, "filtered_report.xlsx");
+    // generate the filename based on the filter date range and the selected hospitals
+    let fileNameComponents = [];
+    fileNameComponents.push("Report");
+    fileNameComponents.push(startDate.toISOString().split('T')[0]);
+    fileNameComponents.push(endDate.toISOString().split('T')[0]);
+    for (const hName of selectedHospitalNames) {
+      const abbreviation = hospitalAbbr[hName];
+      if (abbreviation !== undefined) {
+          fileNameComponents.push(abbreviation);
+      } else {
+          fileNameComponents.push(hName);
+      }
+    }
+    const filename = fileNameComponents.join("_") + ".xlsx";
+
+    XLSX.writeFile(wb, filename);
   }
 
   const handleStartDateChange = (e) => {
