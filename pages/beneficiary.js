@@ -1,13 +1,11 @@
 // This function gets called at build time
 
-import React from "react";
 import { useState } from "react";
-import AddUserForm from "./components/AddUserForm";
 import SearchBar from "./components/SearchBar";
 import UserList from "./components/UserList";
 import Navigation from "./navigation/Navigation";
 import Layout from './components/layout';
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { readUser } from "./api/user";
 

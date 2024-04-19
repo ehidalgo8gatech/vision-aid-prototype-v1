@@ -1,4 +1,3 @@
-import { Inter } from "@next/font/google";
 import {
   useSession,
   getSession,
@@ -7,9 +6,6 @@ import Navigation from "./navigation/Navigation";
 import Layout from './components/layout';
 import { readUser } from "./api/user";
 import  LandingPage from "./landingpage.js";
-
-
-const inter = Inter({ subsets: ["latin"] });
 
 export default function Home(props) {
   const { data: session } = useSession();

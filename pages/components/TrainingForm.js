@@ -1,8 +1,5 @@
 import { useState } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
-import { ChevronDown, ChevronRight, Pencil } from "react-bootstrap-icons";
-import { v4 as uuidv4 } from "uuid";
-import Router from "next/router";
 
 const TrainingForm = ({
   existingTrainings = [],
@@ -45,54 +42,6 @@ const TrainingForm = ({
       updateMDVIForBeneficiary({ mDVI: mdviVal });
     }
     addNewTraining(newTraining);
-  };
-
-  const [editableField, setEditableField] = useState("");
-  // Handle edit icon click
-  const handleEditClick = (field) => {
-    setEditableField(field);
-  };
-  const [rerenderForce, setRerenderForce] = useState();
-  // Handle input changes
-  const handleInputChange = (index, field, id) => {
-    existingTrainings[index][field] = document.getElementById(id).value;
-    setRerenderForce({
-      ...rerenderForce,
-      uuid: uuidv4(),
-    });
-  };
-
-  const handleEditSubmit = async (e, api, field, index) => {
-    e.preventDefault();
-    var value;
-    if (field == "date" || field == "dispensedDate") {
-      value = new Date(existingTrainings[index][field]);
-    } else if (
-      field == "sessionNumber" ||
-      field == "cost" ||
-      field == "costToBeneficiary"
-    ) {
-      value = parseInt(existingTrainings[index][field]);
-    } else {
-      value = existingTrainings[index][field];
-    }
-
-    // Update user data in the database
-    const response = await fetch(`/api/` + api, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: existingTrainings[index].id, [field]: value }),
-    });
-
-    // Handle response from the API
-    if (response.ok) {
-      alert("User data saved successfully!");
-    } else {
-      alert("An error occurred while saving user data. Please try again.");
-    }
-    Router.reload();
   };
 
   let types = [];

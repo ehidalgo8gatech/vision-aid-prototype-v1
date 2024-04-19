@@ -4,10 +4,8 @@ import Router, { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { Pencil, Check2 } from "react-bootstrap-icons";
 import Navigation from "./navigation/Navigation";
-import TrainingForm from "./components/TrainingForm";
 import BeneficiaryServicesTable from "./components/BeneficiaryServicesTable";
 import UserProfileCard from "./components/UserProfileCard";
-import TrainingFormCLVE from "./components/TrainingFormCLVE";
 import { getTrainingTypes } from "@/pages/api/trainingType";
 import { getCounsellingType } from "@/pages/api/counsellingType";
 import { getTrainingSubTypes } from "@/pages/api/trainingSubType";
@@ -33,9 +31,6 @@ function UserPage(props) {
   const [lowVisionEvaluationData, setLowVisionEvaluationData] = useState([]);
   const [counsellingEducationData, setCounsellingEducationData] = useState([]);
   const [orientationMobilityData, setOrientationMobilityData] = useState([]);
-  const [openMobile, setOpenMobile] = useState(false);
-  const [openComputer, setOpenComputer] = useState(false);
-  const [openVision, setOpenVision] = useState(false);
   const [consentName, setConsentName] = useState("");
 
   useEffect(() => {

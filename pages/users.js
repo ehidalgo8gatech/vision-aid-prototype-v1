@@ -5,7 +5,7 @@ import { allUsers, allHospitalRoles, readUser } from "@/pages/api/user";
 import { findAllHospital } from "@/pages/api/hospital";
 import Router from "next/router";
 import { Table } from "react-bootstrap";
-import { FormControl, Select, MenuItem, Input, Typography, FormLabel } from "@mui/material";
+import { FormControl, Select, MenuItem, Input, Typography } from "@mui/material";
 import { createMenu } from "@/constants/globalFunctions";
 import { useState } from "react";
 import Layout from './components/layout';

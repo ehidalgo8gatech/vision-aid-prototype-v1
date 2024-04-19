@@ -1,7 +1,6 @@
 import { readUser, allHospitalRoles } from "./api/user";
 import { getSession } from "next-auth/react";
 import { Chart as ChartJS } from "chart.js/auto";
-import { Chart } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Bar } from "react-chartjs-2";
 import {
@@ -10,17 +9,13 @@ import {
 import { Container } from "react-bootstrap";
 import Navigation from "./navigation/Navigation";
 import Layout from './components/layout';
-import { Table } from "react-bootstrap";
-import Link from "next/link";
 import moment from "moment";
 import { useState, useEffect } from "react";
-import { CSVLink, CSVDownload } from "react-csv";
 import GraphCustomizer from "./components/GraphCustomizer";
 import { Tab, Tabs, Paper } from "@mui/material";
 // import * as XLSX from "xlsx";
 import XLSX from "xlsx-js-style";
 import { isNotNullBlankOrUndefined } from "@/constants/globalFunctions";
-import { Orienta } from "@next/font/google";
 import { Download } from "react-bootstrap-icons";
 import { useRouter } from "next/router";
 import {

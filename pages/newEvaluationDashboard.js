@@ -1,11 +1,6 @@
-import Link from "next/link";
-import styles from "@/styles/Home.module.css";
-import Head from "next/head";
-import Image from "next/image";
-import Router, { useRouter } from "next/router";
+import Router from "next/router";
 import { useState, useEffect } from "react";
-import { Inter } from "@next/font/google";
-import { useSession, signIn, signOut, getSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import TrainingFormCLVE from "./components/TrainingFormCLVE";
 import TrainingForm from "./components/TrainingForm";
 import UserProfileCard from "./components/UserProfileCard";
@@ -14,12 +9,10 @@ import { readUser } from "./api/user";
 
 export default function NewEvaluationDashboard(props) {
   // State variable for form fields
-  const [formData, setFormData] = useState(props.user);
   const service = props.user[props.service];
   const counsellingTypeList = props.counsellingTypeList;
   const trainingTypeList = props.trainingTypeList;
   const trainingSubTypeList = props.trainingSubTypeList;
-  const [editableField, setEditableField] = useState("");
 
   const [mobileTrainingData, setMobileTrainingData] = useState([]);
   const [trainingData, setTrainingData] = useState([]);
@@ -32,9 +25,6 @@ export default function NewEvaluationDashboard(props) {
   const [lowVisionEvaluationData, setLowVisionEvaluationData] = useState([]);
   const [counsellingEducationData, setCounsellingEducationData] = useState([]);
   const [orientationMobilityData, setOrientationMobilityData] = useState([]);
-  const [openMobile, setOpenMobile] = useState(false);
-  const [openComputer, setOpenComputer] = useState(false);
-  const [openVision, setOpenVision] = useState(false);
 
   useEffect(() => {
     setMobileTrainingData(props.user.Mobile_Training);
@@ -153,41 +143,6 @@ export default function NewEvaluationDashboard(props) {
     // Submit the VisionTraining data to the API
     const url = "/api/orientationMobileTraining";
     callMe(data, url, setOrientationMobilityData, orientationMobilityData);
-  };
-
-  // Handle input changes
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  // Handle edit icon click
-  const handleEditClick = (field) => {
-    setEditableField(field);
-  };
-
-  // Submit the edited data
-  const handleSubmit = async (e, field) => {
-    e.preventDefault();
-
-    // Update user data in the database
-    const response = await fetch(`/api/beneficiary`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ mrn: props.user.mrn, [field]: formData[field] }),
-    });
-
-    // Handle response from the API
-    if (response.ok) {
-      alert("User data saved successfully!");
-      setEditableField("");
-    } else {
-      alert("An error occurred while saving user data. Please try again.");
-    }
   };
 
   if (!props.user) {
