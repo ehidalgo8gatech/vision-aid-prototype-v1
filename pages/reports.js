@@ -680,8 +680,10 @@ export default function Summary({
 
     // generate the filename based on the filter date range and the selected hospitals
     let reportHospitalName = hospitalAbbr[selectedHospitalNames[0]];
-    if (selectedHospitalNames.length > 1) {
+    if (selectedHospitalNames.length === summary.length) {
       reportHospitalName = "ALL";
+    } else if (selectedHospitalNames.length > 1) {
+      reportHospitalName = "MULTI";
     } else if (reportHospitalName === undefined) {
       reportHospitalName = selectedHospitalNames[0];
     }
