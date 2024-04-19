@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { Inter } from "@next/font/google";
 import { useSession, signIn, signOut, getSession } from "next-auth/react";
+import ReferencePage from "./ReferencePage";
 
 export default function BeneficiaryServicesTable(props) {
   const router = useRouter();
@@ -31,6 +32,9 @@ export default function BeneficiaryServicesTable(props) {
   };
 
   return (
+    <>
+    <ReferencePage></ReferencePage>
+    <br></br><br></br>
     <table className="table beneficiary-table table-bordered">
       <thead className="thead-dark">
         <tr>
@@ -174,5 +178,6 @@ export default function BeneficiaryServicesTable(props) {
         </tr>
       </tbody>
     </table>
+    </>
   );
 }
