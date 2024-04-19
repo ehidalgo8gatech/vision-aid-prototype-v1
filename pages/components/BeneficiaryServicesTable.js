@@ -40,33 +40,6 @@ export default function BeneficiaryServicesTable(props) {
       </thead>
       <tbody>
         <tr>
-          <th scope="row">Low Vision Screening</th>
-          <td>
-            <button
-              type="button"
-              className="btn btn-success border-0 btn-block"
-              onClick={() =>
-                openUserHistoricalEvaluationPage(
-                  props.user.mrn,
-                  "Low_Vision_Screening"
-                )
-              }
-            >
-              History
-            </button>
-            <div className="divider" />
-            <button
-              type="button"
-              className="btn btn-success border-0 btn-block"
-              onClick={() =>
-                openNewEvalutaionPage(props.user.mrn, "Low_Vision_Screening")
-              }
-            >
-              New Evaluation
-            </button>
-          </td>
-        </tr>
-        <tr>
           <th scope="row">Comprehensive Low Vision Evaluation</th>
           <td>
             <button
@@ -167,6 +140,33 @@ export default function BeneficiaryServicesTable(props) {
               type="button"
               className="btn btn-success border-0 btn-block"
               onClick={() => openNewEvalutaionPage(props.user.mrn, "Training")}
+            >
+              New Evaluation
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">Camp_Low Vision Screening</th>
+          <td>
+            <button
+              type="button"
+              className="btn btn-success border-0 btn-block"
+              onClick={() =>
+                openUserHistoricalEvaluationPage(
+                  props.user.mrn,
+                  "Low_Vision_Screening"
+                )
+              }
+            >
+              History
+            </button>
+            <div className="divider" />
+            <button
+              type="button"
+              className="btn btn-success border-0 btn-block"
+              onClick={() =>
+                openNewEvalutaionPage(props.user.mrn, "Low_Vision_Screening")
+              }
             >
               New Evaluation
             </button>
