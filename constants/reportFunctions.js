@@ -1012,6 +1012,10 @@ function getAggregatedHospitalData(
 // Sorting function
 function sortDataByKeyAndDate(obj, key) {
   obj.sort((a, b) => {
+      // Handle blank values for key
+      if (!a[key]) return 1; // a[key] is blank, b[key] should come first
+      if (!b[key]) return -1; // b[key] is blank, a[key] should come first
+
       // Sort by key
       if (a[key] < b[key]) return -1;
       if (a[key] > b[key]) return 1;
