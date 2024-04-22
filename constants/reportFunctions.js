@@ -1310,7 +1310,7 @@ export function getReportData(
   sortDataByDate(visionEnhancementData);
   sortDataByDate(lowVisionEvaluationData);
   sortDataByDate(comprehensiveLowVisionEvaluationData);
-  sortDataByKeyAndDate(counsellingEducationData, "Type of Counselling");
+  sortDataByKeyAndDate(counsellingEducationData, "Type");
   sortDataByKeyAndDate(trainingData, "Type of Training");
 
   // Change the date formats for all the sheets
@@ -1321,7 +1321,7 @@ export function getReportData(
   formatDateElements(trainingData);
 
   // Re-number the records for the sorted sheets, by type
-  indexSortedData(counsellingEducationData, "Type of Counselling");
+  indexSortedData(counsellingEducationData, "Type");
   indexSortedData(trainingData, "Type of Training");
 
   for (let [device, count] of edMap) {
