@@ -1297,7 +1297,7 @@ export function getReportData(
   sortDataByDate(visionEnhancementData);
   sortDataByDate(lowVisionEvaluationData);
   sortDataByDate(comprehensiveLowVisionEvaluationData);
-  sortDataByDate(counsellingEducationData);
+  sortDataByKeyAndDate(counsellingEducationData, "Type of Counselling");
   sortDataByKeyAndDate(trainingData, "Type of Training");
 
   // Change the date formats for all the sheets

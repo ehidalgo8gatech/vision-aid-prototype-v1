@@ -641,13 +641,13 @@ export default function Summary({
 
     XLSX.utils.book_append_sheet(wb, [], "Summary");
     XLSX.utils.book_append_sheet(wb, [], "Summary of Finances");
+    XLSX.utils.book_append_sheet(wb, wahd, "Summary of Services");
     XLSX.utils.book_append_sheet(wb, wref, "Reference");
     XLSX.utils.book_append_sheet(wb, wclve, "CLVE_LVD Beneficiaries");
     XLSX.utils.book_append_sheet(wb, wved, "Vision Enhancement Sheet");
     XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
     XLSX.utils.book_append_sheet(wb, wced, "Counselling Education Sheet");
     XLSX.utils.book_append_sheet(wb, wlved, "Camp_Low Vision Screening");
-    XLSX.utils.book_append_sheet(wb, wahd, "Summary of Services");
     XLSX.utils.book_append_sheet(wb, wben, "Overall Beneficiary Sheet");
     XLSX.utils.book_append_sheet(wb, wed, "Electronic Devices Break Up");
     XLSX.utils.book_append_sheet(wb, [], "Action items from prev quarter");
@@ -672,6 +672,14 @@ export default function Summary({
       skipHeader: true,
       origin: -1,
     });
+
+    // Change the column width for the reference sheet
+    const wscols = [];
+    const wrefcols = [4, 52, 64, 80]; // values obtained from manually adjusting the downloaded excel sheet
+    for (let i = 0; i < refRows[0].length; i++) {
+        wscols.push({wch: wrefcols[i]}); // Set the initial width for each column
+    }
+    wref['!cols'] = wscols;
 
     // generate the filename based on the filter date range and the selected hospitals
     let reportHospitalName = hospitalAbbr[selectedHospitalNames[0]];
