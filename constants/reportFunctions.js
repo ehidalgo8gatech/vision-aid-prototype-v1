@@ -1031,6 +1031,19 @@ function sortDataByDate(obj) {
   });
 }
 
+// indexing function for the sorted data
+function indexSortedData(obj, key) {
+  let idx = 1;
+  let currentType = "";
+  obj.map((item) => {
+    if (currentType !== item[key]) {
+      currentType = item[key];
+      idx = 1;
+    }
+    item["Index"] = idx++;
+  });
+}
+
 // format the date elements in the given object
 function formatDateElements(obj) {
   obj.map((item) => {
@@ -1306,6 +1319,10 @@ export function getReportData(
   formatDateElements(comprehensiveLowVisionEvaluationData);
   formatDateElements(counsellingEducationData);
   formatDateElements(trainingData);
+
+  // Re-number the records for the sorted sheets, by type
+  indexSortedData(counsellingEducationData, "Type of Counselling");
+  indexSortedData(trainingData, "Type of Training");
 
   for (let [device, count] of edMap) {
     let edJson = { Index: edIdx, "Device Name": device, Count: count };
