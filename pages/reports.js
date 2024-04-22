@@ -709,14 +709,20 @@ export default function Summary({
   };
 
   const [activeGraphTab, setActiveGraphTab] = useState(0);
+  const [activeBeneficiaryGraphTab, setActiveBeneficiaryGraphTab] = useState(0);
   const [activeDevicesGraphTab, setActiveDevicesGraphTab] = useState(0);
   const [activeRecDevicesGraphTab, setActiveRecDevicesGraphTab] = useState(0);
   const [activeActivitiesGraphTab, setActiveActivitiesGraphTab] = useState(0);
   const handleGraphTabChange = (event, newValue) => {
     setActiveGraphTab(newValue);
+    setActiveBeneficiaryGraphTab(0);
     setActiveDevicesGraphTab(0);
     setActiveRecDevicesGraphTab(0);
     setActiveActivitiesGraphTab(0);
+  };
+
+  const handleBeneficiaryGraphTabChange = (event, newValue) => {
+    setActiveBeneficiaryGraphTab(newValue);
   };
 
   const handleDevicesGraphTabChange = (event, newValue) => {
@@ -745,7 +751,12 @@ export default function Summary({
   const renderGraph = () => {
     switch (activeGraphTab) {
       case 0:
-        return <Bar data={beneficiaryGraphData} options={options} />;
+        switch (activeBeneficiaryGraphTab) {
+          case 0:
+            return <Bar data={beneficiaryGraphData} options={options} />;
+          default:
+            return null;
+        }
       case 1:
         switch (activeActivitiesGraphTab) {
           case 0:
@@ -853,6 +864,18 @@ export default function Summary({
                   <Tab label="Dispensed Devices" />
                   <Tab label="Recommended Devices" />
                 </Tabs>
+                {activeGraphTab == 0 ?
+                <Tabs
+                  value={activeBeneficiaryGraphTab}
+                  onChange={handleBeneficiaryGraphTabChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                >
+                  <Tab label="All Beneficiaries" />
+                </Tabs>
+                : <></>
+                }
                 {activeGraphTab == 1 ?
                 <Tabs
                   value={activeActivitiesGraphTab}
