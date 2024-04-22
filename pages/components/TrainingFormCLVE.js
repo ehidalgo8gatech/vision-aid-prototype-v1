@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
-import { ChevronDown, ChevronRight, Pencil } from "react-bootstrap-icons";
-import { v4 as uuidv4 } from "uuid";
-import Router from "next/router";
 import {
   Select,
   FormControl,
@@ -414,7 +411,6 @@ const TrainingFormCLVE = ({
     dispensedNonOptical: false,
     dispensedElectronic: false,
   });
-  const [editableField, setEditableField] = useState("");
 
   const handleMultiSelectChange = (e, fieldName) => {
     const {
@@ -443,85 +439,7 @@ const TrainingFormCLVE = ({
     }
   };
 
-  const handleSelectChange = (e, fieldName) => {
-    const {
-      target: { value },
-    } = e;
-    setDevices({ ...devices, [fieldName]: value });
-    if (value === "Other") {
-      setShowOther({ ...showOther, [fieldName]: true });
-    } else {
-      setShowOther({ ...showOther, [fieldName]: false });
-    }
-  };
-
-  // Handle edit icon click
-  const handleEditClick = (field) => {
-    setEditableField(field);
-  };
-  const [rerenderForce, setRerenderForce] = useState();
-  // Handle input changes
-  const handleInputChange = (index, field, id) => {
-    existingTrainings[index][field] = document.getElementById(id).value;
-    setRerenderForce({
-      ...rerenderForce,
-      uuid: uuidv4(),
-    });
-  };
-
-  const handleEditSubmit = async (e, api, field, index) => {
-    e.preventDefault();
-    var value;
-    if (
-      field == "date" ||
-      field == "dispensedDateSpectacle" ||
-      field == "dispensedDateOptical" ||
-      field == "dispensedDateNonOptical" ||
-      field == "dispensedDateElectronic"
-    ) {
-      value = new Date(existingTrainings[index][field]);
-    } else if (
-      field == "sessionNumber" ||
-      field == "costSpectacle" ||
-      field == "costToBeneficiarySpectacle" ||
-      field == "costOptical" ||
-      field == "costToBeneficiaryOptical" ||
-      field == "costNonOptical" ||
-      field == "costToBeneficiaryNonOptical" ||
-      field == "costElectronic" ||
-      field == "costToBeneficiaryElectronic"
-    ) {
-      value = parseInt(existingTrainings[index][field]);
-    } else {
-      value = existingTrainings[index][field];
-    }
-
-    // Update user data in the database
-    const response = await fetch(`/api/` + api, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: existingTrainings[index].id, [field]: value }),
-    });
-
-    // Handle response from the API
-    if (response.ok) {
-      alert("User data saved successfully!");
-    } else {
-      alert("An error occurred while saving user data. Please try again.");
-    }
-    Router.reload();
-  };
-
   const [showDiagnosisOther, setShowDiagnosisOther] = useState(false);
-  function diagnosisOnChange(event) {
-    if (event.target.checked == true) {
-      setShowDiagnosisOther(true);
-    } else {
-      setShowDiagnosisOther(false);
-    }
-  }
 
   const updateFormData = (e, fieldName) => {
     if (e.target.type == "date") {

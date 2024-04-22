@@ -3,8 +3,6 @@ import { readUser } from "./api/user";
 import { getSession } from "next-auth/react";
 import { readBeneficiaryMirror } from "@/pages/api/beneficiaryMirror";
 import { findAllHospital } from "@/pages/api/hospital";
-import { v4 as uuidv4 } from "uuid";
-import Router from "next/router";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Navigation from "./navigation/Navigation";

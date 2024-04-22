@@ -5,7 +5,7 @@ import { allUsers, allHospitalRoles, readUser } from "@/pages/api/user";
 import { findAllHospital } from "@/pages/api/hospital";
 import Router from "next/router";
 import { Table } from "react-bootstrap";
-import { FormControl, Select, MenuItem, Input, Typography, FormLabel } from "@mui/material";
+import { FormControl, Select, MenuItem, Input, Typography } from "@mui/material";
 import { createMenu } from "@/constants/globalFunctions";
 import { useState } from "react";
 import Layout from './components/layout';
@@ -87,6 +87,13 @@ function Users(props) {
   const addUser = async (e) => {
     e.preventDefault();
     const userEmail = document.getElementById("userEmail").value;
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(userEmail)) {
+      console.log("Invalid email format");
+      alert("Invalid Email ID provided.");
+      return;
+    }
     // const hospitalElement = document.getElementById("hospitalSelect");
     // console.log(hospitalElement);
     // const hosidx = hospitalElement.selectedIndex;
@@ -340,6 +347,7 @@ function Users(props) {
                       <Select
                         value={role}
                         onChange={(e) => handleRoleOption(e)}
+                        required
                       >
                         {createMenu(roleOptions, false)}
                       </Select>
@@ -360,6 +368,7 @@ function Users(props) {
                       <Select
                         value={hosp}
                         onChange={(e) => setHosp([e.target.value])}
+                        required
                       >
                         {createMenu(hospitalOptions, false)}
                       </Select>
@@ -369,6 +378,7 @@ function Users(props) {
                         onChange={(e) => setHosp(e.target.value)}
                         multiple
                         renderValue={(selected) => selected.join(", ")}
+                        required
                       >
                         {createMenu(hospitalOptions, true, hosp)}
                       </Select>
@@ -394,7 +404,7 @@ function Users(props) {
                   </td>
                   <td className="col-md-7">
                     <FormControl fullWidth size="small">
-                      <Input id="userEmail" autoComplete="off"></Input>
+                      <Input id="userEmail" autoComplete="off" required></Input>
                     </FormControl>
                   </td>
                 </tr>

@@ -1012,6 +1012,10 @@ function getAggregatedHospitalData(
 // Sorting function
 function sortDataByKeyAndDate(obj, key) {
   obj.sort((a, b) => {
+      // Handle blank values for key
+      if (!a[key]) return 1; // a[key] is blank, b[key] should come first
+      if (!b[key]) return -1; // b[key] is blank, a[key] should come first
+
       // Sort by key
       if (a[key] < b[key]) return -1;
       if (a[key] > b[key]) return 1;
@@ -1028,6 +1032,20 @@ function sortDataByDate(obj) {
       const dateA = new Date(a["Date of Evaluation"]);
       const dateB = new Date(b["Date of Evaluation"]);
       return dateA - dateB;
+  });
+}
+
+// indexing function for the sorted data
+// pass "" as the key, if the re-numbering to done for all the records ignoring the sorting key
+function indexSortedData(obj, key) {
+  let idx = 1;
+  let currentType = "";
+  obj.map((item) => {
+    if (currentType !== item[key]) {
+      currentType = item[key];
+      idx = 1;
+    }
+    item["Index"] = idx++;
   });
 }
 
@@ -1297,7 +1315,7 @@ export function getReportData(
   sortDataByDate(visionEnhancementData);
   sortDataByDate(lowVisionEvaluationData);
   sortDataByDate(comprehensiveLowVisionEvaluationData);
-  sortDataByDate(counsellingEducationData);
+  sortDataByKeyAndDate(counsellingEducationData, "Type");
   sortDataByKeyAndDate(trainingData, "Type of Training");
 
   // Change the date formats for all the sheets
@@ -1306,6 +1324,13 @@ export function getReportData(
   formatDateElements(comprehensiveLowVisionEvaluationData);
   formatDateElements(counsellingEducationData);
   formatDateElements(trainingData);
+
+  // Re-number the records for the sorted sheets, by type
+  indexSortedData(visionEnhancementData, "");
+  indexSortedData(lowVisionEvaluationData, "");
+  indexSortedData(comprehensiveLowVisionEvaluationData, "");
+  indexSortedData(counsellingEducationData, "Type");
+  indexSortedData(trainingData, "Type of Training");
 
   for (let [device, count] of edMap) {
     let edJson = { Index: edIdx, "Device Name": device, Count: count };

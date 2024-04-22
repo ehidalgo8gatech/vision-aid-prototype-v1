@@ -6,15 +6,14 @@ import { readBeneficiaryMirror } from "@/pages/api/beneficiaryMirror";
 import { v4 as uuidv4 } from "uuid";
 import Router from "next/router";
 import Navigation from "./navigation/Navigation";
-import { findAllHospital, findAllHospitalsHistory } from "@/pages/api/hospital";
-import TrainingForm from "@/pages/components/TrainingForm";
+import { findAllHospitalsHistory } from "@/pages/api/hospital";
 import { readMobileTrainingMirror } from "@/pages/api/mobileTrainingMirror";
 import { readComputerTrainingMirror } from "@/pages/api/computerTrainingMirror";
 import { readOrientationMobilityTrainingMirror } from "@/pages/api/orientationMobilityTrainingMirror";
 import { readVisionEnhancementMirror } from "@/pages/api/visionEnhancementMirror";
 import { readComprehensiveLowVisionEvaluationMirror } from "@/pages/api/comprehensiveLowVisionEvaluationMirror";
 import { readCounsellingEducationMirror } from "@/pages/api/counsellingEducationMirror";
-import { ChevronDown, ChevronRight, Trash } from "react-bootstrap-icons";
+import { Trash } from "react-bootstrap-icons";
 import { useState } from "react";
 import { getCounsellingType } from "@/pages/api/counsellingType";
 import { getTrainingTypes } from "@/pages/api/trainingType";
@@ -429,27 +428,6 @@ function RequiredFields(props) {
     removeTrainingType: false,
     addTrainingSubType: false,
   };
-  function handleToggle(type) {
-    var displayTrainingElement = document.getElementById(
-      type + "TrainingRequiredFields"
-    );
-    if (displayTrainingElement.style.display === "block") {
-      displayTrainingElement.style.display = "none";
-    } else {
-      displayTrainingElement.style.display = "block";
-    }
-    showForm[type] = !showForm[type];
-  }
-
-  function handleToggleByType(type) {
-    var displayTrainingElement = document.getElementById(type);
-    if (displayTrainingElement.style.display === "block") {
-      displayTrainingElement.style.display = "none";
-    } else {
-      displayTrainingElement.style.display = "block";
-    }
-    showForm[type] = !showForm[type];
-  }
 
   const hospitalOptions = [];
   for (let i = 0; i < props.hospitals.length; i++) {
@@ -543,18 +521,6 @@ function RequiredFields(props) {
       </tr>
 
     );
-  }
-
-  async function removeTypesSubmit(e, api, html) {
-    e.preventDefault();
-    await fetch("/api/" + api, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        value: e.target[html].value,
-      }),
-    });
-    Router.reload();
   }
 
   let removeSubTypeTraining = [];
@@ -795,7 +761,7 @@ function RequiredFields(props) {
                               <button
                                 className="btn btn-danger"
                                 type="button"
-                                onClick={(e) =>
+                                onClick={() =>
                                   hideHospital(hospital.id, hospital.name)
                                 }
                               >
@@ -806,7 +772,7 @@ function RequiredFields(props) {
                               <button
                                 className="btn btn-success"
                                 type="button"
-                                onClick={(e) =>
+                                onClick={() =>
                                   showHospital(hospital.id, hospital.name)
                                 }
                               >

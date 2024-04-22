@@ -1,10 +1,5 @@
-import Link from "next/link";
-import styles from "@/styles/Home.module.css";
-import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
-import { Inter } from "@next/font/google";
-import { useSession, signIn, signOut, getSession } from "next-auth/react";
+import ReferencePage from "./ReferencePage";
 
 export default function BeneficiaryServicesTable(props) {
   const router = useRouter();
@@ -31,6 +26,9 @@ export default function BeneficiaryServicesTable(props) {
   };
 
   return (
+    <>
+    <ReferencePage></ReferencePage>
+    <br></br><br></br>
     <table className="table beneficiary-table table-bordered">
       <thead className="thead-dark">
         <tr>
@@ -39,33 +37,6 @@ export default function BeneficiaryServicesTable(props) {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">Low Vision Screening</th>
-          <td>
-            <button
-              type="button"
-              className="btn btn-success border-0 btn-block"
-              onClick={() =>
-                openUserHistoricalEvaluationPage(
-                  props.user.mrn,
-                  "Low_Vision_Screening"
-                )
-              }
-            >
-              History
-            </button>
-            <div className="divider" />
-            <button
-              type="button"
-              className="btn btn-success border-0 btn-block"
-              onClick={() =>
-                openNewEvalutaionPage(props.user.mrn, "Low_Vision_Screening")
-              }
-            >
-              New Evaluation
-            </button>
-          </td>
-        </tr>
         <tr>
           <th scope="row">Comprehensive Low Vision Evaluation</th>
           <td>
@@ -172,7 +143,35 @@ export default function BeneficiaryServicesTable(props) {
             </button>
           </td>
         </tr>
+        <tr>
+          <th scope="row">Camp_Low Vision Screening</th>
+          <td>
+            <button
+              type="button"
+              className="btn btn-success border-0 btn-block"
+              onClick={() =>
+                openUserHistoricalEvaluationPage(
+                  props.user.mrn,
+                  "Low_Vision_Screening"
+                )
+              }
+            >
+              History
+            </button>
+            <div className="divider" />
+            <button
+              type="button"
+              className="btn btn-success border-0 btn-block"
+              onClick={() =>
+                openNewEvalutaionPage(props.user.mrn, "Low_Vision_Screening")
+              }
+            >
+              New Evaluation
+            </button>
+          </td>
+        </tr>
       </tbody>
     </table>
+    </>
   );
 }

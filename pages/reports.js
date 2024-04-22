@@ -1,7 +1,6 @@
 import { readUser, allHospitalRoles } from "./api/user";
 import { getSession } from "next-auth/react";
 import { Chart as ChartJS } from "chart.js/auto";
-import { Chart } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Bar } from "react-chartjs-2";
 import {
@@ -10,17 +9,13 @@ import {
 import { Container } from "react-bootstrap";
 import Navigation from "./navigation/Navigation";
 import Layout from './components/layout';
-import { Table } from "react-bootstrap";
-import Link from "next/link";
 import moment from "moment";
 import { useState, useEffect } from "react";
-import { CSVLink, CSVDownload } from "react-csv";
 import GraphCustomizer from "./components/GraphCustomizer";
 import { Tab, Tabs, Paper } from "@mui/material";
 // import * as XLSX from "xlsx";
 import XLSX from "xlsx-js-style";
 import { isNotNullBlankOrUndefined } from "@/constants/globalFunctions";
-import { Orienta } from "@next/font/google";
 import { Download } from "react-bootstrap-icons";
 import { useRouter } from "next/router";
 import {
@@ -646,13 +641,13 @@ export default function Summary({
 
     XLSX.utils.book_append_sheet(wb, [], "Summary");
     XLSX.utils.book_append_sheet(wb, [], "Summary of Finances");
+    XLSX.utils.book_append_sheet(wb, wahd, "Summary of Services");
     XLSX.utils.book_append_sheet(wb, wref, "Reference");
     XLSX.utils.book_append_sheet(wb, wclve, "CLVE_LVD Beneficiaries");
     XLSX.utils.book_append_sheet(wb, wved, "Vision Enhancement Sheet");
     XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
     XLSX.utils.book_append_sheet(wb, wced, "Counselling Education Sheet");
     XLSX.utils.book_append_sheet(wb, wlved, "Camp_Low Vision Screening");
-    XLSX.utils.book_append_sheet(wb, wahd, "Summary of Services");
     XLSX.utils.book_append_sheet(wb, wben, "Overall Beneficiary Sheet");
     XLSX.utils.book_append_sheet(wb, wed, "Electronic Devices Break Up");
     XLSX.utils.book_append_sheet(wb, [], "Action items from prev quarter");
@@ -677,6 +672,14 @@ export default function Summary({
       skipHeader: true,
       origin: -1,
     });
+
+    // Change the column width for the reference sheet
+    const wscols = [];
+    const wrefcols = [4, 53, 66, 84]; // values obtained from manually adjusting the downloaded excel sheet
+    for (let i = 0; i < refRows[0].length; i++) {
+        wscols.push({wch: wrefcols[i]}); // Set the initial width for each column
+    }
+    wref['!cols'] = wscols;
 
     // generate the filename based on the filter date range and the selected hospitals
     let reportHospitalName = hospitalAbbr[selectedHospitalNames[0]];
