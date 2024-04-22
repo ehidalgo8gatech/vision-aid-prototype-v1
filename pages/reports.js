@@ -675,7 +675,7 @@ export default function Summary({
 
     // Change the column width for the reference sheet
     const wscols = [];
-    const wrefcols = [4, 52, 64, 80]; // values obtained from manually adjusting the downloaded excel sheet
+    const wrefcols = [4, 53, 66, 84]; // values obtained from manually adjusting the downloaded excel sheet
     for (let i = 0; i < refRows[0].length; i++) {
         wscols.push({wch: wrefcols[i]}); // Set the initial width for each column
     }
