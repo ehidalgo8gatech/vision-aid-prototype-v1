@@ -1036,6 +1036,7 @@ function sortDataByDate(obj) {
 }
 
 // indexing function for the sorted data
+// pass "" as the key, if the re-numbering to done for all the records ignoring the sorting key
 function indexSortedData(obj, key) {
   let idx = 1;
   let currentType = "";
@@ -1325,6 +1326,9 @@ export function getReportData(
   formatDateElements(trainingData);
 
   // Re-number the records for the sorted sheets, by type
+  indexSortedData(visionEnhancementData, "");
+  indexSortedData(lowVisionEvaluationData, "");
+  indexSortedData(comprehensiveLowVisionEvaluationData, "");
   indexSortedData(counsellingEducationData, "Type");
   indexSortedData(trainingData, "Type of Training");
 
