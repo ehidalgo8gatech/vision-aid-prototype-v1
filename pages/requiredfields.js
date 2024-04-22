@@ -698,7 +698,7 @@ function RequiredFields(props) {
               Trainings
             </button>
           </div>
-          <div className="p-2">
+          {/* <div className="p-2">
             <button
               className={`w-100 text-align-left ${
                 section === "landing-page"
@@ -709,7 +709,7 @@ function RequiredFields(props) {
             >
               Landing Page
             </button>
-          </div>
+          </div> */}
         </div>
         <div className="col-md-8">
           {section === "hospitals" && (
