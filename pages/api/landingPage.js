@@ -1,4 +1,3 @@
-
 import prisma from "client";
 
 export default async function handler(req, res) {
@@ -37,17 +36,21 @@ async function updateContent(req, res) {
   }
 }
 
-
 async function readContent(req, res) {
   var userData;
-  try {
-    if (req.query.id != null || req.query.id != '' ) {
+  try { 
+    console.log(req.query)
+    if (req.query.id != null ) {
       userData =  await prisma.landing_Page.findFirst({
         where: {
           id: parseInt(req.query.id),
         },
       });
-    } 
+    } else {
+      // if no content id provided, return all contents.
+      userData = await findAllLandingPagePosts();
+      console.log(userData.length)
+    }
     return res.status(200).json(userData);
   } catch (error) {
     console.log(error);
@@ -57,17 +60,24 @@ async function readContent(req, res) {
   }
 }
 
+export async function findAllLandingPagePosts() {
+  const posts = await prisma.landing_Page.findMany();
+  return posts.map(post => {
+    return {
+      ...post,
+      creationDate: new Date(post.creationDate).getTime(),
+    };
+  });
+}
+
+
 async function addContent(req, res) {
   const dt = new Date();
   const body = req.body;
   const create = {
     data: {
-      user: {
-        connect: {
-          id: parseInt(body.userId),
-        },
-      },
       content: body.content,
+      title: body.title,
       creationDate: dt,
     },
   };
@@ -87,11 +97,16 @@ async function deleteContent(req, res) {
   var userData;
   try {
     if (req.query.id != null || req.query.id != '' ) {
-      userData =  await prisma.landing_Page.delete({
-        where: {
-          id: parseInt(req.query.id),
-        },
-      });
+      if (req.query.action == "clear") {
+        userData =  await prisma.landing_Page.deleteMany()
+      } else {
+        userData =  await prisma.landing_Page.delete({
+          where: {
+            id: parseInt(req.query.id),
+          },
+        });
+      }
+
     } 
     return res.status(200).json(userData);
   } catch (error) {
@@ -101,3 +116,15 @@ async function deleteContent(req, res) {
       .json({ error: "Error deleting from database", success: false });
   }
 }
+
+
+async function getUserID(emailAddr) {
+  const data = await prisma.user.findFirst({
+    where: {
+      email: emailAddr,
+    }
+  })
+  return data.id
+}
+
+

@@ -1,7 +1,5 @@
-import { readUser, allHospitalRoles } from "./api/user";
-import { getSession } from "next-auth/react";
-import { Chart as ChartJS } from "chart.js/auto";
-import ChartDataLabels from "chartjs-plugin-datalabels";
+import { getUserFromSession, allHospitalRoles } from "@/pages/api/user";
+import "chart.js/auto";
 import { Bar } from "react-chartjs-2";
 import {
   getSummaryForAllHospitals,
@@ -11,11 +9,12 @@ import Navigation from "./navigation/Navigation";
 import Layout from './components/layout';
 import moment from "moment";
 import { useState, useEffect } from "react";
+import {
+  findAllBeneficiary,
+} from "@/pages/api/beneficiary";
 import GraphCustomizer from "./components/GraphCustomizer";
 import { Tab, Tabs, Paper } from "@mui/material";
-// import * as XLSX from "xlsx";
 import XLSX from "xlsx-js-style";
-import { isNotNullBlankOrUndefined } from "@/constants/globalFunctions";
 import { Download } from "react-bootstrap-icons";
 import { useRouter } from "next/router";
 import {
@@ -25,58 +24,234 @@ import {
   filterTrainingSummaryByDateRange,
   getReportData,
 } from "@/constants/reportFunctions";
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
 // This function is called to load data from the server side.
-export async function getServerSideProps(ctx) {
-  const session = await getSession(ctx);
-  if (session == null) {
-    console.log("session is null");
+export const getServerSideProps = withPageAuthRequired({
+  async getServerSideProps(ctx) {
+    const user = await getUserFromSession(ctx);
+    if (user === null) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+
+    const getHospitalIdsByUsers = (id, users) => {
+      let hospitalIds = [];
+      for (const user of users ) {
+        if (user.userId === id) {
+          hospitalIds.push(user.hospitalId);
+        }
+      }
+      return hospitalIds;
+    }
+
+    // If it's a non admin user, we only want to show the summary for their hospital
+    const roles = await allHospitalRoles();
+    let hospitalIds;
+    if (!user.admin) {
+      hospitalIds = getHospitalIdsByUsers(user.email, roles);
+    }
+
+    // The following is code to download summary data as a CSV file
+    const beneficiaryListFromAPI = await findAllBeneficiary(user.admin, hospitalIds);
+
+    let beneficiaryList = [];
+
+    beneficiaryList = beneficiaryListFromAPI.map((beneficiary) => ({
+      mrn: beneficiary.mrn,
+      beneficiaryName: beneficiary.beneficiaryName,
+      hospitalId: beneficiary.hospitalId,
+      dateOfBirth: beneficiary.dateOfBirth,
+      gender: beneficiary.gender,
+      phoneNumber: beneficiary.phoneNumber,
+      education: beneficiary.education,
+      occupation: beneficiary.occupation,
+      districts: beneficiary.districts,
+      state: beneficiary.state,
+      diagnosis: beneficiary.diagnosis,
+      vision: beneficiary.vision,
+      mDVI: beneficiary.mDVI,
+      extraInformation: beneficiary.extraInformation,
+      hospital: beneficiary.hospital,
+      visionEnhancement: beneficiary.Vision_Enhancement,
+      counsellingEducation: beneficiary.Counselling_Education,
+      comprehensiveLowVisionEvaluation:
+        beneficiary.Comprehensive_Low_Vision_Evaluation,
+      lowVisionEvaluation: beneficiary.Low_Vision_Evaluation,
+      training: beneficiary.Training,
+      computerTraining: beneficiary.Computer_Training,
+      mobileTraining: beneficiary.Mobile_Training,
+      orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
+    }));
+
+    let flatList = [];
+    function flatFields(extraInformation, key) {
+      let flat = {};
+      try {
+        const ex = JSON.parse(extraInformation);
+        for (let i = 0; i < ex.length; i++) {
+          const e = ex[i];
+          flat[(key + "." + i + "." + e.name).replaceAll(",", " ")] =
+            e.value.replaceAll(",", " ");
+        }
+      } catch (e) {
+        return {};
+      }
+      return flat;
+    }
+
+    function flatChildArray(childArray, key) {
+      let flat = {};
+      try {
+        for (let i1 = 0; i1 < childArray.length; i1++) {
+          const child = childArray[i1];
+          for (let i = 0; i < Object.keys(child).length; i++) {
+            const jsonKey = Object.keys(child)[i];
+            flat[(key + "." + i1 + "." + jsonKey).replaceAll(",", " ")] =
+              child[jsonKey] == null
+                ? ""
+                : child[jsonKey].toString().replaceAll(",", " ");
+          }
+        }
+      } catch (e) {
+        return {};
+      }
+      return flat;
+    }
+
+    function appendFlat(appendFrom, appendTo) {
+      Object.keys(appendFrom).forEach((append) => {
+        appendTo[append] = appendFrom[append];
+      });
+    }
+
+    for (const beneficiary of beneficiaryListFromAPI) {
+      const visionEnhancementFlat = flatChildArray(
+        beneficiary.Vision_Enhancement,
+        "visionEnhancement"
+      );
+      const counselingEducationFlat = flatChildArray(
+        beneficiary.Counselling_Education,
+        "counselingEducation"
+      );
+      const comprehensiveLowVisionEvaluationFlat = flatChildArray(
+        beneficiary.Comprehensive_Low_Vision_Evaluation,
+        "comprehensiveLowVisionEvaluation"
+      );
+      const lowVisionEvaluationFlat = flatChildArray(
+        beneficiary.Low_Vision_Evaluation,
+        "lowVisionEvaluation"
+      );
+      const trainingFlat = flatChildArray(beneficiary.Training, "training");
+      const computerTrainingFlat = flatChildArray(
+        beneficiary.Computer_Training,
+        "computerTraining"
+      );
+      const mobileTrainingFlat = flatChildArray(
+        beneficiary.Mobile_Training,
+        "mobileTraining"
+      );
+      const orientationMobilityTrainingFlat = flatChildArray(
+        beneficiary.Orientation_Mobility_Training,
+        "orientationMobilityTraining"
+      );
+      const extraFields = flatFields(
+        beneficiary.extraInformation,
+        "BeneficiaryExtraField"
+      );
+      let flat = {
+        mrn: beneficiary.mrn.replaceAll(",", " "),
+        hospitalName:
+          beneficiary.hospital == null
+            ? ""
+            : beneficiary.hospital.name.replaceAll(",", " "),
+        beneficiaryName:
+          beneficiary.beneficiaryName == null
+            ? ""
+            : beneficiary.beneficiaryName.replaceAll(",", " "),
+        dateOfBirth:
+          beneficiary.dateOfBirth == null
+            ? ""
+            : beneficiary.dateOfBirth.toString().replaceAll(",", " "),
+        gender:
+          beneficiary.gender == null
+            ? ""
+            : beneficiary.gender.replaceAll(",", " "),
+        phoneNumber:
+          beneficiary.phoneNumber == null
+            ? ""
+            : beneficiary.phoneNumber.replaceAll(",", " "),
+        education:
+          beneficiary.education == null
+            ? ""
+            : beneficiary.education.replaceAll(",", " "),
+        occupation:
+          beneficiary.occupation == null
+            ? ""
+            : beneficiary.occupation.replaceAll(",", " "),
+        districts:
+          beneficiary.districts == null
+            ? ""
+            : beneficiary.districts.replaceAll(",", " "),
+        state:
+          beneficiary.state == null ? "" : beneficiary.state.replaceAll(",", " "),
+        diagnosis:
+          beneficiary.diagnosis == null
+            ? ""
+            : beneficiary.diagnosis.replaceAll(",", " "),
+        vision:
+          beneficiary.vision == null
+            ? ""
+            : beneficiary.vision.replaceAll(",", " "),
+        mDVI:
+          beneficiary.mDVI == null ? "" : beneficiary.mDVI.replaceAll(",", " "),
+        rawExtraFields:
+          beneficiary.extraInformation == null
+            ? ""
+            : beneficiary.extraInformation.replaceAll(",", " "),
+        visionEnhancement: JSON.stringify(beneficiary.Vision_Enhancement),
+        counsellingEducation: JSON.stringify(beneficiary.Counselling_Education),
+        comprehensiveLowVisionEvaluation: JSON.stringify(
+          beneficiary.Comprehensive_Low_Vision_Evaluation
+        ),
+        lowVisionEvaluation: JSON.stringify(beneficiary.Low_Vision_Evaluation),
+        training: JSON.stringify(beneficiary.Training),
+        computerTraining: JSON.stringify(beneficiary.Computer_Training),
+        mobileTraining: JSON.stringify(beneficiary.Mobile_Training),
+        orientationMobilityTraining: JSON.stringify(
+          beneficiary.Orientation_Mobility_Training
+        ),
+      };
+      appendFlat(extraFields, flat);
+      appendFlat(visionEnhancementFlat, flat);
+      appendFlat(counselingEducationFlat, flat);
+      appendFlat(comprehensiveLowVisionEvaluationFlat, flat);
+      appendFlat(lowVisionEvaluationFlat, flat);
+      appendFlat(trainingFlat, flat);
+      appendFlat(computerTrainingFlat, flat);
+      appendFlat(mobileTrainingFlat, flat);
+      appendFlat(orientationMobilityTrainingFlat, flat);
+      flatList.push(flat);
+    }
+
+    // We finally return all the data to the page
+    const summary = await getSummaryForAllHospitals(user.admin, hospitalIds);
+
     return {
-      redirect: {
-        destination: "/",
-        permanent: false,
+      props: {
+        user: user,
+        summary: JSON.parse(JSON.stringify(summary)),
+        beneficiaryList: JSON.parse(JSON.stringify(beneficiaryList)),
+        beneficiaryFlatList: flatList,
+        error: null,
       },
     };
   }
-
-  const getHospitalIdsByUsers = (id, users) => {
-    let hospitalIds = [];
-    for (const user of users ) {
-      if (user.userId === id) {
-        hospitalIds.push(user.hospitalId);
-      }
-    }
-    return hospitalIds;
-  }
-
-  // If it's a non admin user, we only want to show the summary for their hospital
-  const user = await readUser(session.user.email);
-  const roles = await allHospitalRoles();
-  let hospitalIds;
-  const isAdmin = user.admin != null;
-  if (!isAdmin) {
-    hospitalIds = getHospitalIdsByUsers(user.id, roles);
-  }
-
-  // We finally return all the data to the page
-  const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds);
-
-  return {
-    props: {
-      user: user,
-      summary: JSON.parse(JSON.stringify(summary)),
-      error: null,
-    },
-  };
-}
-
-// Configure Chart data label plugin globally
-ChartJS.register(ChartDataLabels);
-ChartJS.defaults.plugins.datalabels.font.size = 16;
-ChartJS.defaults.plugins.datalabels.font.weight = "bold";
-ChartJS.defaults.plugins.datalabels.display = function(context){
-  return context.dataset.data[context.dataIndex] != 0;
-};
+});
 
 // Graph Options that are constant for all graphs
 const graphOptions = {
@@ -230,130 +405,35 @@ function buildDevicesGraph(data) {
   // Inside the array, there are fields dispensedSpectacle, dispensedElectronic, dispensedOptical, dispensedNonOptical
   // We want to count the number of entries in which these fields are not empty
   const dispensedSpectacleCount = data.reduce(
-    (sum, item) => {
-      const items = item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedSpectacle)
-      );
-      const count = items.reduce((sum, evaluation) => {
-        return sum + evaluation.dispensedSpectacle.split("; ").length;
-      }, 0);
-      return sum + count;
-    },
+    (sum, item) =>
+      sum +
+      item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => evaluation.dispensedSpectacle !== ""
+      ).length,
     0
   );
   const dispensedElectronicCount = data.reduce(
-    (sum, item) => {
-      const items = item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedElectronic)
-      );
-      const count = items.reduce((sum, evaluation) => {
-        return sum + evaluation.dispensedElectronic.split("; ").length;
-      }, 0);
-      return sum + count;
-    },
+    (sum, item) =>
+      sum +
+      item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => evaluation.dispensedElectronic !== ""
+      ).length,
     0
   );
   const dispensedOpticalCount = data.reduce(
-    (sum, item) => {
-      const items = item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedOptical)
-      );
-      const count = items.reduce((sum, evaluation) => {
-        return sum + evaluation.dispensedOptical.split("; ").length;
-      }, 0);
-      return sum + count;
-    },
+    (sum, item) =>
+      sum +
+      item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => evaluation.dispensedOptical !== ""
+      ).length,
     0
   );
   const dispensedNonOpticalCount = data.reduce(
-    (sum, item) => {
-      const items = item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => isNotNullBlankOrUndefined(evaluation.dispensedNonOptical)
-      );
-      const count = items.reduce((sum, evaluation) => {
-        return sum + evaluation.dispensedNonOptical.split("; ").length;
-      }, 0);
-      return sum + count;
-    },
-    0
-  );
-
-  const chartData = {
-    labels: [
-      `Spectacle (${dispensedSpectacleCount})`,
-      `Electronic (${dispensedElectronicCount})`,
-      `Optical (${dispensedOpticalCount})`,
-      `Non-Optical (${dispensedNonOpticalCount})`,
-    ],
-    datasets: [
-      {
-        label: "Cumulative Counts",
-        data: [
-          dispensedSpectacleCount,
-          dispensedElectronicCount,
-          dispensedOpticalCount,
-          dispensedNonOpticalCount,
-        ],
-        ...graphOptions,
-      },
-    ],
-  };
-
-  return chartData;
-}
-
-// Function that builds a bar graph to show the number of devices recommended
-function buildRecDevicesGraph(data) {
-  // The device information is stored inside the comprehensiveLowVisionEvaluation array
-  // Inside the array, there are fields dispensedSpectacle, dispensedElectronic, dispensedOptical, dispensedNonOptical
-  // We want to count the number of entries in which these fields are not empty
-  console.log(data);
-  const dispensedSpectacleCount = data.reduce(
-    (sum, item) => {
-      const items = item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => isNotNullBlankOrUndefined(evaluation.recommendationSpectacle)
-      );
-      const count = items.reduce((sum, evaluation) => {
-        return sum + evaluation.recommendationSpectacle.split(",").length;
-      }, 0);
-      return sum + count;
-    },
-    0
-  );
-  const dispensedElectronicCount = data.reduce(
-    (sum, item) => {
-      const items = item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => isNotNullBlankOrUndefined(evaluation.recommendationElectronic)
-      );
-      const count = items.reduce((sum, evaluation) => {
-        return sum + evaluation.recommendationElectronic.split(",").length;
-      }, 0);
-      return sum + count;
-    },
-    0
-  );
-  const dispensedOpticalCount = data.reduce(
-    (sum, item) => {
-      const items = item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => isNotNullBlankOrUndefined(evaluation.recommendationOptical)
-      );
-      const count = items.reduce((sum, evaluation) => {
-        return sum + evaluation.recommendationOptical.split(",").length;
-      }, 0);
-      return sum + count;
-    },
-    0
-  );
-  const dispensedNonOpticalCount = data.reduce(
-    (sum, item) => {
-      const items = item.comprehensiveLowVisionEvaluation.filter(
-        (evaluation) => isNotNullBlankOrUndefined(evaluation.recommendationNonOptical)
-      );
-      const count = items.reduce((sum, evaluation) => {
-        return sum + evaluation.recommendationNonOptical.split(",").length;
-      }, 0);
-      return sum + count;
-    },
+    (sum, item) =>
+      sum +
+      item.comprehensiveLowVisionEvaluation.filter(
+        (evaluation) => evaluation.dispensedNonOptical !== ""
+      ).length,
     0
   );
 
@@ -382,64 +462,18 @@ function buildRecDevicesGraph(data) {
 }
 
 // Function that builds a bar graph at a sublevel. This function is called
-// with different devices types as the breakdownType (can be one of the AllowedDevices)
-const allowedDevices = ["Electronic", "Spectacle", "Optical", "NonOptical"];
+// with different devices types as the breakdownType
 function buildDevicesBreakdownGraph(data, breakdownType) {
-  if (!allowedDevices.includes(breakdownType)) {
-    breakdownType = "Electronic";
-  }
-  const dispensedKey = "dispensed" + breakdownType;
-  const deviceList = data.reduce((types, hospital) => {
+  // Future improvement:
+  // Can make use of breakdownType, to selectively change the filter parameter
+  // Same function to be used for other device types
+  // Variable to change: item.dispensedElectronics
+  const types = data.reduce((types, hospital) => {
     const filteredEvaluations = hospital.comprehensiveLowVisionEvaluation.filter(
-      (evaluation) => isNotNullBlankOrUndefined(evaluation[dispensedKey])
+      (evaluation) => evaluation.dispensedElectronic !== ""
     )
-    const deviceTypes = filteredEvaluations.map((item) => item[dispensedKey].split("; "));
+    const deviceTypes = filteredEvaluations.map((item) => item.dispensedElectronic);
     return [...types, ...deviceTypes];
-  }, []);
-
-  const types = deviceList.reduce((accumulator, currentValue) => {
-    return accumulator.concat(currentValue);
-  }, []);
-
-  const typeCounts = types.reduce((counts, type) => {
-    const count = counts[type] || 0;
-    return {
-      ...counts,
-      [type]: count + 1,
-    };
-  }, {});
-
-  const chartData = {
-    labels: Object.keys(typeCounts),
-    datasets: [
-      {
-        label: "Cumulative Counts",
-        data: Object.values(typeCounts),
-        ...graphOptions,
-      },
-    ],
-  };
-
-  return chartData;
-}
-
-// Function that builds a bar graph at a sublevel for recommended devices. This function is called
-// with different devices types as the breakdownType (can be one of the AllowedDevices)
-function buildRecDevicesBreakdownGraph(data, breakdownType) {
-  if (!allowedDevices.includes(breakdownType)) {
-    breakdownType = "Electronic";
-  }
-  const dispensedKey = "recommendation" + breakdownType;
-  const deviceList = data.reduce((types, hospital) => {
-    const filteredEvaluations = hospital.comprehensiveLowVisionEvaluation.filter(
-      (evaluation) => isNotNullBlankOrUndefined(evaluation[dispensedKey])
-    )
-    const deviceTypes = filteredEvaluations.map((item) => item[dispensedKey].split(","));
-    return [...types, ...deviceTypes];
-  }, []);
-
-  const types = deviceList.reduce((accumulator, currentValue) => {
-    return accumulator.concat(currentValue);
   }, []);
 
   const typeCounts = types.reduce((counts, type) => {
@@ -467,46 +501,10 @@ function buildRecDevicesBreakdownGraph(data, breakdownType) {
 export default function Summary({
   user,
   summary,
+  beneficiaryList,
+  beneficiaryFlatList,
   error,
 }) {
-  // Downloaded reports reference sheet data
-  // TODO: this hardcoded information will be fetched from database in the future
-  // Your tab-separated data
-  const refData = `S.no\tPrograms\tTypes\tDescription
-  1\tScreening /Out reach activities/ Camp\tLow Vision Screening\tLow vision screening of the school of the blind and Identification of the visually impaired for assistive technology
-  2\t\tIdentification of MDVI\tBeneficiaries come under Multiple disabilities and vision impairment.
-  3\tFunctional Vision/Early Intervention/ Vision enhancement\t\tAge group less than 7 years. Training of infants,children and parents to improve the brain’s ability to use and interpret visual information especially in kids with Cortical visual impairment (CVI)
-  4\tLVD beneficiairies/Comprehensive Low Vision Evaluation - CLVE\t\tLow vision assessment / Functional vision assessment done by a Professional - Optometrist / Low vision care specialist / Rehabilitation Specialist
-  5\tAssistive devices and aids\tAssistive devices/aids/RLF tactile books/ Optical/ Non Optical/ Electronic\tDevices for individuals with low vision and total blindness
-  6\tLow vision device training\tTraining is given after dispensing devices\t
-  7\tCounseling & referrals/ Counseling and education\tEducation and counseling\tList of referrals
-  8\tOrientation & Mobility training (O and M)\t\tTraining to help the visually impaired orient to the environment around and navigate safely
-  9\tComputer training\t\tTraining programs are conducted to build proficiency in computer skills using assistive technology like screen readers, magnification and contrast modifcations
-  10\tMobile technologies \t\tEducating on various mobile app for navigation and other functions
-  11\tVisual skills training\tAll subtypes under it as a whole\tVisual skills training greater than 7 years and adults
-  12\tOther training\tCorporate skill development\tComputer Programming, Digital accessibility testing DAT
-  13\t\tBraille Training & resources and Training with Braille reader / ORBIT reader\tTraining on Braille devices for education and Braille literacy
-  14\t\tTraining for Life skills/ Money identification/ Home management / Kitchen skills\t
-  15\t\tJob Coaching /IBPS\tIntegrated training program for Institute of Banking Personnel Selection and other job coaching
-  16\t\tSpoken english training\tTraining to speak in English for both beginners and Intermediate.`;
-  const refRows = refData.split('\n').map(row => row.split('\t'));
-
-  const hospitalAbbr = {
-    "Aravind Eye Hospital, Madurai": "AEH, MDU",
-    "Aravind Eye Hospital, Coimbatore": "AEH, CBE",
-    "Aravind Eye Hospital, Pondicherry": "AEH, PY",
-    "Aravind Eye Hospital, Tirupati": "AEH, TPTY",
-    "Aravind Eye Hospital, Tirunelveli": "AEH, TVL",
-    "Sankara Nethralaya, Chennai": "SN, CHE",
-    "Sankara Nethralaya, Kolkata": "SN, KOL",
-    "Dr. Shroff's Charity Eye Hospital": "SCEH, DL",
-    "Narayana Nethralaya, Rajajinagar, Bangalore": "NN, BLR",
-    "Dr. Jawahar Lal Rohatgi Eye Hospital, Kanpur": "JLR, UP",
-    "Sitapur Eye Hospital, Sitapur, UP": "SEH, UP",
-    "Voluntary Health Services": "VHS, CHE",
-    "Community Eye Care Foundation": "CECF, PUN"
-  };
-
   // create start date and end data states, start date is set to one year ago, end date is set to today
   const [startDate, setStartDate] = useState(
     moment().subtract(1, "year").toDate()
@@ -560,6 +558,17 @@ export default function Summary({
     selectedHospitals.includes(item.id)
   );
   
+  const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
+    startDate,
+    endDate,
+    JSON.parse(JSON.stringify(beneficiaryList)),
+    "beneficiary"
+  );
+
+  const filteredBeneficiaryData = dateFilteredBeneficiaryData.filter((item) =>
+    selectedHospitals.includes(item.hospital.id)
+  );
+
   // generate all the data for required graphs
   const beneficiaryGraphData = buildBeneficiaryGraph(filteredSummary);
   const activitiesGraphData = buildActivitiesGraph(filteredSummary);
@@ -573,46 +582,8 @@ export default function Summary({
   );
   const devicesGraphData = buildDevicesGraph(filteredSummary);
   const electronicDevicesGraphData =  buildDevicesBreakdownGraph(filteredSummary, "Electronic");
-  const spectacleDevicesGraphData =  buildDevicesBreakdownGraph(filteredSummary, "Spectacle");
-  const opticalDevicesGraphData =  buildDevicesBreakdownGraph(filteredSummary, "Optical");
-  const nonOpticalDevicesGraphData =  buildDevicesBreakdownGraph(filteredSummary, "NonOptical");
 
-  const recDevicesGraphData = buildRecDevicesGraph(filteredSummary);
-  const electronicRecDevicesGraphData =  buildRecDevicesBreakdownGraph(filteredSummary, "Electronic");
-  const spectacleRecDevicesGraphData =  buildRecDevicesBreakdownGraph(filteredSummary, "Spectacle");
-  const opticalRecDevicesGraphData =  buildRecDevicesBreakdownGraph(filteredSummary, "Optical");
-  const nonOpticalRecDevicesGraphData =  buildRecDevicesBreakdownGraph(filteredSummary, "NonOptical");
-
-  async function downloadFilteredReport() {
-    if (selectedHospitalNames.length === 0) {
-      alert("No hospital was selected! Please select at least one hospital to download the report.");
-      return;
-    }
-    var beneficiaryListAPI;
-    try {
-      beneficiaryListAPI = await fetch(
-        "/api/beneficiaryList?id=" + user.id,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-    var beneficiaryList = await beneficiaryListAPI.json();
-
-    const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
-      startDate,
-      endDate,
-      beneficiaryList,
-      "beneficiary"
-    );
-
-    const filteredBeneficiaryData = dateFilteredBeneficiaryData.filter((item) =>
-      selectedHospitals.includes(item.hospital.id)
-    );
-
+  const downloadFilteredReport = () => {
     const {
       beneficiaryData,
       visionEnhancementData,
@@ -626,7 +597,6 @@ export default function Summary({
 
     const wb = XLSX.utils.book_new();
 
-    const wref = XLSX.utils.aoa_to_sheet(refRows);
     const wben = XLSX.utils.json_to_sheet(beneficiaryData);
     const wved = XLSX.utils.json_to_sheet(visionEnhancementData);
 
@@ -639,18 +609,14 @@ export default function Summary({
 
     const wahd = XLSX.utils.json_to_sheet([]);
 
-    XLSX.utils.book_append_sheet(wb, [], "Summary");
-    XLSX.utils.book_append_sheet(wb, [], "Summary of Finances");
-    XLSX.utils.book_append_sheet(wb, wahd, "Summary of Services");
-    XLSX.utils.book_append_sheet(wb, wref, "Reference");
-    XLSX.utils.book_append_sheet(wb, wclve, "CLVE_LVD Beneficiaries");
+    XLSX.utils.book_append_sheet(wb, wben, "Beneficiary Sheet");
     XLSX.utils.book_append_sheet(wb, wved, "Vision Enhancement Sheet");
+    XLSX.utils.book_append_sheet(wb, wlved, "Low Vision Screening");
+    XLSX.utils.book_append_sheet(wb, wclve, "CLVE Sheet");
+    XLSX.utils.book_append_sheet(wb, wed, "Electronic Devices Break Up");
     XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
     XLSX.utils.book_append_sheet(wb, wced, "Counselling Education Sheet");
-    XLSX.utils.book_append_sheet(wb, wlved, "Camp_Low Vision Screening");
-    XLSX.utils.book_append_sheet(wb, wben, "Overall Beneficiary Sheet");
-    XLSX.utils.book_append_sheet(wb, wed, "Electronic Devices Break Up");
-    XLSX.utils.book_append_sheet(wb, [], "Action items from prev quarter");
+    XLSX.utils.book_append_sheet(wb, wahd, "Aggregated Hospital Sheet");
 
     setClveHeader(wclve);
     XLSX.utils.sheet_add_json(wclve, comprehensiveLowVisionEvaluationData, {
@@ -673,32 +639,8 @@ export default function Summary({
       origin: -1,
     });
 
-    // Change the column width for the reference sheet
-    const wscols = [];
-    const wrefcols = [4, 53, 66, 84]; // values obtained from manually adjusting the downloaded excel sheet
-    for (let i = 0; i < refRows[0].length; i++) {
-        wscols.push({wch: wrefcols[i]}); // Set the initial width for each column
-    }
-    wref['!cols'] = wscols;
-
-    // generate the filename based on the filter date range and the selected hospitals
-    let reportHospitalName = hospitalAbbr[selectedHospitalNames[0]];
-    if (selectedHospitalNames.length === summary.length) {
-      reportHospitalName = "ALL";
-    } else if (selectedHospitalNames.length > 1) {
-      reportHospitalName = "MULTI";
-    } else if (reportHospitalName === undefined) {
-      reportHospitalName = selectedHospitalNames[0];
-    }
-    let fileNameComponents = [];
-    fileNameComponents.push("Report");
-    fileNameComponents.push(reportHospitalName);
-    fileNameComponents.push(startDate.toISOString().split('T')[0]);
-    fileNameComponents.push(endDate.toISOString().split('T')[0]);
-    const filename = fileNameComponents.join("_") + ".xlsx";
-
-    XLSX.writeFile(wb, filename);
-  }
+    XLSX.writeFile(wb, "filtered_report.xlsx");
+  };
 
   const handleStartDateChange = (e) => {
     setStartDate(moment(e.target.value).toDate());
@@ -709,32 +651,14 @@ export default function Summary({
   };
 
   const [activeGraphTab, setActiveGraphTab] = useState(0);
-  const [activeBeneficiaryGraphTab, setActiveBeneficiaryGraphTab] = useState(0);
-  const [activeDevicesGraphTab, setActiveDevicesGraphTab] = useState(0);
-  const [activeRecDevicesGraphTab, setActiveRecDevicesGraphTab] = useState(0);
-  const [activeActivitiesGraphTab, setActiveActivitiesGraphTab] = useState(0);
+  const [activeSubGraphTab, setActiveSubGraphTab] = useState(0);
   const handleGraphTabChange = (event, newValue) => {
     setActiveGraphTab(newValue);
-    setActiveBeneficiaryGraphTab(0);
-    setActiveDevicesGraphTab(0);
-    setActiveRecDevicesGraphTab(0);
-    setActiveActivitiesGraphTab(0);
-  };
-
-  const handleBeneficiaryGraphTabChange = (event, newValue) => {
-    setActiveBeneficiaryGraphTab(newValue);
+    setActiveSubGraphTab(0);
   };
 
   const handleDevicesGraphTabChange = (event, newValue) => {
-    setActiveDevicesGraphTab(newValue);
-  };
-
-  const handleRecDevicesGraphTabChange = (event, newValue) => {
-    setActiveRecDevicesGraphTab(newValue);
-  };
-
-  const handleActivitiesGraphTabChange = (event, newValue) => {
-    setActiveActivitiesGraphTab(newValue);
+    setActiveSubGraphTab(newValue);
   };
 
   const options={
@@ -742,69 +666,32 @@ export default function Summary({
       legend: {
         display: false,
       },
-      tooltip: {
-        enabled: false,
-      },
     },
   };
 
-  const renderGraph = () => {
-    switch (activeGraphTab) {
+  const renderGraph = (activeTab, activeSubTab) => {
+    switch (activeTab) {
       case 0:
-        switch (activeBeneficiaryGraphTab) {
-          case 0:
-            return <Bar data={beneficiaryGraphData} options={options} />;
-          default:
-            return null;
-        }
+        return <Bar data={beneficiaryGraphData} options={options} />;
       case 1:
-        switch (activeActivitiesGraphTab) {
-          case 0:
-            return <Bar data={activitiesGraphData} options={options} />;
-          case 1:
-            return <Bar data={trainingBreakdownGraphData} options={options} />;
-          case 2:
-            return <Bar data={counsellingBreakdownGraphData} options={options} />;
-          default:
-            return null;
-        }
+        return <Bar data={activitiesGraphData} options={options} />;
       case 2:
-        switch (activeDevicesGraphTab) {
+        return <Bar data={trainingBreakdownGraphData} options={options} />;
+      case 3:
+        return <Bar data={counsellingBreakdownGraphData} options={options} />;
+      case 4:
+        switch (activeSubTab) {
           case 0:
             return <Bar data={devicesGraphData} options={options} />;
           case 1:
             return <Bar data={electronicDevicesGraphData} options={options} />;
-          case 2:
-            return <Bar data={spectacleDevicesGraphData} options={options} />;
-          case 3:
-              return <Bar data={opticalDevicesGraphData} options={options} />;
-          case 4:
-              return <Bar data={nonOpticalDevicesGraphData} options={options} />;
           default:
             return null;
         }
-        case 3:
-          switch (activeRecDevicesGraphTab) {
-            case 0:
-              return <Bar data={recDevicesGraphData} options={options} />;
-            case 1:
-              return <Bar data={electronicRecDevicesGraphData} options={options} />;
-            case 2:
-              return <Bar data={spectacleRecDevicesGraphData} options={options} />;
-            case 3:
-                return <Bar data={opticalRecDevicesGraphData} options={options} />;
-            case 4:
-                return <Bar data={nonOpticalRecDevicesGraphData} options={options} />;
-            default:
-              return null;
-          }
       default:
         return null;
     }
   };
-
-  const enableGraphs = (user.admin || user.hospitalRole[0].admin) ||
-    (user.hospitalRole.length != 0 && !user.hospitalRole[0].admin);
 
   return (
     <Layout>
@@ -814,7 +701,7 @@ export default function Summary({
         <h1 className="text-center mt-4 mb-4">Visualization and Reports</h1>
         <div className="row">
           <div className="col-md-2 ">
-            {(user.admin || user.hospitalRole[0].admin) && (
+            {(user.admin || (user.hospitalRole.length > 0 && user.hospitalRole[0].admin)) && (
               <button
                 onClick={() => router.push("/customizedReport")}
                 className="btn btn-success border-0 btn-block"
@@ -823,7 +710,7 @@ export default function Summary({
               </button>
             )}
           </div>
-          {(user.admin || user.hospitalRole[0].admin) && (
+          {(user.admin || (user.hospitalRole.length > 0 && user.hospitalRole[0].admin)) && (
             <div className="offset-md-8 col-md-2">
               <button
                 className="btn btn-success border-0 btn-block text-align-right"
@@ -835,7 +722,7 @@ export default function Summary({
           )}
         </div>
         <br />
-        {enableGraphs && (
+        {(user.admin || (user.hospitalRole.length > 0 && user.hospitalRole[0].admin)) && (
           <div className="row">
             <div className="col-md-3">
               <GraphCustomizer
@@ -860,39 +747,14 @@ export default function Summary({
                   centered
                 >
                   <Tab label="Beneficiaries" />
-                  <Tab label="Activities" />
-                  <Tab label="Dispensed Devices" />
-                  <Tab label="Recommended Devices" />
-                </Tabs>
-                {activeGraphTab == 0 ?
-                <Tabs
-                  value={activeBeneficiaryGraphTab}
-                  onChange={handleBeneficiaryGraphTabChange}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  centered
-                >
-                  <Tab label="All Beneficiaries" />
-                </Tabs>
-                : <></>
-                }
-                {activeGraphTab == 1 ?
-                <Tabs
-                  value={activeActivitiesGraphTab}
-                  onChange={handleActivitiesGraphTabChange}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  centered
-                >
                   <Tab label="All Activities" />
                   <Tab label="Training Activities" />
                   <Tab label="Counselling Activities" />
+                  <Tab label="Devices" />
                 </Tabs>
-                : <></>
-                }
-                {activeGraphTab == 2 ?
+                {activeGraphTab == 4 ?
                 <Tabs
-                  value={activeDevicesGraphTab}
+                  value={activeSubGraphTab}
                   onChange={handleDevicesGraphTabChange}
                   indicatorColor="primary"
                   textColor="primary"
@@ -900,32 +762,31 @@ export default function Summary({
                 >
                   <Tab label="All Devices" />
                   <Tab label="Electronic" />
-                  <Tab label="Spectacle" />
-                  <Tab label="Optical" />
-                  <Tab label="Non-Optical" />
                 </Tabs>
                 : <></>
                 }
-                {activeGraphTab == 3 ?
-                <Tabs
-                  value={activeRecDevicesGraphTab}
-                  onChange={handleRecDevicesGraphTabChange}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  centered
-                >
-                  <Tab label="All Devices" />
-                  <Tab label="Electronic" />
-                  <Tab label="Spectacle" />
-                  <Tab label="Optical" />
-                  <Tab label="Non-Optical" />
-                </Tabs>
-                : <></>
-                }
-                {renderGraph()}
+                {renderGraph(activeGraphTab, activeSubGraphTab)}
               </Paper>
             </div>
           </div>
+        )}
+        {user.hospitalRole.length != 0 && !user.hospitalRole[0].admin && (
+          <Paper>
+            <Tabs
+              value={activeGraphTab}
+              onChange={handleGraphTabChange}
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+            >
+              <Tab label="Beneficiaries" />
+              <Tab label="All Activities" />
+              <Tab label="Training Activities" />
+              <Tab label="Counselling Activities" />
+              <Tab label="Devices" />
+            </Tabs>
+            {renderGraph(activeGraphTab, activeSubGraphTab)}
+          </Paper>
         )}
       </Container>
       <br />

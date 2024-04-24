@@ -1,7 +1,6 @@
 // pages/user.js
 import { useState, useEffect } from "react";
 import Router, { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
 import { Pencil, Check2 } from "react-bootstrap-icons";
 import Navigation from "./navigation/Navigation";
 import BeneficiaryServicesTable from "./components/BeneficiaryServicesTable";
@@ -10,8 +9,67 @@ import { getTrainingTypes } from "@/pages/api/trainingType";
 import { getCounsellingType } from "@/pages/api/counsellingType";
 import { getTrainingSubTypes } from "@/pages/api/trainingSubType";
 import { findAllHospital } from "./api/hospital";
-import { readUser } from "./api/user";
+import { getUserFromSession } from "@/pages/api/user";
 import ConsentForm from "./components/ConsentForm";
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+
+export const getServerSideProps = withPageAuthRequired({
+  async getServerSideProps(ctx) {
+    const currentUser = await getUserFromSession(ctx);
+    if (currentUser === null) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+
+    var user;
+    try {
+      const beneficiary = await await fetch(
+        `${process.env.NEXTAUTH_URL}/api/beneficiary?mrn=${ctx.query.mrn}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      user = await beneficiary.json();
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+
+    if (!user) {
+      return {
+        notFound: true,
+      };
+    }
+
+    const benMirror = await fetch(
+      `${process.env.NEXTAUTH_URL}/api/beneficiaryMirror?hospital=` +
+        user.hospital.name,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const benMirrorJson = await benMirror.json();
+
+    user.hospitalName = user.hospital.name;
+
+    return {
+      props: {
+        currentUser: currentUser,
+        user: user,
+        beneficiaryMirror: benMirrorJson,
+        trainingType: await getTrainingTypes(),
+        counsellingType: await getCounsellingType(),
+        trainingSubType: await getTrainingSubTypes(),
+        hospitals: await findAllHospital(),
+      },
+    };
+  }
+});
 
 function UserPage(props) {
   const router = useRouter();
@@ -31,6 +89,9 @@ function UserPage(props) {
   const [lowVisionEvaluationData, setLowVisionEvaluationData] = useState([]);
   const [counsellingEducationData, setCounsellingEducationData] = useState([]);
   const [orientationMobilityData, setOrientationMobilityData] = useState([]);
+  const [openMobile, setOpenMobile] = useState(false);
+  const [openComputer, setOpenComputer] = useState(false);
+  const [openVision, setOpenVision] = useState(false);
   const [consentName, setConsentName] = useState("");
 
   useEffect(() => {
@@ -815,63 +876,6 @@ function UserPage(props) {
       </div>
     </div>
   );
-}
-
-export async function getServerSideProps(ctx) {
-  const session = await getSession(ctx);
-  if (session == null) {
-    console.log("session is null");
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-  const currentUser = await readUser(session.user.email);
-  var user;
-  try {
-    const beneficiary = await await fetch(
-      `${process.env.NEXTAUTH_URL}/api/beneficiary?mrn=${ctx.query.mrn}`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    user = await beneficiary.json();
-  } catch (error) {
-    console.error("Error fetching users:", error);
-  }
-
-  if (!user) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const benMirror = await fetch(
-    `${process.env.NEXTAUTH_URL}/api/beneficiaryMirror?hospital=` +
-      user.hospital.name,
-    {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  const benMirrorJson = await benMirror.json();
-
-  user.hospitalName = user.hospital.name;
-
-  return {
-    props: {
-      currentUser: currentUser,
-      user: user,
-      beneficiaryMirror: benMirrorJson,
-      trainingType: await getTrainingTypes(),
-      counsellingType: await getCounsellingType(),
-      trainingSubType: await getTrainingSubTypes(),
-      hospitals: await findAllHospital(),
-    },
-  };
 }
 
 export default UserPage;

@@ -1,51 +1,36 @@
-// This function gets called at build time
-import { readUser } from "./api/user";
-import { getSession } from "next-auth/react";
 import { readBeneficiaryMirror } from "@/pages/api/beneficiaryMirror";
 import { findAllHospital } from "@/pages/api/hospital";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Navigation from "./navigation/Navigation";
 import moment from "moment";
+import { withPageAuthRequired } from '@auth0/nextjs-auth0'
+import { getUserFromSession } from "@/pages/api/user";
 
 // http://localhost:3000/beneficiaryinformation
-export async function getServerSideProps(ctx) {
-  const session = await getSession(ctx);
-  if (session == null) {
-    console.log("session is null");
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-  const user = await readUser(session.user.email);
-  if (user.admin == null && user.hospitalRole == null) {
-    console.log("user admin is not null or added to a hospital");
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {
-      beneficiaryName: ctx.query.beneficiaryName,
-      user: user,
-      requiredBeneficiaryFields: await readBeneficiaryMirror(),
-      hospitals: await findAllHospital(),
-      error: null,
-    },
-  };
-}
+export const getServerSideProps = withPageAuthRequired({
+  async getServerSideProps(ctx) {
+    const user = await getUserFromSession(ctx);
+    if (user === null || (!user.admin && user.hospitalRole.length == 0)) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
 
-function required() {
-  return(
-    <span style={{color: "red"}}> *</span>
-  );
-}
+    return {
+      props: {
+        beneficiaryName: ctx.query.beneficiaryName,
+        user: user,
+        requiredBeneficiaryFields: await readBeneficiaryMirror(),
+        hospitals: await findAllHospital(),
+        error: null,
+      },
+    };
+  }
+});
 
 function RequiredFields(props) {
   const router = useRouter();
@@ -176,28 +161,28 @@ function RequiredFields(props) {
       router.push("/user?mrn=" + mrn);
     } else {
       alert(
-        "Beneficiary could not be added. MRN " + mrn + " already exists in the system."
+        "An error occurred while creating the user. Please try again. Error: " +
+          JSON.stringify(json)
       );
     }
   }
 
   const mrn = (
     <div>
-      <label htmlFor="mrn">MRN{required()}</label>
+      <label htmlFor="mrn">MRN</label>
       <input
         type="text"
         className="form-control"
         id="mrn"
         placeholder="Enter beneficiary's MRN"
         autoComplete="off"
-        required
       />
     </div>
   );
 
   const beneficiaryName = (
     <div>
-      <label htmlFor="beneficiaryName">Beneficiary Name{required()}</label>
+      <label htmlFor="beneficiaryName">Beneficiary Name</label>
       <input
         type="text"
         className="form-control"
@@ -206,7 +191,6 @@ function RequiredFields(props) {
         value={beneficiaryNameVal}
         onChange={(e) => setBeneficiaryNameVal(e.target.value)}
         autoComplete="off"
-        required
       />
     </div>
   );
@@ -226,10 +210,9 @@ function RequiredFields(props) {
       <div className="form-group">
         <label className="form-check-label" htmlFor="hospitalName">
           Hospital Name
-          {required()}
         </label>
 
-        <select className="form-select" id="hospitalName" required>
+        <select className="form-select" id="hospitalName">
           <option value="">Select Hospital</option>
           {hospitalOptions}
         </select>
@@ -251,10 +234,9 @@ function RequiredFields(props) {
       <div className="form-group">
         <label className="form-check-label" htmlFor="hospitalName">
           Hospital Name
-          {required()}
         </label>
 
-        <select className="form-select" id="hospitalName" required>
+        <select className="form-select" id="hospitalName">
             {hospitalOptions}
         </select>
       </div>
@@ -264,21 +246,20 @@ function RequiredFields(props) {
 
   const dateOfBirth = (
     <div>
-      <label htmlFor="dateOfBirth">Date Of Birth{required()}</label>
+      <label htmlFor="dateOfBirth">Date Of Birth</label>
       <input
         type="date"
         className="form-control"
         id="dateOfBirth"
         max={today}
-        required
       />
     </div>
   );
 
   const gender = (
     <div>
-      <label htmlFor="gender">Gender{required()}</label>
-      <select className="form-select" id="gender" required>
+      <label htmlFor="gender">Gender</label>
+      <select className="form-select" id="gender">
         <option value="">Select Gender</option>
         <option key="M" value="M">
           Male

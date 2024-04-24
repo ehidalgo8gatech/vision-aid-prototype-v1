@@ -1,7 +1,5 @@
-
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { signIn, signOut } from "next-auth/react";
 import Image from 'next/image';
 import logo from 'public/images/vision-aid-logo.webp';
 
@@ -9,14 +7,18 @@ function Navigation(props) {
   const { user } = props;
   const router = useRouter();
   let role = "";
+
+  // Parse the user roles from Auth0
   if (user) {
-    role = user.admin
-      ? "admin"
-      : user.hospitalRole[0].admin
-      ? "manager"
-      : user.hospitalRole
-      ? "professional"
-      : "invalid";
+    if (user.admin) {
+      role = "admin"
+    }
+    else if (user.hospitalRole.some(h => h.admin)) {
+      role = "manager"
+    }
+    else {
+      role = "professional"
+    }
   }
 
   return (
@@ -120,27 +122,27 @@ function Navigation(props) {
 
             <br />
             <div className="text-align-right">
-              <button
-                type="button"
-                className="btn btn-sm btn-light"
-                onClick={() => {
-                  signOut();
-                }}
-              >
-                Sign out
-              </button>
+              <Link href="/api/auth/logout" legacyBehavior>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-light"
+                >
+                  Sign out
+                </button>
+              </Link>
             </div>
           </div>
         )}
         {!user && (
           <div className="left-auto-margin column-center">
-            <button
-              type="button"
-              className="btn btn-sm btn-light"
-              onClick={() => signIn()}
-            >
-              Sign in
-            </button>
+            <Link href="/api/auth/login" legacyBehavior>
+              <button
+                type="button"
+                className="btn btn-sm btn-light"
+              >
+                Sign in
+              </button>
+            </Link>
           </div>
         )}
       </div>

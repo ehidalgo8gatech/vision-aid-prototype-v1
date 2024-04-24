@@ -1,18 +1,107 @@
 import Router from "next/router";
 import { useState, useEffect } from "react";
-import { getSession } from "next-auth/react";
 import TrainingFormCLVE from "./components/TrainingFormCLVE";
 import TrainingForm from "./components/TrainingForm";
 import UserProfileCard from "./components/UserProfileCard";
 import Navigation from "./navigation/Navigation";
-import { readUser } from "./api/user";
+import { getUserFromSession } from "./api/user";
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+
+export const getServerSideProps = withPageAuthRequired({
+  async getServerSideProps(ctx) {
+    const currentUser = await getUserFromSession(ctx);
+    if (currentUser === null) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+
+    var user;
+    const service = ctx.query.service;
+    try {
+      const beneficiary = await await fetch(
+        `${process.env.NEXTAUTH_URL}/api/beneficiary?mrn=${ctx.query.mrn}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      user = await beneficiary.json();
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+
+    if (!user) {
+      return {
+        notFound: true,
+      };
+    }
+
+    let counsellingTypeList = [];
+    let trainingTypeList = [];
+    let trainingSubTypeList = [];
+    if (service === "Counselling_Education") {
+      try {
+        const counsellingType = await await fetch(
+          `${process.env.NEXTAUTH_URL}/api/counsellingType`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        counsellingTypeList = await counsellingType.json();
+      } catch (error) {
+        console.error("Error fetching counselling type:", error);
+      }
+    } else if (service === "Training") {
+      try {
+        const trainingType = await await fetch(
+          `${process.env.NEXTAUTH_URL}/api/trainingType`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        const trainingSubType = await await fetch(
+          `${process.env.NEXTAUTH_URL}/api/trainingSubType`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        trainingTypeList = await trainingType.json();
+        trainingSubTypeList = await trainingSubType.json();
+      } catch (error) {
+        console.error("Error fetching training type:", error);
+      }
+    }
+
+    user.hospitalName = user.hospital.name;
+
+    return {
+      props: {
+        currentUser: currentUser,
+        user: user,
+        service: service,
+        counsellingTypeList: counsellingTypeList,
+        trainingTypeList: trainingTypeList,
+        trainingSubTypeList: trainingSubTypeList,
+      },
+    };
+  }
+});
 
 export default function NewEvaluationDashboard(props) {
   // State variable for form fields
+  const [formData, setFormData] = useState(props.user);
   const service = props.user[props.service];
   const counsellingTypeList = props.counsellingTypeList;
   const trainingTypeList = props.trainingTypeList;
   const trainingSubTypeList = props.trainingSubTypeList;
+  const [editableField, setEditableField] = useState("");
 
   const [mobileTrainingData, setMobileTrainingData] = useState([]);
   const [trainingData, setTrainingData] = useState([]);
@@ -25,6 +114,9 @@ export default function NewEvaluationDashboard(props) {
   const [lowVisionEvaluationData, setLowVisionEvaluationData] = useState([]);
   const [counsellingEducationData, setCounsellingEducationData] = useState([]);
   const [orientationMobilityData, setOrientationMobilityData] = useState([]);
+  const [openMobile, setOpenMobile] = useState(false);
+  const [openComputer, setOpenComputer] = useState(false);
+  const [openVision, setOpenVision] = useState(false);
 
   useEffect(() => {
     setMobileTrainingData(props.user.Mobile_Training);
@@ -143,6 +235,41 @@ export default function NewEvaluationDashboard(props) {
     // Submit the VisionTraining data to the API
     const url = "/api/orientationMobileTraining";
     callMe(data, url, setOrientationMobilityData, orientationMobilityData);
+  };
+
+  // Handle input changes
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Handle edit icon click
+  const handleEditClick = (field) => {
+    setEditableField(field);
+  };
+
+  // Submit the edited data
+  const handleSubmit = async (e, field) => {
+    e.preventDefault();
+
+    // Update user data in the database
+    const response = await fetch(`/api/beneficiary`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ mrn: props.user.mrn, [field]: formData[field] }),
+    });
+
+    // Handle response from the API
+    if (response.ok) {
+      alert("User data saved successfully!");
+      setEditableField("");
+    } else {
+      alert("An error occurred while saving user data. Please try again.");
+    }
   };
 
   if (!props.user) {
@@ -271,90 +398,4 @@ export default function NewEvaluationDashboard(props) {
       </div>
     </div>
   );
-}
-
-export async function getServerSideProps(ctx) {
-  const session = await getSession(ctx);
-  if (session == null) {
-    console.log("session is null");
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-  const currentUser = await readUser(session.user.email);
-  var user;
-  const service = ctx.query.service;
-  try {
-    const beneficiary = await await fetch(
-      `${process.env.NEXTAUTH_URL}/api/beneficiary?mrn=${ctx.query.mrn}`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    user = await beneficiary.json();
-  } catch (error) {
-    console.error("Error fetching users:", error);
-  }
-
-  if (!user) {
-    return {
-      notFound: true,
-    };
-  }
-
-  let counsellingTypeList = [];
-  let trainingTypeList = [];
-  let trainingSubTypeList = [];
-  if (service === "Counselling_Education") {
-    try {
-      const counsellingType = await await fetch(
-        `${process.env.NEXTAUTH_URL}/api/counsellingType`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      counsellingTypeList = await counsellingType.json();
-    } catch (error) {
-      console.error("Error fetching counselling type:", error);
-    }
-  } else if (service === "Training") {
-    try {
-      const trainingType = await await fetch(
-        `${process.env.NEXTAUTH_URL}/api/trainingType`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      const trainingSubType = await await fetch(
-        `${process.env.NEXTAUTH_URL}/api/trainingSubType`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      trainingTypeList = await trainingType.json();
-      trainingSubTypeList = await trainingSubType.json();
-    } catch (error) {
-      console.error("Error fetching training type:", error);
-    }
-  }
-
-  user.hospitalName = user.hospital.name;
-
-  return {
-    props: {
-      currentUser: currentUser,
-      user: user,
-      service: service,
-      counsellingTypeList: counsellingTypeList,
-      trainingTypeList: trainingTypeList,
-      trainingSubTypeList: trainingSubTypeList,
-    },
-  };
 }

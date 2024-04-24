@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { getSession } from "next-auth/react";
-import { readUser } from "./api/user";
+import { getUserFromSession } from "@/pages/api/user";
 import Navigation from "./navigation/Navigation";
 import UserProfileCard from "./components/UserProfileCard";
 import HistoricalLowVisionScreeningForm from "../comps/HistoricalLowVisionScreeningForm";
@@ -11,6 +10,69 @@ import HistoricalTrainingForm from "../comps/HistoricalTrainingForm";
 import { getCounsellingType } from "./api/counsellingType";
 import { getTrainingTypes } from "./api/trainingType";
 import { getTrainingSubTypes } from "./api/trainingSubType";
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+
+export const getServerSideProps = withPageAuthRequired({
+  async getServerSideProps(ctx) {
+    const user = await getUserFromSession(ctx);
+    if (user === null) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+
+    let service;
+    let beneficiaryUser;
+    const query = ctx.query;
+    try {
+      const beneficiary = await fetch(
+        `${process.env.NEXTAUTH_URL}/api/beneficiary?mrn=${query.mrn}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      beneficiaryUser = await beneficiary.json();
+      service = query.service;
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+
+    if (!beneficiaryUser || !service) {
+      return {
+        notFound: true,
+      };
+    }
+
+    const benMirror = await fetch(
+      `${process.env.NEXTAUTH_URL}/api/beneficiaryMirror?hospital=` +
+        beneficiaryUser.hospital.name,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const benMirrorJson = await benMirror.json();
+
+    beneficiaryUser.hospitalName = beneficiaryUser.hospital.name;
+
+    return {
+      props: {
+        mrn: query.mrn,
+        currentUser: user,
+        user: beneficiaryUser,
+        service: service,
+        beneficiaryMirror: benMirrorJson,
+        counselingTypeList: await getCounsellingType(),
+        trainingTypeList: await getTrainingTypes(),
+        trainingSubTypeList: await getTrainingSubTypes(),
+      },
+    };
+  }
+});
 
 export default function HistoricalEvaluationPage(props) {
   let serviceToFetch = props.service;
@@ -285,66 +347,4 @@ export default function HistoricalEvaluationPage(props) {
       </div>
     </div>
   );
-}
-
-export async function getServerSideProps(ctx) {
-  var user;
-  var service;
-
-  const query = ctx.query;
-  const session = await getSession(ctx);
-  if (session == null) {
-    console.log("session is null");
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-  const currentUser = await readUser(session.user.email);
-  try {
-    const beneficiary = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/beneficiary?mrn=${query.mrn}`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    user = await beneficiary.json();
-    service = query.service;
-  } catch (error) {
-    console.error("Error fetching users:", error);
-  }
-
-  if (!user || !service) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const benMirror = await fetch(
-    `${process.env.NEXTAUTH_URL}/api/beneficiaryMirror?hospital=` +
-      user.hospital.name,
-    {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  const benMirrorJson = await benMirror.json();
-
-  user.hospitalName = user.hospital.name;
-
-  return {
-    props: {
-      mrn: query.mrn,
-      currentUser: currentUser,
-      user: user,
-      service: service,
-      beneficiaryMirror: benMirrorJson,
-      counselingTypeList: await getCounsellingType(),
-      trainingTypeList: await getTrainingTypes(),
-      trainingSubTypeList: await getTrainingSubTypes(),
-    },
-  };
 }

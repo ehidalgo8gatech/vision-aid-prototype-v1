@@ -5,3 +5,4 @@ global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 global.Request = request
 global.Response = ServerResponse
+global.XMLHttpRequest = undefined;

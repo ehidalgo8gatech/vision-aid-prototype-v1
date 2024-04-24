@@ -2,13 +2,14 @@
 import Link from "next/link";
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="footer">
       <p>
         <Link href="/feedback">Provide Feedback</Link>
       </p>
-      <p>VA-Partners and C4G Collaboration</p>
+      <p>&copy; Vision-Aid Partners {currentYear}</p>
     </footer>
   );
 };

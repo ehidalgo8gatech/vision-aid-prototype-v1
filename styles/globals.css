@@ -1,5 +1,4 @@
 
-
 html,
 body,
 body > div:first-child,
@@ -520,14 +519,14 @@ footer will be floating and page will be too short for styling) */
   flex-shrink: 0; /* Prevent footer from shrinking */
 }
 .footer a {
-  color: #fff; /* Set hyperlink text color to white */
+  color: #fff;
 }
 
 .textarea {
-  width: 100%;
+  width: 70%;
   height: 150px;
   padding: 8px;
-  border: 1px solid #00000010;
+  border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
   margin-bottom: 16px;
@@ -535,14 +534,13 @@ footer will be floating and page will be too short for styling) */
   color: #000;
 }
 
-.textarea-small{
-  max-width: 100%;
-  /* width: 30%; */
+.small-box{
+  max-width: 25%;
+  max-height: 40px;
   padding: 8px;
   border: 1px solid #ccc;
-  background-color: #fff;
-  color: #000;
-  border-radius: 4px;
-  box-sizing: border-box;
-  margin-bottom: 16px;
+}
+
+.feedback-container {
+  padding-bottom: 20px;
 }

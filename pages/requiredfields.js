@@ -1,7 +1,6 @@
 // This function gets called at build time
-import { readUser } from "./api/user";
-import { Table } from "react-bootstrap";
-import { getSession } from "next-auth/react";
+import { getUserFromSession } from "@/pages/api/user";
+import { Table as BootstrapTable } from "react-bootstrap";
 import { readBeneficiaryMirror } from "@/pages/api/beneficiaryMirror";
 import { v4 as uuidv4 } from "uuid";
 import Router from "next/router";
@@ -19,97 +18,148 @@ import { getCounsellingType } from "@/pages/api/counsellingType";
 import { getTrainingTypes } from "@/pages/api/trainingType";
 import { getTrainingSubTypes } from "@/pages/api/trainingSubType";
 import { Modal, Button, Form } from 'react-bootstrap';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Layout from './components/layout';
+import SidePanel from "./components/SidePanel";
+import { findAllLandingPagePosts } from "./api/landingPage";
+import Table from '@/pages/components/Table';
+import { PencilSquare, Trash3 } from 'react-bootstrap-icons';
 
-// http://localhost:3000/requiredfields
-export async function getServerSideProps(ctx) {
-  const session = await getSession(ctx);
-  if (session == null) {
-    console.log("session is null");
+
+const url = "/api/landingPage";
+export const getServerSideProps = withPageAuthRequired({
+  async getServerSideProps(ctx) {
+    const user = await getUserFromSession(ctx);
+    if (user == null || !user.admin) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+
     return {
-      redirect: {
-        destination: "/",
-        permanent: false,
+      props: {
+        user: user,
+        requiredBeneficiaryFields: await readBeneficiaryMirror(),
+        requiredMobileTraining: await readMobileTrainingMirror(),
+        requiredComputerTraining: await readComputerTrainingMirror(),
+        requiredOrientationMobilityTraining:
+          await readOrientationMobilityTrainingMirror(),
+        requiredVisionEnhancement: await readVisionEnhancementMirror(),
+        requiredComprehensiveLowVisionEvaluation:
+          await readComprehensiveLowVisionEvaluationMirror(),
+        requiredCounsellingEducation: await readCounsellingEducationMirror(),
+        hospitals: await findAllHospitalsHistory(),
+        counselingTypeList: await getCounsellingType(),
+        trainingTypeList: await getTrainingTypes(),
+        trainingSubTypeList: await getTrainingSubTypes(),
+        error: null,
+        landingPagePosts: await findAllLandingPagePosts(),
       },
     };
   }
-  const user = await readUser(session.user.email);
-  if (user.admin == null) {
-    console.log("user admin is null");
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {
-      user: user,
-      requiredBeneficiaryFields: await readBeneficiaryMirror(),
-      requiredMobileTraining: await readMobileTrainingMirror(),
-      requiredComputerTraining: await readComputerTrainingMirror(),
-      requiredOrientationMobilityTraining:
-        await readOrientationMobilityTrainingMirror(),
-      requiredVisionEnhancement: await readVisionEnhancementMirror(),
-      requiredComprehensiveLowVisionEvaluation:
-        await readComprehensiveLowVisionEvaluationMirror(),
-      requiredCounsellingEducation: await readCounsellingEducationMirror(),
-      hospitals: await findAllHospitalsHistory(),
-      counselingTypeList: await getCounsellingType(),
-      trainingTypeList: await getTrainingTypes(),
-      trainingSubTypeList: await getTrainingSubTypes(),
-      error: null,
-    },
-  };
-}
+});
 
 function RequiredFields(props) {
-  const [section, setSection] = useState("");
+  const [section, setSection] = useState("Hospitals");
   const [hospitals, setHospitals] = useState(props.hospitals);
 
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
   const [editMode, setEditMode] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
-
-  const posts = [
-    { id: 1, title: 'Post 1', content: 'Content 1', date: '2022-03-08' },
-    { id: 2, title: 'Post 2', content: 'Content 2', date: '2022-03-09' },
-    { id: 3, title: 'Post 3', content: 'Content 3', date: '2022-03-07' },
-  ];
-
+  const [userContent, setUserContent] = useState('');
+  const sections = ["Hospitals", "Beneficiaries", "Evaluations", "Trainings", "Landing Page"]
+  
   const handleShow = () => {
     setShowModal(true);
-    setEditMode(false);
+    setEditMode(false); 
+      
   };
 
   const handleClose = () => {
     setShowModal(false);
     setConfirmDelete(false);
     setTitle('');
-    setContent('');
+    setUserContent('');
     setSelectedPost(null);
   };
 
-  const handleEdit = (post) => {
+ 
+
+  const handleClickEdit = (post) => {
     setSelectedPost(post);
     setTitle(post.title);
-    setContent(post.content);
+    setUserContent(post.content);
     setShowModal(true);
     setEditMode(true);
+    
   };
 
-  const handleDelete = (post) => {
+  const handleClickDelete = (post) => {
     setSelectedPost(post);
+    setUserContent(post.content);
     setConfirmDelete(true);
+    
   };
 
-  const handleSaveChanges = () => {
-    // Handle saving changes
+  const handleDelete = async (post) => {
+    await fetch(`${url}?id=${post.id}`, { method: "DELETE" });
     handleClose();
+    Router.reload();
+  }
+
+  const handleCreatePost = (e) => {
+      e.preventDefault();
+      const response = fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          emailAddr: props.user.email,
+          content: userContent,
+          title: title,
+        }),
+      });
+      console.log(response)
+      // Handle response from the API
+      if (response.status !== 200) {
+        console.log("something went wrong");
+      } else {
+        console.log("post updated successfully !!!");
+      }
+    /// close after sending create
+    handleClose();
+    Router.reload();
+  };
+
+  const handleEditPost = (e) => {
+    e.preventDefault();
+    // selectedPost is exiting post
+    // userContent is new content
+    if (userContent == "") {
+      console.log("\n empty content is not allowed");
+      handleClose()
+    }
+    const editConfirmation = fetch(url, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: selectedPost.id,
+        content: userContent,
+      }),
+    });
+    if (editConfirmation.status !== 200) {
+      console.log("something went wrong");
+    } else {
+      console.log("post updated successfully !!!");
+    }
+    handleClose();
+    Router.reload()
   };
 
   function removeExtraField(fieldId) {
@@ -428,6 +478,27 @@ function RequiredFields(props) {
     removeTrainingType: false,
     addTrainingSubType: false,
   };
+  function handleToggle(type) {
+    var displayTrainingElement = document.getElementById(
+      type + "TrainingRequiredFields"
+    );
+    if (displayTrainingElement.style.display === "block") {
+      displayTrainingElement.style.display = "none";
+    } else {
+      displayTrainingElement.style.display = "block";
+    }
+    showForm[type] = !showForm[type];
+  }
+
+  function handleToggleByType(type) {
+    var displayTrainingElement = document.getElementById(type);
+    if (displayTrainingElement.style.display === "block") {
+      displayTrainingElement.style.display = "none";
+    } else {
+      displayTrainingElement.style.display = "block";
+    }
+    showForm[type] = !showForm[type];
+  }
 
   const hospitalOptions = [];
   for (let i = 0; i < props.hospitals.length; i++) {
@@ -479,14 +550,17 @@ function RequiredFields(props) {
   for (const counselingType of props.counselingTypeList) {
     if (foundTypeCounselingOther == false && counselingType == "Other") {
       foundTypeCounselingOther = true;
-      console.log("Do not delete other option");
+      // console.log("Do not delete other option");
       continue;
     }
     removeTypeCounseling.push(
-      <tr>
-        <td>{counselingType}</td>
-        <td><Trash style={{ cursor: "pointer" }} onClick={() => deleteTraining("counsellingType", counselingType)} /></td>
-      </tr>
+      <div>
+        <span>Delete Counseling Type: {counselingType}</span>&nbsp;
+        <Trash
+          style={{ cursor: "pointer" }}
+          onClick={() => deleteTraining("counsellingType", counselingType)}
+        />
+      </div>
     );
   }
 
@@ -511,16 +585,27 @@ function RequiredFields(props) {
     );
     if (foundTypeTrainingOther == false && trainingType == "Other") {
       foundTypeTrainingOther = true;
-      console.log("Do not delete other option");
+      // console.log("Do not delete other option");
       continue;
     }
     removeTypeTraining.push(
-      <tr>
-        <td>{trainingType}</td>
-        <td><Trash style={{ cursor: "pointer" }} onClick={() => deleteTraining("trainingType", trainingType)} /></td>
-      </tr>
-
+      <div>
+        <span>Delete Training Type: {trainingType}</span>&nbsp;
+        <Trash style={{ cursor: "pointer" }} onClick={() => deleteTraining("trainingType", trainingType)} />
+      </div>
     );
+  }
+
+  async function removeTypesSubmit(e, api, html) {
+    e.preventDefault();
+    await fetch("/api/" + api, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        value: e.target[html].value,
+      }),
+    });
+    Router.reload();
   }
 
   let removeSubTypeTraining = [];
@@ -543,15 +628,17 @@ function RequiredFields(props) {
       trainingSubType.value == "Other"
     ) {
       foundSubTypeTrainingOther[trainingSubType.trainingType.id] = true;
-      console.log("Do not delete other option");
+      // console.log("Do not delete other option");
       continue;
     }
     removeSubTypeTraining.push(
-      <tr>
-        <td>{trainingSubType.trainingType.value}</td>
-        <td>{trainingSubType.value}</td>
-        <td><Trash style={{ cursor: "pointer" }} onClick={() => deleteTrainingSubType(trainingSubType.id)} /></td>
-      </tr>
+      <div>
+        <span>
+          Delete Training Type: {trainingSubType.trainingType.value} Training
+          Sub Type: {trainingSubType.value}
+        </span>&nbsp;
+        <Trash style={{ cursor: "pointer" }} onClick={() => deleteTrainingSubType(trainingSubType.id)} />
+      </div>
     );
   }
 
@@ -644,75 +731,28 @@ function RequiredFields(props) {
     }
   };
 
+  const landingPageRows = props.landingPagePosts
+    .sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate))
+    .map((post) => (
+      <tr key={post.id}>
+        <td>{post.title}</td>
+        <td>{post.content}</td>
+        <td>{new Date(post.creationDate).toLocaleTimeString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</td>
+        <td>
+          <PencilSquare style={{cursor: "pointer"}} onClick={() => handleClickEdit(post)} />
+          <Trash3 color="red" style={{marginLeft: "5px", cursor: "pointer"}} onClick={() => handleClickDelete(post)} />
+        </td>
+      </tr>
+    ));
+
   return (
     <Layout>
     <div className="content">
       <Navigation user={props.user} />
       <div className="d-flex flex-row h-100 flex-grow-1">
-        <div className="container col-md-3 m-4 p-4">
-          <div className="p-2">
-            <button
-              className={`w-100 text-align-left ${
-                section === "hospitals"
-                  ? "btn btn-success btn-block active-tab"
-                  : "btn btn-light btn-block"
-              }`}
-              onClick={() => setSection("hospitals")}
-            >
-              Hospitals
-            </button>
-          </div>
-          <div className="p-2">
-            <button
-              className={`w-100 text-align-left ${
-                section === "beneficiaries"
-                  ? "btn btn-success btn-block active-tab"
-                  : "btn btn-light btn-block"
-              }`}
-              onClick={() => setSection("beneficiaries")}
-            >
-              Beneficiaries
-            </button>
-          </div>
-          <div className="p-2">
-            <button
-              className={`w-100 text-align-left ${
-                section === "evaluations"
-                  ? "btn btn-success btn-block active-tab"
-                  : "btn btn-light btn-block"
-              }`}
-              onClick={() => setSection("evaluations")}
-            >
-              Evaluations
-            </button>
-          </div>
-          <div className="p-2">
-            <button
-              className={`w-100 text-align-left ${
-                section === "trainings"
-                  ? "btn btn-success btn-block active-tab"
-                  : "btn btn-light btn-block"
-              }`}
-              onClick={() => setSection("trainings")}
-            >
-              Trainings
-            </button>
-          </div>
-          {/* <div className="p-2">
-            <button
-              className={`w-100 text-align-left ${
-                section === "landing-page"
-                  ? "btn btn-success btn-block active-tab"
-                  : "btn btn-light btn-block"
-              }`}
-              onClick={() => setSection("landing-page")}
-            >
-              Landing Page
-            </button>
-          </div> */}
-        </div>
+        <SidePanel options={sections} defaultOption="Hospitals" handleSelection={setSection} />
         <div className="col-md-8">
-          {section === "hospitals" && (
+          {section === "Hospitals" && (
             <div className="container m-4 p-4">
               <form action="#" method="POST" onSubmit={(e) => addHospital(e)}>
                 <div className="text-center">
@@ -745,7 +785,7 @@ function RequiredFields(props) {
                   <strong>Remove Hospital</strong>
                 </h2>
                 <div>
-                  <Table striped bordered hover>
+                  <BootstrapTable striped bordered hover>
                     <thead>
                       <tr>
                         <th>Hospital</th>
@@ -761,7 +801,7 @@ function RequiredFields(props) {
                               <button
                                 className="btn btn-danger"
                                 type="button"
-                                onClick={() =>
+                                onClick={(e) =>
                                   hideHospital(hospital.id, hospital.name)
                                 }
                               >
@@ -772,7 +812,7 @@ function RequiredFields(props) {
                               <button
                                 className="btn btn-success"
                                 type="button"
-                                onClick={() =>
+                                onClick={(e) =>
                                   showHospital(hospital.id, hospital.name)
                                 }
                               >
@@ -783,14 +823,14 @@ function RequiredFields(props) {
                         </tr>
                       ))}
                     </tbody>
-                  </Table>
+                  </BootstrapTable>
                 </div>
                 <br />
               </div>
               <br />
             </div>
           )}
-          {section === "beneficiaries" && (
+          {section === "Beneficiaries" && (
             <div className="container m-4 p-4">
               <form
                 action="#"
@@ -958,7 +998,7 @@ function RequiredFields(props) {
               </form>
             </div>
           )}
-          {section === "evaluations" && (
+          {section === "Evaluations" && (
             <div className="container m-4 p-4">
               <h2 className="text-center mt-4 mb-4">
                 <strong>Other Form Required Fields</strong>
@@ -968,11 +1008,11 @@ function RequiredFields(props) {
               <div className="accordion" id="accordionExample">
                 <div className="accordion-item">
                   <h2 className="accordion-header" id="headingOne">
-                    <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                       <strong>Comprehensive Low Vision Evaluation</strong>
                     </button>
                   </h2>
-                  <div id="collapseOne" className="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                  <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div className="accordion-body">
                       <div
                         // className="container"
@@ -1299,7 +1339,7 @@ function RequiredFields(props) {
               </div>
             </div>
           )}
-          {section === "trainings" && (
+          {section === "Trainings" && (
             <div className="container mt-4">
               <h2 className="text-center mt-4 mb-4">
                 <strong>Add Types</strong>
@@ -1309,24 +1349,14 @@ function RequiredFields(props) {
               <div className="accordion" id="accordionExample">
                 <div className="accordion-item">
                   <h2 className="accordion-header" id="headingOne">
-                    <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                       <strong>Add/Delete Counseling Education</strong>
                     </button>
                   </h2>
-                  <div id="collapseOne" className="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                  <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div className="accordion-body">
                       <div id="addCounsellingTypeContainer">
-                        <Table striped bordered hover size="sm">
-                          <thead>
-                            <tr>
-                              <th>Counseling Type</th>
-                              <th>Delete</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {removeTypeCounseling}
-                          </tbody>
-                        </Table>
+                        {removeTypeCounseling}
                         <form
                           action="#"
                           method="POST"
@@ -1361,17 +1391,7 @@ function RequiredFields(props) {
                   <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                     <div className="accordion-body">
                       <div id="addTrainingTypeContainer">
-                        <Table striped bordered hover size="sm">
-                          <thead>
-                            <tr>
-                              <th>Training Type</th>
-                              <th>Delete</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {removeTypeTraining}
-                          </tbody>
-                        </Table>
+                        {removeTypeTraining}
                         <form
                           action="#"
                           method="POST"
@@ -1404,18 +1424,7 @@ function RequiredFields(props) {
                   <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                     <div className="accordion-body">
                       <div id="addTrainingSubTypeContainer">
-                        <Table striped bordered hover size="sm">
-                          <thead>
-                            <tr>
-                              <th>Training Type</th>
-                              <th>Sub Type</th>
-                              <th>Delete</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {removeSubTypeTraining}
-                          </tbody>
-                        </Table>
+                        {removeSubTypeTraining}
                         <form
                           action="#"
                           method="POST"
@@ -1445,7 +1454,7 @@ function RequiredFields(props) {
               </div>
             </div>
           )}
-          {section === 'landing-page' && (
+          {section === "Landing Page" && (
             <div className="container mt-4">
                 <div className="row">
                   <div className="col text-end" style={{ marginTop: '10px' }}>
@@ -1455,24 +1464,7 @@ function RequiredFields(props) {
                 </div>
                 </div>
                 <br />
-                <div>
-                  {posts
-                    .sort((a, b) => new Date(b.date) - new Date(a.date))
-                    .map((post) => (
-                      <div key={post.id} className="mb-3">
-                        <h3>{post.title}</h3>
-                        <p>{new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-                        <div>
-                          <button className="btn btn-primary me-2" onClick={() => handleEdit(post)}>
-                            Edit
-                          </button>
-                          <button className="btn btn-danger" onClick={() => handleDelete(post)}>
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                </div>
+                <Table columns={["Title", "Contnt", "Date", "Actions"]} rows={landingPageRows} />
               <Modal show={showModal} onHide={handleClose} size="lg">
                 <Modal.Header closeButton>
                   <Modal.Title style={{ textAlign: 'left' }}>
@@ -1495,9 +1487,12 @@ function RequiredFields(props) {
                       <Form.Control
                         as="textarea"
                         rows={3}
-                        placeholder="Enter content"
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
+                        placeholder="Enter Content"
+                        value={userContent}
+                        onChange={(e) => {
+                          setUserContent(e.target.value)
+                        }}
+                        
                         style={{ textAlign: 'left' }}
                       />
                     </Form.Group>
@@ -1508,12 +1503,13 @@ function RequiredFields(props) {
                     Close
                   </Button>
                   {editMode ? (
-                    <Button variant="primary" onClick={handleSaveChanges}>
+
+                    <Button variant="primary" onClick={handleEditPost} >
                       Update
                     </Button>
                   ) : (
-                    <Button variant="primary" onClick={handleSaveChanges}>
-                      Save Changes
+                    <Button variant="primary" onClick={handleCreatePost}>
+                      Create
                     </Button>
                   )}
                 </Modal.Footer>
@@ -1529,7 +1525,7 @@ function RequiredFields(props) {
                   <Button variant="secondary" onClick={() => setConfirmDelete(false)}>
                     Cancel
                   </Button>
-                  <Button variant="danger" onClick={() => handleSaveChanges(selectedPost)}>
+                  <Button variant="danger" onClick={() => handleDelete(selectedPost)}>
                     Delete
                   </Button>
                 </Modal.Footer>
