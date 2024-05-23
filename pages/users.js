@@ -327,7 +327,7 @@ function Users(props) {
       <div className="row">
         <div className="offset-md-1 col-md-4">
           <br />
-          <strong>Add User To Hospital</strong>
+          <strong>Add User To Hospital.</strong>
           <br />
           {/* <br /> */}
           <div className="container m-4">
