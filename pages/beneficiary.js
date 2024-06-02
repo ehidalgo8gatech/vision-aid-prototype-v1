@@ -39,6 +39,7 @@ function HomePage(props) {
   const searchUsers = async (searchInput, choice, showOther) => {
     setSearchTerm(searchInput);
     setSearchOther(showOther);
+    var hospitalIds = props.user.hospitalRole.map(role => role.hospitalId);
     if (showOther) {
       try {
         const beneficiary = await fetch(
@@ -49,10 +50,18 @@ function HomePage(props) {
           }
         );
         const beneficiaryJson = await beneficiary.json();
-        setUsers(beneficiaryJson);
+        let filteredBeneficiaryJson;
+        if (props.user.admin == null) {
+          // dont show beneficiaries from hospitals other than the ones managed by the professional/manager
+          filteredBeneficiaryJson = beneficiaryJson.filter(item => hospitalIds.includes(item.hospitalId));
+        } else {
+          // show all for admins
+          filteredBeneficiaryJson = beneficiaryJson;
+        }
+        setUsers(filteredBeneficiaryJson);
         setSearched(true);
         setChoice(choice);
-        if (beneficiaryJson.length === 0 && choice === "register") {
+        if (filteredBeneficiaryJson.length === 0 && choice === "register") {
           openUserPage("");
         }
       } catch (error) {
@@ -69,10 +78,18 @@ function HomePage(props) {
           }
         );
         const beneficiaryJson = await beneficiary.json();
-        setUsers(beneficiaryJson);
+        let filteredBeneficiaryJson;
+        if (props.user.admin == null) {
+          // dont show beneficiaries from hospitals other than the ones managed by the professional/manager
+          filteredBeneficiaryJson = beneficiaryJson.filter(item => hospitalIds.includes(item.hospitalId));
+        } else {
+          // show all for admins
+          filteredBeneficiaryJson = beneficiaryJson;
+        }
+        setUsers(filteredBeneficiaryJson);
         setSearched(true);
         setChoice(choice);
-        if (beneficiaryJson.length === 0 && choice === "register") {
+        if (filteredBeneficiaryJson.length === 0 && choice === "register") {
           openUserPage(searchInput);
         }
       } catch (error) {
