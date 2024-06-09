@@ -1,26 +1,13 @@
-// pages/feedback.js
+// feedback.js page
 import Navigation from "./navigation/Navigation";
 import Layout from './components/layout';
 import Head from "next/head";
-import { getSession } from "next-auth/react";
-import { readUser } from "./api/user";
 import { useState } from "react";
+import { getUserFromSession } from "@/pages/api/user";
 
 export async function getServerSideProps(ctx) {
-  const session = await getSession(ctx);
-  if (session == null) {
-    return {
-      props: {
-        user: null
-      }
-    };
-  }
-  const user = await readUser(session.user.email);
-  return {
-    props: {
-      user: user,
-    },
-  };
+  const user = await getUserFromSession(ctx);
+  return { props: { user } };
 }
 
 export default function FeedbackPage(props) {
@@ -58,35 +45,35 @@ export default function FeedbackPage(props) {
         <title>Feedback</title>
       </Head>
       <div className="content">
-        <div className="container">
+        <div className="container feedback-container">
           {feedbackSubmitted ? (
-            <h4>Thank you for your feedback!</h4>
+            <h1 className="text-center mt-4 mb-4">Thank you for your feedback!</h1>
           ) : (
-            <>
-            <h1>Provide Website Feedback</h1>
+            <h1 className="text-center mt-4 mb-4">Provide Website Feedback</h1>
+          )}
+          {!feedbackSubmitted && (
             <form id="feedbackForm" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="rating">Overall Satisfaction:</label><br />
-                <select id="rating" name="rating" required>
+                <select id="rating" name="rating" className="textarea small-box" required>
                   <option value="">Select...</option>
-                  <option value="1">1 - Very Dissatisfied</option>
-                  <option value="2">2 - Dissatisfied</option>
-                  <option value="3">3 - Neutral</option>
-                  <option value="4">4 - Satisfied</option>
                   <option value="5">5 - Very Satisfied</option>
+                  <option value="4">4 - Satisfied</option>
+                  <option value="3">3 - Neutral</option>
+                  <option value="2">2 - Dissatisfied</option>
+                  <option value="1">1 - Very Dissatisfied</option>
                 </select>
               </div>
               <div>
-                <label htmlFor="comments">Additional comments (optional):</label><br />
+                <label htmlFor="comments">Additional Comments (optional):</label><br />
                 <textarea id="comments" name="comments" className="textarea"></textarea>
               </div>
               <div>
                 <label htmlFor="email">Email (optional):</label><br />
-                <input type="email" id="email" name="email" className="textarea-small" />
+                <input type="email" id="email" name="email" className="textarea small-box" />
               </div>
-              <button type="submit">Submit Feedback</button>
+              <button type="submit" className="btn btn-success border-0 btn-block">Submit Feedback</button>
             </form>
-            </>
           )}
         </div>
       </div>

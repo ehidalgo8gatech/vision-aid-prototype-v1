@@ -14,7 +14,6 @@ model User {
   email        String        @unique
   admin        Admin?
   hospitalRole HospitalRole[]
-  lPageEntries Landing_Page[]
 
 }
 
@@ -332,8 +331,7 @@ model Landing_Page {
   id              Int  @id @default(autoincrement())
   creationDate    DateTime?
   content         String?
-  user            User @relation(fields: [userId], references: [id])
-  userId          Int
+  title           String?
 }
 
 model Feedback {

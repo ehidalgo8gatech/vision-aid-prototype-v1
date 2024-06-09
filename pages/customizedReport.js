@@ -15,79 +15,78 @@ import {
   filterTrainingSummaryByDateRange,
   getReportData,
 } from "@/constants/reportFunctions";
-import { getSession } from "next-auth/react";
-import { readUser, allHospitalRoles } from "./api/user";
+import { getUserFromSession, allHospitalRoles } from "./api/user";
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
-export async function getServerSideProps(ctx) {
-  const session = await getSession(ctx);
-  if (session == null) {
-    console.log("session is null");
+export const getServerSideProps = withPageAuthRequired({
+  async getServerSideProps(ctx) {
+    const user = await getUserFromSession(ctx);
+    if (user === null) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+
+    const getHospitalIdsByUsers = (id, users) => {
+      let hospitalIds = [];
+      for (const u of users ) {
+        if (u.userId === id) {
+          hospitalIds.push(u.hospitalId);
+        }
+      }
+      return hospitalIds;
+    }
+
+    const roles = await allHospitalRoles();
+    let hospitalIds;
+    if (user.admin) {
+      hospitalIds = getHospitalIdsByUsers(user.id, roles);
+    }
+    const beneficiaryListFromAPI = await findAllBeneficiary();
+
+    let beneficiaryList = [];
+
+    beneficiaryList = beneficiaryListFromAPI.map((beneficiary) => ({
+      mrn: beneficiary.mrn,
+      beneficiaryName: beneficiary.beneficiaryName,
+      hospitalId: beneficiary.hospitalId,
+      dateOfBirth: beneficiary.dateOfBirth,
+      gender: beneficiary.gender,
+      phoneNumber: beneficiary.phoneNumber,
+      education: beneficiary.education,
+      occupation: beneficiary.occupation,
+      districts: beneficiary.districts,
+      state: beneficiary.state,
+      diagnosis: beneficiary.diagnosis,
+      vision: beneficiary.vision,
+      mDVI: beneficiary.mDVI,
+      extraInformation: beneficiary.extraInformation,
+      hospital: beneficiary.hospital,
+      visionEnhancement: beneficiary.Vision_Enhancement,
+      counsellingEducation: beneficiary.Counselling_Education,
+      comprehensiveLowVisionEvaluation:
+        beneficiary.Comprehensive_Low_Vision_Evaluation,
+      lowVisionEvaluation: beneficiary.Low_Vision_Evaluation,
+      training: beneficiary.Training,
+      computerTraining: beneficiary.Computer_Training,
+      mobileTraining: beneficiary.Mobile_Training,
+      orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
+    }));
+
+    const summary = await getSummaryForAllHospitals(user.admin, hospitalIds);
+
     return {
-      redirect: {
-        destination: "/",
-        permanent: false,
+      props: {
+        user: user,
+        summary: JSON.parse(JSON.stringify(summary)),
+        beneficiaryList: JSON.parse(JSON.stringify(beneficiaryList)),
       },
     };
   }
-
-  const getHospitalIdsByUsers = (id, users) => {
-    let hospitalIds = [];
-    for (const user of users ) {
-      if (user.userId === id) {
-        hospitalIds.push(user.hospitalId);
-      }
-    }
-    return hospitalIds;
-  }
-
-  const user = await readUser(session.user.email);
-  const roles = await allHospitalRoles();
-  let hospitalIds;
-  const isAdmin = user.admin != null;
-  if (!isAdmin) {
-    hospitalIds = getHospitalIdsByUsers(user.id, roles);
-  }
-  const beneficiaryListFromAPI = await findAllBeneficiary();
-
-  let beneficiaryList = [];
-
-  beneficiaryList = beneficiaryListFromAPI.map((beneficiary) => ({
-    mrn: beneficiary.mrn,
-    beneficiaryName: beneficiary.beneficiaryName,
-    hospitalId: beneficiary.hospitalId,
-    dateOfBirth: beneficiary.dateOfBirth,
-    gender: beneficiary.gender,
-    phoneNumber: beneficiary.phoneNumber,
-    education: beneficiary.education,
-    occupation: beneficiary.occupation,
-    districts: beneficiary.districts,
-    state: beneficiary.state,
-    diagnosis: beneficiary.diagnosis,
-    vision: beneficiary.vision,
-    mDVI: beneficiary.mDVI,
-    extraInformation: beneficiary.extraInformation,
-    hospital: beneficiary.hospital,
-    visionEnhancement: beneficiary.Vision_Enhancement,
-    counsellingEducation: beneficiary.Counselling_Education,
-    comprehensiveLowVisionEvaluation:
-      beneficiary.Comprehensive_Low_Vision_Evaluation,
-    lowVisionEvaluation: beneficiary.Low_Vision_Evaluation,
-    training: beneficiary.Training,
-    computerTraining: beneficiary.Computer_Training,
-    mobileTraining: beneficiary.Mobile_Training,
-    orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
-  }));
-
-  const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds);
-
-  return {
-    props: {
-      user: user,
-      summary: JSON.parse(JSON.stringify(summary)),
-      beneficiaryList: JSON.parse(JSON.stringify(beneficiaryList)),
-    },
-  };
-}
+});
 
 function ReportCustomizer(props) {
   const { user, summary, beneficiaryList } = props;

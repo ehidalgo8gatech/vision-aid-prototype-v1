@@ -85,7 +85,7 @@ async function readData(req, res) {
           Training: true,
         },
       });
-    } else if (req.query.beneficiaryName != '') {
+    } else if (req.query.beneficiaryName != null) {
       beneficiary = await prisma.beneficiary.findMany({
         where: {
           beneficiaryName: {
@@ -106,7 +106,22 @@ async function readData(req, res) {
         },
       });
     } else {
-      beneficiary = [];
+      beneficiary = await prisma.beneficiary.findMany({
+        include: {
+          hospital: true,
+          Computer_Training: true,
+          Mobile_Training: true,
+          Orientation_Mobility_Training: true,
+          Vision_Enhancement: true,
+          Comprehensive_Low_Vision_Evaluation: true,
+          Counselling_Education: true,
+          Low_Vision_Evaluation: true,
+          Training: true,
+        },
+        where: {
+          deleted: false,
+        },
+      });
     }
     return res.status(200).json(beneficiary, { success: true });
   } catch (error) {
@@ -173,9 +188,6 @@ async function updateData(req, res) {
   if (req.body.mrn) {
     try {
       const { mrn, ...data } = req.body;
-      if (data.dateOfBirth != undefined){
-        data.dateOfBirth = (new Date(data.dateOfBirth)).toISOString();
-      }
       const updatedUser = await prisma.beneficiary.update({
         where: { mrn },
         data,

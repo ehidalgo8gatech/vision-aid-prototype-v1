@@ -1,32 +1,32 @@
 // This function gets called at build time
 
+import React from "react";
 import { useState } from "react";
 import SearchBar from "./components/SearchBar";
 import UserList from "./components/UserList";
 import Navigation from "./navigation/Navigation";
 import Layout from './components/layout';
 import { useRouter } from "next/router";
-import { getSession } from "next-auth/react";
-import { readUser } from "./api/user";
+import { withPageAuthRequired } from '@auth0/nextjs-auth0'
+import { getUserFromSession } from '@/pages/api/user';
 
-export async function getServerSideProps(ctx) {
-  const session = await getSession(ctx);
-  if (session == null) {
-    console.log("session is null");
+export const getServerSideProps = withPageAuthRequired({
+  async getServerSideProps(ctx) {
+    const user = await getUserFromSession(ctx);
+    if (user === null) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+
     return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
+      props: { user }
     };
   }
-  const user = await readUser(session.user.email);
-  return {
-    props: {
-      user: user,
-    },
-  };
-}
+});
 
 function HomePage(props) {
   const [users, setUsers] = useState([]);
