@@ -67,6 +67,12 @@ async function fetchData(req, res) {
             },
             where: {
                 deleted: false,
+                Training: {
+                    every: { date: { 
+                        lte: new Date(req.query.endDate),
+                        get: new Date(req.query.startDate),
+                    }}
+                }
             },
             });
         } else {
@@ -100,7 +106,13 @@ async function fetchData(req, res) {
             },
             where: {
                 deleted: false,
-                hospitalId: {in: hospitalIds}
+                hospitalId: {in: hospitalIds},
+                Training: {
+                    every: { date: { 
+                        lte: new Date(req.query.endDate),
+                        get: new Date(req.query.startDate),
+                    }}
+                }
             },
             });
         }
