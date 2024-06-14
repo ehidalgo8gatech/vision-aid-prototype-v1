@@ -38,6 +38,22 @@ async function fetchData(req, res) {
         let beneficiaryListFromAPI;
         if (isAdmin) {
             beneficiaryListFromAPI = await prisma.beneficiary.findMany({
+            select: {
+                mrn: true,
+                beneficiaryName: true,
+                hospitalId: true,
+                dateOfBirth: true,
+                gender: true,
+                phoneNumber: true,
+                education: true,
+                occupation: true,
+                districts: true,
+                state: true,
+                diagnosis: true,
+                vision: true,
+                mDVI: true,
+                extraInformation: true
+            },
             include: {
                 hospital: true,
                 Vision_Enhancement: true,
@@ -55,6 +71,22 @@ async function fetchData(req, res) {
             });
         } else {
             beneficiaryListFromAPI = await prisma.beneficiary.findMany({
+            select: {
+                mrn: true,
+                beneficiaryName: true,
+                hospitalId: true,
+                dateOfBirth: true,
+                gender: true,
+                phoneNumber: true,
+                education: true,
+                occupation: true,
+                districts: true,
+                state: true,
+                diagnosis: true,
+                vision: true,
+                mDVI: true,
+                extraInformation: true
+            },
             include: {
                 hospital: true,
                 Vision_Enhancement: true,
