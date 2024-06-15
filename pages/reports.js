@@ -591,7 +591,7 @@ export default function Summary({
     var beneficiaryListAPI;
     try {
       beneficiaryListAPI = await fetch(
-        "/api/beneficiaryList?id=" + user.id,
+        `/api/beneficiaryList?id=${user.id}&startDate=${startDate}&endDate=${endDate}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },

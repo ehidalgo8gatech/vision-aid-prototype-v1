@@ -35,10 +35,28 @@ async function fetchData(req, res) {
         }
 
         // get beneficiary list from the user information
-        let beneficiaryListFromAPI;
-        if (isAdmin) {
-            beneficiaryListFromAPI = await prisma.beneficiary.findMany({
-            include: {
+        const startDate = req.query.startDate;
+        const endDate = req.query.endDate;
+        const date = startDate && endDate ? { 
+            lte: new Date(req.query.endDate),
+            gte: new Date(req.query.startDate),
+        } : undefined;
+        const beneficiaryListFromAPI = await prisma.beneficiary.findMany({
+            select: {
+                mrn: true,
+                beneficiaryName: true,
+                hospitalId: true,
+                dateOfBirth: true,
+                gender: true,
+                phoneNumber: true,
+                education: true,
+                occupation: true,
+                districts: true,
+                state: true,
+                diagnosis: true,
+                vision: true,
+                mDVI: true,
+                extraInformation: true,
                 hospital: true,
                 Vision_Enhancement: true,
                 Counselling_Education: true,
@@ -51,31 +69,14 @@ async function fetchData(req, res) {
             },
             where: {
                 deleted: false,
+                hospitalId: isAdmin ? undefined : { in: hospitalIds },
+                Training: {
+                    every: { date }
+                }
             },
-            });
-        } else {
-            beneficiaryListFromAPI = await prisma.beneficiary.findMany({
-            include: {
-                hospital: true,
-                Vision_Enhancement: true,
-                Counselling_Education: true,
-                Comprehensive_Low_Vision_Evaluation: true,
-                Low_Vision_Evaluation: true,
-                Training: true,
-                Computer_Training: true,
-                Mobile_Training: true,
-                Orientation_Mobility_Training: true,
-            },
-            where: {
-                deleted: false,
-                hospitalId: {in: hospitalIds}
-            },
-            });
-        }
+        });
 
-        let beneficiaryList = [];
-
-        beneficiaryList = beneficiaryListFromAPI.map((beneficiary) => ({
+        const beneficiaryList = beneficiaryListFromAPI.map((beneficiary) => ({
             mrn: beneficiary.mrn,
             beneficiaryName: beneficiary.beneficiaryName,
             hospitalId: beneficiary.hospitalId,
