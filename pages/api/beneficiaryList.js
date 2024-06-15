@@ -35,6 +35,12 @@ async function fetchData(req, res) {
         }
 
         // get beneficiary list from the user information
+        const startDate = req.query.startDate;
+        const endDate = req.query.endDate;
+        const date = startDate && endDate ? { 
+            lte: new Date(req.query.endDate),
+            gte: new Date(req.query.startDate),
+        } : undefined;
         const beneficiaryListFromAPI = await prisma.beneficiary.findMany({
             select: {
                 mrn: true,
@@ -65,10 +71,7 @@ async function fetchData(req, res) {
                 deleted: false,
                 hospitalId: isAdmin ? undefined : { in: hospitalIds },
                 Training: {
-                    every: { date: { 
-                        lte: new Date(req.query.endDate),
-                        gte: new Date(req.query.startDate),
-                    }}
+                    every: { date }
                 }
             },
         });
