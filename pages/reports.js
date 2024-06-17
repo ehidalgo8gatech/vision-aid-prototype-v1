@@ -596,16 +596,12 @@ export default function Summary({
           headers: { "Content-Type": "application/json" },
         }
       ));
-      console.log('beneficiaryListAPI: ', beneficiaryListAPI);
       let promises = await Promise.all(beneficiaryListAPI);
-      console.log('promises: ', promises);
       var finalResult = await Promise.all(promises.map(res => res.json ? res.json().catch(err => err) : res));
-      console.log('finalResult: ', finalResult);
     } catch (error) {
       console.error("Error fetching beneficiary list:", error);
     }
     const beneficiaryList = finalResult.flat();
-    console.log('beneficiaryList: ', beneficiaryList);
 
     const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
       startDate,
