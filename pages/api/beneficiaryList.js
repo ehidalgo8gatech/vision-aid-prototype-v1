@@ -1,81 +1,70 @@
 import prisma from "client";
 
 export default async function handler(req, res) {
-    if (req.method == "GET") {
-        return await fetchData(req, res);
-    } else {
+    if (req.method !== "GET") {
         return res
         .status(405)
         .json({ message: "Method not allowed", success: false });
     }
+    if (typeof req.query.id !== "string" || isNaN(parseInt(req.query.id))) {
+        return res.status(404).json({ message: "ID is required and must be a number", success: false})
+    }
+
+    return await fetchData(req, res);
 }
 
 async function fetchData(req, res) {
     try {
-        // get user information
-        const user = await prisma.user.findUnique({
-            where: {
-              id: parseInt(req.query.id),
+
+        // get beneficiary list from the user information
+        const startDate = req.query.startDate;
+        const endDate = req.query.endDate;
+        const date = startDate && endDate ? { 
+            lte: new Date(req.query.endDate),
+            gte: new Date(req.query.startDate),
+        } : undefined;
+        const id = parseInt(req.query.id);
+        const beneficiaryListFromAPI = await prisma.beneficiary.findMany({
+            select: {
+                mrn: true,
+                beneficiaryName: true,
+                hospitalId: true,
+                dateOfBirth: true,
+                gender: true,
+                phoneNumber: true,
+                education: true,
+                occupation: true,
+                districts: true,
+                state: true,
+                diagnosis: true,
+                vision: true,
+                mDVI: true,
+                extraInformation: true,
+                hospital: true,
+                Vision_Enhancement: true,
+                Counselling_Education: true,
+                Comprehensive_Low_Vision_Evaluation: true,
+                Low_Vision_Evaluation: true,
+                Training: true,
+                Computer_Training: true,
+                Mobile_Training: true,
+                Orientation_Mobility_Training: true,
             },
-            include: {
-              hospitalRole: true,
-              admin: true,
+            where: {
+                deleted: false,
+                hospitalId: { equals: id },
+                Vision_Enhancement: { every: { date } },
+                Counselling_Education: { every: { date } },
+                Comprehensive_Low_Vision_Evaluation: { every: { date } },
+                Low_Vision_Evaluation: { every: { date } },
+                Training: { every: { date } },
+                Computer_Training: { every: { date } },
+                Mobile_Training: { every: { date } },
+                Orientation_Mobility_Training: { every: { date } }
             },
         });
 
-        const roles = await prisma.hospitalRole.findMany();
-        let hospitalIds = [];
-        const isAdmin = user.admin != null;
-        if (!isAdmin) {
-            for (const role of roles) {
-              if (role.userId === user.id) {
-                hospitalIds.push(role.hospitalId);
-              }
-            }
-        }
-
-        // get beneficiary list from the user information
-        let beneficiaryListFromAPI;
-        if (isAdmin) {
-            beneficiaryListFromAPI = await prisma.beneficiary.findMany({
-            include: {
-                hospital: true,
-                Vision_Enhancement: true,
-                Counselling_Education: true,
-                Comprehensive_Low_Vision_Evaluation: true,
-                Low_Vision_Evaluation: true,
-                Training: true,
-                Computer_Training: true,
-                Mobile_Training: true,
-                Orientation_Mobility_Training: true,
-            },
-            where: {
-                deleted: false,
-            },
-            });
-        } else {
-            beneficiaryListFromAPI = await prisma.beneficiary.findMany({
-            include: {
-                hospital: true,
-                Vision_Enhancement: true,
-                Counselling_Education: true,
-                Comprehensive_Low_Vision_Evaluation: true,
-                Low_Vision_Evaluation: true,
-                Training: true,
-                Computer_Training: true,
-                Mobile_Training: true,
-                Orientation_Mobility_Training: true,
-            },
-            where: {
-                deleted: false,
-                hospitalId: {in: hospitalIds}
-            },
-            });
-        }
-
-        let beneficiaryList = [];
-
-        beneficiaryList = beneficiaryListFromAPI.map((beneficiary) => ({
+        const beneficiaryList = beneficiaryListFromAPI.map((beneficiary) => ({
             mrn: beneficiary.mrn,
             beneficiaryName: beneficiary.beneficiaryName,
             hospitalId: beneficiary.hospitalId,
