@@ -603,7 +603,7 @@ export default function Summary({
       console.error("Error fetching beneficiary list:", error);
     }
     // TODO: Test this logic of promise all and json/flat
-    var beneficiaryList = (await Promise.all(beneficiaryListAPI)).json().flat();
+    var beneficiaryList = (await Promise.all(beneficiaryListAPI)).flat();
 
     const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
       startDate,
