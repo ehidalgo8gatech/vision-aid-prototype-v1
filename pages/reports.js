@@ -588,22 +588,24 @@ export default function Summary({
       alert("No hospital was selected! Please select at least one hospital to download the report.");
       return;
     }
-    var beneficiaryListAPI = [];
     try {
-      for (const selectedHospital in selectedHospitalNames) {
-        beneficiaryListAPI.push(fetch(
-          `/api/beneficiaryList?id=${selectedHospital}&startDate=${startDate}&endDate=${endDate}`,
-          {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          }
-        ));
-      }
+      const beneficiaryListAPI = selectedHospitalNames.map((id) => fetch(
+        `/api/beneficiaryList?id=${id}&startDate=${startDate}&endDate=${endDate}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      ));
+      console.log('beneficiaryListAPI: ', beneficiaryListAPI);
+      let promises = await Promise.all(beneficiaryListAPI);
+      console.log('promises: ', promises);
+      var finalResult = await Promise.all(promises.map(res => res.json ? res.json().catch(err => err) : res));
+      console.log('finalResult: ', finalResult);
     } catch (error) {
       console.error("Error fetching beneficiary list:", error);
     }
-    // TODO: Test this logic of promise all and json/flat
-    var beneficiaryList = (await Promise.all(beneficiaryListAPI)).flat();
+    const beneficiaryList = finalResult.flat();
+    console.log('beneficiaryList: ', beneficiaryList);
 
     const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
       startDate,
