@@ -1,38 +1,20 @@
 import prisma from "client";
 
 export default async function handler(req, res) {
-    if (req.method == "GET") {
-        return await fetchData(req, res);
-    } else {
+    if (req.method !== "GET") {
         return res
         .status(405)
         .json({ message: "Method not allowed", success: false });
     }
+    if (typeof req.query.id !== "string" || isNaN(parseInt(req.query.id))) {
+        return res.status(404).json({ message: "ID is required and must be a number", success: false})
+    }
+
+    return await fetchData(req, res);
 }
 
 async function fetchData(req, res) {
     try {
-        // get user information
-        const user = await prisma.user.findUnique({
-            where: {
-              id: parseInt(req.query.id),
-            },
-            include: {
-              hospitalRole: true,
-              admin: true,
-            },
-        });
-
-        const roles = await prisma.hospitalRole.findMany();
-        let hospitalIds = [];
-        const isAdmin = user.admin != null;
-        if (!isAdmin) {
-            for (const role of roles) {
-              if (role.userId === user.id) {
-                hospitalIds.push(role.hospitalId);
-              }
-            }
-        }
 
         // get beneficiary list from the user information
         const startDate = req.query.startDate;
@@ -41,6 +23,7 @@ async function fetchData(req, res) {
             lte: new Date(req.query.endDate),
             gte: new Date(req.query.startDate),
         } : undefined;
+        const id = parseInt(req.query.id);
         const beneficiaryListFromAPI = await prisma.beneficiary.findMany({
             select: {
                 mrn: true,
@@ -69,10 +52,15 @@ async function fetchData(req, res) {
             },
             where: {
                 deleted: false,
-                hospitalId: isAdmin ? undefined : { in: hospitalIds },
-                Training: {
-                    every: { date }
-                }
+                hospitalId: { equals: id },
+                Vision_Enhancement: { every: { date } },
+                Counselling_Education: { every: { date } },
+                Comprehensive_Low_Vision_Evaluation: { every: { date } },
+                Low_Vision_Evaluation: { every: { date } },
+                Training: { every: { date } },
+                Computer_Training: { every: { date } },
+                Mobile_Training: { every: { date } },
+                Orientation_Mobility_Training: { every: { date } }
             },
         });
 
