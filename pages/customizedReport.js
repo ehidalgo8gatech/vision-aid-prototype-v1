@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Navigation from "./navigation/Navigation";
 import Layout from './components/layout';
 import { Table } from "react-bootstrap";
-import { findAllBeneficiary } from "./api/beneficiary";
 import { getSummaryForAllHospitals } from "./api/hospital";
 import XLSX from "xlsx-js-style";
 import { isNotNullEmptyOrUndefined } from "@/constants/globalFunctions";
@@ -17,6 +16,7 @@ import {
 } from "@/constants/reportFunctions";
 import { getSession } from "next-auth/react";
 import { readUser, allHospitalRoles } from "./api/user";
+import { getTrainingTypes } from "./api/trainingType";
 
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx);
@@ -47,36 +47,8 @@ export async function getServerSideProps(ctx) {
   if (!isAdmin) {
     hospitalIds = getHospitalIdsByUsers(user.id, roles);
   }
-  const beneficiaryListFromAPI = await findAllBeneficiary();
 
-  let beneficiaryList = [];
-
-  beneficiaryList = beneficiaryListFromAPI.map((beneficiary) => ({
-    mrn: beneficiary.mrn,
-    beneficiaryName: beneficiary.beneficiaryName,
-    hospitalId: beneficiary.hospitalId,
-    dateOfBirth: beneficiary.dateOfBirth,
-    gender: beneficiary.gender,
-    phoneNumber: beneficiary.phoneNumber,
-    education: beneficiary.education,
-    occupation: beneficiary.occupation,
-    districts: beneficiary.districts,
-    state: beneficiary.state,
-    diagnosis: beneficiary.diagnosis,
-    vision: beneficiary.vision,
-    mDVI: beneficiary.mDVI,
-    extraInformation: beneficiary.extraInformation,
-    hospital: beneficiary.hospital,
-    visionEnhancement: beneficiary.Vision_Enhancement,
-    counsellingEducation: beneficiary.Counselling_Education,
-    comprehensiveLowVisionEvaluation:
-      beneficiary.Comprehensive_Low_Vision_Evaluation,
-    lowVisionEvaluation: beneficiary.Low_Vision_Evaluation,
-    training: beneficiary.Training,
-    computerTraining: beneficiary.Computer_Training,
-    mobileTraining: beneficiary.Mobile_Training,
-    orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
-  }));
+  const trainingTypes = await getTrainingTypes();
 
   const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds);
 
@@ -84,13 +56,13 @@ export async function getServerSideProps(ctx) {
     props: {
       user: user,
       summary: JSON.parse(JSON.stringify(summary)),
-      beneficiaryList: JSON.parse(JSON.stringify(beneficiaryList)),
+      trainingTypes,
     },
   };
 }
 
 function ReportCustomizer(props) {
-  const { user, summary, beneficiaryList } = props;
+  const { user, summary, trainingTypes } = props;
   const [startDate, setStartDate] = useState(
     moment().subtract(1, "year").toDate()
   );
@@ -109,15 +81,6 @@ function ReportCustomizer(props) {
     "Aggregated Hospital Data",
   ]);
   const today = moment(new Date()).format("YYYY-MM-DD");
-  const trainingTypes = Array.from(
-    new Set(
-      beneficiaryList
-        .map((beneficiary) => {
-          return beneficiary.training.map((training) => training.type);
-        })
-        .flat(Infinity)
-    )
-  );
   const [selectedTrainingTypes, setSelectedTrainingTypes] =
     useState(trainingTypes);
 
@@ -206,11 +169,25 @@ function ReportCustomizer(props) {
     }
   };
 
-  const downloadFilteredReport = () => {
+  const downloadFilteredReport = async () => {
+    try {
+      const beneficiaryListAPI = selectedHospitals.map((id) => fetch(
+        `/api/beneficiaryList?id=${id}&startDate=${startDate}&endDate=${endDate}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      ));
+      let promises = await Promise.all(beneficiaryListAPI);
+      var finalResult = await Promise.all(promises.map(res => res.json ? res.json().catch(err => err) : res));
+    } catch (error) {
+      console.error("Error fetching beneficiary list:", error);
+    }
+    const beneficiaryList = finalResult.flat();
     const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
       startDate,
       endDate,
-      JSON.parse(JSON.stringify(beneficiaryList)),
+      beneficiaryList,
       "beneficiary"
     );
 
