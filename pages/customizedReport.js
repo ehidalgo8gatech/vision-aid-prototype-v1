@@ -1,5 +1,5 @@
 import moment from "moment";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Navigation from "./navigation/Navigation";
 import Layout from './components/layout';
 import { Table } from "react-bootstrap";
@@ -84,13 +84,13 @@ function ReportCustomizer(props) {
   const [selectedTrainingTypes, setSelectedTrainingTypes] =
     useState(trainingTypes);
 
-  const handleSelectAll = () => {
-    setSelectedHospitals(summary.map((item) => item.id));
-  };
+  const handleSelectAll = useCallback(() => {
+      setSelectedHospitals(props.summary.map((item) => item.id));
+  }, [props.summary]);
 
   useEffect(() => {
-    handleSelectAll();
-  }, [handleSelectAll]);
+    handleSelectAll(props.summary);
+  }, [handleSelectAll, props.summary]);
 
   const handleHospitalSelection = (event) => {
     const hospitalId = parseInt(event.target.value);
@@ -448,7 +448,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="M"
-                      onClick={(e) => updateGender(e)}
+                      onChange={(e) => updateGender(e)}
                       checked={selectedGenders.includes("M")}
                     />
                     <label className="margin-left">Male</label>
@@ -458,7 +458,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="F"
-                      onClick={(e) => updateGender(e)}
+                      onChange={(e) => updateGender(e)}
                       checked={selectedGenders.includes("F")}
                     />
                     <label className="margin-left">Female</label>
@@ -468,7 +468,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Other"
-                      onClick={(e) => updateGender(e)}
+                      onChange={(e) => updateGender(e)}
                       checked={selectedGenders.includes("Other")}
                     />
                     <label className="margin-left">Other</label>
@@ -547,7 +547,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Yes"
-                      onClick={(e) => updateMdvi(e)}
+                      onChange={(e) => updateMdvi(e)}
                       checked={selectedMdvi.includes("Yes")}
                     />
                     <label className="margin-left">Yes</label>
@@ -557,7 +557,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="No"
-                      onClick={(e) => updateMdvi(e)}
+                      onChange={(e) => updateMdvi(e)}
                       checked={selectedMdvi.includes("No")}
                     />
                     <label className="margin-left">No</label>
@@ -567,7 +567,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="At Risk"
-                      onClick={(e) => updateMdvi(e)}
+                      onChange={(e) => updateMdvi(e)}
                       checked={selectedMdvi.includes("At Risk")}
                     />
                     <label className="margin-left">At Risk</label>
@@ -601,7 +601,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Beneficiary"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes("Beneficiary")}
                     />
                     <label className="margin-left">Beneficiary</label>
@@ -613,7 +613,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Vision Enhancement"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes("Vision Enhancement")}
                     />
                     <label className="margin-left">Vision Enhancement</label>
@@ -625,7 +625,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Low Vision Screening"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes("Low Vision Screening")}
                     />
                     <label className="margin-left">Low Vision Screening</label>
@@ -637,7 +637,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Comprehensive Low Vision Evaluation"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes(
                         "Comprehensive Low Vision Evaluation"
                       )}
@@ -653,7 +653,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Electronic Devices Break Up"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes(
                         "Electronic Devices Break Up"
                       )}
@@ -669,7 +669,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Training"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes("Training")}
                     />
                     <label className="margin-left">Training</label>
@@ -681,7 +681,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Counselling Education"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes("Counselling Education")}
                     />
                     <label className="margin-left">Counselling Education</label>
@@ -693,7 +693,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Aggregated Hospital Data"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes(
                         "Aggregated Hospital Data"
                       )}
@@ -733,7 +733,7 @@ function ReportCustomizer(props) {
                         <input
                           type="checkbox"
                           id={type}
-                          onClick={(e) => updateTrainingTypes(e)}
+                          onChange={(e) => updateTrainingTypes(e)}
                           checked={selectedTrainingTypes.includes(type)}
                         />
                         <label className="margin-left">{type}</label>
