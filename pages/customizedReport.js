@@ -1,9 +1,8 @@
 import moment from "moment";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Navigation from "./navigation/Navigation";
 import Layout from './components/layout';
 import { Table } from "react-bootstrap";
-import { findAllBeneficiary } from "./api/beneficiary";
 import { getSummaryForAllHospitals } from "./api/hospital";
 import XLSX from "xlsx-js-style";
 import { isNotNullEmptyOrUndefined } from "@/constants/globalFunctions";
@@ -17,6 +16,7 @@ import {
 } from "@/constants/reportFunctions";
 import { getSession } from "next-auth/react";
 import { readUser, allHospitalRoles } from "./api/user";
+import { getTrainingTypes } from "./api/trainingType";
 
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx);
@@ -47,36 +47,8 @@ export async function getServerSideProps(ctx) {
   if (!isAdmin) {
     hospitalIds = getHospitalIdsByUsers(user.id, roles);
   }
-  const beneficiaryListFromAPI = await findAllBeneficiary();
 
-  let beneficiaryList = [];
-
-  beneficiaryList = beneficiaryListFromAPI.map((beneficiary) => ({
-    mrn: beneficiary.mrn,
-    beneficiaryName: beneficiary.beneficiaryName,
-    hospitalId: beneficiary.hospitalId,
-    dateOfBirth: beneficiary.dateOfBirth,
-    gender: beneficiary.gender,
-    phoneNumber: beneficiary.phoneNumber,
-    education: beneficiary.education,
-    occupation: beneficiary.occupation,
-    districts: beneficiary.districts,
-    state: beneficiary.state,
-    diagnosis: beneficiary.diagnosis,
-    vision: beneficiary.vision,
-    mDVI: beneficiary.mDVI,
-    extraInformation: beneficiary.extraInformation,
-    hospital: beneficiary.hospital,
-    visionEnhancement: beneficiary.Vision_Enhancement,
-    counsellingEducation: beneficiary.Counselling_Education,
-    comprehensiveLowVisionEvaluation:
-      beneficiary.Comprehensive_Low_Vision_Evaluation,
-    lowVisionEvaluation: beneficiary.Low_Vision_Evaluation,
-    training: beneficiary.Training,
-    computerTraining: beneficiary.Computer_Training,
-    mobileTraining: beneficiary.Mobile_Training,
-    orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
-  }));
+  const trainingTypes = await getTrainingTypes();
 
   const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds);
 
@@ -84,13 +56,13 @@ export async function getServerSideProps(ctx) {
     props: {
       user: user,
       summary: JSON.parse(JSON.stringify(summary)),
-      beneficiaryList: JSON.parse(JSON.stringify(beneficiaryList)),
+      trainingTypes,
     },
   };
 }
 
 function ReportCustomizer(props) {
-  const { user, summary, beneficiaryList } = props;
+  const { user, summary, trainingTypes } = props;
   const [startDate, setStartDate] = useState(
     moment().subtract(1, "year").toDate()
   );
@@ -109,25 +81,16 @@ function ReportCustomizer(props) {
     "Aggregated Hospital Data",
   ]);
   const today = moment(new Date()).format("YYYY-MM-DD");
-  const trainingTypes = Array.from(
-    new Set(
-      beneficiaryList
-        .map((beneficiary) => {
-          return beneficiary.training.map((training) => training.type);
-        })
-        .flat(Infinity)
-    )
-  );
   const [selectedTrainingTypes, setSelectedTrainingTypes] =
     useState(trainingTypes);
 
-  const handleSelectAll = () => {
-    setSelectedHospitals(summary.map((item) => item.id));
-  };
+  const handleSelectAll = useCallback(() => {
+      setSelectedHospitals(props.summary.map((item) => item.id));
+  }, [props.summary]);
 
   useEffect(() => {
-    handleSelectAll();
-  }, [handleSelectAll]);
+    handleSelectAll(props.summary);
+  }, [handleSelectAll, props.summary]);
 
   const handleHospitalSelection = (event) => {
     const hospitalId = parseInt(event.target.value);
@@ -206,11 +169,25 @@ function ReportCustomizer(props) {
     }
   };
 
-  const downloadFilteredReport = () => {
+  const downloadFilteredReport = async () => {
+    try {
+      const beneficiaryListAPI = selectedHospitals.map((id) => fetch(
+        `/api/beneficiaryList?id=${id}&startDate=${startDate}&endDate=${endDate}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      ));
+      let promises = await Promise.all(beneficiaryListAPI);
+      var finalResult = await Promise.all(promises.map(res => res.json ? res.json().catch(err => err) : res));
+    } catch (error) {
+      console.error("Error fetching beneficiary list:", error);
+    }
+    const beneficiaryList = finalResult.flat();
     const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
       startDate,
       endDate,
-      JSON.parse(JSON.stringify(beneficiaryList)),
+      beneficiaryList,
       "beneficiary"
     );
 
@@ -471,7 +448,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="M"
-                      onClick={(e) => updateGender(e)}
+                      onChange={(e) => updateGender(e)}
                       checked={selectedGenders.includes("M")}
                     />
                     <label className="margin-left">Male</label>
@@ -481,7 +458,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="F"
-                      onClick={(e) => updateGender(e)}
+                      onChange={(e) => updateGender(e)}
                       checked={selectedGenders.includes("F")}
                     />
                     <label className="margin-left">Female</label>
@@ -491,7 +468,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Other"
-                      onClick={(e) => updateGender(e)}
+                      onChange={(e) => updateGender(e)}
                       checked={selectedGenders.includes("Other")}
                     />
                     <label className="margin-left">Other</label>
@@ -570,7 +547,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Yes"
-                      onClick={(e) => updateMdvi(e)}
+                      onChange={(e) => updateMdvi(e)}
                       checked={selectedMdvi.includes("Yes")}
                     />
                     <label className="margin-left">Yes</label>
@@ -580,7 +557,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="No"
-                      onClick={(e) => updateMdvi(e)}
+                      onChange={(e) => updateMdvi(e)}
                       checked={selectedMdvi.includes("No")}
                     />
                     <label className="margin-left">No</label>
@@ -590,7 +567,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="At Risk"
-                      onClick={(e) => updateMdvi(e)}
+                      onChange={(e) => updateMdvi(e)}
                       checked={selectedMdvi.includes("At Risk")}
                     />
                     <label className="margin-left">At Risk</label>
@@ -624,7 +601,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Beneficiary"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes("Beneficiary")}
                     />
                     <label className="margin-left">Beneficiary</label>
@@ -636,7 +613,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Vision Enhancement"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes("Vision Enhancement")}
                     />
                     <label className="margin-left">Vision Enhancement</label>
@@ -648,7 +625,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Low Vision Screening"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes("Low Vision Screening")}
                     />
                     <label className="margin-left">Low Vision Screening</label>
@@ -660,7 +637,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Comprehensive Low Vision Evaluation"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes(
                         "Comprehensive Low Vision Evaluation"
                       )}
@@ -676,7 +653,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Electronic Devices Break Up"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes(
                         "Electronic Devices Break Up"
                       )}
@@ -692,7 +669,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Training"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes("Training")}
                     />
                     <label className="margin-left">Training</label>
@@ -704,7 +681,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Counselling Education"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes("Counselling Education")}
                     />
                     <label className="margin-left">Counselling Education</label>
@@ -716,7 +693,7 @@ function ReportCustomizer(props) {
                     <input
                       type="checkbox"
                       id="Aggregated Hospital Data"
-                      onClick={(e) => updateSheets(e)}
+                      onChange={(e) => updateSheets(e)}
                       checked={selectedSheets.includes(
                         "Aggregated Hospital Data"
                       )}
@@ -756,7 +733,7 @@ function ReportCustomizer(props) {
                         <input
                           type="checkbox"
                           id={type}
-                          onClick={(e) => updateTrainingTypes(e)}
+                          onChange={(e) => updateTrainingTypes(e)}
                           checked={selectedTrainingTypes.includes(type)}
                         />
                         <label className="margin-left">{type}</label>
