@@ -50,7 +50,9 @@ export async function getServerSideProps(ctx) {
 
   const trainingTypes = await getTrainingTypes();
 
-  const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds);
+  const startDate = moment().subtract(1, "year").toDate()
+  const endDate = moment().toDate();
+  const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds, startDate, endDate);
 
   return {
     props: {
