@@ -1056,65 +1056,6 @@ function formatDateElements(obj) {
   });
 }
 
-// This function is used to filter the entire summary data by date range
-export function filterTrainingSummaryByDateRange(
-  startDate,
-  endDate,
-  summary,
-  summaryType
-) {
-  const filteredSummary = summary.map((element) => {
-    const visionEnhancement = element.visionEnhancement.filter((training) => {
-      return filterByDate(training, startDate, endDate);
-    });
-
-    const counsellingEducation = element.counsellingEducation.filter(
-      (training) => {
-        return filterByDate(training, startDate, endDate);
-      }
-    );
-
-    const comprehensiveLowVisionEvaluation =
-      element.comprehensiveLowVisionEvaluation.filter((training) => {
-        return filterByDate(training, startDate, endDate);
-      });
-
-    const lowVisionEvaluation = element.lowVisionEvaluation.filter(
-      (training) => {
-        return filterByDate(training, startDate, endDate);
-      }
-    );
-
-    let filteredElement = {
-      ...element,
-      visionEnhancement,
-      counsellingEducation,
-      comprehensiveLowVisionEvaluation,
-      lowVisionEvaluation,
-    };
-
-    if (summaryType === "hospital") {
-      const beneficiary = element.beneficiary;
-
-      return {
-        ...filteredElement,
-        beneficiary,
-      };
-    } else if (summaryType === "beneficiary") {
-      const training = element.training.filter((tr) => {
-        return filterByDate(tr, startDate, endDate);
-      });
-
-      return {
-        ...filteredElement,
-        training,
-      };
-    }
-  });
-
-  return filteredSummary;
-}
-
 // Get age from date of birth
 export function getAge(dateString) {
   let today = new Date();
