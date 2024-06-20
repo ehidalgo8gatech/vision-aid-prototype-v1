@@ -22,7 +22,6 @@ import {
   setAhdHeader,
   setClveHeader,
   setLveHeader,
-  filterTrainingSummaryByDateRange,
   getReportData,
 } from "@/constants/reportFunctions";
 
@@ -549,16 +548,9 @@ export default function Summary({
       setSelectedHospitalNames([]);
     }
   };
-
-  // filter summary data based on start and end date of the training
-  const dateFilteredSummary = filterTrainingSummaryByDateRange(
-    startDate,
-    endDate,
-    summary,
-    "hospital"
-  );
+  
   // filter summary data based on selected hospitals
-  const filteredSummary = dateFilteredSummary.filter((item) =>
+  const filteredSummary = summary.filter((item) =>
     selectedHospitals.includes(item.id)
   );
   
@@ -605,14 +597,7 @@ export default function Summary({
     }
     const beneficiaryList = finalResult.flat();
 
-    const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
-      startDate,
-      endDate,
-      beneficiaryList,
-      "beneficiary"
-    );
-
-    const filteredBeneficiaryData = dateFilteredBeneficiaryData.filter((item) =>
+    const filteredBeneficiaryData = beneficiaryList.filter((item) =>
       selectedHospitals.includes(item.hospital.id)
     );
 

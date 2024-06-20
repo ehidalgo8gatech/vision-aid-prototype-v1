@@ -11,7 +11,6 @@ import {
   setClveHeader,
   setLveHeader,
   getAge,
-  filterTrainingSummaryByDateRange,
   getReportData,
 } from "@/constants/reportFunctions";
 import { getSession } from "next-auth/react";
@@ -186,14 +185,8 @@ function ReportCustomizer(props) {
       console.error("Error fetching beneficiary list:", error);
     }
     const beneficiaryList = finalResult.flat();
-    const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
-      startDate,
-      endDate,
-      beneficiaryList,
-      "beneficiary"
-    );
 
-    const numTotalBeneficiaries = dateFilteredBeneficiaryData.length;
+    const numTotalBeneficiaries = beneficiaryList.length;
 
     const minAge = isNotNullEmptyOrUndefined(
       document.getElementById("minAge").value
@@ -207,7 +200,7 @@ function ReportCustomizer(props) {
       ? document.getElementById("maxAge").value
       : 100;
 
-    const filteredBeneficiaryData = dateFilteredBeneficiaryData.filter(
+    const filteredBeneficiaryData = beneficiaryList.filter(
       (item) =>
         selectedHospitals.includes(item.hospital.id) &&
         selectedGenders.includes(item.gender) &&
@@ -218,15 +211,8 @@ function ReportCustomizer(props) {
 
     const numFilteredBeneficiaries = filteredBeneficiaryData.length;
 
-    // filter summary data based on start and end date of the training
-    const dateFilteredSummary = filterTrainingSummaryByDateRange(
-      startDate,
-      endDate,
-      summary,
-      "hospital"
-    );
     // filter summary data based on selected hospitals
-    const filteredSummary = dateFilteredSummary.filter((item) =>
+    const filteredSummary = beneficiaryList.filter((item) =>
       selectedHospitals.includes(item.id)
     );
 
