@@ -66,14 +66,15 @@ export async function findAllHospitalsHistory() {
   });
 }
 
-export async function summaryHelper(hospital) {
-  //prisma map dates to strings
+export async function summaryHelper(hospital, startDate, endDate) {
+  const date = startDate && endDate ? { lte: endDate, gte: startDate } : undefined;
   const mobileTraining = await prisma.mobile_Training.findMany({
     where: {
       beneficiary: {
         hospitalId: hospital.id,
         deleted: false,
       },
+      date
     },
   });
 
@@ -83,6 +84,7 @@ export async function summaryHelper(hospital) {
         hospitalId: hospital.id,
         deleted: false,
       },
+      date
     },
   });
 
@@ -93,6 +95,7 @@ export async function summaryHelper(hospital) {
           hospitalId: hospital.id,
           deleted: false,
         },
+        date
       },
     });
 
@@ -102,6 +105,7 @@ export async function summaryHelper(hospital) {
         hospitalId: hospital.id,
         deleted: false,
       },
+      date
     },
   });
 
@@ -111,6 +115,7 @@ export async function summaryHelper(hospital) {
         hospitalId: hospital.id,
         deleted: false,
       },
+      date
     },
   });
 
@@ -121,6 +126,7 @@ export async function summaryHelper(hospital) {
           hospitalId: hospital.id,
           deleted: false,
         },
+        date
       },
     });
 
@@ -130,13 +136,14 @@ export async function summaryHelper(hospital) {
         hospitalId: hospital.id,
         deleted: false,
       },
+      date
     },
   });
 
   const beneficiary = await prisma.beneficiary.findMany({
     where: {
       hospitalId: hospital.id,
-      deleted: false,
+      deleted: false
     },
   });
 
@@ -146,6 +153,7 @@ export async function summaryHelper(hospital) {
         hospitalId: hospital.id,
         deleted: false,
       },
+      date
     },
   });
 
@@ -179,21 +187,14 @@ export async function getSummaryForHospitalFromID(hospitalId) {
   return await summaryHelper(hospital);
 }
 
-export async function getSummaryForAllHospitals(isAdmin, hospitalIds) {
-  let hospitals;
-  if (isAdmin) {
-    hospitals = await prisma.hospital.findMany({
-      where: { deleted: false },
-    });
-  } else {
-    hospitals = await prisma.hospital.findMany({
-      where: { deleted: false, id: {in: hospitalIds} },
-    });
-  }
+export async function getSummaryForAllHospitals(isAdmin, hospitalIds, startDate, endDate) {
+  const hospitals = await prisma.hospital.findMany({
+    where: { deleted: false, id: isAdmin ? undefined : { in: hospitalIds }}
+  });
 
   const result = [];
   for (const hospital of hospitals) {
-    const hospitalResult = await summaryHelper(hospital);
+    const hospitalResult = await summaryHelper(hospital, startDate, endDate);
     result.push(hospitalResult);
   }
   return result;

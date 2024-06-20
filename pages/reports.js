@@ -58,8 +58,10 @@ export async function getServerSideProps(ctx) {
     hospitalIds = getHospitalIdsByUsers(user.id, roles);
   }
 
+  const endDate = moment().toDate();
+  const startDate = moment().subtract(1, "year").toDate();
   // We finally return all the data to the page
-  const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds);
+  const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds, startDate, endDate);
 
   return {
     props: {
