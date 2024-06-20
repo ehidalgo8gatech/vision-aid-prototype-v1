@@ -69,7 +69,7 @@ export async function findAllHospitalsHistory() {
 export async function summaryHelper(hospital, startDate, endDate) {
   const date = startDate && endDate ? { lte: endDate, gte: startDate } : undefined;
   const mobileTraining = await prisma.mobile_Training.findMany({
-    select: { id: true, date: true, beneficiaryId: true },
+    select: { id: true, beneficiaryId: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
@@ -80,7 +80,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
   });
 
   const computerTraining = await prisma.computer_Training.findMany({
-    select: { id: true, date: true, beneficiaryId: true },
+    select: { id: true, beneficiaryId: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
@@ -92,7 +92,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
 
   const orientationMobilityTraining =
     await prisma.orientation_Mobility_Training.findMany({
-      select: { id: true, date: true, beneficiaryId: true },
+      select: { id: true, beneficiaryId: true },
       where: {
         beneficiary: {
           hospitalId: hospital.id,
@@ -103,7 +103,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
     });
 
   const visionEnhancement = await prisma.vision_Enhancement.findMany({
-    select: { id: true, date: true, beneficiaryId: true },
+    select: { id: true, beneficiaryId: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
@@ -114,7 +114,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
   });
 
   const counsellingEducation = await prisma.counselling_Education.findMany({
-    select: { id: true, date: true, type: true, beneficiaryId: true },
+    select: { id: true, type: true, beneficiaryId: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
@@ -129,7 +129,6 @@ export async function summaryHelper(hospital, startDate, endDate) {
       select: {
         id: true,
         beneficiaryId: true,
-        date: true,
         dispensedElectronic: true,
         dispensedNonOptical: true,
         dispensedOptical: true,
@@ -149,11 +148,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
     });
 
   const lowVisionEvaluation = await prisma.Low_Vision_Evaluation.findMany({
-    select: {
-      id: true,
-      date: true,
-      beneficiaryId: true
-    },
+    select: { id: true, beneficiaryId: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
@@ -172,7 +167,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
   });
 
   const training = await prisma.Training.findMany({
-    select: { id: true, date: true, type: true, beneficiaryId: true },
+    select: { id: true, type: true, beneficiaryId: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
