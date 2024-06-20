@@ -69,6 +69,7 @@ export async function findAllHospitalsHistory() {
 export async function summaryHelper(hospital, startDate, endDate) {
   const date = startDate && endDate ? { lte: endDate, gte: startDate } : undefined;
   const mobileTraining = await prisma.mobile_Training.findMany({
+    select: { id: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
@@ -79,6 +80,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
   });
 
   const computerTraining = await prisma.computer_Training.findMany({
+    select: { id: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
@@ -90,6 +92,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
 
   const orientationMobilityTraining =
     await prisma.orientation_Mobility_Training.findMany({
+      select: { id: true },
       where: {
         beneficiary: {
           hospitalId: hospital.id,
@@ -100,6 +103,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
     });
 
   const visionEnhancement = await prisma.vision_Enhancement.findMany({
+    select: { id: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
@@ -110,6 +114,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
   });
 
   const counsellingEducation = await prisma.counselling_Education.findMany({
+    select: { id: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
@@ -121,6 +126,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
 
   const comprehensiveLowVisionEvaluation =
     await prisma.comprehensive_Low_Vision_Evaluation.findMany({
+      select: { id: true },
       where: {
         beneficiary: {
           hospitalId: hospital.id,
@@ -131,6 +137,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
     });
 
   const lowVisionEvaluation = await prisma.Low_Vision_Evaluation.findMany({
+    select: { id: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
@@ -141,6 +148,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
   });
 
   const beneficiary = await prisma.beneficiary.findMany({
+    select: { beneficiaryName: true },
     where: {
       hospitalId: hospital.id,
       deleted: false
@@ -148,6 +156,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
   });
 
   const training = await prisma.Training.findMany({
+    select: { id: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
@@ -189,6 +198,7 @@ export async function getSummaryForHospitalFromID(hospitalId) {
 
 export async function getSummaryForAllHospitals(isAdmin, hospitalIds, startDate, endDate) {
   const hospitals = await prisma.hospital.findMany({
+    select: { name: true, id: true },
     where: { deleted: false, id: isAdmin ? undefined : { in: hospitalIds }}
   });
 
