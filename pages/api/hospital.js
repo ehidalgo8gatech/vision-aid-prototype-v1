@@ -66,61 +66,55 @@ export async function findAllHospitalsHistory() {
   });
 }
 
-export async function summaryHelper(hospital, startDate, endDate) {
-  const date = startDate && endDate ? { lte: endDate, gte: startDate } : undefined;
+export async function summaryHelper(hospital) {
   const mobileTraining = await prisma.mobile_Training.findMany({
-    select: { id: true, beneficiaryId: true },
+    select: { id: true, date: true, beneficiaryId: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
         deleted: false,
-      },
-      date
+      }
     },
   });
 
   const computerTraining = await prisma.computer_Training.findMany({
-    select: { id: true, beneficiaryId: true },
+    select: { id: true, date: true, beneficiaryId: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
         deleted: false,
-      },
-      date
+      }
     },
   });
 
   const orientationMobilityTraining =
     await prisma.orientation_Mobility_Training.findMany({
-      select: { id: true, beneficiaryId: true },
+      select: { id: true, date: true, beneficiaryId: true },
       where: {
         beneficiary: {
           hospitalId: hospital.id,
           deleted: false,
-        },
-        date
+        }
       },
     });
 
   const visionEnhancement = await prisma.vision_Enhancement.findMany({
-    select: { id: true, beneficiaryId: true },
+    select: { id: true, date: true, beneficiaryId: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
         deleted: false,
-      },
-      date
+      }
     },
   });
 
   const counsellingEducation = await prisma.counselling_Education.findMany({
-    select: { id: true, type: true, beneficiaryId: true },
+    select: { id: true, type: true, date: true, beneficiaryId: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
         deleted: false,
-      },
-      date
+      }
     },
   });
 
@@ -128,6 +122,7 @@ export async function summaryHelper(hospital, startDate, endDate) {
     await prisma.comprehensive_Low_Vision_Evaluation.findMany({
       select: {
         id: true,
+        date: true, 
         beneficiaryId: true,
         dispensedElectronic: true,
         dispensedNonOptical: true,
@@ -142,19 +137,17 @@ export async function summaryHelper(hospital, startDate, endDate) {
         beneficiary: {
           hospitalId: hospital.id,
           deleted: false,
-        },
-        date
+        }
       },
     });
 
   const lowVisionEvaluation = await prisma.Low_Vision_Evaluation.findMany({
-    select: { id: true, beneficiaryId: true },
+    select: { id: true, date: true, beneficiaryId: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
         deleted: false,
-      },
-      date
+      }
     },
   });
 
@@ -167,13 +160,12 @@ export async function summaryHelper(hospital, startDate, endDate) {
   });
 
   const training = await prisma.Training.findMany({
-    select: { id: true, type: true, beneficiaryId: true },
+    select: { id: true, date: true, type: true, beneficiaryId: true },
     where: {
       beneficiary: {
         hospitalId: hospital.id,
         deleted: false,
-      },
-      date
+      }
     },
   });
 
@@ -207,7 +199,7 @@ export async function getSummaryForHospitalFromID(hospitalId) {
   return await summaryHelper(hospital);
 }
 
-export async function getSummaryForAllHospitals(isAdmin, hospitalIds, startDate, endDate) {
+export async function getSummaryForAllHospitals(isAdmin, hospitalIds) {
   const hospitals = await prisma.hospital.findMany({
     select: { name: true, id: true },
     where: { deleted: false, id: isAdmin ? undefined : { in: hospitalIds }}
@@ -215,7 +207,7 @@ export async function getSummaryForAllHospitals(isAdmin, hospitalIds, startDate,
 
   const result = [];
   for (const hospital of hospitals) {
-    const hospitalResult = await summaryHelper(hospital, startDate, endDate);
+    const hospitalResult = await summaryHelper(hospital);
     result.push(hospitalResult);
   }
   return result;
