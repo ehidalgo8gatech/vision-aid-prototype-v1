@@ -23,6 +23,7 @@ import {
   setClveHeader,
   setLveHeader,
   getReportData,
+  filterTrainingSummaryByDateRange,
 } from "@/constants/reportFunctions";
 
 // This function is called to load data from the server side.
@@ -57,10 +58,8 @@ export async function getServerSideProps(ctx) {
     hospitalIds = getHospitalIdsByUsers(user.id, roles);
   }
 
-  const endDate = moment().toDate();
-  const startDate = moment().subtract(1, "year").toDate();
   // We finally return all the data to the page
-  const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds, startDate, endDate);
+  const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds);
 
   return {
     props: {
@@ -549,8 +548,16 @@ export default function Summary({
     }
   };
   
+  // filter summary data based on start and end date of the training
+  const dateFilteredSummary = filterTrainingSummaryByDateRange(
+    startDate,
+    endDate,
+    summary,
+    "hospital"
+  );
+
   // filter summary data based on selected hospitals
-  const filteredSummary = summary.filter((item) =>
+  const filteredSummary = dateFilteredSummary.filter((item) =>
     selectedHospitals.includes(item.id)
   );
   
@@ -597,7 +604,14 @@ export default function Summary({
     }
     const beneficiaryList = finalResult.flat();
 
-    const filteredBeneficiaryData = beneficiaryList.filter((item) =>
+    const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
+      startDate,
+      endDate,
+      beneficiaryList,
+      "beneficiary"
+    );
+
+    const filteredBeneficiaryData = dateFilteredBeneficiaryData.filter((item) =>
       selectedHospitals.includes(item.hospital.id)
     );
 

@@ -12,6 +12,7 @@ import {
   setLveHeader,
   getAge,
   getReportData,
+  filterTrainingSummaryByDateRange,
 } from "@/constants/reportFunctions";
 import { getSession } from "next-auth/react";
 import { readUser, allHospitalRoles } from "./api/user";
@@ -49,9 +50,7 @@ export async function getServerSideProps(ctx) {
 
   const trainingTypes = await getTrainingTypes();
 
-  const startDate = moment().subtract(1, "year").toDate()
-  const endDate = moment().toDate();
-  const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds, startDate, endDate);
+  const summary = await getSummaryForAllHospitals(isAdmin, hospitalIds);
 
   return {
     props: {
@@ -185,8 +184,15 @@ function ReportCustomizer(props) {
       console.error("Error fetching beneficiary list:", error);
     }
     const beneficiaryList = finalResult.flat();
+    const dateFilteredBeneficiaryData = filterTrainingSummaryByDateRange(
+      startDate,
+      endDate,
+      beneficiaryList,
+      "beneficiary"
+    );
 
-    const numTotalBeneficiaries = beneficiaryList.length;
+
+    const numTotalBeneficiaries = dateFilteredBeneficiaryData.length;
 
     const minAge = isNotNullEmptyOrUndefined(
       document.getElementById("minAge").value
@@ -200,7 +206,7 @@ function ReportCustomizer(props) {
       ? document.getElementById("maxAge").value
       : 100;
 
-    const filteredBeneficiaryData = beneficiaryList.filter(
+    const filteredBeneficiaryData = dateFilteredBeneficiaryData.filter(
       (item) =>
         selectedHospitals.includes(item.hospital.id) &&
         selectedGenders.includes(item.gender) &&
@@ -210,9 +216,17 @@ function ReportCustomizer(props) {
     );
 
     const numFilteredBeneficiaries = filteredBeneficiaryData.length;
+    
+    // filter summary data based on start and end date of the training
+    const dateFilteredSummary = filterTrainingSummaryByDateRange(
+      startDate,
+      endDate,
+      summary,
+      "hospital"
+    );
 
     // filter summary data based on selected hospitals
-    const filteredSummary = beneficiaryList.filter((item) =>
+    const filteredSummary = dateFilteredSummary.filter((item) =>
       selectedHospitals.includes(item.id)
     );
 
