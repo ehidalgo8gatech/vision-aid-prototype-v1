@@ -145,8 +145,10 @@ function populateAhdHeaders(hospitals) {
   addEmptyElements(ahdMainHeader, "", 1);
   ahdMainHeader.push("Hospitals (Break up)");
   addEmptyElements(ahdMainHeader, "", hospitals.length * 2 - 1);
-  ahdMainHeader.push("Beneficiaries of Hospitals");
-  addEmptyElements(ahdMainHeader, "", 1);
+  if (hospitals.length !== 1) {
+    ahdMainHeader.push("Beneficiaries of Hospitals");
+    addEmptyElements(ahdMainHeader, "", 1);
+  }
 
   // Sheet Sub Headers (Row 2) & (Row 3)
   const ahdSubHeader1 = [];
@@ -161,8 +163,10 @@ function populateAhdHeaders(hospitals) {
   }
   addEmptyElements(ahdSubHeader1, "", 2);
 
-  ahdSubHeader2.push("Number of Sessions");
-  ahdSubHeader2.push("Number of Beneficiaries");
+  if (hospitals.length !== 1) {
+    ahdSubHeader2.push("Number of Sessions");
+    ahdSubHeader2.push("Number of Beneficiaries");
+  }
 
   return { ahdMainHeader, ahdSubHeader1, ahdSubHeader2 };
 }
@@ -901,84 +905,86 @@ function getAggregatedHospitalData(
   }
 
   // Push totals of each row
-  lveRow["Number of Sessions"] = lveSessionsTotal;
-  lveRow["Number of Beneficiaries"] = lveBeneficiariesTotal;
+  if (filteredSummary.length !== 1) {
+    lveRow["Number of Sessions"] = lveSessionsTotal;
+    lveRow["Number of Beneficiaries"] = lveBeneficiariesTotal;
 
-  mdviRow["Number of Sessions"] = "";
-  mdviRow["Number of Beneficiaries"] = mdviTotal;
+    mdviRow["Number of Sessions"] = "";
+    mdviRow["Number of Beneficiaries"] = mdviTotal;
 
-  veRow["Number of Sessions"] = veSessionsTotal;
-  veRow["Number of Beneficiaries"] = veBeneficiariesTotal;
+    veRow["Number of Sessions"] = veSessionsTotal;
+    veRow["Number of Beneficiaries"] = veBeneficiariesTotal;
 
-  clveRow["Number of Sessions"] = clveSessionsTotal;
-  clveRow["Number of Beneficiaries"] = clveBeneficiariesTotal;
+    clveRow["Number of Sessions"] = clveSessionsTotal;
+    clveRow["Number of Beneficiaries"] = clveBeneficiariesTotal;
 
-  devicesRow["Number of Sessions"] = devicesSessionsTotal;
-  devicesRow["Number of Beneficiaries"] = devicesBeneficiariesTotal;
+    devicesRow["Number of Sessions"] = devicesSessionsTotal;
+    devicesRow["Number of Beneficiaries"] = devicesBeneficiariesTotal;
 
-  ceRow["Number of Sessions"] = ceSessionsTotal;
-  ceRow["Number of Beneficiaries"] = ceBeneficiariesTotal;
+    ceRow["Number of Sessions"] = ceSessionsTotal;
+    ceRow["Number of Beneficiaries"] = ceBeneficiariesTotal;
 
-  let trainingIdx = 0;
-  for (let trainingTypeRow of trainingTypesList) {
-    trainingTypeRow["tRow"]["Number of Sessions"] =
-      trainingTypeRow["tSessionsTotal"];
-    trainingTypeRow["tRow"]["Number of Beneficiaries"] =
-      trainingTypeRow["tBeneficiariesTotal"];
-    trainingIdx += 1;
+    let trainingIdx = 0;
+    for (let trainingTypeRow of trainingTypesList) {
+      trainingTypeRow["tRow"]["Number of Sessions"] =
+        trainingTypeRow["tSessionsTotal"];
+      trainingTypeRow["tRow"]["Number of Beneficiaries"] =
+        trainingTypeRow["tBeneficiariesTotal"];
+      trainingIdx += 1;
+    }
+
+    overallTrainingRow["Number of Sessions"] = otSessionsTotal;
+    overallTrainingRow["Number of Beneficiaries"] = otBeneficiariesTotal;
+
+    clveOnlyRow["Number of Sessions"] = "";
+    clveOnlyRow["Number of Beneficiaries"] = clveOnlyBeneficiariesTotal;
+
+    screeningsOnlyRow["Number of Sessions"] = "";
+    screeningsOnlyRow["Number of Beneficiaries"] = screeningsOnlyBeneficiariesTotal;
+
+    visionEnhancementOnlyRow["Number of Sessions"] = "";
+    visionEnhancementOnlyRow["Number of Beneficiaries"] = visionEnhancementOnlyBeneficiariesTotal;
+
+    screeningsVisionEnhancementRow["Number of Sessions"] = "";
+    screeningsVisionEnhancementRow["Number of Beneficiaries"] = screeningsVisionEnhancementBeneficiariesTotal;
+
+    clveDevicesRow["Number of Sessions"] = "";
+    clveDevicesRow["Number of Beneficiaries"] = clveDevicesBeneficiariesTotal;
+
+    clveCounsellingRow["Number of Sessions"] = "";
+    clveCounsellingRow["Number of Beneficiaries"] = clveCounsellingBeneficiariesTotal;
+
+    clveTrainingRow["Number of Sessions"] = "";
+    clveTrainingRow["Number of Beneficiaries"] = clveTrainingBeneficiariesTotal;
+
+    clveDevicesCounsellingRow["Number of Sessions"] = "";
+    clveDevicesCounsellingRow["Number of Beneficiaries"] = clveDevicesCounsellingBeneficiariesTotal;
+
+    clveDevicesTrainingRow["Number of Sessions"] = "";
+    clveDevicesTrainingRow["Number of Beneficiaries"] = clveDevicesTrainingBeneficiariesTotal;
+
+    clveCounsellingTrainingRow["Number of Sessions"] = "";
+    clveCounsellingTrainingRow["Number of Beneficiaries"] = clveCounsellingTrainingBeneficiariesTotal;
+
+    clveDevicesCounsellingTrainingRow["Number of Sessions"] = "";
+    clveDevicesCounsellingTrainingRow["Number of Beneficiaries"] = clveDevicesCounsellingTrainingBeneficiariesTotal;
+
+    counsellingOnlyRow["Number of Sessions"] = "";
+    counsellingOnlyRow["Number of Beneficiaries"] = counsellingOnlyBeneficiariesTotal;
+
+    trainingOnlyRow["Number of Sessions"] = "";
+    trainingOnlyRow["Number of Beneficiaries"] = trainingOnlyBeneficiariesTotal;
+
+    counsellingTrainingRow["Number of Sessions"] = "";
+    counsellingTrainingRow["Number of Beneficiaries"] = counsellingTrainingBeneficiariesTotal;
+
+    noActivityRow["Number of Sessions"] = "";
+    noActivityRow["Number of Beneficiaries"] = noActivityBeneficiariesTotal;
+
+    totalBeneficiariesRow["Number of Sessions"] = "";
+    totalBeneficiariesRow["Number of Beneficiaries"] = totalBeneficiariesTotal;
+
   }
-
-  overallTrainingRow["Number of Sessions"] = otSessionsTotal;
-  overallTrainingRow["Number of Beneficiaries"] = otBeneficiariesTotal;
-
-  clveOnlyRow["Number of Sessions"] = "";
-  clveOnlyRow["Number of Beneficiaries"] = clveOnlyBeneficiariesTotal;
-
-  screeningsOnlyRow["Number of Sessions"] = "";
-  screeningsOnlyRow["Number of Beneficiaries"] = screeningsOnlyBeneficiariesTotal;
-
-  visionEnhancementOnlyRow["Number of Sessions"] = "";
-  visionEnhancementOnlyRow["Number of Beneficiaries"] = visionEnhancementOnlyBeneficiariesTotal;
-
-  screeningsVisionEnhancementRow["Number of Sessions"] = "";
-  screeningsVisionEnhancementRow["Number of Beneficiaries"] = screeningsVisionEnhancementBeneficiariesTotal;
-
-  clveDevicesRow["Number of Sessions"] = "";
-  clveDevicesRow["Number of Beneficiaries"] = clveDevicesBeneficiariesTotal;
-
-  clveCounsellingRow["Number of Sessions"] = "";
-  clveCounsellingRow["Number of Beneficiaries"] = clveCounsellingBeneficiariesTotal;
-
-  clveTrainingRow["Number of Sessions"] = "";
-  clveTrainingRow["Number of Beneficiaries"] = clveTrainingBeneficiariesTotal;
-
-  clveDevicesCounsellingRow["Number of Sessions"] = "";
-  clveDevicesCounsellingRow["Number of Beneficiaries"] = clveDevicesCounsellingBeneficiariesTotal;
-
-  clveDevicesTrainingRow["Number of Sessions"] = "";
-  clveDevicesTrainingRow["Number of Beneficiaries"] = clveDevicesTrainingBeneficiariesTotal;
-
-  clveCounsellingTrainingRow["Number of Sessions"] = "";
-  clveCounsellingTrainingRow["Number of Beneficiaries"] = clveCounsellingTrainingBeneficiariesTotal;
-
-  clveDevicesCounsellingTrainingRow["Number of Sessions"] = "";
-  clveDevicesCounsellingTrainingRow["Number of Beneficiaries"] = clveDevicesCounsellingTrainingBeneficiariesTotal;
-
-  counsellingOnlyRow["Number of Sessions"] = "";
-  counsellingOnlyRow["Number of Beneficiaries"] = counsellingOnlyBeneficiariesTotal;
-
-  trainingOnlyRow["Number of Sessions"] = "";
-  trainingOnlyRow["Number of Beneficiaries"] = trainingOnlyBeneficiariesTotal;
-
-  counsellingTrainingRow["Number of Sessions"] = "";
-  counsellingTrainingRow["Number of Beneficiaries"] = counsellingTrainingBeneficiariesTotal;
-
-  noActivityRow["Number of Sessions"] = "";
-  noActivityRow["Number of Beneficiaries"] = noActivityBeneficiariesTotal;
-
-  totalBeneficiariesRow["Number of Sessions"] = "";
-  totalBeneficiariesRow["Number of Beneficiaries"] = totalBeneficiariesTotal;
-
   // Add rows to the aggregated hospital data
   aggregatedHospitalData.push(lveRow);
   aggregatedHospitalData.push(mdviRow);
