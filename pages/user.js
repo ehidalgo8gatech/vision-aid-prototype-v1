@@ -831,7 +831,7 @@ export async function getServerSideProps(ctx) {
   const currentUser = await readUser(session.user.email);
   var user;
   try {
-    const beneficiary = await await fetch(
+    const beneficiary = await fetch(
       `${process.env.NEXTAUTH_URL}/api/beneficiary?mrn=${ctx.query.mrn}`,
       {
         method: "GET",
