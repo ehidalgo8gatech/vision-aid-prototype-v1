@@ -1,31 +1,4 @@
-import { authenticate } from "@/middleware/auth";
 import prisma from "client";
-
-const handler = async (req, res) => {
-  if (req.method === "POST") {
-    return await addData(req, res);
-  } else if (req.method == "GET") {
-    return await readData(req, res);
-  } else if (req.method == "PATCH") {
-    return await updateData(req, res);
-  } else if (req.method == "DELETE") {
-    return await deleteData(req, res);
-  } else {
-    return res
-      .status(405)
-      .json({ message: "Method not allowed", success: false });
-  }
-}
-
-const withAuth = (handler) => {
-  return async (req, res) => {
-    await authenticate(req, res, () => {
-      handler(req, res);
-    });
-  };
-};
-
-export default withAuth(handler);
 
 export async function getTrainingSubTypes() {
   let ttOther = await prisma.training_Sub_Type.findMany({
@@ -50,6 +23,22 @@ export async function getTrainingSubTypes() {
     ttNotOther.push(o);
   });
   return ttNotOther;
+}
+
+export default async function handler(req, res) {
+  if (req.method === "POST") {
+    return await addData(req, res);
+  } else if (req.method == "GET") {
+    return await readData(req, res);
+  } else if (req.method == "PATCH") {
+    return await updateData(req, res);
+  } else if (req.method == "DELETE") {
+    return await deleteData(req, res);
+  } else {
+    return res
+      .status(405)
+      .json({ message: "Method not allowed", success: false });
+  }
 }
 
 async function deleteData(req, res) {
