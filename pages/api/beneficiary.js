@@ -15,7 +15,6 @@ const handler = async (req, res) => {
   }
 }
 
-// TODO: Enable auth
 const withAuth = (handler) => {
   return async (req, res) => {
     await authenticate(req, res, () => {
@@ -24,7 +23,7 @@ const withAuth = (handler) => {
   };
 };
 
-export default handler;
+export default withAuth(handler);
 
 async function readData(req, res) {
   try {

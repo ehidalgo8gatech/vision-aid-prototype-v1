@@ -105,6 +105,7 @@ export async function getBenMirror(hospitalName) {
       hospitalName: hospitalName,
     },
   });
+  console.log(bm);
   if (bm != null) return bm;
   return prisma.beneficiary_Mirror.findFirst({});
 }
