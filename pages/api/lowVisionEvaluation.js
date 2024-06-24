@@ -1,6 +1,7 @@
+import { authenticate } from "@/middleware/auth";
 import prisma from "client";
 
-export default async function handler(req, res) {
+const handler = async (req, res) => {
   if (req.method === "POST") {
     return await addData(req, res);
   } else if (req.method == "GET") {
@@ -13,6 +14,16 @@ export default async function handler(req, res) {
       .json({ message: "Method not allowed", success: false });
   }
 }
+
+const withAuth = (handler) => {
+  return async (req, res) => {
+    await authenticate(req, res, () => {
+      handler(req, res);
+    });
+  };
+};
+
+export default withAuth(handler);
 
 async function updateData(req, res) {
   try {

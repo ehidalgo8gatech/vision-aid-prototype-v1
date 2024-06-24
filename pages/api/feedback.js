@@ -1,8 +1,9 @@
 
 // feedback.js api
+import { authenticate } from "@/middleware/auth";
 import prisma from "client";
 
-export default async function handler(req, res) {
+const handler = async (req, res) => {
   if (req.method === 'POST') {
     const { rating, comments, email } = req.body;
 
@@ -27,3 +28,14 @@ export default async function handler(req, res) {
     res.status(405).json({ error: 'Method not allowed' });
   }
 }
+
+
+const withAuth = (handler) => {
+  return async (req, res) => {
+    await authenticate(req, res, () => {
+      handler(req, res);
+    });
+  };
+};
+
+export default withAuth(handler);
