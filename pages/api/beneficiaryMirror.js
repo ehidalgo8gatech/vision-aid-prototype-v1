@@ -1,7 +1,6 @@
-import { authenticate } from "@/middleware/auth";
 import prisma from "client";
 
-const handler = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method === "POST") {
     return await addData(req, res);
   } else if (req.method == "GET") {
@@ -12,16 +11,6 @@ const handler = async (req, res) => {
       .json({ message: "Method not allowed", success: false });
   }
 }
-
-const withAuth = (handler) => {
-  return async (req, res) => {
-    await authenticate(req, res, () => {
-      handler(req, res);
-    });
-  };
-};
-
-export default withAuth(handler);
 
 async function readData(req, res) {
   try {
@@ -105,6 +94,7 @@ export async function getBenMirror(hospitalName) {
       hospitalName: hospitalName,
     },
   });
+  console.log(bm);
   if (bm != null) return bm;
   return prisma.beneficiary_Mirror.findFirst({});
 }
