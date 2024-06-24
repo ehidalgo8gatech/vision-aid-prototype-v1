@@ -1,19 +1,7 @@
+import { authenticate } from "@/middleware/auth";
 import prisma from "client";
 
-export async function getTrainingTypes() {
-  var trainings = [];
-  const tt = await prisma.training_Type.findMany({});
-  for (const t of tt) {
-    if (t.value == "Other") {
-      continue;
-    }
-    trainings.push(t.value);
-  }
-  trainings.push("Other");
-  return trainings;
-}
-
-export default async function handler(req, res) {
+const handler = async (req, res) => {
   if (req.method === "POST") {
     return await addData(req, res);
   } else if (req.method == "GET") {
@@ -27,6 +15,30 @@ export default async function handler(req, res) {
       .status(405)
       .json({ message: "Method not allowed", success: false });
   }
+}
+
+const withAuth = (handler) => {
+  return async (req, res) => {
+    await authenticate(req, res, () => {
+      handler(req, res);
+    });
+  };
+};
+
+export default withAuth(handler);
+
+
+export async function getTrainingTypes() {
+  var trainings = [];
+  const tt = await prisma.training_Type.findMany({});
+  for (const t of tt) {
+    if (t.value == "Other") {
+      continue;
+    }
+    trainings.push(t.value);
+  }
+  trainings.push("Other");
+  return trainings;
 }
 
 async function deleteData(req, res) {
