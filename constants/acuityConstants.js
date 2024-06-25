@@ -107,6 +107,8 @@ export const logMARNVValues = [
     "0.90",
     "1.00",
     "1.10",
+    "1.20",
+    "1.30",
     otherField
 ];
 
@@ -125,6 +127,8 @@ export const nScaleValues = [
     "25",
     "32",
     "40",
+    "48",
+    "64",
     otherField
 ];
 
@@ -143,6 +147,8 @@ export const mUnitsValues = [
     "3.2",
     "4.0",
     "5.0",
+    "6.3",
+    "8.0",
     otherField
 ];
 
@@ -161,6 +167,8 @@ export const snellenImperialValues = [
     "20/160",
     "20/200",
     "20/250",
+    "20/320",
+    "20/400",
     otherField
 ];
 
@@ -179,6 +187,8 @@ export const snellenMetricValues = [
     "6/48",
     "6/60",
     "6/75",
+    "6/95",
+    "6/120",
     otherField
 ];
 
