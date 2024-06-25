@@ -94,11 +94,7 @@ export default function HistoricalEvaluationPage(props) {
   const handleServiceChange = (entry, services) => {
     let historicalDashboard = null;
     const evaluationData = filterData(entry, services);
-    if (
-      entry.date == undefined ||
-      entry.suppInfo == undefined ||
-      evaluationData == undefined
-    ) {
+    if (entry.date == undefined || evaluationData == undefined) {
       historicalDashboard = (
         <div className="text-align-left">No corresponding data found!</div>
       );
