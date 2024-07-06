@@ -33,6 +33,7 @@ import {
 import { comma, diagnosisValues } from "@/constants/generalConstants";
 import { jsonToCSV } from "react-papaparse";
 import moment from "moment";
+import { required } from "./required";
 
 const TrainingFormCLVE = ({
   existingTrainings = [],
@@ -64,6 +65,7 @@ const TrainingFormCLVE = ({
   if (mdvi === null || mdvi === undefined || mdvi === "") {
     mdvi = "No";
   }
+  const [isFormValid, setIsFormValid] = useState(false);
   const [mdviValue, setMdviValue] = useState(mdvi);
   const [section, setSection] = useState("vision_evaluation");
   const [diagnosis, setDiagnosis] = useState([]);
@@ -78,8 +80,26 @@ const TrainingFormCLVE = ({
     dispensedDateElectronic: today,
   });
 
+  const validateForm = () => {
+    // diagnosis notes is required
+    if (formData["diagnosisOther"] === null) {
+      setIsFormValid(false);
+      return;
+    }
+    // diagnosis is required
+    if (!diagnosis.length) {
+      setIsFormValid(false);
+      return;
+    }
+    setIsFormValid(true);
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!isFormValid) {
+      alert('Please complete all required fields!');
+      return;
+    }
     console.log(formData);
     const customDataDistance = customFieldsDistance.reduce((acc, field) => {
       if(formData[field] === otherField) {
@@ -432,14 +452,8 @@ const TrainingFormCLVE = ({
       target: { value },
     } = e;
     setDiagnosis(value);
-    if (value.includes("Other")) {
-      setShowDiagnosisOther(true);
-    } else {
-      setShowDiagnosisOther(false);
-    }
+    validateForm();
   };
-
-  const [showDiagnosisOther, setShowDiagnosisOther] = useState(false);
 
   const updateFormData = (e, fieldName) => {
     if (e.target.type == "date") {
@@ -458,6 +472,7 @@ const TrainingFormCLVE = ({
       setFormData((formData) => ({ ...formData, [fieldName]: e.target.value }));
       console.log(e.target.type, fieldName, formData[fieldName]);
     }
+    validateForm();
   };
 
   return (
@@ -549,13 +564,14 @@ const TrainingFormCLVE = ({
         {section === "vision_evaluation" && (
           <Row>
             <Col>
-              <Form.Label>Diagnosis</Form.Label>
+              <Form.Label>Diagnosis { required() }</Form.Label>
               <FormControl fullWidth size="small">
                 <Select
                   value={diagnosis}
                   onChange={(e) => {
                     handleDiagnosisChange(e);
                   }}
+                  required
                   multiple
                   renderValue={(selected) => selected.join(", ")}
                   MenuProps={MenuProps}
@@ -588,13 +604,14 @@ const TrainingFormCLVE = ({
             </Col>
           </Row>
         )}
-        {section === "vision_evaluation" && showDiagnosisOther && (
+        {section === "vision_evaluation" && (
           <Row>
             <Col>
               <Form.Group controlId="diagnosisOther">
-                <Form.Label>Diagnosis Other</Form.Label>
+                <Form.Label>Diagnosis Notes{ required() }</Form.Label>
                 <Form.Control
                   type="text"
+                  required
                   autoComplete="off"
                   value={formData["diagnosisOther"]}
                   onChange={(e) => updateFormData(e, "diagnosisOther")}

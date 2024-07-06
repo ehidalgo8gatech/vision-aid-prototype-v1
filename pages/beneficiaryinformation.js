@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import Navigation from "./navigation/Navigation";
 import moment from "moment";
+import { required } from "./components/required";
 
 // http://localhost:3000/beneficiaryinformation
 export async function getServerSideProps(ctx) {
@@ -39,12 +40,6 @@ export async function getServerSideProps(ctx) {
       error: null,
     },
   };
-}
-
-function required() {
-  return(
-    <span style={{color: "red"}}> *</span>
-  );
 }
 
 function RequiredFields(props) {

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
+import { required } from "./required";
 
 const TrainingForm = ({
   existingTrainings = [],
@@ -44,12 +45,12 @@ const TrainingForm = ({
     addNewTraining(newTraining);
   };
 
-  let types = [];
+  let types = [<option key="default"></option>];
   if (typeList != null) {
     typeList.forEach((type) => {
       if (type.value == "Other") {
         types.push(
-          <option value={type.value} selected>
+          <option value={type.value}>
             {type.value}
           </option>
         );
@@ -59,20 +60,10 @@ const TrainingForm = ({
     });
   }
 
-  let subTypeInitial = [];
+  let subTypeInitial = [<option key="default" value={null}></option>];
   if (subTypeList != null) {
     subTypeList.forEach((st) => {
-      if (st.trainingType.value == "Other") {
-        if (st.value == "Other") {
-          subTypeInitial.push(
-            <option value={st.value} selected>
-              {st.value}
-            </option>
-          );
-        } else {
-          subTypeInitial.push(<option value={st.value}>{st.value}</option>);
-        }
-      }
+      subTypeInitial.push(<option value={st.value}>{st.value}</option>);
     });
   }
 
@@ -131,8 +122,8 @@ const TrainingForm = ({
           <Row>
             <Col>
               <Form.Group controlId="date">
-                <Form.Label>Date</Form.Label>
-                <Form.Control type="date" />
+                <Form.Label>Date { required() } </Form.Label>
+                <Form.Control type="date" required />
               </Form.Group>
             </Col>
             <Col>
@@ -181,17 +172,18 @@ const TrainingForm = ({
           )}
           {typeList != null && (
             <Form.Group controlId="type">
-              <Form.Label>Type</Form.Label>
-              <Form.Control as="select" onChange={typeOnChange}>
+              <Form.Label>Type { required() }</Form.Label>
+              <Form.Control as="select" required onChange={typeOnChange}>
                 {types}
               </Form.Control>
             </Form.Group>
           )}
           {showTypeOther && typeList != null && subTypeList == null && (
             <Form.Group controlId="typeOther">
-              <Form.Label>Type Other</Form.Label>
+              <Form.Label>Type Other { required() }</Form.Label>
               <Form.Control
                 as="textarea"
+                required
                 rows={1}
                 autoComplete="off"
               ></Form.Control>
@@ -199,9 +191,10 @@ const TrainingForm = ({
           )}
           {typeList != null && subTypeList != null && (
             <Form.Group controlId="subType">
-              <Form.Label>Sub Type</Form.Label>
+              <Form.Label>Sub Type { required() } </Form.Label>
               <Form.Control
                 id="subTypeSelect"
+                required
                 as="select"
                 onChange={subTypeOnChange}
               >
@@ -211,10 +204,11 @@ const TrainingForm = ({
           )}
           {showTypeOtherSub && typeList != null && subTypeList != null && (
             <Form.Group controlId="subTypeOther">
-              <Form.Label>Type Sub Other</Form.Label>
+              <Form.Label>Type Sub Other { required() }</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={1}
+                required
                 autoComplete="off"
               ></Form.Control>
             </Form.Group>
