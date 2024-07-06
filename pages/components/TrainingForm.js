@@ -30,8 +30,7 @@ const TrainingForm = ({
       sessionNumber: e.target.sessionNumber.value,
       type: e.target.type == null ? null : e.target.type.value,
       typeOther: e.target.typeOther == null ? null : e.target.typeOther.value,
-      subType:
-        e.target.subTypeSelect == null ? null : e.target.subTypeSelect.value,
+      subType,
       subTypeOther:
         e.target.subTypeOther == null ? null : e.target.subTypeOther.value,
       MDVI: mdvi ? mdviVal : null,
@@ -60,47 +59,41 @@ const TrainingForm = ({
     });
   }
 
-  let subTypeInitial = [<option key="default" value={null}></option>];
-  if (subTypeList != null) {
-    subTypeList.forEach((st) => {
-      subTypeInitial.push(<option value={st.value}>{st.value}</option>);
-    });
-  }
-
-  const [subType, setSubType] = useState([subTypeInitial]);
-  const [showTypeOther, setShowTypeOther] = useState(true);
-  const [showTypeOtherSub, setShowTypeOtherSub] = useState(true);
+  const [subType, setSubType] = useState(null);
+  const [subTypeOptions, setSubTypeOptions] = useState([]);
+  const [showSubType, setShowSubType] = useState(false);
+  const [showTypeOther, setShowTypeOther] = useState(false);
+  const [showTypeOtherSub, setShowTypeOtherSub] = useState(false);
   function typeOnChange(event) {
     event.preventDefault();
+    setSubType(null);
+    if (event.target.value) {
+      setShowSubType(true);
+      setSubType(null);
+    } else {
+      setShowSubType(false);
+      return;
+    }
     if (event.target.value == "Other") {
       setShowTypeOther(true);
     } else {
       setShowTypeOther(false);
     }
     if (subTypeList != null) {
-      let stTemp = [];
+      let stTemp = [<option key="default" value={null} selected></option>];
       subTypeList.forEach((st) => {
-        if (
-          st.trainingType.value == event.target.value &&
-          st.value == "Other"
+        if (st.trainingType.value == event.target.value
         ) {
-          stTemp.push(
-            <option value={st.value} selected>
-              {st.value}
-            </option>
-          );
-        } else if (st.trainingType.value == event.target.value) {
           stTemp.push(<option value={st.value}>{st.value}</option>);
         }
       });
-      setSubType(stTemp);
-      document.getElementById("subTypeSelect").value = "Other";
-      setShowTypeOtherSub(true);
+      setSubTypeOptions(stTemp);
     }
   }
 
   function subTypeOnChange(event) {
     event.preventDefault();
+    setSubType(event.target.value);
     if (event.target.value == "Other") {
       setShowTypeOtherSub(true);
     } else {
@@ -189,7 +182,7 @@ const TrainingForm = ({
               ></Form.Control>
             </Form.Group>
           )}
-          {typeList != null && subTypeList != null && (
+          {showSubType && typeList != null && subTypeOptions != null && (
             <Form.Group controlId="subType">
               <Form.Label>Sub Type { required() } </Form.Label>
               <Form.Control
@@ -198,7 +191,7 @@ const TrainingForm = ({
                 as="select"
                 onChange={subTypeOnChange}
               >
-                {subType}
+                {subTypeOptions}
               </Form.Control>
             </Form.Group>
           )}
