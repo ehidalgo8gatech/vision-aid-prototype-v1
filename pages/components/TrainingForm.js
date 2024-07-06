@@ -47,15 +47,7 @@ const TrainingForm = ({
   let types = [<option key="default"></option>];
   if (typeList != null) {
     typeList.forEach((type) => {
-      if (type.value == "Other") {
-        types.push(
-          <option value={type.value}>
-            {type.value}
-          </option>
-        );
-      } else {
         types.push(<option value={type.value}>{type.value}</option>);
-      }
     });
   }
 
@@ -67,11 +59,15 @@ const TrainingForm = ({
   function typeOnChange(event) {
     event.preventDefault();
     setSubType(null);
-    if (event.target.value) {
+    if (event.target.value && subTypeList != null) {
       setShowSubType(true);
-      setSubType(null);
     } else {
       setShowSubType(false);
+      if (event.target.value == "Other") {
+        setShowTypeOther(true);
+      } else {
+        setShowTypeOther(false);
+      }
       return;
     }
     if (event.target.value == "Other") {
