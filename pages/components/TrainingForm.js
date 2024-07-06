@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
-import { required } from "./required";
+import { required } from "../../global/required";
 
 const TrainingForm = ({
   existingTrainings = [],

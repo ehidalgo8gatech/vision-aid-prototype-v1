@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import Navigation from "./navigation/Navigation";
 import moment from "moment";
-import { required } from "./components/required";
+import { required } from "../global/required";
 
 // http://localhost:3000/beneficiaryinformation
 export async function getServerSideProps(ctx) {
