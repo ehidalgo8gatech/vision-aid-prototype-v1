@@ -172,7 +172,7 @@ function ReportCustomizer(props) {
   const downloadFilteredReport = async () => {
     try {
       const beneficiaryListAPI = selectedHospitals.map((id) => fetch(
-        `/api/beneficiaryList?id=${id}&startDate=${startDate}&endDate=${endDate}`,
+        `/api/beneficiaryList?id=${id}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
