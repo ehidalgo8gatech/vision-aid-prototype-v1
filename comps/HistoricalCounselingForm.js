@@ -63,6 +63,24 @@ export default function HistoricalCounselingForm(props) {
     }
   };
 
+  const deleteCounselingData = async () => {
+    const result = confirm("Are you sure you want to delete this data?");
+    if (result) {
+      const res = await fetch("/api/counsellingEducation", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: data.id }),
+      });
+      if (res.status == 200) {
+        await props.refetchUser();
+      } else {
+        alert("Failed to delete data!");
+      }
+    }
+  }
+
   const saveCounselingData = async () => {
     let trainingData = { ...data };
     if (showOther) {
@@ -90,8 +108,8 @@ export default function HistoricalCounselingForm(props) {
     </div>
   ) : (
     <div>
-      <table class="table beneficiary-table table-bordered row">
-        <thead class="thead-dark">
+      <table className="table beneficiary-table table-bordered row">
+        <thead className="thead-dark">
           <tr className="row">
             <th scope="col" className="col-md-4">
               Properties
@@ -195,7 +213,7 @@ export default function HistoricalCounselingForm(props) {
       </table>
       {props.evaluationData.editable && !editMode && (
         <button
-          class="btn btn-success border-0 btn-block"
+          className="btn btn-success border-0 btn-block"
           onClick={handleClick}
         >
           Edit
@@ -203,10 +221,18 @@ export default function HistoricalCounselingForm(props) {
       )}
       {editMode && (
         <button
-          class="btn btn-success border-0 btn-block"
+          className="btn btn-success border-0 btn-block"
           onClick={saveCounselingData}
         >
           Save
+        </button>
+      )}
+      {!editMode && (
+        <button
+          className="btn btn-danger border-0 ms-3 btn-block"
+          onClick={deleteCounselingData}
+        >
+          Delete
         </button>
       )}
     </div>

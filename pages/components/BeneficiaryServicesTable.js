@@ -68,7 +68,7 @@ export default function BeneficiaryServicesTable(props) {
           </td>
         </tr>
         <tr>
-          <th scope="row">Vision Enhancement</th>
+          <th scope="row">Vision Enhancement (less than 7 years old)</th>
           <td>
             <button
               type="button"
