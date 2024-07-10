@@ -429,7 +429,7 @@ export default function HistoricalCLVForm(props) {
     </div>
   ) : (
     <div>
-      <table class="table beneficiary-table table-bordered row">
+      <table className="table beneficiary-table table-bordered row">
         <thead className="thead-dark">
           <tr className="row">
             <th scope="col" className="col-md-4">
@@ -441,6 +441,25 @@ export default function HistoricalCLVForm(props) {
           </tr>
         </thead>
         <tbody>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Date
+            </th>
+            <td className="col-md-8">
+              {!editMode &&
+                data.date !== null &&
+                moment(data.date).format("DD MMMM YYYY")}
+              {!editMode && data.date !== null && ""}
+              {editMode && (
+                <input
+                  type="date"
+                  name="date"
+                  value={moment(data.date).format("YYYY-MM-DD")}
+                  onChange={(e) => handleChange(e)}
+                />
+              )}
+            </td>
+          </tr>
           <tr className="row">
             <th scope="row" className="col-md-4">
               Diagnosis
@@ -1406,7 +1425,7 @@ export default function HistoricalCLVForm(props) {
       </table>
       {props.evaluationData.editable && !editMode && (
         <button
-          class="btn btn-success border-0 btn-block"
+          className="btn btn-success border-0 btn-block"
           onClick={handleClick}
         >
           Edit
@@ -1414,7 +1433,7 @@ export default function HistoricalCLVForm(props) {
       )}
       {editMode && (
         <button
-          class="btn btn-success border-0 btn-block"
+          className="btn btn-success border-0 btn-block"
           onClick={saveCLVEData}
         >
           Save
