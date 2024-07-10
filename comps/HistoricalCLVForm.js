@@ -329,6 +329,24 @@ export default function HistoricalCLVForm(props) {
     }
   };
 
+  const deleteCLVEData = async () => {
+    const result = confirm("Are you sure you want to delete this data?");
+    if (result) {
+      const res = await fetch("/api/comprehensiveLowVisionEvaluation", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: data.id }),
+      });
+      if (res.status == 200) {
+        await props.refetchUser();
+      } else {
+        alert("Failed to delete data!");
+      }
+    }
+  }
+
   const saveCLVEData = async () => {
     delete data["beneficiaryId"];
     data["dispensedSpectacle"] =
@@ -1437,6 +1455,14 @@ export default function HistoricalCLVForm(props) {
           onClick={saveCLVEData}
         >
           Save
+        </button>
+      )}
+      {!editMode && (
+        <button
+          className="btn btn-danger border-0 ms-3 btn-block"
+          onClick={deleteCLVEData}
+        >
+          Delete
         </button>
       )}
     </div>

@@ -3,6 +3,8 @@ import prisma from "client";
 export default async function handler(req, res) {
   if (req.method === "POST") {
     return await addData(req, res);
+  } else if (req.method == "DELETE") {
+    return await deleteData(req, res);
   } else if (req.method == "GET") {
     return await readData(req, res);
   } else if (req.method == "PATCH") {
@@ -29,6 +31,21 @@ async function updateData(req, res) {
 }
 
 async function readData(req, res) {}
+
+async function deleteData(req, res) {
+  const body = req.body;
+  try {
+    const comp_eval = await prisma.low_Vision_Evaluation.delete({
+      where: { id: body.id },
+    });
+    return res.status(200).json(comp_eval, { success: true });
+  } catch (error) {
+    console.log("Request error " + error);
+    res
+      .status(500)
+      .json({ error: "Error deleting Low Vision Evaluation Data" + error, success: false });
+  }
+}
 
 async function addData(req, res) {
   const body = req.body;
