@@ -11,6 +11,7 @@ import HistoricalTrainingForm from "../comps/HistoricalTrainingForm";
 import { getCounsellingType } from "./api/counsellingType";
 import { getTrainingTypes } from "./api/trainingType";
 import { getTrainingSubTypes } from "./api/trainingSubType";
+import { dateStringToNoTimezone } from "@/global/date-string-to-no-timezone";
 
 export default function HistoricalEvaluationPage(props) {
   let serviceToFetch = props.service;
@@ -69,22 +70,17 @@ export default function HistoricalEvaluationPage(props) {
     return title.split("_").join(" ");
   };
 
-  const formatDate = (date) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(date).toLocaleDateString(undefined, options);
-  };
-
   const filterData = (entry, services) => {
     return services.filter(function (value) {
       if (serviceIsATraining) {
         return (
-          formatDate(value["service"].date) === formatDate(entry.date) &&
+          dateStringToNoTimezone(value["service"].date) === entry.date &&
           value["service"].type == entry.suppInfo.type &&
           value["service"].sessionNumber == entry.suppInfo.sessionNumber
         );
       } else {
         return (
-          formatDate(value["service"].date) === formatDate(entry.date) &&
+          dateStringToNoTimezone(value["service"].date) === entry.date &&
           value["service"].sessionNumber == entry.suppInfo
         );
       }
@@ -146,12 +142,12 @@ export default function HistoricalEvaluationPage(props) {
     .map((item) => {
       if (serviceIsATraining) {
         return {
-          date: formatDate(item.date),
+          date: dateStringToNoTimezone(item.date),
           suppInfo: { type: item.type, sessionNumber: item.sessionNumber },
         };
       } else {
         return {
-          date: formatDate(item.date),
+          date: dateStringToNoTimezone(item.date),
           suppInfo: item.sessionNumber,
         };
       }
@@ -184,7 +180,7 @@ export default function HistoricalEvaluationPage(props) {
               gender={user.gender}
               phoneNumber={user.phoneNumber}
               MRN={user.mrn}
-              dob={formatDate(user.dateOfBirth)}
+              dob={dateStringToNoTimezone(user.dateOfBirth)}
               hospitalName={user.hospitalName}
               education={user.education}
               districts={user.districts}

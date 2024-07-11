@@ -24,6 +24,8 @@ import {
 } from "@/constants/globalFunctions";
 import { comma, commaAndSpace } from "@/constants/generalConstants";
 import { jsonToCSV, readString } from "react-papaparse";
+import { dateStringToNoTimezone } from "@/global/date-string-to-no-timezone";
+import moment from "moment";
 
 export default function HistoricalLowVisionScreeningForm(props) {
   const ITEM_HEIGHT = 48;
@@ -370,6 +372,25 @@ export default function HistoricalLowVisionScreeningForm(props) {
           </tr>
         </thead>
         <tbody>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Date
+            </th>
+            <td className="col-md-8">
+              {!editMode &&
+                data.date !== null &&
+                dateStringToNoTimezone(data.date)}
+              {!editMode && data.date !== null && ""}
+              {editMode && (
+                <input
+                  type="date"
+                  name="date"
+                  value={moment.utc(data.date).format("YYYY-MM-DD")}
+                  onChange={(e) => handleChange(e)}
+                />
+              )}
+            </td>
+          </tr>
           <tr className="row">
             <th scope="row" className="col-md-4">
               Diagnosis

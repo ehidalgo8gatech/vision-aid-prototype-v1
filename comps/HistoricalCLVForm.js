@@ -25,6 +25,7 @@ import {
 } from "@/constants/globalFunctions";
 import { comma, commaAndSpace } from "@/constants/generalConstants";
 import { jsonToCSV, readString } from "react-papaparse";
+import { dateStringToNoTimezone } from "@/global/date-string-to-no-timezone";
 
 export default function HistoricalCLVForm(props) {
   const ITEM_HEIGHT = 48;
@@ -466,13 +467,13 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode &&
                 data.date !== null &&
-                moment(data.date).format("DD MMMM YYYY")}
+                dateStringToNoTimezone(data.date)}
               {!editMode && data.date !== null && ""}
               {editMode && (
                 <input
                   type="date"
                   name="date"
-                  value={moment(data.date).format("YYYY-MM-DD")}
+                  value={moment.utc(data.date).format("YYYY-MM-DD")}
                   onChange={(e) => handleChange(e)}
                 />
               )}
@@ -702,14 +703,14 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode &&
                 data.dispensedDateSpectacle !== null &&
-                moment(data.dispensedDateSpectacle).format("DD MMMM YYYY")}
+                dateStringToNoTimezone(data.dispensedDateSpectacle)}
               {!editMode && data.dispensedDateSpectacle !== null && ""}
               {editMode && (
                 <FormControl fullWidth size="small">
                   <input
                     type="date"
                     name="dispensedDateSpectacle"
-                    value={moment(data.dispensedDateSpectacle).format(
+                    value={moment.utc(data.dispensedDateSpectacle).format(
                       "YYYY-MM-DD"
                     )}
                     onChange={(e) => handleChange(e)}
@@ -866,14 +867,14 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode &&
                 data.dispensedDateOptical !== null &&
-                moment(data.dispensedDateOptical).format("DD MMMM YYYY")}
+                dateStringToNoTimezone(data.dispensedDateOptical)}
               {!editMode && data.dispensedDateOptical !== null && ""}
               {editMode && (
                 <FormControl fullWidth size="small">
                   <input
                     type="date"
                     name="dispensedDateOptical"
-                    value={moment(data.dispensedDateOptical).format(
+                    value={moment.utc(data.dispensedDateOptical).format(
                       "YYYY-MM-DD"
                     )}
                     onChange={(e) => handleChange(e)}
@@ -1030,14 +1031,14 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode &&
                 data.dispensedDateNonOptical !== null &&
-                moment(data.dispensedDateNonOptical).format("DD MMMM YYYY")}
+                dateStringToNoTimezone(data.dispensedDateNonOptical)}
               {!editMode && data.dispensedDateNonOptical !== null && ""}
               {editMode && (
                 <FormControl fullWidth size="small">
                   <input
                     type="date"
                     name="dispensedDateNonOptical"
-                    value={moment(data.dispensedDateNonOptical).format(
+                    value={moment.utc(data.dispensedDateNonOptical).format(
                       "YYYY-MM-DD"
                     )}
                     onChange={(e) => handleChange(e)}
@@ -1194,14 +1195,14 @@ export default function HistoricalCLVForm(props) {
             <td className="col-md-8">
               {!editMode &&
                 data.dispensedDateElectronic !== null &&
-                moment(data.dispensedDateElectronic).format("DD MMMM YYYY")}
+                dateStringToNoTimezone(data.dispensedDateElectronic)}
               {!editMode && data.dispensedDateElectronic !== null && ""}
               {editMode && (
                 <FormControl fullWidth size="small">
                   <input
                     type="date"
                     name="dispensedDateElectronic"
-                    value={moment(data.dispensedDateElectronic).format(
+                    value={moment.utc(data.dispensedDateElectronic).format(
                       "YYYY-MM-DD"
                     )}
                     onChange={(e) => handleChange(e)}

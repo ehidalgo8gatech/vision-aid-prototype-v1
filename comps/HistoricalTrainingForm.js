@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import moment from "moment";
 import { FormControl, Select } from "@mui/material";
 import { createMenu } from "@/constants/globalFunctions";
+import { dateStringToNoTimezone } from "@/global/date-string-to-no-timezone";
 
 export default function HistoricalTrainingForm(props) {
   const ITEM_HEIGHT = 48;
@@ -147,13 +148,13 @@ export default function HistoricalTrainingForm(props) {
             <td className="col-md-8">
               {!editMode &&
                 data.date !== null &&
-                moment(data.date).format("DD MMMM YYYY")}
+                dateStringToNoTimezone(data.date)}
               {!editMode && data.date !== null && ""}
               {editMode && (
                 <input
                   type="date"
                   name="date"
-                  value={moment(data.date).format("YYYY-MM-DD")}
+                  value={moment.utc(data.date).format("YYYY-MM-DD")}
                   onChange={(e) => handleChange(e)}
                 />
               )}
