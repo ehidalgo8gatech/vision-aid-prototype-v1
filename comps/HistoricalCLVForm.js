@@ -329,6 +329,24 @@ export default function HistoricalCLVForm(props) {
     }
   };
 
+  const deleteCLVEData = async () => {
+    const result = confirm("Are you sure you want to delete this data?");
+    if (result) {
+      const res = await fetch("/api/comprehensiveLowVisionEvaluation", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: data.id }),
+      });
+      if (res.status == 200) {
+        await props.refetchUser();
+      } else {
+        alert("Failed to delete data!");
+      }
+    }
+  }
+
   const saveCLVEData = async () => {
     delete data["beneficiaryId"];
     data["dispensedSpectacle"] =
@@ -429,7 +447,7 @@ export default function HistoricalCLVForm(props) {
     </div>
   ) : (
     <div>
-      <table class="table beneficiary-table table-bordered row">
+      <table className="table beneficiary-table table-bordered row">
         <thead className="thead-dark">
           <tr className="row">
             <th scope="col" className="col-md-4">
@@ -441,6 +459,25 @@ export default function HistoricalCLVForm(props) {
           </tr>
         </thead>
         <tbody>
+          <tr className="row">
+            <th scope="row" className="col-md-4">
+              Date
+            </th>
+            <td className="col-md-8">
+              {!editMode &&
+                data.date !== null &&
+                moment(data.date).format("DD MMMM YYYY")}
+              {!editMode && data.date !== null && ""}
+              {editMode && (
+                <input
+                  type="date"
+                  name="date"
+                  value={moment(data.date).format("YYYY-MM-DD")}
+                  onChange={(e) => handleChange(e)}
+                />
+              )}
+            </td>
+          </tr>
           <tr className="row">
             <th scope="row" className="col-md-4">
               Diagnosis
@@ -1406,7 +1443,7 @@ export default function HistoricalCLVForm(props) {
       </table>
       {props.evaluationData.editable && !editMode && (
         <button
-          class="btn btn-success border-0 btn-block"
+          className="btn btn-success border-0 btn-block"
           onClick={handleClick}
         >
           Edit
@@ -1414,10 +1451,18 @@ export default function HistoricalCLVForm(props) {
       )}
       {editMode && (
         <button
-          class="btn btn-success border-0 btn-block"
+          className="btn btn-success border-0 btn-block"
           onClick={saveCLVEData}
         >
           Save
+        </button>
+      )}
+      {!editMode && (
+        <button
+          className="btn btn-danger border-0 ms-3 btn-block"
+          onClick={deleteCLVEData}
+        >
+          Delete
         </button>
       )}
     </div>

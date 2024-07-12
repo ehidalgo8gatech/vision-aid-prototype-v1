@@ -146,11 +146,13 @@ export default function HistoricalEvaluationPage(props) {
     .map((item) => {
       if (serviceIsATraining) {
         return {
+          id: item.id,
           date: formatDate(item.date),
           suppInfo: { type: item.type, sessionNumber: item.sessionNumber },
         };
       } else {
         return {
+          id: item.id,
           date: formatDate(item.date),
           suppInfo: item.sessionNumber,
         };
@@ -209,19 +211,19 @@ export default function HistoricalEvaluationPage(props) {
               {historicalDates.length > 0 && (
                 <div className="accordion" id="historyAccordion">
                   {serviceIsATraining &&
-                    historicalDates.map((entry, index) => (
-                      <div className="accordion-item" key={index}>
+                    historicalDates.map((entry) => (
+                      <div className="accordion-item" key={entry.id}>
                         <h2
                           className="accordion-header"
-                          id={"panelsStayOpen-heading" + index}
+                          id={"panelsStayOpen-heading" + entry.id}
                         >
                           <button
                             className="accordion-button collapsed"
                             type="button"
                             data-bs-toggle="collapse"
-                            data-bs-target={"#panelsStayOpen-collapse" + index}
+                            data-bs-target={"#panelsStayOpen-collapse" + entry.id}
                             aria-expanded="false"
-                            aria-controls={"panelsStayOpen-collapse" + index}
+                            aria-controls={"panelsStayOpen-collapse" + entry.id}
                           >
                             <strong>
                               {entry.date} (Type: {entry.suppInfo.type},
@@ -230,9 +232,9 @@ export default function HistoricalEvaluationPage(props) {
                           </button>
                         </h2>
                         <div
-                          id={"panelsStayOpen-collapse" + index}
+                          id={"panelsStayOpen-collapse" + entry.id}
                           className="accordion-collapse collapse"
-                          aria-labelledby={"panelsStayOpen-heading" + index}
+                          aria-labelledby={"panelsStayOpen-heading" + entry.id}
                           data-bs-parent="#historyAccordion"
                         >
                           <div className="accordion-body">
@@ -242,19 +244,19 @@ export default function HistoricalEvaluationPage(props) {
                       </div>
                     ))}
                   {!serviceIsATraining &&
-                    historicalDates.map((entry, index) => (
-                      <div className="accordion-item" key={index}>
+                    historicalDates.map((entry) => (
+                      <div className="accordion-item" key={entry.id}>
                         <h2
                           className="accordion-header"
-                          id={"panelsStayOpen-heading" + index}
+                          id={"panelsStayOpen-heading" + entry.id}
                         >
                           <button
                             className="accordion-button collapsed"
                             type="button"
                             data-bs-toggle="collapse"
-                            data-bs-target={"#panelsStayOpen-collapse" + index}
+                            data-bs-target={"#panelsStayOpen-collapse" + entry.id}
                             aria-expanded="false"
-                            aria-controls={"panelsStayOpen-collapse" + index}
+                            aria-controls={"panelsStayOpen-collapse" + entry.id}
                           >
                             <strong>
                               {entry.date} (Session: {entry.suppInfo})
@@ -262,9 +264,9 @@ export default function HistoricalEvaluationPage(props) {
                           </button>
                         </h2>
                         <div
-                          id={"panelsStayOpen-collapse" + index}
+                          id={"panelsStayOpen-collapse" + entry.id}
                           className="accordion-collapse collapse"
-                          aria-labelledby={"panelsStayOpen-heading" + index}
+                          aria-labelledby={"panelsStayOpen-heading" + entry.id}
                           data-bs-parent="#historyAccordion"
                         >
                           <div className="accordion-body">
