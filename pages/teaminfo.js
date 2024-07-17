@@ -21,7 +21,7 @@ export async function getServerSideProps(ctx) {
   const user = await readUser(session.user.email);
   return {
     props: {
-      user: user,
+      user: JSON.parse(JSON.stringify(user)),
     },
   };
 }

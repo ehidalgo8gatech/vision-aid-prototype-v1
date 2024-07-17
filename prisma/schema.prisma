@@ -10,12 +10,13 @@ datasource db {
 }
 
 model User {
-  id           Int           @id @default(autoincrement())
-  email        String        @unique
-  admin        Admin?
-  hospitalRole HospitalRole[]
-  lPageEntries Landing_Page[]
-
+  id             Int            @id @default(autoincrement())
+  email          String         @unique
+  admin          Admin?
+  hospitalRole   HospitalRole[]
+  lPageEntries   Landing_Page[]
+  lastUpdate     String?
+  lastUpdateDate DateTime?
 }
 
 model Admin {
@@ -327,17 +328,16 @@ model School_Screening {
   hospital              Hospital? @relation(fields: [hospitalId], references: [id])
 }
 
-
 model Landing_Page {
-  id              Int  @id @default(autoincrement())
-  creationDate    DateTime?
-  content         String?
-  user            User @relation(fields: [userId], references: [id])
-  userId          Int
+  id           Int       @id @default(autoincrement())
+  creationDate DateTime?
+  content      String?
+  user         User      @relation(fields: [userId], references: [id])
+  userId       Int
 }
 
 model Feedback {
-  id                Int  @id @default(autoincrement())
+  id                Int      @id @default(autoincrement())
   datetime_recorded DateTime
   rating            Int
   comment           String?

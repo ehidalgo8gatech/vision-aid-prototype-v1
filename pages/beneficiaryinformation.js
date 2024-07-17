@@ -34,7 +34,7 @@ export async function getServerSideProps(ctx) {
   return {
     props: {
       beneficiaryName: ctx.query.beneficiaryName,
-      user: user,
+      user: JSON.parse(JSON.stringify(user)),
       requiredBeneficiaryFields: await readBeneficiaryMirror(),
       hospitals: await findAllHospital(),
       error: null,
