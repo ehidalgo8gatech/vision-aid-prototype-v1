@@ -45,7 +45,7 @@ export async function getServerSideProps(ctx) {
   }
   return {
     props: {
-      user: user,
+      user: JSON.parse(JSON.stringify(user)),
       requiredBeneficiaryFields: await readBeneficiaryMirror(),
       requiredMobileTraining: await readMobileTrainingMirror(),
       requiredComputerTraining: await readComputerTrainingMirror(),

@@ -4,11 +4,13 @@ import { getSession } from "next-auth/react";
 import { allUsers, allHospitalRoles, readUser } from "@/pages/api/user";
 import { findAllHospital } from "@/pages/api/hospital";
 import Router from "next/router";
-import { Table } from "react-bootstrap";
 import { FormControl, Select, MenuItem, Input, Typography } from "@mui/material";
 import { createMenu } from "@/constants/globalFunctions";
 import { useState } from "react";
 import Layout from './components/layout';
+import { AgGridReact } from 'ag-grid-react'; // React Data Grid Component
+import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the Data Grid
+import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the Data Grid
 
 
 export async function getServerSideProps(ctx) {
@@ -36,33 +38,34 @@ export async function getServerSideProps(ctx) {
     };
   }
 
+  const users = await allUsers();
+
   return {
     props: {
-      user: user,
+      user: JSON.parse(JSON.stringify(user)),
       hospitals: await findAllHospital(),
-      users: await allUsers(),
+      users: JSON.parse(JSON.stringify(users)),
       roles: await allHospitalRoles(),
       error: null,
     },
   };
 }
 
+const formatLastUpdate = (p) => p.data.lastUpdate ? `${new Date(p.data.lastUpdateDate).toLocaleDateString('en-IN')} ${new Date(p.data.lastUpdateDate).toLocaleTimeString('en-IN')} ${p.data.lastUpdate}` : '';
+
 function Users(props) {
+  const globalFieldOptions = { filter: true }
+  const [rowData] = useState(props.users);
+  const [colDefs] = useState([
+    { field: "id", width: 66, ...globalFieldOptions },
+    { field: "email", tooltipValueGetter: (p) => p.value, minWidth: 200, flex: 1, ...globalFieldOptions },
+    { field: "administrator", headerName: 'Admin', cellClass: 'd-flex align-items-center justify-content-center', width: 96, ...globalFieldOptions },
+    { field: "manager", width: 112, cellClass: 'd-flex align-items-center justify-content-center', ...globalFieldOptions },
+    { field: "hospital", tooltipValueGetter: (p) => p.value, minWidth: 150, ...globalFieldOptions },
+    { field: "lastUpdate", tooltipValueGetter: formatLastUpdate, valueFormatter: formatLastUpdate,  ...globalFieldOptions },
+  ]);
   const [hosp, setHosp] = useState([]);
   const [role, setRole] = useState("");
-  const [sortBy, setSortBy] = useState("");
-  const [sortDirection, setSortDirection] = useState("");
-
-  const handleSort = (columnName) => {
-    if (sortBy === columnName) {
-      // Reverse sort direction if already sorted by this column
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      // Sort by the new column
-      setSortBy(columnName);
-      setSortDirection('asc');
-    }
-  };
 
   const handleRoleOption = (e) => {
     setRole(e.target.value);
@@ -311,15 +314,6 @@ function Users(props) {
     usersList.push(data);
   }
 
-  // Sort users based on sortBy and sortDirection
-  if (sortBy) {
-    usersList.sort((a, b) => {
-      if (a[sortBy] < b[sortBy]) return sortDirection === 'asc' ? -1 : 1;
-      if (a[sortBy] > b[sortBy]) return sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
-  }
-
   return (
     <Layout>
     <div className="content">
@@ -426,42 +420,18 @@ function Users(props) {
           <strong>List Of Users</strong>
           <br />
           <br />
-          <Table striped bordered hover responsive>
-            <thead>
-              <tr>
-                <th onClick={() => handleSort('id')}>
-                  <span style={{ cursor: 'pointer' }}>User Id</span>
-                </th>
-                <th onClick={() => handleSort('email')}>
-                  <span style={{ cursor: 'pointer' }}>User Email</span>
-                </th>
-                {props.user.admin != null ?
-                <th onClick={() => handleSort('administrator')}>
-                  <span style={{ cursor: 'pointer' }}>Admin</span>
-                </th>
-                :<></>}
-                <th onClick={() => handleSort('manager')}>
-                  <span style={{ cursor: 'pointer' }}>Manager</span>
-                </th>
-                <th onClick={() => handleSort('hospital')}>
-                  <span style={{ cursor: 'pointer' }}>Hospital</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {usersList.map((user) => (
-                <tr key={user.id}>
-                  <td>{user.id}</td>
-                  <td>{user.email}</td>
-                  {props.user.admin != null ?
-                  (user.administrator ? <td style={{color: "green"}}>&#10004;</td> : <td style={{color: "red"}}>&#10008;</td>)
-                  : <></>}
-                  {user.manager ? <td style={{color: "green"}}>&#10004;</td> : <td style={{color: "red"}}>&#10008;</td>}
-                  <td>{user.hospital}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+          <div
+            className="ag-theme-quartz" // applying the Data Grid theme
+            style={{ height: 'calc(100dvh - 304px)' }} // the Data Grid will fill the size of the parent container
+          >
+            <AgGridReact
+                rowData={rowData}
+                columnDefs={colDefs}
+                tooltipShowDelay={500}
+                enableCellTextSelection={true}
+                tooltipInteraction={true}
+            />
+          </div>
         </div>
       </div>
       <br />
