@@ -591,7 +591,7 @@ export default function Summary({
     }
     try {
       const beneficiaryListAPI = selectedHospitals.map((id) => fetch(
-        `/api/beneficiaryList?id=${id}`,
+        `/api/beneficiaryList?id=${id}&startDate=${startDate}&endDate=${endDate}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
