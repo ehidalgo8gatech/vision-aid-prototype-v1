@@ -11,6 +11,8 @@ import HistoricalTrainingForm from "../comps/HistoricalTrainingForm";
 import { getCounsellingType } from "./api/counsellingType";
 import { getTrainingTypes } from "./api/trainingType";
 import { getTrainingSubTypes } from "./api/trainingSubType";
+import { readBeneficiaryMrn } from "./api/beneficiary";
+import { readBeneficiaryMirror } from "./api/beneficiaryMirror";
 
 export default function HistoricalEvaluationPage(props) {
   let serviceToFetch = props.service;
@@ -286,10 +288,8 @@ export default function HistoricalEvaluationPage(props) {
 }
 
 export async function getServerSideProps(ctx) {
-  var user;
-  var service;
-
   const query = ctx.query;
+  const service = query.service;
   const session = await getSession(ctx);
   if (session == null) {
     console.log("session is null");
@@ -301,19 +301,7 @@ export async function getServerSideProps(ctx) {
     };
   }
   const currentUser = await readUser(session.user.email);
-  try {
-    const beneficiary = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/beneficiary?mrn=${query.mrn}`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    user = await beneficiary.json();
-    service = query.service;
-  } catch (error) {
-    console.error("Error fetching users:", error);
-  }
+  const user = await readBeneficiaryMrn(query.mrn);
 
   if (!user || !service) {
     return {
@@ -321,25 +309,16 @@ export async function getServerSideProps(ctx) {
     };
   }
 
-  const benMirror = await fetch(
-    `${process.env.NEXTAUTH_URL}/api/beneficiaryMirror?hospital=` +
-      user.hospital.name,
-    {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  const benMirrorJson = await benMirror.json();
-
+  const beneficiaryMirror = await readBeneficiaryMirror(user.hospital.name);
   user.hospitalName = user.hospital.name;
 
   return {
     props: {
       mrn: query.mrn,
-      currentUser: currentUser,
-      user: user,
+      currentUser: JSON.parse(JSON.stringify(currentUser)),
+      user: JSON.parse(JSON.stringify(user)),
       service: service,
-      beneficiaryMirror: benMirrorJson,
+      beneficiaryMirror: JSON.parse(JSON.stringify(beneficiaryMirror)),
       counselingTypeList: await getCounsellingType(),
       trainingTypeList: await getTrainingTypes(),
       trainingSubTypeList: await getTrainingSubTypes(),

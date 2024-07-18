@@ -6,6 +6,10 @@ import TrainingForm from "./components/TrainingForm";
 import UserProfileCard from "./components/UserProfileCard";
 import Navigation from "./navigation/Navigation";
 import { readUser } from "./api/user";
+import { readBeneficiaryMrn } from "./api/beneficiary";
+import { readCounsellingType } from "./api/counsellingType";
+import { readTrainingType } from "./api/trainingType";
+import { readTrainingSubType } from "./api/trainingSubType";
 
 export default function NewEvaluationDashboard(props) {
   // State variable for form fields
@@ -285,20 +289,8 @@ export async function getServerSideProps(ctx) {
     };
   }
   const currentUser = await readUser(session.user.email);
-  var user;
+  const user = await readBeneficiaryMrn(ctx.query.mrn);
   const service = ctx.query.service;
-  try {
-    const beneficiary = await await fetch(
-      `${process.env.NEXTAUTH_URL}/api/beneficiary?mrn=${ctx.query.mrn}`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    user = await beneficiary.json();
-  } catch (error) {
-    console.error("Error fetching users:", error);
-  }
 
   if (!user) {
     return {
@@ -310,51 +302,22 @@ export async function getServerSideProps(ctx) {
   let trainingTypeList = [];
   let trainingSubTypeList = [];
   if (service === "Counselling_Education") {
-    try {
-      const counsellingType = await await fetch(
-        `${process.env.NEXTAUTH_URL}/api/counsellingType`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      counsellingTypeList = await counsellingType.json();
-    } catch (error) {
-      console.error("Error fetching counselling type:", error);
-    }
+    counsellingTypeList = await readCounsellingType();
   } else if (service === "Training") {
-    try {
-      const trainingType = await await fetch(
-        `${process.env.NEXTAUTH_URL}/api/trainingType`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      const trainingSubType = await await fetch(
-        `${process.env.NEXTAUTH_URL}/api/trainingSubType`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      trainingTypeList = await trainingType.json();
-      trainingSubTypeList = await trainingSubType.json();
-    } catch (error) {
-      console.error("Error fetching training type:", error);
-    }
+    trainingTypeList = await readTrainingType();
+    trainingSubTypeList = await readTrainingSubType();
   }
 
   user.hospitalName = user.hospital.name;
 
   return {
     props: {
-      currentUser: currentUser,
-      user: user,
+      currentUser: JSON.parse(JSON.stringify(currentUser)),
+      user: JSON.parse(JSON.stringify(user)),
       service: service,
-      counsellingTypeList: counsellingTypeList,
-      trainingTypeList: trainingTypeList,
-      trainingSubTypeList: trainingSubTypeList,
+      counsellingTypeList: JSON.parse(JSON.stringify(counsellingTypeList)),
+      trainingTypeList: JSON.parse(JSON.stringify(trainingTypeList)),
+      trainingSubTypeList: JSON.parse(JSON.stringify(trainingSubTypeList)),
     },
   };
 }

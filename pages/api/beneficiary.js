@@ -2,6 +2,7 @@ import prisma from "client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 import { updateUserLastModified } from "@/global/update-user-last-modified";
+import { read } from "xlsx-js-style";
 
 export default async function handler(req, res) {
   const session = await getServerSession(req, res, authOptions)
@@ -24,77 +25,97 @@ export default async function handler(req, res) {
   }
 }
 
+export const readBeneficiaryMrn = async (mrn) => {
+  try {
+    const beneficiary = await prisma.beneficiary.findUnique({
+      where: {
+        mrn: mrn,
+        deleted: false,
+      },
+      include: {
+        hospital: true,
+        Computer_Training: true,
+        Mobile_Training: true,
+        Orientation_Mobility_Training: true,
+        Vision_Enhancement: true,
+        Comprehensive_Low_Vision_Evaluation: true,
+        Counselling_Education: true,
+        Low_Vision_Evaluation: true,
+        Training: true,
+      },
+    });
+    return beneficiary;
+  } catch (error) {
+    console.log(error);
+    return { error: "Couldn't read from db" };
+  }
+}
+
+export const readBeneficiaryOtherParam = async (otherParam) => {
+  try {
+    const hospitalList = await prisma.hospital.findMany({
+      where: {
+        name: {
+          contains: otherParam,
+        },
+      },
+    });
+    var hospitalId = [];
+    if (hospitalList != null && hospitalList.length > 0) {
+      hospitalList.forEach((hospital) => {
+        hospitalId.push(hospital.id);
+      });
+    }
+    const beneficiary = await prisma.beneficiary.findMany({
+      where: {
+        OR: [
+          {
+            beneficiaryName: {
+              contains: otherParam,
+            },
+          },
+          {
+            hospitalId: { in: hospitalId },
+          },
+          {
+            mrn: {
+              contains: otherParam,
+            },
+          },
+          {
+            phoneNumber: {
+              contains: otherParam,
+            },
+          },
+        ],
+        deleted: false,
+      },
+      include: {
+        hospital: true,
+        Computer_Training: true,
+        Mobile_Training: true,
+        Orientation_Mobility_Training: true,
+        Vision_Enhancement: true,
+        Comprehensive_Low_Vision_Evaluation: true,
+        Counselling_Education: true,
+        Low_Vision_Evaluation: true,
+        Training: true,
+      },
+    });
+    return beneficiary;
+  } catch (error) {
+    console.log(error);
+    return { error: "Couldn't read from db" };
+  }
+}
+
 async function readData(req, res) {
   try {
     var beneficiary;
     if (req.query.otherParam != null) {
-      const hospitalList = await prisma.hospital.findMany({
-        where: {
-          name: {
-            contains: req.query.otherParam,
-          },
-        },
-      });
-      var hospitalId = [];
-      if (hospitalList != null && hospitalList.length > 0) {
-        hospitalList.forEach((hospital) => {
-          hospitalId.push(hospital.id);
-        });
-      }
-      beneficiary = await prisma.beneficiary.findMany({
-        where: {
-          OR: [
-            {
-              beneficiaryName: {
-                contains: req.query.otherParam,
-              },
-            },
-            {
-              hospitalId: { in: hospitalId },
-            },
-            {
-              mrn: {
-                contains: req.query.otherParam,
-              },
-            },
-            {
-              phoneNumber: {
-                contains: req.query.otherParam,
-              },
-            },
-          ],
-          deleted: false,
-        },
-        include: {
-          hospital: true,
-          Computer_Training: true,
-          Mobile_Training: true,
-          Orientation_Mobility_Training: true,
-          Vision_Enhancement: true,
-          Comprehensive_Low_Vision_Evaluation: true,
-          Counselling_Education: true,
-          Low_Vision_Evaluation: true,
-          Training: true,
-        },
-      });
+      beneficiary = await readBeneficiaryOtherParam(req.query.otherParam);
     } else if (req.query.mrn != null) {
-      beneficiary = await prisma.beneficiary.findUnique({
-        where: {
-          mrn: req.query.mrn,
-          deleted: false,
-        },
-        include: {
-          hospital: true,
-          Computer_Training: true,
-          Mobile_Training: true,
-          Orientation_Mobility_Training: true,
-          Vision_Enhancement: true,
-          Comprehensive_Low_Vision_Evaluation: true,
-          Counselling_Education: true,
-          Low_Vision_Evaluation: true,
-          Training: true,
-        },
-      });
+      beneficiary = await readBeneficiaryMrn(req.query.mrn);
     } else if (req.query.beneficiaryName != '') {
       beneficiary = await prisma.beneficiary.findMany({
         where: {
