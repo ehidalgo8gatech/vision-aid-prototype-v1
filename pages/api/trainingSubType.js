@@ -62,6 +62,14 @@ async function deleteData(req, res) {
 
 async function updateData(req, res) {}
 
+export const readTrainingSubType = async () => {
+  const training = await prisma.training_Sub_Type.findMany({
+    include: {
+      trainingType: true,
+    },
+  });
+  return training;
+};
 async function readData(req, res) {
   const training = await prisma.training_Sub_Type.findMany({
     include: {

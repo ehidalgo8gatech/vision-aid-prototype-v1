@@ -64,6 +64,11 @@ async function readData(req, res) {
   return res.status(200).json(counseling, { success: true });
 }
 
+export const readCounsellingType = async () => {
+  const counseling = await prisma.counselling_Type.findMany({});
+  return counseling;
+};
+
 async function addData(req, res) {
   const body = req.body;
   const create = {
