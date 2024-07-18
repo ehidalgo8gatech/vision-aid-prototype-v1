@@ -12,6 +12,8 @@ import { getTrainingSubTypes } from "@/pages/api/trainingSubType";
 import { findAllHospital } from "./api/hospital";
 import { readUser } from "./api/user";
 import ConsentForm from "./components/ConsentForm";
+import { readBeneficiaryMrn } from "./api/beneficiary";
+import { readBeneficiaryMirror } from "./api/beneficiaryMirror";
 
 function UserPage(props) {
   const router = useRouter();
@@ -829,19 +831,7 @@ export async function getServerSideProps(ctx) {
     };
   }
   const currentUser = await readUser(session.user.email);
-  var user;
-  try {
-    const beneficiary = await await fetch(
-      `${process.env.NEXTAUTH_URL}/api/beneficiary?mrn=${ctx.query.mrn}`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    user = await beneficiary.json();
-  } catch (error) {
-    console.error("Error fetching users:", error);
-  }
+  const user = await readBeneficiaryMrn(ctx.query.mrn);
 
   if (!user) {
     return {
@@ -849,23 +839,15 @@ export async function getServerSideProps(ctx) {
     };
   }
 
-  const benMirror = await fetch(
-    `${process.env.NEXTAUTH_URL}/api/beneficiaryMirror?hospital=` +
-      user.hospital.name,
-    {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  const benMirrorJson = await benMirror.json();
+  const beneficiaryMirror = await readBeneficiaryMirror(user.hospital?.name);
 
-  user.hospitalName = user.hospital.name;
+  user.hospitalName = user.hospital?.name;
 
   return {
     props: {
-      currentUser: currentUser,
-      user: user,
-      beneficiaryMirror: benMirrorJson,
+      currentUser: JSON.parse(JSON.stringify(currentUser)),
+      user: JSON.parse(JSON.stringify(user)),
+      beneficiaryMirror: beneficiaryMirror,
       trainingType: await getTrainingTypes(),
       counsellingType: await getCounsellingType(),
       trainingSubType: await getTrainingSubTypes(),

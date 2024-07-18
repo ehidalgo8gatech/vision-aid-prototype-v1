@@ -8,6 +8,7 @@ import { AgGridReact } from 'ag-grid-react'; // React Data Grid Component
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the Data Grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the Data Grid
 import { useState } from "react";
+import { readBeneficiaryOtherParam } from "./api/beneficiary";
 
 export async function getServerSideProps(ctx) {
   const session = await getSession(ctx);
@@ -19,23 +20,12 @@ export async function getServerSideProps(ctx) {
     };
   }
   const user = await readUser(session.user.email);
-  let users = [];
+  let users = await readBeneficiaryOtherParam('Test Hospital');
 
-  try {
-    const beneficiary = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/beneficiary?otherParam=Test%20Hospital`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    users = await beneficiary.json();
-  } catch (error) {
-    console.error("Error fetching beneificiary information:", error);
-  }
+  
   return {
     props: {
-      users,
+      users: JSON.parse(JSON.stringify(users)),
       user: JSON.parse(JSON.stringify(user)),
     },
   };
