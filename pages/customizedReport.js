@@ -290,12 +290,6 @@ function ReportCustomizer(props) {
         finalTrainingData = trainingData.filter((training) =>
           selectedTrainingTypes.includes(training["Type of Training"])
         );
-        // After removing the entries not corresponding to selected training types, re-arrange indices to prevent gaps
-        let index = 1;
-        for (let training of finalTrainingData) {
-          training["Index"] = index;
-          index += 1;
-        }
       }
       const wtd = XLSX.utils.json_to_sheet(finalTrainingData);
       XLSX.utils.book_append_sheet(wb, wtd, "Training Sheet");
