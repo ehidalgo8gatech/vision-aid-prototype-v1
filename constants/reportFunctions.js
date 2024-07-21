@@ -24,7 +24,6 @@ const addEmptyElements = (array, element, count) => {
 
 // Excel header for CLVE sheet
 const clveMainHeader = [
-  "Index",
   "Date of Evaluation",
   "MRN",
   "Name of the Patient",
@@ -83,7 +82,6 @@ addEmptyElements(clveSubHeader, "", 2);
 
 // Excel header for Low Vision Screening Sheet
 const lveMainHeader = [
-  "Index",
   "Date of Evaluation",
   "MRN",
   "Name of the Patient",
@@ -193,9 +191,8 @@ function getLatestDispensedDevice(sortedClveData, deviceType) {
 }
 
 // Returns common columns of all Excel sheets
-function getCommonData(beneficiaryIdx, beneficiary) {
+function getCommonData(beneficiary) {
   const commonData = {
-    Index: beneficiaryIdx,
     "Date of Evaluation": new Date(beneficiary["dateOfBirth"]),
     MRN: beneficiary["mrn"],
     "Name of the Patient": beneficiary["beneficiaryName"],
@@ -249,9 +246,8 @@ function getBeneficiaryJson(commonData, beneficiary) {
 }
 
 // Get CLVE Sheet data
-function getClveJson(commonData, clveIdx, clveData) {
+function getClveJson(commonData, clveData) {
   let clveJson = { ...commonData };
-  clveJson["Index"] = clveIdx;
   clveJson["Date of Evaluation"] = new Date(clveData["date"]);
   clveJson["Diagnosis"] = clveData["diagnosis"];
   clveJson["Acuity Notation"] =
@@ -299,9 +295,8 @@ function getClveJson(commonData, clveIdx, clveData) {
 }
 
 // Get Vison Enhancement Sheet data
-function getVeJson(commonData, veIdx, veData) {
+function getVeJson(commonData, veData) {
   let veJson = { ...commonData };
-  veJson["Index"] = veIdx;
   veJson["Date of Evaluation"] = new Date(veData["date"]);
   veJson["Diagnosis"] = veData["Diagnosis"];
   veJson["Session Number"] = veData["sessionNumber"];
@@ -312,9 +307,8 @@ function getVeJson(commonData, veIdx, veData) {
 }
 
 // Get Low Vision Screening Sheet data
-function getLveJson(commonData, lveIdx, lveData) {
+function getLveJson(commonData, lveData) {
   let lveJson = { ...commonData };
-  lveJson["Index"] = lveIdx;
   lveJson["Date of Evaluation"] = new Date(lveData["date"]);
   lveJson["Diagnosis"] = lveData["diagnosis"];
   lveJson["Session Number"] = lveData["sessionNumber"];
@@ -342,9 +336,8 @@ function getLveJson(commonData, lveIdx, lveData) {
 }
 
 // Get Training Sheet data
-function getTrainingJson(commonData, tIdx, tData) {
+function getTrainingJson(commonData, tData) {
   let tJson = { ...commonData };
-  tJson["Index"] = tIdx; // has been referred in customizedReports. Please make necessary changes if this column name is changed.
   tJson["Date of Evaluation"] = new Date(tData["date"]);
   tJson["Session Number"] = tData["sessionNumber"];
   tJson["Type of Training"] = tData["type"]; // has been referred in customizedReports. Please make necessary changes if this column name is changed.
@@ -355,9 +348,8 @@ function getTrainingJson(commonData, tIdx, tData) {
 }
 
 // Get Counselling Education Sheet data
-function getCeJson(commonData, ceIdx, ceData) {
+function getCeJson(commonData, ceData) {
   let ceJson = { ...commonData };
-  ceJson["Index"] = ceIdx;
   ceJson["Date of Evaluation"] = new Date(ceData["date"]);
   ceJson["Session Number"] = ceData["sessionNumber"];
   ceJson["MDVI"] = ceData["MDVI"];
@@ -456,9 +448,8 @@ function getAggregatedHospitalData(
     }
   });
 
-  let overallTrainingRow = { Programs1: "Overall Training", Programs2: "" };
+  let overallTrainingRow = { Programs1: "Total # of Sessions", Programs2: "" };
   let otSessionsTotal = 0;
-  let otBeneficiariesTotal = 0;
 
   // Screenings only
   let screeningsBeneficiaries, visionEnhancementBeneficiaries;
@@ -561,12 +552,6 @@ function getAggregatedHospitalData(
   };
   let counsellingTrainingBeneficiariesTotal = 0;
 
-  // No activity
-  let noActivityRow = {
-    Programs1: "No Activity",
-    Programs2: "",
-  };
-  let noActivityBeneficiariesTotal = 0;
 
   // Total beneficiaries
   let totalBeneficiariesRow = {
@@ -704,21 +689,9 @@ function getAggregatedHospitalData(
       trainingIdx += 1;
     }
 
-    // Overall Training
+    // Total # of Sessions
     overallTrainingRow[hospital.name + " Sessions"] = hospital.training.length;
-    overallTrainingRow[hospital.name + " Beneficiaries"] = Array.from(
-      new Set(hospital.training.map((evaluation) => evaluation.beneficiaryId))
-    ).length;
     otSessionsTotal += overallTrainingRow[hospital.name + " Sessions"];
-    otBeneficiariesTotal +=
-      overallTrainingRow[hospital.name + " Beneficiaries"];
-
-    // All Unique beneficiaries
-    let allBeneficiaries = new Set(
-      hospital.beneficiary.map(
-        (beneficiary) => beneficiary.mrn
-      )
-    );
 
     // Unique beneficiaries who had Screenings (LVE or mDVI)
     let tempSet1, tempSet2;
@@ -870,19 +843,6 @@ function getAggregatedHospitalData(
     ).length;
     counsellingTrainingBeneficiariesTotal += counsellingTrainingRow[hospital.name + " Beneficiaries"];
 
-    // No Activity
-    noActivityRow[hospital.name + " Sessions"] = "";
-    noActivityRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(allBeneficiaries, union(
-        clveBeneficiaries,
-        counsellingBeneficiaries,
-        trainingBeneficiaries,
-        screeningsBeneficiaries,
-        visionEnhancementBeneficiaries
-      ))
-    ).length;
-    noActivityBeneficiariesTotal += noActivityRow[hospital.name + " Beneficiaries"];
-
     // Total Beneficiaries
     totalBeneficiariesRow[hospital.name + " Beneficiaries"] =
       + screeningsOnlyRow[hospital.name + " Beneficiaries"]
@@ -898,9 +858,7 @@ function getAggregatedHospitalData(
       + clveDevicesCounsellingTrainingRow[hospital.name + " Beneficiaries"]
       + counsellingOnlyRow[hospital.name + " Beneficiaries"]
       + trainingOnlyRow[hospital.name + " Beneficiaries"]
-      + counsellingTrainingRow[hospital.name + " Beneficiaries"]
-      + noActivityRow[hospital.name + " Beneficiaries"]
-      ;
+      + counsellingTrainingRow[hospital.name + " Beneficiaries"];
     totalBeneficiariesTotal += totalBeneficiariesRow[hospital.name + " Beneficiaries"];
   }
 
@@ -924,17 +882,14 @@ function getAggregatedHospitalData(
     ceRow["Number of Sessions"] = ceSessionsTotal;
     ceRow["Number of Beneficiaries"] = ceBeneficiariesTotal;
 
-    let trainingIdx = 0;
     for (let trainingTypeRow of trainingTypesList) {
       trainingTypeRow["tRow"]["Number of Sessions"] =
         trainingTypeRow["tSessionsTotal"];
       trainingTypeRow["tRow"]["Number of Beneficiaries"] =
         trainingTypeRow["tBeneficiariesTotal"];
-      trainingIdx += 1;
     }
 
     overallTrainingRow["Number of Sessions"] = otSessionsTotal;
-    overallTrainingRow["Number of Beneficiaries"] = otBeneficiariesTotal;
 
     clveOnlyRow["Number of Sessions"] = "";
     clveOnlyRow["Number of Beneficiaries"] = clveOnlyBeneficiariesTotal;
@@ -978,9 +933,6 @@ function getAggregatedHospitalData(
     counsellingTrainingRow["Number of Sessions"] = "";
     counsellingTrainingRow["Number of Beneficiaries"] = counsellingTrainingBeneficiariesTotal;
 
-    noActivityRow["Number of Sessions"] = "";
-    noActivityRow["Number of Beneficiaries"] = noActivityBeneficiariesTotal;
-
     totalBeneficiariesRow["Number of Sessions"] = "";
     totalBeneficiariesRow["Number of Beneficiaries"] = totalBeneficiariesTotal;
 
@@ -998,6 +950,7 @@ function getAggregatedHospitalData(
   aggregatedHospitalData.push(screeningsOnlyRow);
   aggregatedHospitalData.push(visionEnhancementOnlyRow);
   aggregatedHospitalData.push(screeningsVisionEnhancementRow);
+  aggregatedHospitalData.push(blankRow);
   aggregatedHospitalData.push(clveOnlyRow);
   aggregatedHospitalData.push(clveDevicesRow);
   aggregatedHospitalData.push(clveCounsellingRow);
@@ -1009,7 +962,6 @@ function getAggregatedHospitalData(
   aggregatedHospitalData.push(counsellingOnlyRow);
   aggregatedHospitalData.push(trainingOnlyRow);
   aggregatedHospitalData.push(counsellingTrainingRow);
-  aggregatedHospitalData.push(noActivityRow);
   aggregatedHospitalData.push(totalBeneficiariesRow);
 
   return aggregatedHospitalData;
@@ -1041,20 +993,6 @@ function sortDataByDate(obj) {
   });
 }
 
-// indexing function for the sorted data
-// pass "" as the key, if the re-numbering to done for all the records ignoring the sorting key
-function indexSortedData(obj, key) {
-  let idx = 1;
-  let currentType = "";
-  obj.map((item) => {
-    if (currentType !== item[key]) {
-      currentType = item[key];
-      idx = 1;
-    }
-    item["Index"] = idx++;
-  });
-}
-
 // format the date elements in the given object
 function formatDateElements(obj) {
   obj.map((item) => {
@@ -1071,6 +1009,22 @@ export function filterTrainingSummaryByDateRange(
 ) {
   const filteredSummary = summary.map((element) => {
     const visionEnhancement = element.visionEnhancement.filter((training) => {
+      return filterByDate(training, startDate, endDate);
+    });
+
+    const training = element.training.filter((training) => {
+      return filterByDate(training, startDate, endDate);
+    });
+
+    const computerTraining = element.computerTraining.filter((training) => {
+      return filterByDate(training, startDate, endDate);
+    });
+
+    const mobileTraining = element.mobileTraining.filter((training) => {
+      return filterByDate(training, startDate, endDate);
+    });
+
+    const orientationMobilityTraining = element.orientationMobilityTraining.filter((training) => {
       return filterByDate(training, startDate, endDate);
     });
 
@@ -1093,6 +1047,10 @@ export function filterTrainingSummaryByDateRange(
 
     let filteredElement = {
       ...element,
+      training,
+      orientationMobilityTraining,
+      mobileTraining,
+      computerTraining,
       visionEnhancement,
       counsellingEducation,
       comprehensiveLowVisionEvaluation,
@@ -1107,14 +1065,8 @@ export function filterTrainingSummaryByDateRange(
         beneficiary,
       };
     } else if (summaryType === "beneficiary") {
-      const training = element.training.filter((tr) => {
-        return filterByDate(tr, startDate, endDate);
-      });
 
-      return {
-        ...filteredElement,
-        training,
-      };
+      return filteredElement;
     }
   });
 
@@ -1240,33 +1192,24 @@ export function getReportData(
     includeAllBeneficiaries
   );
 
-  let beneficiaryIdx = 1;
-  let clveIdx = 1;
-  let edIdx = 1;
-  let veIdx = 1;
-  let lveIdx = 1;
-  let tIdx = 1;
-  let ceIdx = 1;
 
   let edMap = new Map();
 
   // Filtered Report Download
   for (let beneficiary of filteredBeneficiaryData) {
     // Commmon preceding columns for all sheets
-    let commonData = getCommonData(beneficiaryIdx, beneficiary);
+    let commonData = getCommonData(beneficiary);
 
     // Beneficiary Data Sheet:
     let beneficiaryJson = getBeneficiaryJson(commonData, beneficiary);
     beneficiaryData.push(beneficiaryJson);
-    beneficiaryIdx += 1;
 
     // CLVE sheet and electronic devices sheet:
     let beneficiaryCLVE = beneficiary["comprehensiveLowVisionEvaluation"];
     for (let clveData of beneficiaryCLVE) {
       // CLVE row addition
-      let clveJson = getClveJson(commonData, clveIdx, clveData);
+      let clveJson = getClveJson(commonData, clveData);
       comprehensiveLowVisionEvaluationData.push(clveJson);
-      clveIdx += 1;
 
       // Electronic device addition to map
       if (isNotNullEmptyOrUndefined(clveData["dispensedElectronic"])) {
@@ -1288,33 +1231,29 @@ export function getReportData(
     // Vision Enhancement Sheet
     let beneficiaryVE = beneficiary["visionEnhancement"];
     for (let veData of beneficiaryVE) {
-      let veJson = getVeJson(commonData, veIdx, veData);
+      let veJson = getVeJson(commonData, veData);
       visionEnhancementData.push(veJson);
-      veIdx += 1;
     }
 
     // Low Vision Enhancement Sheet
     let beneficiaryLVE = beneficiary["lowVisionEvaluation"];
     for (let lveData of beneficiaryLVE) {
-      let lveJson = getLveJson(commonData, lveIdx, lveData);
+      let lveJson = getLveJson(commonData, lveData);
       lowVisionEvaluationData.push(lveJson);
-      lveIdx += 1;
     }
 
     // Training Sheet
     let beneficiaryT = beneficiary["training"];
     for (let tData of beneficiaryT) {
-      let tJson = getTrainingJson(commonData, tIdx, tData);
+      let tJson = getTrainingJson(commonData, tData);
       trainingData.push(tJson);
-      tIdx += 1;
     }
 
     // Counseling Education Sheet
     let beneficiaryCE = beneficiary["counsellingEducation"];
     for (let ceData of beneficiaryCE) {
-      let ceJson = getCeJson(commonData, ceIdx, ceData);
+      let ceJson = getCeJson(commonData, ceData);
       counsellingEducationData.push(ceJson);
-      ceIdx += 1;
     }
   }
 
@@ -1332,17 +1271,9 @@ export function getReportData(
   formatDateElements(counsellingEducationData);
   formatDateElements(trainingData);
 
-  // Re-number the records for the sorted sheets, by type
-  indexSortedData(visionEnhancementData, "");
-  indexSortedData(lowVisionEvaluationData, "");
-  indexSortedData(comprehensiveLowVisionEvaluationData, "");
-  indexSortedData(counsellingEducationData, "Type");
-  indexSortedData(trainingData, "Type of Training");
-
   for (let [device, count] of edMap) {
-    let edJson = { Index: edIdx, "Device Name": device, Count: count };
+    let edJson = { "Device Name": device, Count: count };
     electronicDevicesData.push(edJson);
-    edIdx += 1;
   }
 
   return {
