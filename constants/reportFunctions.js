@@ -690,7 +690,15 @@ function getAggregatedHospitalData(
     }
 
     // Total # of Sessions
-    overallTrainingRow[hospital.name + " Sessions"] = hospital.training.length;
+    const hospitalTotalSessions = hospital.training.length
+                                + hospital.computerTraining.length
+                                + hospital.mobileTraining.length
+                                + hospital.orientationMobilityTraining.length
+                                + hospital.counsellingEducation.length
+                                + hospital.visionEnhancement.length
+                                + hospital.lowVisionEvaluation.length
+                                + hospital.comprehensiveLowVisionEvaluation.length; 
+    overallTrainingRow[hospital.name + " Sessions"] = hospitalTotalSessions;
     otSessionsTotal += overallTrainingRow[hospital.name + " Sessions"];
 
     // Unique beneficiaries who had Screenings (LVE or mDVI)
@@ -939,7 +947,6 @@ function getAggregatedHospitalData(
   }
   // Add rows to the aggregated hospital data
   aggregatedHospitalData.push(lveRow);
-  aggregatedHospitalData.push(mdviRow);
   aggregatedHospitalData.push(veRow);
   aggregatedHospitalData.push(clveRow);
   aggregatedHospitalData.push(devicesRow);
@@ -963,6 +970,8 @@ function getAggregatedHospitalData(
   aggregatedHospitalData.push(trainingOnlyRow);
   aggregatedHospitalData.push(counsellingTrainingRow);
   aggregatedHospitalData.push(totalBeneficiariesRow);
+  aggregatedHospitalData.push(blankRow);
+  aggregatedHospitalData.push(mdviRow);
 
   return aggregatedHospitalData;
 }

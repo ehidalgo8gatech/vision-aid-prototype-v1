@@ -32,6 +32,7 @@ async function fetchData(req, res) {
         const date = startDate && endDate ? { 
             lte: new Date(req.query.endDate),
             gte: new Date(req.query.startDate),
+
         } : undefined;
         const id = parseInt(req.query.id);
         const beneficiaryListFromAPI = await prisma.beneficiary.findMany({
@@ -62,28 +63,34 @@ async function fetchData(req, res) {
             },
             where: {
                 deleted: false, hospitalId: { equals: id },
-                AND: {
-                    OR: [{
-                        Vision_Enhancement: { every: { date } },
-                    }, {
-                        Counselling_Education: { every: { date } },
-                    }, {
-                        Comprehensive_Low_Vision_Evaluation: { every: { date } },
-                    }, {
-                        Low_Vision_Evaluation: { every: { date } },
-                    }, {
-                        Training: { every: { date } },
-                    }, {
-                        Computer_Training: { every: { date } },
-                    }, {
-                        Mobile_Training: { every: { date } },
-                    }, {
-                        Orientation_Mobility_Training: { every: { date } }
-                    }]
-                }
+                OR: [{
+                    Vision_Enhancement: { every: { date } },
+                    NOT: [{ Vision_Enhancement: { every: { date: null }}}]
+                }, {
+                    Counselling_Education: { every: { date } },
+                    NOT: [{ Counselling_Education: { every: { date: null }}}]
+                }, {
+                    Comprehensive_Low_Vision_Evaluation: { every: { date } },
+                    NOT: [{ Comprehensive_Low_Vision_Evaluation: { every: { date: null }}}]
+                }, {
+                    Low_Vision_Evaluation: { every: { date } },
+                    NOT: [{ Low_Vision_Evaluation: { every: { date: null }}}]
+                }, {
+                    Training: { every: { date } },
+                    NOT: [{ Training: { every: { date: null }}}]
+                }, {
+                    Computer_Training: { every: { date } },
+                    NOT: [{ Computer_Training: { every: { date: null }}}]
+                }, {
+                    Mobile_Training: { every: { date } },
+                    NOT: [{ Mobile_Training: { every: { date: null }}}]
+                }, {
+                    Orientation_Mobility_Training: { every: { date } },
+                    NOT: [{ Orientation_Mobility_Training: { every: { date: null }}}]
+                }]
             },
         });
-
+        
         const beneficiaryList = beneficiaryListFromAPI.map((beneficiary) => ({
             mrn: beneficiary.mrn,
             beneficiaryName: beneficiary.beneficiaryName,
