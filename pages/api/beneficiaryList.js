@@ -118,20 +118,6 @@ async function fetchData(req, res) {
             orientationMobilityTraining: beneficiary.Orientation_Mobility_Training,
         }));
 
-        const allDates = beneficiaryList.map((ben) => {
-            return { [ben.beneficiaryName]: [...ben.visionEnhancement.map(({ date }) => date),
-                                             ...ben.counsellingEducation.map(({ date }) => date),
-                                             ...ben.comprehensiveLowVisionEvaluation.map(({ date }) => date),
-                                             ...ben.lowVisionEvaluation.map(({ date }) => date),
-                                             ...ben.training.map(({ date }) => date),
-                                             ...ben.computerTraining.map(({ date }) => date),
-                                             ...ben.mobileTraining.map(({ date }) => date),
-                                             ...ben.orientationMobilityTraining.map(({ date }) => date)
-                                            ]};
-        });
-
-        console.log('All dates: ', allDates);
-
         return res.status(200).json(beneficiaryList, { success: true });
     } catch (error) {
         console.log(error);
