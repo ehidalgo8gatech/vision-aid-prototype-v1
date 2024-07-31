@@ -454,21 +454,69 @@ function getAggregatedHospitalData(
   // Screenings only
   let screeningsBeneficiaries, visionEnhancementBeneficiaries;
   let screeningsOnlyRow = {
-    Programs1: "Screenings Only",
+    Programs1: "Low vision screening at centre/screening camps only",
     Programs2: "",
   };
   let screeningsOnlyBeneficiariesTotal = 0;
-
-  // Functional Vision/Early Intervention only
+  let screeningsAndCounselingRow = {
+    Programs1: "Low vision screening at centre/screening camps + Counselling",
+    Programs2: "",
+  };
+  let screeningsAndCounselingTotal = 0;
+  let screeningsAndTrainingRow = {
+    Programs1: "Low vision screening at centre/screening camps + Training",
+    Programs2: "",
+  };
+  let screeningsAndTrainingTotal = 0;
+  let screeningsAndCLVERow = {
+    Programs1: "Low vision screening at centre/screening camps + CLVE",
+    Programs2: "",
+  };
+  let screeningsAndCLVETotal = 0;
+  let screeningsCLVEVisionRow = {
+    Programs1: "Low vision screening at centre/screening camps + CLVE + Functional Vision/Early Intervention/ Vision enhancement",
+    Programs2: "",
+  };
+  let screeningsCLVEVisionTotal = 0;
+  let screeningsCLVEVisionDevicesRow = {
+    Programs1: "Low vision screening at centre/screening camps + CLVE + Functional Vision/Early Intervention/ Vision enhancement + Dispenced devices",
+    Programs2: "",
+  };
+  let screeningsCLVEVisionDevicesTotal = 0;
+  let screeningsCLVEVisionDevicesTrainingRow = {
+    Programs1: "Low vision screening at centre/screening camps + CLVE + Functional Vision/Early Intervention/ Vision enhancement + Dispenced devices + Training",
+    Programs2: "",
+  };
+  let screeningsCLVEVisionDevicesTrainingTotal = 0;
   let visionEnhancementOnlyRow = {
-    Programs1: "Functional Vision/Early Intervention Only",
+    Programs1: "Functional Vision/Early Intervention/ Vision enhancement only",
     Programs2: "",
   };
   let visionEnhancementOnlyBeneficiariesTotal = 0;
+  let visionEnhancementCounselingRow = {
+    Programs1: "Functional Vision/Early Intervention/ Vision enhancement + Counselling",
+    Programs2: "",
+  };
+  let visionEnhancementCounselingTotal = 0;
+  let visionEnhancementCounselingTrainingRow = {
+    Programs1: "Functional Vision/Early Intervention/ Vision enhancement + Counselling + Training",
+    Programs2: "",
+  };
+  let visionEnhancementCounselingTrainingTotal = 0;
+  let visionEnhancementCounselingDevicesRow = {
+    Programs1: "Functional Vision/Early Intervention/ Vision enhancement + Counselling + Devices",
+    Programs2: "",
+  };
+  let visionEnhancementCounselingDevicesTotal = 0;
+  let visionEnhancementCounselingTrainingDevicesRow = {
+    Programs1: "Functional Vision/Early Intervention/ Vision enhancement + Counselling + Training + Devices",
+    Programs2: "",
+  };
+  let visionEnhancementCounselingTrainingDevicesTotal = 0;
 
   // Screenings + Functional Vision/Early Intervention
   let screeningsVisionEnhancementRow = {
-    Programs1: "Screenings + Functional Vision/Early Intervention",
+    Programs1: "Screenings + Functional Vision/Early Intervention/ Vision enhancement",
     Programs2: "",
   };
   let screeningsVisionEnhancementBeneficiariesTotal = 0;
@@ -756,104 +804,184 @@ function getAggregatedHospitalData(
     // Screenings Only
     screeningsOnlyRow[hospital.name + " Sessions"] = "";
     screeningsOnlyRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(screeningsBeneficiaries, union(clveBeneficiaries, visionEnhancementBeneficiaries))
+      difference(screeningsBeneficiaries, union(clveBeneficiaries, visionEnhancementBeneficiaries, trainingBeneficiaries, counsellingBeneficiaries, devicesBeneficiaries))
     ).length;
     screeningsOnlyBeneficiariesTotal += screeningsOnlyRow[hospital.name + " Beneficiaries"];
+
+    // Low vision screening at centre/screening camps + Counselling Only
+    screeningsAndCounselingRow[hospital.name + " Sessions"] = "";
+    screeningsAndCounselingRow[hospital.name + " Beneficiaries"] = Array.from(
+      difference(intersect(screeningsBeneficiaries, counsellingBeneficiaries), union(clveBeneficiaries, visionEnhancementBeneficiaries, trainingBeneficiaries, devicesBeneficiaries))
+    ).length;
+    screeningsAndCounselingTotal += screeningsAndCounselingRow[hospital.name + " Beneficiaries"];
+
+    // Low vision screening at centre/screening camps + Training
+    screeningsAndTrainingRow[hospital.name + " Sessions"] = "";
+    screeningsAndTrainingRow[hospital.name + " Beneficiaries"] = Array.from(
+      difference(intersect(screeningsBeneficiaries, trainingBeneficiaries), union(clveBeneficiaries, visionEnhancementBeneficiaries, counsellingBeneficiaries, devicesBeneficiaries))
+    ).length;
+    screeningsAndTrainingTotal += screeningsAndTrainingRow[hospital.name + " Beneficiaries"];
+
+    // Low vision screening at centre/screening camps + CLVE
+    screeningsAndCLVERow[hospital.name + " Sessions"] = "";
+    screeningsAndCLVERow[hospital.name + " Beneficiaries"] = Array.from(
+      difference(intersect(screeningsBeneficiaries, clveBeneficiaries), union(trainingBeneficiaries, visionEnhancementBeneficiaries, counsellingBeneficiaries, devicesBeneficiaries))
+    ).length;
+    screeningsAndCLVETotal += screeningsAndCLVERow[hospital.name + " Beneficiaries"];
+
+    // Low vision screening at centre/screening camps + CLVE + Functional Vision/Early Intervention/ Vision enhancement
+    screeningsCLVEVisionRow[hospital.name + " Sessions"] = "";
+    screeningsCLVEVisionRow[hospital.name + " Beneficiaries"] = Array.from(
+      difference(intersect(intersect(screeningsBeneficiaries, clveBeneficiaries), visionEnhancementBeneficiaries), union(trainingBeneficiaries, counsellingBeneficiaries, devicesBeneficiaries))
+    ).length;
+    screeningsCLVEVisionTotal += screeningsCLVEVisionRow[hospital.name + " Beneficiaries"];
+
+    // Low vision screening at centre/screening camps+CLVE +Functional Vision/Early Intervention/ Vision enhancement+Dispenced devices
+    screeningsCLVEVisionDevicesRow[hospital.name + " Sessions"] = "";
+    screeningsCLVEVisionDevicesRow[hospital.name + " Beneficiaries"] = Array.from(
+      difference(intersect(intersect(intersect(screeningsBeneficiaries, clveBeneficiaries), visionEnhancementBeneficiaries), devicesBeneficiaries), union(trainingBeneficiaries, counsellingBeneficiaries))
+    ).length;
+    screeningsCLVEVisionDevicesTotal += screeningsCLVEVisionDevicesRow[hospital.name + " Beneficiaries"];
+
+    // Low vision screening at centre/screening camps + CLVE + Functional Vision/Early Intervention/ Vision enhancement + Dispenced devices + Training
+    screeningsCLVEVisionDevicesTrainingRow[hospital.name + " Sessions"] = "";
+    screeningsCLVEVisionDevicesTrainingRow[hospital.name + " Beneficiaries"] = Array.from(
+      difference(intersect(intersect(intersect(intersect(screeningsBeneficiaries, clveBeneficiaries), visionEnhancementBeneficiaries), devicesBeneficiaries), trainingBeneficiaries), counsellingBeneficiaries)
+    ).length;
+    screeningsCLVEVisionDevicesTrainingTotal += screeningsCLVEVisionDevicesTrainingRow[hospital.name + " Beneficiaries"];
 
     // Functional Vision/Early Intervention only
     visionEnhancementOnlyRow[hospital.name + " Sessions"] = "";
     visionEnhancementOnlyRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(visionEnhancementBeneficiaries, union(clveBeneficiaries, screeningsBeneficiaries))
+      difference(visionEnhancementBeneficiaries, union(screeningsBeneficiaries, clveBeneficiaries, trainingBeneficiaries, counsellingBeneficiaries, devicesBeneficiaries))
     ).length;
     visionEnhancementOnlyBeneficiariesTotal += visionEnhancementOnlyRow[hospital.name + " Beneficiaries"];
+
+    // Functional Vision/Early Intervention/ Vision enhancement + Counselling
+    visionEnhancementCounselingRow[hospital.name + " Sessions"] = "";
+    visionEnhancementCounselingRow[hospital.name + " Beneficiaries"] = Array.from(
+      difference(intersect(visionEnhancementBeneficiaries, counsellingBeneficiaries), union(screeningsBeneficiaries, clveBeneficiaries, visionEnhancementBeneficiaries, trainingBeneficiaries, devicesBeneficiaries))
+    ).length;
+    visionEnhancementCounselingTotal += visionEnhancementCounselingRow[hospital.name + " Beneficiaries"];
+
+    // Functional Vision/Early Intervention/ Vision enhancement + Counselling + Training
+    visionEnhancementCounselingTrainingRow[hospital.name + " Sessions"] = "";
+    visionEnhancementCounselingTrainingRow[hospital.name + " Beneficiaries"] = Array.from(
+      difference(intersect(intersect(visionEnhancementBeneficiaries, counsellingBeneficiaries), trainingBeneficiaries), union(screeningsBeneficiaries, clveBeneficiaries, visionEnhancementBeneficiaries, devicesBeneficiaries))
+    ).length;
+    visionEnhancementCounselingTrainingTotal += visionEnhancementCounselingTrainingRow[hospital.name + " Beneficiaries"];
+
+    // Functional Vision/Early Intervention/ Vision enhancement + Counselling + Training
+    visionEnhancementCounselingDevicesRow[hospital.name + " Sessions"] = "";
+    visionEnhancementCounselingDevicesRow[hospital.name + " Beneficiaries"] = Array.from(
+      difference(intersect(intersect(visionEnhancementBeneficiaries, counsellingBeneficiaries), devicesBeneficiaries), union(screeningsBeneficiaries, clveBeneficiaries, visionEnhancementBeneficiaries, trainingBeneficiaries))
+    ).length;
+    visionEnhancementCounselingDevicesTotal += visionEnhancementCounselingDevicesRow[hospital.name + " Beneficiaries"];
+
+    // Functional Vision/Early Intervention/ Vision enhancement + Counselling + Training + Devices
+    visionEnhancementCounselingTrainingDevicesRow[hospital.name + " Sessions"] = "";
+    visionEnhancementCounselingTrainingDevicesRow[hospital.name + " Beneficiaries"] = Array.from(
+      difference(intersect(intersect(intersect(visionEnhancementBeneficiaries, counsellingBeneficiaries), trainingBeneficiaries), devicesBeneficiaries), union(screeningsBeneficiaries, clveBeneficiaries, visionEnhancementBeneficiaries))
+    ).length;
+    visionEnhancementCounselingTrainingDevicesTotal += visionEnhancementCounselingTrainingDevicesRow[hospital.name + " Beneficiaries"];
 
     // Screenings + Functional Vision/Early Intervention
     screeningsVisionEnhancementRow[hospital.name + " Sessions"] = "";
     screeningsVisionEnhancementRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(intersect(visionEnhancementBeneficiaries, screeningsBeneficiaries), clveBeneficiaries)
+      difference(intersect(visionEnhancementBeneficiaries, screeningsBeneficiaries), union(counsellingBeneficiaries, devicesBeneficiaries, clveBeneficiaries, trainingBeneficiaries))
     ).length;
     screeningsVisionEnhancementBeneficiariesTotal += screeningsVisionEnhancementRow[hospital.name + " Beneficiaries"];
 
     // CLVE only
     clveOnlyRow[hospital.name + " Sessions"] = "";
     clveOnlyRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(clveBeneficiaries, union(devicesBeneficiaries, counsellingBeneficiaries, trainingBeneficiaries))
+      difference(clveBeneficiaries, union(devicesBeneficiaries, counsellingBeneficiaries, trainingBeneficiaries, visionEnhancementBeneficiaries, screeningsBeneficiaries))
     ).length;
     clveOnlyBeneficiariesTotal += clveOnlyRow[hospital.name + " Beneficiaries"];
 
     // CLVE + devices
     clveDevicesRow[hospital.name + " Sessions"] = "";
     clveDevicesRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(intersect(clveBeneficiaries, devicesBeneficiaries), union(counsellingBeneficiaries, trainingBeneficiaries))
+      difference(intersect(clveBeneficiaries, devicesBeneficiaries), union(counsellingBeneficiaries, trainingBeneficiaries, visionEnhancementBeneficiaries, screeningsBeneficiaries))
     ).length;
     clveDevicesBeneficiariesTotal += clveDevicesRow[hospital.name + " Beneficiaries"];
 
     // CLVE + counselling
     clveCounsellingRow[hospital.name + " Sessions"] = "";
     clveCounsellingRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(intersect(clveBeneficiaries, counsellingBeneficiaries), union(devicesBeneficiaries, trainingBeneficiaries))
+      difference(intersect(clveBeneficiaries, counsellingBeneficiaries), union(devicesBeneficiaries, trainingBeneficiaries, visionEnhancementBeneficiaries, screeningsBeneficiaries))
     ).length;
     clveCounsellingBeneficiariesTotal += clveCounsellingRow[hospital.name + " Beneficiaries"];
 
     // CLVE + training
     clveTrainingRow[hospital.name + " Sessions"] = "";
     clveTrainingRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(intersect(clveBeneficiaries, trainingBeneficiaries), union(devicesBeneficiaries, counsellingBeneficiaries))
+      difference(intersect(clveBeneficiaries, trainingBeneficiaries), union(devicesBeneficiaries, counsellingBeneficiaries, visionEnhancementBeneficiaries, screeningsBeneficiaries))
     ).length;
     clveTrainingBeneficiariesTotal += clveTrainingRow[hospital.name + " Beneficiaries"];
 
     // CLVE + devices + counselling
     clveDevicesCounsellingRow[hospital.name + " Sessions"] = "";
     clveDevicesCounsellingRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(intersect(intersect(clveBeneficiaries, devicesBeneficiaries), counsellingBeneficiaries), trainingBeneficiaries)
+      difference(intersect(intersect(clveBeneficiaries, devicesBeneficiaries), counsellingBeneficiaries), union(trainingBeneficiaries, visionEnhancementBeneficiaries, screeningsBeneficiaries))
     ).length;
     clveDevicesCounsellingBeneficiariesTotal += clveDevicesCounsellingRow[hospital.name + " Beneficiaries"];
 
     // CLVE + devices + training
     clveDevicesTrainingRow[hospital.name + " Sessions"] = "";
     clveDevicesTrainingRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(intersect(intersect(clveBeneficiaries, devicesBeneficiaries), trainingBeneficiaries), counsellingBeneficiaries)
+      difference(intersect(intersect(clveBeneficiaries, devicesBeneficiaries), trainingBeneficiaries),  union(counsellingBeneficiaries, visionEnhancementBeneficiaries, screeningsBeneficiaries))
     ).length;
     clveDevicesTrainingBeneficiariesTotal += clveDevicesTrainingRow[hospital.name + " Beneficiaries"];
 
     // CLVE + counselling + training
     clveCounsellingTrainingRow[hospital.name + " Sessions"] = "";
     clveCounsellingTrainingRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(intersect(intersect(clveBeneficiaries, counsellingBeneficiaries), trainingBeneficiaries), devicesBeneficiaries)
+      difference(intersect(intersect(clveBeneficiaries, counsellingBeneficiaries), trainingBeneficiaries), union(devicesBeneficiaries, visionEnhancementBeneficiaries, screeningsBeneficiaries))
     ).length;
     clveCounsellingTrainingBeneficiariesTotal += clveCounsellingTrainingRow[hospital.name + " Beneficiaries"];
 
     // CLVE + devices + counselling + training
     clveDevicesCounsellingTrainingRow[hospital.name + " Sessions"] = "";
     clveDevicesCounsellingTrainingRow[hospital.name + " Beneficiaries"] = Array.from(
-      intersect(intersect(clveBeneficiaries, devicesBeneficiaries), intersect(counsellingBeneficiaries, trainingBeneficiaries))
+      difference(intersect(intersect(intersect(clveBeneficiaries, devicesBeneficiaries), counsellingBeneficiaries), trainingBeneficiaries), union(visionEnhancementBeneficiaries, screeningsBeneficiaries))
     ).length;
     clveDevicesCounsellingTrainingBeneficiariesTotal += clveDevicesCounsellingTrainingRow[hospital.name + " Beneficiaries"];
 
     // Counselling only
     counsellingOnlyRow[hospital.name + " Sessions"] = "";
     counsellingOnlyRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(counsellingBeneficiaries, union(clveBeneficiaries, trainingBeneficiaries, screeningsBeneficiaries, visionEnhancementBeneficiaries))
+      difference(counsellingBeneficiaries, union(devicesBeneficiaries, clveBeneficiaries, trainingBeneficiaries, screeningsBeneficiaries, visionEnhancementBeneficiaries))
     ).length;
     counsellingOnlyBeneficiariesTotal += counsellingOnlyRow[hospital.name + " Beneficiaries"];
 
     // Training only
     trainingOnlyRow[hospital.name + " Sessions"] = "";
     trainingOnlyRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(trainingBeneficiaries, union(clveBeneficiaries, counsellingBeneficiaries, screeningsBeneficiaries, visionEnhancementBeneficiaries))
+      difference(trainingBeneficiaries, union(devicesBeneficiaries, clveBeneficiaries, counsellingBeneficiaries, screeningsBeneficiaries, visionEnhancementBeneficiaries))
     ).length;
     trainingOnlyBeneficiariesTotal += trainingOnlyRow[hospital.name + " Beneficiaries"];
 
     // Counselling + Training
     counsellingTrainingRow[hospital.name + " Sessions"] = "";
     counsellingTrainingRow[hospital.name + " Beneficiaries"] = Array.from(
-      difference(intersect(counsellingBeneficiaries, trainingBeneficiaries), union(clveBeneficiaries, screeningsBeneficiaries, visionEnhancementBeneficiaries))
+      difference(intersect(counsellingBeneficiaries, trainingBeneficiaries), union(devicesBeneficiaries, clveBeneficiaries, screeningsBeneficiaries, visionEnhancementBeneficiaries))
     ).length;
     counsellingTrainingBeneficiariesTotal += counsellingTrainingRow[hospital.name + " Beneficiaries"];
 
     // Total Beneficiaries
     totalBeneficiariesRow[hospital.name + " Beneficiaries"] =
       + screeningsOnlyRow[hospital.name + " Beneficiaries"]
+      + screeningsAndCounselingRow[hospital.name + " Beneficiaries"]
+      + screeningsAndTrainingRow[hospital.name + " Beneficiaries"]
+      + screeningsAndCLVERow[hospital.name + " Beneficiaries"]
+      + screeningsCLVEVisionRow[hospital.name + " Beneficiaries"]
+      + screeningsCLVEVisionDevicesRow[hospital.name + " Beneficiaries"]
+      + screeningsCLVEVisionDevicesTrainingRow[hospital.name + " Beneficiaries"]
+      + visionEnhancementCounselingRow[hospital.name + " Beneficiaries"]
+      + visionEnhancementCounselingTrainingRow[hospital.name + " Beneficiaries"]
+      + visionEnhancementCounselingDevicesRow[hospital.name + " Beneficiaries"]
+      + visionEnhancementCounselingTrainingDevicesRow[hospital.name + " Beneficiaries"]
       + visionEnhancementOnlyRow[hospital.name + " Beneficiaries"]
       + screeningsVisionEnhancementRow[hospital.name + " Beneficiaries"]
       + clveOnlyRow[hospital.name + " Beneficiaries"]
@@ -905,6 +1033,36 @@ function getAggregatedHospitalData(
     screeningsOnlyRow["Number of Sessions"] = "";
     screeningsOnlyRow["Number of Beneficiaries"] = screeningsOnlyBeneficiariesTotal;
 
+    screeningsAndCounselingRow["Number of Sessions"] = "";
+    screeningsAndCounselingRow["Number of Beneficiaries"] = screeningsAndCounselingTotal;
+
+    screeningsAndTrainingRow["Number of Sessions"] = "";
+    screeningsAndTrainingRow["Number of Beneficiaries"] = screeningsAndTrainingTotal;
+
+    screeningsAndCLVERow["Number of Sessions"] = "";
+    screeningsAndCLVERow["Number of Beneficiaries"] = screeningsAndCLVETotal;
+
+    screeningsCLVEVisionRow["Number of Sessions"] = "";
+    screeningsCLVEVisionRow["Number of Beneficiaries"] = screeningsCLVEVisionTotal;
+
+    screeningsCLVEVisionDevicesRow["Number of Sessions"] = "";
+    screeningsCLVEVisionDevicesRow["Number of Beneficiaries"] = screeningsCLVEVisionDevicesTotal;
+
+    screeningsCLVEVisionDevicesTrainingRow["Number of Sessions"] = "";
+    screeningsCLVEVisionDevicesTrainingRow["Number of Beneficiaries"] = screeningsCLVEVisionDevicesTrainingTotal;
+
+    visionEnhancementCounselingRow["Number of Sessions"] = "";
+    visionEnhancementCounselingRow["Number of Beneficiaries"] = visionEnhancementCounselingTotal;
+
+    visionEnhancementCounselingTrainingRow["Number of Sessions"] = "";
+    visionEnhancementCounselingTrainingRow["Number of Beneficiaries"] = visionEnhancementCounselingTrainingTotal;
+
+    visionEnhancementCounselingDevicesRow["Number of Sessions"] = "";
+    visionEnhancementCounselingDevicesRow["Number of Beneficiaries"] = visionEnhancementCounselingDevicesTotal;
+
+    visionEnhancementCounselingTrainingDevicesRow["Number of Sessions"] = "";
+    visionEnhancementCounselingTrainingDevicesRow["Number of Beneficiaries"] = visionEnhancementCounselingTrainingDevicesTotal;
+
     visionEnhancementOnlyRow["Number of Sessions"] = "";
     visionEnhancementOnlyRow["Number of Beneficiaries"] = visionEnhancementOnlyBeneficiariesTotal;
 
@@ -955,7 +1113,17 @@ function getAggregatedHospitalData(
   aggregatedHospitalData.push(overallTrainingRow);
   aggregatedHospitalData.push(blankRow);
   aggregatedHospitalData.push(screeningsOnlyRow);
+  aggregatedHospitalData.push(screeningsAndCounselingRow);
+  aggregatedHospitalData.push(screeningsAndTrainingRow);
+  aggregatedHospitalData.push(screeningsAndCLVERow);
+  aggregatedHospitalData.push(screeningsCLVEVisionRow);
+  aggregatedHospitalData.push(screeningsCLVEVisionDevicesRow);
+  aggregatedHospitalData.push(screeningsCLVEVisionDevicesTrainingRow);
   aggregatedHospitalData.push(visionEnhancementOnlyRow);
+  aggregatedHospitalData.push(visionEnhancementCounselingRow);
+  aggregatedHospitalData.push(visionEnhancementCounselingTrainingRow);
+  aggregatedHospitalData.push(visionEnhancementCounselingDevicesRow);
+  aggregatedHospitalData.push(visionEnhancementCounselingTrainingDevicesRow);
   aggregatedHospitalData.push(screeningsVisionEnhancementRow);
   aggregatedHospitalData.push(blankRow);
   aggregatedHospitalData.push(clveOnlyRow);
