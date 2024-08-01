@@ -600,6 +600,12 @@ function getAggregatedHospitalData(
   };
   let counsellingTrainingBeneficiariesTotal = 0;
 
+  let otherRow = {
+    Programs1: "Other Combinations",
+    Programs2: ""
+  };
+  let otherRowTotal = 0;
+
 
   // Total beneficiaries
   let totalBeneficiariesRow = {
@@ -996,6 +1002,11 @@ function getAggregatedHospitalData(
       + trainingOnlyRow[hospital.name + " Beneficiaries"]
       + counsellingTrainingRow[hospital.name + " Beneficiaries"];
     totalBeneficiariesTotal += totalBeneficiariesRow[hospital.name + " Beneficiaries"];
+
+    const hospitalBeneficiariesUniqueCount = filteredBeneficiaryData.filter((ben) => ben.hospital.name === hospital.name).length;
+    otherRow[hospital.name + " Beneficiaries"] = hospitalBeneficiariesUniqueCount - totalBeneficiariesTotal;
+
+    otherRowTotal += otherRow[hospital.name + " Beneficiaries"];
   }
 
   // Push totals of each row
@@ -1102,6 +1113,9 @@ function getAggregatedHospitalData(
     totalBeneficiariesRow["Number of Sessions"] = "";
     totalBeneficiariesRow["Number of Beneficiaries"] = totalBeneficiariesTotal;
 
+    otherRow["Number of Sessions"] = "";
+    otherRow["Number of Beneficiaries"] = otherRowTotal;
+
   }
   // Add rows to the aggregated hospital data
   aggregatedHospitalData.push(lveRow);
@@ -1138,6 +1152,7 @@ function getAggregatedHospitalData(
   aggregatedHospitalData.push(trainingOnlyRow);
   aggregatedHospitalData.push(counsellingTrainingRow);
   aggregatedHospitalData.push(totalBeneficiariesRow);
+  aggregatedHospitalData.push(otherRow);
   aggregatedHospitalData.push(blankRow);
   aggregatedHospitalData.push(mdviRow);
 
