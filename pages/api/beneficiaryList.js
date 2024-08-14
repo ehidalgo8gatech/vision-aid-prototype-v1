@@ -64,29 +64,21 @@ async function fetchData(req, res) {
             where: {
                 deleted: false, hospitalId: { equals: id },
                 OR: [{
-                    Vision_Enhancement: { every: { date } },
-                    NOT: [{ Vision_Enhancement: { every: { date: null }}}]
+                    Vision_Enhancement: { some: { date } }
                 }, {
-                    Counselling_Education: { every: { date } },
-                    NOT: [{ Counselling_Education: { every: { date: null }}}]
+                    Counselling_Education: { some: { date } }
                 }, {
-                    Comprehensive_Low_Vision_Evaluation: { every: { date } },
-                    NOT: [{ Comprehensive_Low_Vision_Evaluation: { every: { date: null }}}]
+                    Comprehensive_Low_Vision_Evaluation: { some: { date } }
                 }, {
-                    Low_Vision_Evaluation: { every: { date } },
-                    NOT: [{ Low_Vision_Evaluation: { every: { date: null }}}]
+                    Low_Vision_Evaluation: { some: { date } }
                 }, {
-                    Training: { every: { date } },
-                    NOT: [{ Training: { every: { date: null }}}]
+                    Training: { some: { date } }
                 }, {
-                    Computer_Training: { every: { date } },
-                    NOT: [{ Computer_Training: { every: { date: null }}}]
+                    Computer_Training: { some: { date } }
                 }, {
-                    Mobile_Training: { every: { date } },
-                    NOT: [{ Mobile_Training: { every: { date: null }}}]
+                    Mobile_Training: { some: { date } }
                 }, {
-                    Orientation_Mobility_Training: { every: { date } },
-                    NOT: [{ Orientation_Mobility_Training: { every: { date: null }}}]
+                    Orientation_Mobility_Training: { some: { date } }
                 }]
             },
         });
