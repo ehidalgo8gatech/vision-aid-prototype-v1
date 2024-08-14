@@ -32,6 +32,7 @@ async function fetchData(req, res) {
         const date = startDate && endDate ? { 
             lte: new Date(req.query.endDate),
             gte: new Date(req.query.startDate),
+
         } : undefined;
         const id = parseInt(req.query.id);
         const beneficiaryListFromAPI = await prisma.beneficiary.findMany({
@@ -62,28 +63,26 @@ async function fetchData(req, res) {
             },
             where: {
                 deleted: false, hospitalId: { equals: id },
-                AND: {
-                    OR: [{
-                        Vision_Enhancement: { every: { date } },
-                    }, {
-                        Counselling_Education: { every: { date } },
-                    }, {
-                        Comprehensive_Low_Vision_Evaluation: { every: { date } },
-                    }, {
-                        Low_Vision_Evaluation: { every: { date } },
-                    }, {
-                        Training: { every: { date } },
-                    }, {
-                        Computer_Training: { every: { date } },
-                    }, {
-                        Mobile_Training: { every: { date } },
-                    }, {
-                        Orientation_Mobility_Training: { every: { date } }
-                    }]
-                }
+                OR: [{
+                    Vision_Enhancement: { some: { date } }
+                }, {
+                    Counselling_Education: { some: { date } }
+                }, {
+                    Comprehensive_Low_Vision_Evaluation: { some: { date } }
+                }, {
+                    Low_Vision_Evaluation: { some: { date } }
+                }, {
+                    Training: { some: { date } }
+                }, {
+                    Computer_Training: { some: { date } }
+                }, {
+                    Mobile_Training: { some: { date } }
+                }, {
+                    Orientation_Mobility_Training: { some: { date } }
+                }]
             },
         });
-
+        
         const beneficiaryList = beneficiaryListFromAPI.map((beneficiary) => ({
             mrn: beneficiary.mrn,
             beneficiaryName: beneficiary.beneficiaryName,
