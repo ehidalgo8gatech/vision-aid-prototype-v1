@@ -452,7 +452,7 @@ function getAggregatedHospitalData(
   let otSessionsTotal = 0;
 
   // Screenings only
-  let screeningsBeneficiaries, visionEnhancementBeneficiaries;
+  let visionEnhancementBeneficiaries;
   let screeningsOnlyRow = {
     Programs1: "Low vision screening at centre/screening camps only",
     Programs2: "",
@@ -685,25 +685,12 @@ function getAggregatedHospitalData(
     overallTrainingRow[hospital.name + " Sessions"] = hospitalTotalSessions;
     otSessionsTotal += overallTrainingRow[hospital.name + " Sessions"];
 
-    // Unique beneficiaries who had Screenings (LVE or mDVI)
-    let tempSet1, tempSet2;
-    tempSet1 = new Set(
+    // Unique beneficiaries who had Screenings (LVE)
+    const screeningsBeneficiaries = new Set(
       hospital.lowVisionEvaluation.map(
         (evaluation) => evaluation.beneficiaryId
       )
     );
-    tempSet2 = new Set(
-      hospital.beneficiary.filter(
-        (beneficiary) => {
-          if (beneficiary.mDVI === "Yes" || beneficiary.mDVI === "At Risk") {
-            return beneficiary.mrn;
-          }
-        }
-      ).map(
-        (beneficiary) => beneficiary.mrn
-      )
-    );
-    screeningsBeneficiaries = union(tempSet1, tempSet2);
 
     // Unique beneficiaries who had Vision Enhancements
     visionEnhancementBeneficiaries = new Set(

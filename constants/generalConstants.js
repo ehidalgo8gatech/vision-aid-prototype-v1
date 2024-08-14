@@ -5,6 +5,6 @@ export const diagnosisValues = [
   "Anterior Segment Condition",
   "Posterior Eye Disease",
   "Hereditary Eye Disease",
-  "Neuor-ophthalmic Condition",
+  "Neuro-ophthalmic Condition",
   "Other",
 ];
