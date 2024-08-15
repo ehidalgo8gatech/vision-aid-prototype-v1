@@ -27,11 +27,13 @@ async function fetchData(req, res) {
     try {
 
         // get beneficiary list from the user information
-        const startDate = req.query.startDate;
-        const endDate = req.query.endDate;
+        const startDate = req.query.startDate ? new Date(req.query.startDate) : undefined;
+        startDate?.setUTCHours(0, 0, 0, 0);
+        const endDate = req.query.endDate ? new Date(req.query.endDate) : undefined;
+        endDate?.setUTCHours(23, 59, 59, 999);
         const date = startDate && endDate ? { 
-            lte: new Date(req.query.endDate),
-            gte: new Date(req.query.startDate),
+            lte: endDate,
+            gte: startDate,
 
         } : undefined;
         const id = parseInt(req.query.id);
