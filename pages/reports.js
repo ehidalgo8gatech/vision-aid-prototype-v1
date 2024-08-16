@@ -590,8 +590,10 @@ export default function Summary({
       return;
     }
     try {
+      startDate.setUTCHours(0, 0, 0, 0);
+      endDate.setUTCHours(23, 59, 59, 999);
       const beneficiaryListAPI = selectedHospitals.map((id) => fetch(
-        `/api/beneficiaryList?id=${id}&startDate=${startDate}&endDate=${endDate}`,
+        `/api/beneficiaryList?id=${id}&startDate=${startDate.toUTCString()}&endDate=${endDate.toUTCString()}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },

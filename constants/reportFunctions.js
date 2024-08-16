@@ -171,11 +171,9 @@ function populateAhdHeaders(hospitals) {
 
 // This function is used to filter a given training by date range
 function filterByDate(training, start, end) {
-  // increment end date by one day to include the end date
-  start = moment(start).subtract(1, "day");
-  return moment(training.date).isBetween(
-    moment(start).startOf("day"),
-    moment(end).startOf("day"),
+  return moment.utc(training.date).isBetween(
+    moment.utc(start).startOf("day"),
+    moment.utc(end).endOf("day"),
     null,
     "[]"
   );
@@ -520,6 +518,12 @@ function getAggregatedHospitalData(
     Programs2: "",
   };
   let screeningsVisionEnhancementBeneficiariesTotal = 0;
+  // Services Only
+  let servicesOnlyRow = {
+    Programs1: "Services Only",
+    Programs2: "",
+  };
+  let servicesOnlyTotal = 0;
 
   // Detailed splitup of all unique beneficiaries in the db
   let clveBeneficiaries, devicesBeneficiaries, counsellingBeneficiaries, trainingBeneficiaries;
@@ -822,6 +826,13 @@ function getAggregatedHospitalData(
     ).length;
     clveOnlyBeneficiariesTotal += clveOnlyRow[hospital.name + " Beneficiaries"];
 
+    // Services Only
+    servicesOnlyRow[hospital.name + " Sessions"] = "";
+    servicesOnlyRow[hospital.name + " Beneficiaries"] = Array.from(
+      difference(union(counsellingBeneficiaries, devicesBeneficiaries, trainingBeneficiaries), union(screeningsBeneficiaries, clveBeneficiaries, visionEnhancementBeneficiaries))
+    ).length;
+    servicesOnlyTotal += servicesOnlyRow[hospital.name + " Beneficiaries"];
+
     // Total Beneficiaries
     totalBeneficiariesRow[hospital.name + " Beneficiaries"] =
       + screeningsOnlyRow[hospital.name + " Beneficiaries"]
@@ -837,7 +848,8 @@ function getAggregatedHospitalData(
       + screeningsCLVEVisionDevicesCounselingTrainingRow[hospital.name + " Beneficiaries"]
       + visionEnhancementOnlyRow[hospital.name + " Beneficiaries"]
       + screeningsVisionEnhancementRow[hospital.name + " Beneficiaries"]
-      + clveOnlyRow[hospital.name + " Beneficiaries"];
+      + clveOnlyRow[hospital.name + " Beneficiaries"]
+      + servicesOnlyRow[hospital.name + " Beneficiaries"];
     totalBeneficiariesTotal += totalBeneficiariesRow[hospital.name + " Beneficiaries"];
 
     // const hospitalBeneficiariesUniqueCount = filteredBeneficiaryData.filter((ben) => ben.hospital.name === hospital.name).length;
@@ -877,6 +889,9 @@ function getAggregatedHospitalData(
 
     clveOnlyRow["Number of Sessions"] = "";
     clveOnlyRow["Number of Beneficiaries"] = clveOnlyBeneficiariesTotal;
+
+    servicesOnlyRow["Number of Sessions"] = "";
+    servicesOnlyRow["Number of Beneficiaries"] = servicesOnlyTotal;
 
     screeningsOnlyRow["Number of Sessions"] = "";
     screeningsOnlyRow["Number of Beneficiaries"] = screeningsOnlyBeneficiariesTotal;
@@ -928,10 +943,10 @@ function getAggregatedHospitalData(
   aggregatedHospitalData.push(lveRow);
   aggregatedHospitalData.push(veRow);
   aggregatedHospitalData.push(clveRow);
-  aggregatedHospitalData.push(devicesRow);
   aggregatedHospitalData.push(ceRow);
   aggregatedHospitalData.push(...trainingTypesList.map((item) => item.tRow));
   aggregatedHospitalData.push(overallTrainingRow);
+  aggregatedHospitalData.push(devicesRow);
   aggregatedHospitalData.push(blankRow);
   aggregatedHospitalData.push(screeningsOnlyRow); // 1st
   aggregatedHospitalData.push(visionEnhancementOnlyRow); // 2nd
@@ -950,6 +965,7 @@ function getAggregatedHospitalData(
   aggregatedHospitalData.push(screeningsCLVEVisionDevicesTrainingRow); // 12th
   aggregatedHospitalData.push(screeningsCLVEVisionCounselingTrainingRow); // 13th
   aggregatedHospitalData.push(screeningsCLVEVisionDevicesCounselingTrainingRow); // 14th
+  aggregatedHospitalData.push(servicesOnlyRow); // 15th
   aggregatedHospitalData.push(blankRow);
   aggregatedHospitalData.push(totalBeneficiariesRow);
   // aggregatedHospitalData.push(otherRow);
